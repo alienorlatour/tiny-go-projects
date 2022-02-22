@@ -1,2 +1,3 @@
 # tiny-go-projects
-Readme 
+
+This repo gathers the contents of the book Tiny Go Projects.
