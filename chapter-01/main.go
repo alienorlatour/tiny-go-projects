@@ -5,10 +5,20 @@ import (
 )
 
 func main() {
-	greet()
+	hello := greet("en")
+	fmt.Println(hello)
 }
 
+type locale string
+
 // greet says hello to the world
-func greet() {
-	fmt.Println("Hello, world!")
+func greet(locale locale) string {
+	switch locale {
+	case "en":
+		return "Hello, world!"
+	case "fr":
+		return "Bonjour le monde!"
+	default:
+		return ""
+	}
 }
