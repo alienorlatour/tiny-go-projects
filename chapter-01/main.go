@@ -19,5 +19,10 @@ var dictionary = map[locale]string{
 
 // greet says hello to the world
 func greet(l locale) string {
-	return dictionary[l]
+	msg, ok := dictionary[l]
+	if !ok {
+		return fmt.Sprintf("unsupported language: %q", l)
+	}
+
+	return msg
 }
