@@ -17,4 +17,9 @@ func Test_greet(t *testing.T) {
 	if msg != "Bonjour le monde!" {
 		t.Errorf("expected: Bonjour le monde!, got: %s", msg)
 	}
+
+	msg = greet("")
+	if msg != "" {
+		t.Errorf("expected: !, got: %s", msg)
+	}
 }

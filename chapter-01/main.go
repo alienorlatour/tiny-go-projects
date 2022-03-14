@@ -11,14 +11,13 @@ func main() {
 
 type locale string
 
+// dictionary holds greeting for each supported language
+var dictionary = map[locale]string{
+	"en": "Hello, world!",
+	"fr": "Bonjour le monde!",
+}
+
 // greet says hello to the world
-func greet(locale locale) string {
-	switch locale {
-	case "en":
-		return "Hello, world!"
-	case "fr":
-		return "Bonjour le monde!"
-	default:
-		return ""
-	}
+func greet(l locale) string {
+	return dictionary[l]
 }
