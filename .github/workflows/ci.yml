@@ -1,0 +1,35 @@
+name: Complete Continuous Integration - build
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+
+      - name: setup go environment
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.18'
+
+      - name: run tests with coverage
+        run: make cover
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout project
+        uses: actions/checkout@v2
+
+      - name: setup go environment
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.18'
+
+      - name: run tests with coverage
+        run: make build
