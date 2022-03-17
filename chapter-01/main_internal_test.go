@@ -4,7 +4,7 @@ import "testing"
 
 func Example_main() {
 	main()
-	// Output: Hello, world!
+	// Output: Hello world
 }
 
 func Test_greet(t *testing.T) {
@@ -14,11 +14,11 @@ func Test_greet(t *testing.T) {
 	}{
 		"English": {
 			language:       "en",
-			wantedGreeting: "Hello, world!",
+			wantedGreeting: "Hello world",
 		},
 		"French": {
 			language:       "fr",
-			wantedGreeting: "Bonjour le monde!",
+			wantedGreeting: "Bonjour le monde",
 		},
 		"Greek": {
 			language:       "el",
@@ -30,11 +30,11 @@ func Test_greet(t *testing.T) {
 		},
 		"Urdu": {
 			language:       "ur",
-			wantedGreeting: "ہیلو، دنیا",
+			wantedGreeting: "ہیلو دنیا",
 		},
 		"Vietnamese": {
 			language:       "vi",
-			wantedGreeting: "Chào thế giới",
+			wantedGreeting: "Xin chào Thế Giới",
 		},
 		"Unsupported": {
 			language:       "unknown",
