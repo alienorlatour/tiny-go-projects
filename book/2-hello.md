@@ -76,3 +76,5 @@ mettre à jour les tests
 Le test est illisible et pas scalable - faire une map de cas de test
 t.Run()
 Vérifier que c’est vert
+
+https://pkg.go.dev/fmt#Println
