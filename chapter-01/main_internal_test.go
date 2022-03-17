@@ -16,13 +16,29 @@ func Test_greet(t *testing.T) {
 			language:       "en",
 			wantedGreeting: "Hello, world!",
 		},
-		"Français": {
+		"French": {
 			language:       "fr",
 			wantedGreeting: "Bonjour le monde!",
 		},
+		"Greek": {
+			language:       "el",
+			wantedGreeting: "Χαίρετε Κόσμε",
+		},
+		"Hebrew": {
+			language:       "he",
+			wantedGreeting: "שלום עולם",
+		},
+		"Urdu": {
+			language:       "ur",
+			wantedGreeting: "ہیلو، دنیا",
+		},
+		"Vietnamese": {
+			language:       "vi",
+			wantedGreeting: "Chào thế giới",
+		},
 		"Unsupported": {
-			language:       "sw",
-			wantedGreeting: `unsupported language: "sw"`,
+			language:       "unknown",
+			wantedGreeting: `unsupported language: "unknown"`,
 		},
 		"Empty": {
 			language:       "",
