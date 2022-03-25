@@ -19,16 +19,37 @@ const (
 )
 
 func TestLogger_LevelInfo(t *testing.T) {
-	tw := &testWriter{}
-	infoLogger := logger.New(logger.LevelInfo).WithOutput(tw)
-	expected := infoMessage + "\n" + errorMessage + "\n"
+	tt := map[string]struct {
+		level          logger.Level
+		expectedOutput string
+	}{
+		"debug": {
+			level:          logger.LevelDebug,
+			expectedOutput: debugMessage + "\n" + infoMessage + "\n" + errorMessage + "\n",
+		},
+		"info": {
+			level:          logger.LevelInfo,
+			expectedOutput: infoMessage + "\n" + errorMessage + "\n",
+		},
+		"error": {
+			level:          logger.LevelError,
+			expectedOutput: errorMessage + "\n",
+		},
+	}
 
-	infoLogger.Debug(debugMessage)
-	infoLogger.Info(infoMessage)
-	infoLogger.Error(errorMessage)
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			tw := &testWriter{}
+			l := logger.New(tc.level).WithOutput(tw)
 
-	if tw.contents != expected {
-		t.Errorf("invalid contents, expected %q, got %q", expected, tw.contents)
+			l.Debug(debugMessage)
+			l.Info(infoMessage)
+			l.Error(errorMessage)
+
+			if tw.contents != tc.expectedOutput {
+				t.Errorf("invalid contents, expected %q, got %q", tc.expectedOutput, tw.contents)
+			}
+		})
 	}
 }
 
