@@ -12,19 +12,20 @@ func ExampleLogger_Debug_debug() {
 	// Output: Hello, world
 }
 
-func ExampleLogger_Debug_info() {
-	infoLogger := logger.New(logger.LevelInfo)
-	infoLogger.Debug("Hello, %s", "world")
-	// Output:
-}
+const (
+	debugMessage = "Why write I still all one, ever the same,"
+	infoMessage  = "And keep invention in a noted weed,"
+	errorMessage = "That every word doth almost tell my name,"
+)
 
-func TestLogger_WithOutput(t *testing.T) {
+func TestLogger_LevelInfo(t *testing.T) {
 	tw := &testWriter{}
 	infoLogger := logger.New(logger.LevelInfo).WithOutput(tw)
-	message := "I will write. All may be well enough."
-	expected := message + "\n"
+	expected := infoMessage + "\n" + errorMessage + "\n"
 
-	infoLogger.Info(message)
+	infoLogger.Debug(debugMessage)
+	infoLogger.Info(infoMessage)
+	infoLogger.Error(errorMessage)
 
 	if tw.contents != expected {
 		t.Errorf("invalid contents, expected %q, got %q", expected, tw.contents)
