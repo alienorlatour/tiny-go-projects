@@ -53,11 +53,13 @@ func TestLogger_LevelInfo(t *testing.T) {
 	}
 }
 
-// testWriter is a struct that implements io.Writer
+// testWriter is a struct that implements io.Writer.
+// We use it to validate we can write to a specific output.
 type testWriter struct {
 	contents string
 }
 
+// Write implements the io.Writer interface.
 func (tw *testWriter) Write(p []byte) (n int, err error) {
 	tw.contents = tw.contents + string(p)
 	return len(p), nil

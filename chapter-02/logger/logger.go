@@ -12,8 +12,8 @@ type Logger struct {
 	output io.Writer
 }
 
-// New returns you a logger, ready to log at the required threshold
-// The default output is Stdout
+// New returns you a logger, ready to log at the required threshold.
+// The default output is Stdout.
 func New(level Level) *Logger {
 	return &Logger{
 		level:  level,
@@ -22,7 +22,8 @@ func New(level Level) *Logger {
 }
 
 // WithOutput sets the output of the logger, and returns it.
-// You can call logger.WithOutput(os.StdOut).Info()
+// You can call logger.WithOutput(os.StdOut).Info().
+// The thread safety is left to the implementation of output.
 func (l Logger) WithOutput(output io.Writer) Logger {
 	l.output = output
 	return l
@@ -49,6 +50,8 @@ func (l Logger) Error(format string, args ...any) {
 	}
 }
 
+// log prints the message to the output.
+// Add decorations here, if any.
 func (l Logger) log(format string, args []any) {
 	_, _ = fmt.Fprintf(l.output, format+"\n", args...)
 }
