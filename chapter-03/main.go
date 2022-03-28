@@ -12,17 +12,21 @@ const (
 
 func main() {
 	fmt.Println("Welcome to Gordle!")
-	fmt.Println(input())
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println(input(reader))
+}
+
+type lineReader interface {
+	ReadLine() (line []byte, isPrefix bool, err error)
 }
 
 // input prints out the instruction and reads from the standard input
-func input() string {
+func input(reader lineReader) string {
 	fmt.Println("Enter a guess:")
 
 	var attempt []byte
 	var attemptIsValid bool
 	var err error
-	var reader = bufio.NewReader(os.Stdin)
 
 	for !attemptIsValid {
 		attempt, _, err = reader.ReadLine()

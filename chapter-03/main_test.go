@@ -1,19 +1,26 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_input(t *testing.T) {
-	tests := []struct {
-		name string
-		want string
-	}{
-		// TODO: Add test cases.
+	expected := "hello"
+	reader := testReader{
+		line: []byte(expected),
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := input(); got != tt.want {
-				t.Errorf("input() = %v, want %v", got, tt.want)
-			}
-		})
+
+	got := input(reader)
+
+	if got != expected {
+		t.Errorf("expected %q, got %q", expected, got)
 	}
+}
+
+type testReader struct {
+	line []byte
+}
+
+func (tr testReader) ReadLine() (line []byte, isPrefix bool, err error) {
+	return tr.line, false, nil
 }
