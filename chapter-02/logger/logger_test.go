@@ -40,11 +40,11 @@ func TestLogger_LevelInfo(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			tw := &testWriter{}
-			l := logger.New(tc.level).WithOutput(tw)
+			underTest := logger.New(tc.level).WithOutput(tw)
 
-			l.Debug(debugMessage)
-			l.Info(infoMessage)
-			l.Error(errorMessage)
+			underTest.Debug(debugMessage)
+			underTest.Info(infoMessage)
+			underTest.Error(errorMessage)
 
 			if tw.contents != tc.expectedOutput {
 				t.Errorf("invalid contents, expected %q, got %q", tc.expectedOutput, tw.contents)
