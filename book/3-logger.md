@@ -6,7 +6,7 @@
 
 ## I wanted to be a lumberjack
 
-In the previous chapter, we saw how to write to the standard output. It's important not to belittle this activity, as it still used in a way we do not condone.
+In the previous chapter, we saw how to write to the standard output. It's important not to belittle this activity, as it is still used in a way we do not condone.
 
 The night is dark. You've been working on trying to fix this bug for 4 hours straight. You don't understand what's happening with a `uri` variable that you expect to be non-empty when you download a resource.
 
@@ -33,28 +33,32 @@ Every application has a _logger_, whose task is to write messages at specific mo
 However, not all messages bear the same amount of information. _"Everything is going extremely well"_ is very different from _"I just picked up a fault in the AE-35 Unit"_. We might want to emphasise critical messages, or discard those of lesser matter. 
 Acknowledging that there are different degrees of importance was already performed by scribes in Ancient Egypt, when they'd write some sections in red (this is where the word _rubric_ originates), to highlight them.   
 
-The goal of this chapter is to implement such a logger, and to explain why we can't simply use `fmt.Println` for such a task. 
+The goal of this chapter is to implement such a logger, and to explain why we can't simply use `fmt.Println()` for such a task. 
 
 ### Levels
 
-It is necessary, when using a logger, to assign an importance level to a message. This is the task of the developer, who has to think how critical the information that is about to be recorded is.
+It is necessary, when using a logger, to assign an importance level to a message. This is the task of the developer, who has to think about the criticalness of the information that is about to be recorded.
 Loggers around the world have a wide variety of levels, which always follow the same pattern: the one with the lowest importance (usually "Trace" or "Debug"), and then it goes up to (usually) "Fatal".  
 
-Our example offers 3 levels of logging. They can be found in the `level.go` file, and they are our introduction to enumerations, in Go:
+Let's dig into our example: we decided to offer 3 levels of logging. They can be found in the `level.go` file, and they are our introduction to enumerations, in Go:
 ```go
+// Level describes the criticalness of a log message
 type Level int
 
 const (
-	LevelDebug Level = iota
-	LevelInfo
-	LevelError
+    // LevelDebug messages are used to debug the application
+    LevelDebug Level = iota
+    // LevelInfo messages are used to log meaningful information about the processes going on
+    LevelInfo
+    // LevelError messages are used to highlight unexpected behaviours caught by the application
+    LevelError
 )
 ```
 
 We start by declaring a _named type_ `Level`, of _underlying type_ `int`. `Level` can be used by other packages, as it is exposed. 
 
 Then, we declare constants of the type `Level`. The syntax here is to use `= iota` to let the compiler know that we are starting an enumeration - a list of entities of the same kind.
-We don't need to assign explicit values to these constants, the compiler does it automatically for us thanks to the `iota` syntax. Here, `LevelDebug` will have the value `0`, `LevelInfo` will be `1` and `LevelError` will be 2. 
+We don't need to assign explicit values to these constants, the compiler does it automatically for us thanks to the `iota` syntax. If we decide to add a `Warning` level later, we will only need to add a line and not worry about renumbering everything. 
 
 `= iota` can be used on any type that can be equal to an `int`.
 
@@ -62,16 +66,23 @@ We now have 3 log levels, each one will have its own purpose.
 
 ### A logger in Go
 
-Let's took a first look at the `logger` package, but not too close. Here are the exposed structure and functions in the `logger.go` file:
+Let's define the `logger` package. Here are the exposed structure and functions in the `logger.go` file:
 ```go
+// New returns you a logger, ready to log at the required threshold.
+// The default output is Stdout.
 func New(level Level) *Logger
 
+// WithOutput sets the output of the logger, and returns it.
+// You can call logger.WithOutput(os.StdOut).Info().
+// The thread safety is left to the implementation of output.
 func (l Logger) WithOutput(output io.Writer) Logger
 
+// Debug formats and prints a message if the log level is debug or higher
 func (l Logger) Debug(format string, args ...any)
 
+// Info formats and prints a message if the log level is info or higher
 func (l Logger) Info(format string, args ...any)
 
+// Error formats and prints a message if the log level is error or higher
 func (l Logger) Error(format string, args ...any)
 ```
-
