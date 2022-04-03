@@ -2,7 +2,8 @@
 - `log` devrait lancer une go routine (on ne veut pas etre bloquant sur le .Write())
 - ajouter un formatteur ? (json, csv, html, ...)
 - une part non nulle de loggers ont une {key,value} (pratique pour elasticsearch) - je propose de ne pas l'inclure
-- commenter les niveaux de log
+- `logger.Log(logger.Level, format string, args ...interface {})` ? Permet aux autres libs de mapper un niveau de log sur le notre
+
 
 ## I wanted to be a lumberjack
 
@@ -86,3 +87,13 @@ func (l Logger) Info(format string, args ...any)
 // Error formats and prints a message if the log level is error or higher
 func (l Logger) Error(format string, args ...any)
 ```
+
+- Input
+
+an input can be anything we want to save
+
+- Output
+
+the output should be anywhere we want to save
+
+- 
