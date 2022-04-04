@@ -7,7 +7,12 @@ import (
 )
 
 const (
+	// all words in the corpus have this many letters
 	wordLength = 5
+)
+
+var (
+	errInvalidWordLength = fmt.Errorf("word should be %d letters", wordLength)
 )
 
 func main() {
@@ -31,15 +36,25 @@ func input(reader lineReader) string {
 	for !attemptIsValid {
 		attempt, _, err = reader.ReadLine()
 		if err != nil {
-			fmt.Printf("error: %s\n", err.Error())
+			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's input: %s", err.Error())
+			continue
 		}
 
-		if len(attempt) != wordLength {
-			fmt.Printf("word %q should be %d letters, got: %d\n", attempt, wordLength, len(attempt))
+		err = validate(attempt)
+		if err != nil {
+			fmt.Println(err)
 		} else {
 			attemptIsValid = true
 		}
 	}
 
 	return string(attempt)
+}
+
+func validate(attempt []byte) error {
+	if len(attempt) != wordLength {
+		return errInvalidWordLength
+	}
+
+	return nil
 }
