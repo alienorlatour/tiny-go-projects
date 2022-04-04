@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"testing"
 )
@@ -39,14 +40,14 @@ func Test_validate(t *testing.T) {
 }
 
 func Test_input(t *testing.T) {
-	expected := "hello"
+	expected := []byte("hello")
 	reader := testReader{
-		line: []byte(expected),
+		line: expected,
 	}
 
 	got := input(reader)
 
-	if got != expected {
+	if bytes.Equal(got, expected) {
 		t.Errorf("expected %q, got %q", expected, got)
 	}
 }

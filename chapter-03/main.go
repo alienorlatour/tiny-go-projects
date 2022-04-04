@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 )
@@ -17,8 +18,26 @@ var (
 
 func main() {
 	fmt.Println("Welcome to Gordle!")
+
+	solution := []byte("slice")
+
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println(input(reader))
+	for {
+		attempt := input(reader)
+		if bytes.Equal(attempt, solution) {
+			// win
+			fmt.Println("Bravo! You found the word.")
+			return
+		}
+
+		feedback(attempt, solution)
+	}
+
+}
+
+// prints out hints on how to find the solution
+func feedback(attempt []byte, solution []byte) {
+
 }
 
 type lineReader interface {
@@ -26,7 +45,7 @@ type lineReader interface {
 }
 
 // input prints out the instruction and reads from the standard input
-func input(reader lineReader) string {
+func input(reader lineReader) []byte {
 	fmt.Println("Enter a guess:")
 
 	var attempt []byte
@@ -48,7 +67,7 @@ func input(reader lineReader) string {
 		}
 	}
 
-	return string(attempt)
+	return attempt
 }
 
 func validate(attempt []byte) error {
