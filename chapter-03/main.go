@@ -19,25 +19,56 @@ var (
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
-	solution := []byte("slice")
+	sol := []byte("slice")
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		attempt := input(reader)
-		if bytes.Equal(attempt, solution) {
+		if bytes.Equal(attempt, sol) {
 			// win
 			fmt.Println("Bravo! You found the word.")
 			return
 		}
 
-		feedback(attempt, solution)
+		feedback(attempt, newSolution(sol))
 	}
 
 }
 
-// prints out hints on how to find the solution
-func feedback(attempt []byte, solution []byte) {
+type status int
 
+const (
+	correctPosition status = iota
+	wrongPosition
+	absentCharacter
+)
+
+// solution holds the positions of the valid characters
+// since a single character can appear several times, we store these times as a slice of indexes
+type solution map[byte][]int
+
+func newSolution(word []byte) solution {
+	sol := solution{}
+	for i, letter := range word {
+		//appending to a nil slice will return a slice, this is safe
+		sol[letter] = append(sol[letter], i)
+	}
+	return sol
+}
+
+// prints out hints on how to find the solution
+func feedback(attempt []byte, s solution) []status {
+	f := make([]status, wordLength)
+	// scan the attempts and check if they are in the solution
+	for i, letter := range attempt {
+		// keep track of already seen characters
+		f[i] = checkLetter(letter, s)
+	}
+	return f
+}
+
+func checkLetter(letter byte, s solution) status {
+	return 0
 }
 
 type lineReader interface {
