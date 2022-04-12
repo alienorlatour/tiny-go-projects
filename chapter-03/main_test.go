@@ -33,7 +33,7 @@ func Test_validate(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := validate(tc.word)
 			if !errors.Is(err, tc.expected) {
-				t.Errorf("expected %q, got %q", tc.expected, err)
+				t.Errorf("%s, expected %q, got %q", tc.word, tc.expected, err)
 			}
 		})
 	}
@@ -116,9 +116,9 @@ func Test_feedback(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := feedback(tc.attempt, tc.solution)
+			got := tc.solution.feedback(tc.attempt)
 			if !compare(tc.expectedFeedback, got) {
-				t.Errorf("got the wrong solution, expected %v, got %v", tc.expectedFeedback, got)
+				t.Errorf("attempt: %s, got the wrong feedback, expected %v, got %v", tc.attempt, tc.expectedFeedback, got)
 			}
 		})
 	}

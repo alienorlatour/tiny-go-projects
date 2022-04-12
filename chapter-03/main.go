@@ -19,18 +19,17 @@ var (
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
-	sol := []byte("slice")
-
+	sol := newSolution([]byte("slice"))
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		attempt := input(reader)
-		if bytes.Equal(attempt, sol) {
+		if bytes.Equal(attempt, sol.word) {
 			// win
 			fmt.Println("Bravo! You found the word.")
 			return
 		}
 
-		feedback(attempt, newSolution(sol))
+		sol.feedback(attempt)
 	}
 
 }
@@ -45,41 +44,55 @@ const (
 
 // solution holds the positions of the valid characters
 // since a single character can appear several times, we store these times as a slice of indexes
-type solution map[byte][]int
+type solution struct {
+	word      []byte
+	positions map[byte][]int
+}
 
 func newSolution(word []byte) solution {
-	sol := solution{}
-	for i, letter := range word {
-		//appending to a nil slice will return a slice, this is safe
-		sol[letter] = append(sol[letter], i)
+	sol := solution{
+		word:      word,
+		positions: make(map[byte][]int),
 	}
+
 	return sol
 }
 
 // prints out hints on how to find the solution
-func feedback(attempt []byte, s solution) []status {
+func (s *solution) feedback(attempt []byte) []status {
+	for i, letter := range s.word {
+		// appending to a nil slice will return a slice, this is safe
+		s.positions[letter] = append(s.positions[letter], i)
+	}
+
 	f := make([]status, wordLength)
 	// scan the attempts and check if they are in the solution
 	for i, letter := range attempt {
 		// keep track of already seen characters
 		f[i] = s.checkLetter(letter, i)
 	}
+
 	return f
 }
 
-func (s solution) checkLetter(letter byte, index int) status {
-	positions, ok := s[letter]
-	if !ok {
+func (s *solution) checkLetter(letter byte, index int) status {
+	positions, ok := s.positions[letter]
+	if !ok || len(positions) == 0 {
 		return absentCharacter
 	}
 
-	for _, pos := range positions {
+	for i, pos := range positions {
 		if pos == index {
+			// remove found letter from positions
+			s.positions[letter] = append(positions[:i], positions[i:]...)
 			return correctPosition
 		}
 	}
 
-	return absentCharacter
+	// remove the left-most occurrence
+	s.positions[letter] = positions[1:]
+
+	return wrongPosition
 }
 
 type lineReader interface {
