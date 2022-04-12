@@ -69,28 +69,49 @@ func (s *solution) feedback(attempt []byte) []status {
 	// scan the attempts and check if they are in the solution
 	for i, letter := range attempt {
 		// keep track of already seen characters
-		f[i] = s.checkLetter(letter, i)
+		correctness := s.checkLetter(letter, i)
+		if correctness == correctPosition {
+			// remove found letter from positions
+			s.markLetterAsSeen(letter, i)
+			f[i] = correctPosition
+		}
+	}
+
+	for i, letter := range attempt {
+		correctness := s.checkLetter(letter, i)
+		if correctness == wrongPosition {
+			// remove the left-most occurrence
+			s.positions[letter] = s.positions[letter][1:]
+		}
+		f[i] = correctness
 	}
 
 	return f
 }
 
+func (s *solution) markLetterAsSeen(letter byte, positionInWord int) {
+	positions := s.positions[letter]
+
+	for i, pos := range positions {
+		if pos == positionInWord {
+			s.positions[letter] = append(positions[:i], positions[i:]...)
+		}
+	}
+}
+
+// checkLetter returns the correctness of a letter
+// at the specified index in the solution.
 func (s *solution) checkLetter(letter byte, index int) status {
 	positions, ok := s.positions[letter]
 	if !ok || len(positions) == 0 {
 		return absentCharacter
 	}
 
-	for i, pos := range positions {
+	for _, pos := range positions {
 		if pos == index {
-			// remove found letter from positions
-			s.positions[letter] = append(positions[:i], positions[i:]...)
 			return correctPosition
 		}
 	}
-
-	// remove the left-most occurrence
-	s.positions[letter] = positions[1:]
 
 	return wrongPosition
 }
