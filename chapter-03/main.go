@@ -62,13 +62,24 @@ func feedback(attempt []byte, s solution) []status {
 	// scan the attempts and check if they are in the solution
 	for i, letter := range attempt {
 		// keep track of already seen characters
-		f[i] = checkLetter(letter, s)
+		f[i] = s.checkLetter(letter, i)
 	}
 	return f
 }
 
-func checkLetter(letter byte, s solution) status {
-	return 0
+func (s solution) checkLetter(letter byte, index int) status {
+	positions, ok := s[letter]
+	if !ok {
+		return absentCharacter
+	}
+
+	for _, pos := range positions {
+		if pos == index {
+			return correctPosition
+		}
+	}
+
+	return absentCharacter
 }
 
 type lineReader interface {
