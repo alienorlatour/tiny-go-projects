@@ -16,6 +16,7 @@ func main() {
 // locale represents a language
 type locale string
 
+// TODO: Rename this as `phrasebook`
 // dictionary holds greeting for each supported language
 var dictionary = map[locale]string{
 	"el": "Χαίρετε Κόσμε",

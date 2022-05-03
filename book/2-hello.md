@@ -1,9 +1,19 @@
+# Hello vibrating stars
 
-## Hello vibrating stars
+## In this chapter
+- Write to the standard output
+- Test writing to the standard output
+- Write table-driven tests
+- Use flags to read command-line parameters
+- Use a hash table to hold key-value pairs
 
-Hello world in the desired human language
+## Introduction
 
-### All space travel begins on the ground
+`Hello world` in the desired human language
+
+
+
+## All space travel begins on the ground
 
 During the setup of your environment, you wrote a minimalistic Hello World. Let's understand it.
 
@@ -31,7 +41,7 @@ func main() {
 
 Inside the `fmt` package, `Println` _formats using the default formats for its operands and writes to standard output._
 
-##### Why the long letter, my friend?
+#### Why the long letter, my friend?
 
 The long chapter about scope and visibility:
 
@@ -43,16 +53,16 @@ And that's it. Really.
 
 That's why the function `Println()` starts with a capital.
 
-TODO: Add the 
+TODO: Add the  
 
-### Let's test!
+## Let's test!
 
 First, we need a test file `main_internal_test.go` : 
 - `main` for the function we test;
 - `internal` because we want to access unexposed methods;
 - `test` for the testing file.
 
-#### Let's raise the standard
+## Let's raise the standard
 
 To test the standard output, we need to name the test `Example_<function_name>`, here we test `Example_greet` method.
 
@@ -78,7 +88,7 @@ func Example_main() {
 }
 ```
 
-#### Let's run the test
+### Let's run the test
 
 To run a test, you may call the test command from go:
 
@@ -93,11 +103,11 @@ The output lists the launched tests and their results.
 PASS
 ```
 
-### Are you polylingual?
+## Are you polyglot?
 
-Because we want to display `Hello, word!` in different languages, passing the desired one is necessary.
+Because we want to display `Hello, word` in different languages, passing the desired one is necessary.
 
-#### Duck typing
+### Duck typing
 
 Typing is important. So we know what we are talking about. 
 
@@ -107,19 +117,19 @@ The input language will be a `string` but more precisely a `locale`.
 type locale string
 ```
 
-#### Switching from one language to another
+### Selecting the right language
 
 Now that we have a type, we can pass it as a parameter to the function `greet`.  
 The new signature will be as below:
 ```go
-func greet(locale locale) string
+func greet(l locale) string
 ```
 
 For the first iteration, we can add a `switch` on the `locale` and return the corresponding greeting.
 The default value for the moment is just an empty string.
 
 ```go
-switch locale {
+switch l {
 	case "en":
 		return "Hello, world!"
 	case "fr":
@@ -139,7 +149,7 @@ func main() {
 }
 ```
 
-#### Enrich the test
+### Enrich the test
 
 Now we want to test the `greet` function with the various possible input. 
 Since we are testing the returned value of the function, the testing function is called `Test_greet`.  
@@ -168,10 +178,47 @@ func Test_greet(t *testing.T) {
 }
 ```
 
+## [Second iteration] Using a `map` 
+
+Adding entries to a `switch` clause in Go reduces the readability of the code: it increases the size of the function, sometimes beyond screen dimensions.
+For this reason, we decided to use a `map`, a very common and useful data structure in Go. A `map` is a set of pairs of distinct keys and their associated values.
+
+Our map will associate a greeting message to every locale as a pair of `{locale, greeting}`.
+For this chapter, we will use a global variable - something one shouldn't do in a production project.
+```go
+// dictionary holds greeting for each supported language
+var dictionary = map[locale]string{
+	"el": "Χαίρετε Κόσμε",
+	"en": "Hello world",
+	"fr": "Bonjour le monde",
+	"he": "שלום עולם",
+	"ur": "ہیلو دنیا",
+	"vi": "Xin chào Thế Giới",
+}
+```
+We now want to use this dictionary instead of the `switch` in the `greet` function.
+
+Accessing an item in our `map` returns a `greeting` - the message associated with the key locale `l` - and a boolean that informs us of whether the key was found
+
+```go
+// greet says hello to the world
+func greet(l locale) string {
+	msg, ok := dictionary[l]
+	if !ok {
+		return fmt.Sprintf("unsupported language: %q", l)
+	}
+
+	return msg
+}
+```
+
+
+
+
 
 <hr>
 
-On a un hello wolrd, on est content.
+On a un hello wolrd, on est contente.
 Ecrivons un test
 Example permet de tester la sortie standard - lien vers la doc
 Pourquoi _internal_test.go
@@ -200,3 +247,8 @@ t.Run()
 Vérifier que c’est vert
 
 https://pkg.go.dev/fmt#Println
+
+
+---- 
+
+- Réorganisation du chapitre : mettre un seul _Let's test_, à la fin.
