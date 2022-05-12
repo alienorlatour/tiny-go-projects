@@ -46,8 +46,8 @@ func Test_greet(t *testing.T) {
 		},
 	}
 
-	for name, tc := range tests {
-		t.Run(name, func(t *testing.T) {
+	for scenarioName, tc := range tests {
+		t.Run(scenarioName, func(t *testing.T) {
 			msg := greet(tc.language)
 			if msg != tc.wantedGreeting {
 				t.Errorf(`expected: %q, got: %q`, tc.wantedGreeting, msg)

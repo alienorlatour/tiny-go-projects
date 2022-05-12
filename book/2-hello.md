@@ -212,9 +212,133 @@ func greet(l locale) string {
 }
 ```
 
+### Writing with a Table Driven Tests
 
+Our previous tests were linear - they tested every locale in a sequential way.
+With a step back, we realise each test does the same thing - take an input locale, 
+and check the greeting for that locale is the expected one. 
+This can be resumed in the following snippet that is executed with values for locale of `"en"` and `"fr"`.
+```go
+    greeting := greet(language)
+    if greeting != expectedGreeting {
+        t.Errorf(`expected: %q, got: %q`, expectedGreeting, greeting)
+    }
+```
 
+Instead of writing the call to greet once per different locale, we could factorise this with a `for` loop that will iterate over the different locales we want to test:
+For this, let's introduce a new structure that will contain the input locale, and the expected greeting.
+```go
+    type scenario struct {
+	    language locale
+		expectedGreeting string
+    }
+```
 
+In Go, the common way of writing a list of scenarii is to use a `map` structure that will refer to each scenario with a specific description key:
+```go
+type describedScenarii map[string]scenario
+```
+Here is an implementation of our list of scenarii as a `descriptedScenarii`:
+```go
+    var tests = describedScenarii{
+        "English": {
+			language:       "en",
+			wantedGreeting: "Hello world",
+		},
+		"French": {
+			language:       "fr",
+			wantedGreeting: "Bonjour le monde",
+		},
+    }
+```
+
+In order to test these scenarii, we can iterate over the `describedScenarii` map :
+```go
+	for scenarioName, tc := range tests {
+		t.Run(scenarioName, func(t *testing.T) {
+			msg := greet(tc.language)
+			if msg != tc.wantedGreeting {
+				t.Errorf(`expected: %q, got: %q`, tc.wantedGreeting, msg)
+			}
+		})
+	}
+```
+
+Since the call to the `greet` function is the same regardless of the input locale, creating a new test case only requires to add an entry in the `tests` map:
+```go
+    var tests = describedScenarii{
+        "English": {
+			language:       "en",
+			wantedGreeting: "Hello world",
+		},
+		"French": {
+			language:       "fr",
+			wantedGreeting: "Bonjour le monde",
+		},
+		"Greek": {
+			language:       "el",
+			wantedGreeting: "Χαίρετε Κόσμε",
+		},
+		// add new test scenarii here!
+    }
+```
+It's now a question of finding interesting and meaningful tests.
+
+The implementation of the `Test_greet` function is now the following:
+```go
+func Test_greet(t *testing.T) {
+	var tests = map[string]struct {
+		language       locale
+		wantedGreeting string
+	}{
+		"English": {
+			language:       "en",
+			wantedGreeting: "Hello world",
+		},
+		"French": {
+			language:       "fr",
+			wantedGreeting: "Bonjour le monde",
+		},
+		"Greek": {
+			language:       "el",
+			wantedGreeting: "Χαίρετε Κόσμε",
+		},
+		"Hebrew": {
+			language:       "he",
+			wantedGreeting: "שלום עולם",
+		},
+		"Urdu": {
+			language:       "ur",
+			wantedGreeting: "ہیلو دنیا",
+		},
+		"Vietnamese": {
+			language:       "vi",
+			wantedGreeting: "Xin chào Thế Giới",
+		},
+		"Unsupported": {
+			language:       "unknown",
+			wantedGreeting: `unsupported language: "unknown"`,
+		},
+		"Empty": {
+			language:       "",
+			wantedGreeting: `unsupported language: ""`,
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			msg := greet(tc.language)
+			if msg != tc.wantedGreeting {
+				t.Errorf(`expected: %q, got: %q`, tc.wantedGreeting, msg)
+			}
+		})
+	}
+}
+```
+
+### Using flags to read the user's locale
+
+#### TODO? Default value for flag could use os.GetEnv() ?
 
 <hr>
 
