@@ -10,7 +10,7 @@
 ## Introduction
 
 As developers, our main task is to write programs. 
-These programs are executed on a computer, and they'll accept some inputs (keys pressed on a keyboard, a signal received from a microphone...), and will produce outputs (emit a beep, send data over the network, ...).
+These programs are executed on a computer, and they'll accept some inputs (keys pressed on a keyboard, a signal received from a microphone...), and will produce outputs (emit a beep, send data over the network...).
 We could write a program that permanently reads the input, and does nothing, but that wouldn't be gratifying, would it? Instead, let's have a hearty welcoming message!
 
 Since 1972(*), learning programmers discover their new language through variations of the same sentence: `Hello, world!`.
@@ -21,13 +21,13 @@ The goal of this chapter is to go a bit beyond this single function.
 We consider good code should be both documented and tested.
 For this reason, we'll have to understand how to test a function whose activity is to write to the standard output.
 
-Go is a wonderful language that has the natural data type `rune`. 
+Go is a wonderful language that has the primary data type `rune`. 
 A `rune` is used to represent any Unicode character, and, by design, Go can handle these characters.
 We see this as an opportunity to greet people using other languages and writing systems than the latin alphabet.
 
 
 (*) This sentence was made extremely popular by Brian Kernighan and Dennis Ritchie's "The C Programming Language" book, published in 1978. 
-The sentenced originally came from another publication, also by Brian Kernighan, "A Tutorial Introduction To The Language B", published in 1972.
+The sentence originally came from another publication, also by Brian Kernighan, "A Tutorial Introduction To The Language B", published in 1972.
 This was actually the second example printing characters in this publication - the first one having the program print `hi!`.
 The reason was that B had a limitation over the number of ASCII characters it could have in a single variable - it couldn't hold more than 4. 
 `Hello, world!`, as a result, was achieved with several calls to the printing function. 
