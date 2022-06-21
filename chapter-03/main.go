@@ -18,11 +18,14 @@ func main() {
 
 	sol := wordle.NewSolution([]byte("slice"))
 	reader := bufio.NewReader(os.Stdin)
+	nbTries := 0
+
 	for {
 		attempt := askWord(reader)
+		nbTries++
 		if sol.IsWord(attempt) {
 			// win
-			fmt.Println("Bravo! You found the word.")
+			fmt.Printf("Bravo! You found the word in %d attempts.\n", nbTries)
 			return
 		}
 
@@ -63,7 +66,7 @@ func askWord(reader lineReader) []byte {
 }
 
 var (
-	errInvalidWordLength = fmt.Errorf("word has the wrong number of characters")
+	errInvalidWordLength = fmt.Errorf("word has the wrong number of characters, try again")
 )
 
 func validateInput(attempt []byte) error {
