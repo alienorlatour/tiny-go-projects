@@ -1,6 +1,6 @@
 package main
 
-import "github.com/ablqk/tiny-go-projects/chapter-02/logger"
+import "tiny-go-projects/chapter-02/logger"
 
 var lgr *logger.Logger
 

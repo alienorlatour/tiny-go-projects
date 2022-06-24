@@ -2,10 +2,10 @@ run:
 	go run main.go
 
 build:
-	go build -o helloworld main.go
+	go build -o bin/logger main.go
 
 test:
 	go test .
 
-%: ## anything
-	go run main.go -lang=$@
+cover:
+	go test -cover

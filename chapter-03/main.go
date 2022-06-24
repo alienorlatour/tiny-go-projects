@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/wordle"
+	"tiny-go-projects/chapter-03/wordle"
 )
 
 const (

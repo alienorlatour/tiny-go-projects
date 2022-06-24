@@ -2,7 +2,7 @@ run:
 	go run main.go
 
 build:
-	go build -o log main.go
+	go build -o bin/wordle main.go
 
 test:
 	go test .

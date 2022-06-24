@@ -1,7 +1,15 @@
+chapters := chapter-01 \
+			chapter-02 \
+			chapter-03
+
+build:
+	@for chapter in $(chapters); do (cd $${chapter}; make build); done
+
+run:
+	@for chapter in $(chapters); do (cd $${chapter}; make run); done
+
+test:
+	@for chapter in $(chapters); do (cd $${chapter}; make run); done
+
 cover:
-	go test --cover ./...
-
-build-01:
-	go build -o bin/chapter01 chapter-01/main.go
-
-build: build-01
+	@for chapter in $(chapters); do (cd $${chapter}; make cover); done
