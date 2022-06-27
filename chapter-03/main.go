@@ -18,12 +18,15 @@ var corpus string
 const (
 	// all words in the corpus have this many letters
 	wordLength = 5
+	// the number of attempts the player has to find the word
+	maxTries = 6
 )
 
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
-	sol := wordle.NewSolution(pickOne(corpus))
+	solution := pickOne(corpus)
+	sol := wordle.NewSolution(solution)
 	reader := runeReader{
 		byteReader: bufio.NewReader(os.Stdin),
 	}
@@ -33,6 +36,11 @@ func main() {
 	for {
 		attempt := askWord(reader)
 		nbTries++
+		if nbTries == maxTries {
+			fmt.Printf("😞 You lost! The solution was: %s. \n", string(solution))
+			return
+		}
+
 		if sol.IsWord(attempt) {
 			// win
 			fmt.Printf("Bravo! You found the word in %d attempts.\n", nbTries)
@@ -40,9 +48,8 @@ func main() {
 		}
 
 		f := sol.Feedback(attempt)
-		fmt.Println(f)
+		fmt.Println(wordle.StatusesToString(f))
 	}
-
 }
 
 // pickOne returns a random word from the corpus
@@ -52,9 +59,8 @@ func pickOne(corpus string) []rune {
 	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Int() % len(list)
 
-	_ = strings.ToUpper(list[index])
-	//return []rune(word)
-	return []rune("waste")
+	word := strings.ToUpper(list[index])
+	return []rune(word)
 }
 
 type lineReader interface {
@@ -103,7 +109,7 @@ func askWord(reader lineReader) []rune {
 }
 
 var (
-	errInvalidWordLength = fmt.Errorf("word has the wrong number of characters, try again")
+	errInvalidWordLength = fmt.Errorf("Word has the wrong number of characters, try again:")
 )
 
 func validateInput(attempt []rune) error {

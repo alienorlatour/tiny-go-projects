@@ -21,3 +21,11 @@ func (s status) String() string {
 		return "💔"
 	}
 }
+
+func StatusesToString(statuses []status) string {
+	var s string
+	for _, st := range statuses {
+		s += st.String() + " "
+	}
+	return s
+}
