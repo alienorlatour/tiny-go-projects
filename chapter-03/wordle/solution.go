@@ -20,6 +20,8 @@ func NewSolution(word []rune) Solution {
 // Feedback prints out hints on how to find the solution.
 func (s *Solution) Feedback(attempt []rune) []status {
 	// reset the positions map
+	s.positions = make(map[rune][]int)
+
 	for i, letter := range s.word {
 		// appending to a nil slice will return a slice, this is safe
 		s.positions[letter] = append(s.positions[letter], i)

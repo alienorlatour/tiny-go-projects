@@ -52,8 +52,9 @@ func pickOne(corpus string) []rune {
 	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Int() % len(list)
 
-	word := strings.ToUpper(list[index])
-	return []rune(word)
+	_ = strings.ToUpper(list[index])
+	//return []rune(word)
+	return []rune("waste")
 }
 
 type lineReader interface {
