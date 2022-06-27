@@ -40,7 +40,7 @@ func Test_validate(t *testing.T) {
 }
 
 func Test_askWord(t *testing.T) {
-	expected := []byte("hello")
+	expected := []byte("HELLO")
 	reader := testReader{
 		line: expected,
 	}
