@@ -37,7 +37,7 @@ func main() {
 		attempt := askWord(reader)
 		nbTries++
 		if nbTries == maxTries {
-			fmt.Printf("😞 You lost! The solution was: %s. \n", string(solution))
+			fmt.Printf("😞 You've lost! The solution was: %s. \n", string(solution))
 			return
 		}
 
