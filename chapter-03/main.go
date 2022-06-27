@@ -7,11 +7,11 @@ import (
 	"math/rand"
 	"os"
 	"strings"
-
+	"time"
 	"tiny-go-projects/chapter-03/wordle"
 )
 
-//go:embed corpus.txt
+//go:embed corpus_5letters.txt
 var corpus string
 
 const (
@@ -44,6 +44,8 @@ func main() {
 // pickOne returns a random word from the corpus
 func pickOne(corpus string) []byte {
 	list := strings.Split(corpus, "\n")
+
+	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Int() % len(list)
 
 	word := strings.ToUpper(list[index])
