@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 	"time"
+
 	"tiny-go-projects/chapter-03/wordle"
 )
 
@@ -23,7 +24,10 @@ func main() {
 	fmt.Println("Welcome to Gordle!")
 
 	sol := wordle.NewSolution(pickOne(corpus))
-	reader := bufio.NewReader(os.Stdin)
+	reader := runeReader{
+		byteReader: bufio.NewReader(os.Stdin),
+	}
+
 	nbTries := 0
 
 	for {
@@ -42,36 +46,50 @@ func main() {
 }
 
 // pickOne returns a random word from the corpus
-func pickOne(corpus string) []byte {
+func pickOne(corpus string) []rune {
 	list := strings.Split(corpus, "\n")
 
 	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Int() % len(list)
 
 	word := strings.ToUpper(list[index])
-	return []byte(word)
+	return []rune(word)
 }
 
 type lineReader interface {
-	ReadLine() (line []byte, isPrefix bool, err error)
+	ReadLine() ([]rune, error)
+}
+
+type runeReader struct {
+	byteReader *bufio.Reader
+}
+
+// ReadLine reads a line of runes
+func (r runeReader) ReadLine() ([]rune, error) {
+	bytes, _, err := r.byteReader.ReadLine()
+	if err != nil {
+		return nil, err
+	}
+
+	return []rune(string(bytes)), nil
 }
 
 // askWord prints out the instruction and reads from the standard askWord
-func askWord(reader lineReader) []byte {
+func askWord(reader lineReader) []rune {
 	fmt.Println("Enter a guess:")
 
-	var attempt []byte
+	var attempt []rune
 	var attemptIsValid bool
 	var err error
 
 	for !attemptIsValid {
-		attempt, _, err = reader.ReadLine()
+		attempt, err = reader.ReadLine()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's askWord: %s", err.Error())
 			continue
 		}
 
-		attempt = []byte(strings.ToUpper(string(attempt)))
+		attempt = []rune(strings.ToUpper(string(attempt)))
 		err = validateInput(attempt)
 		if err != nil {
 			fmt.Println(err)
@@ -87,7 +105,7 @@ var (
 	errInvalidWordLength = fmt.Errorf("word has the wrong number of characters, try again")
 )
 
-func validateInput(attempt []byte) error {
+func validateInput(attempt []rune) error {
 	if len(attempt) != wordLength {
 		return errInvalidWordLength
 	}

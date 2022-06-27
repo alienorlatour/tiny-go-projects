@@ -1,26 +1,24 @@
 package wordle
 
-import "bytes"
-
 // Solution holds the positions of the valid characters
 // since a single character can appear several times, we store these times as a slice of indexes
 type Solution struct {
-	word      []byte
-	positions map[byte][]int
+	word      []rune
+	positions map[rune][]int
 }
 
 // NewSolution builds the solution to a game.
-func NewSolution(word []byte) Solution {
+func NewSolution(word []rune) Solution {
 	sol := Solution{
 		word:      word,
-		positions: make(map[byte][]int),
+		positions: make(map[rune][]int),
 	}
 
 	return sol
 }
 
 // Feedback prints out hints on how to find the solution.
-func (s *Solution) Feedback(attempt []byte) []status {
+func (s *Solution) Feedback(attempt []rune) []status {
 	// reset the positions map
 	for i, letter := range s.word {
 		// appending to a nil slice will return a slice, this is safe
@@ -59,7 +57,7 @@ func (s *Solution) Feedback(attempt []byte) []status {
 }
 
 // markLetterAsSeen removes one occurrence of the letter from the positions map.
-func (s *Solution) markLetterAsSeen(letter byte, positionInWord int) {
+func (s *Solution) markLetterAsSeen(letter rune, positionInWord int) {
 	positions := s.positions[letter]
 
 	if len(positions) == 0 {
@@ -78,7 +76,7 @@ func (s *Solution) markLetterAsSeen(letter byte, positionInWord int) {
 
 // checkLetterAtPosition returns the correctness of a letter
 // at the specified index in the solution.
-func (s *Solution) checkLetterAtPosition(letter byte, index int) status {
+func (s *Solution) checkLetterAtPosition(letter rune, index int) status {
 	positions, ok := s.positions[letter]
 	if !ok || len(positions) == 0 {
 		return absentCharacter
@@ -94,6 +92,6 @@ func (s *Solution) checkLetterAtPosition(letter byte, index int) status {
 }
 
 // IsWord returns whether the attempt is the solution.
-func (s *Solution) IsWord(attempt []byte) bool {
-	return bytes.Equal(s.word, attempt)
+func (s *Solution) IsWord(attempt []rune) bool {
+	return string(s.word) == string(attempt)
 }

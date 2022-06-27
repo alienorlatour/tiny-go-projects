@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"strings"
 	"testing"
@@ -9,19 +8,19 @@ import (
 
 func Test_validate(t *testing.T) {
 	tt := map[string]struct {
-		word     []byte
+		word     []rune
 		expected error
 	}{
 		"nominal": {
-			word:     []byte(`hello`),
+			word:     []rune(`hello`),
 			expected: nil,
 		},
 		"too long": {
-			word:     []byte(`pocket`),
+			word:     []rune(`pocket`),
 			expected: errInvalidWordLength,
 		},
 		"empty": {
-			word:     []byte(``),
+			word:     []rune(``),
 			expected: errInvalidWordLength,
 		},
 		"nil": {
@@ -34,21 +33,21 @@ func Test_validate(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := validateInput(tc.word)
 			if !errors.Is(err, tc.expected) {
-				t.Errorf("%s, expected %q, got %q", tc.word, tc.expected, err)
+				t.Errorf("%c, expected %q, got %q", tc.word, tc.expected, err)
 			}
 		})
 	}
 }
 
 func Test_askWord(t *testing.T) {
-	expected := []byte("HELLO")
+	expected := []rune("HELLO")
 	reader := testReader{
 		line: expected,
 	}
 
 	got := askWord(reader)
 
-	if !bytes.Equal(got, expected) {
+	if string(got) != string(expected) {
 		t.Errorf("expected %q, got %q", expected, got)
 	}
 }
@@ -66,9 +65,9 @@ func Test_pickOne(t *testing.T) {
 }
 
 type testReader struct {
-	line []byte
+	line []rune
 }
 
-func (tr testReader) ReadLine() (line []byte, isPrefix bool, err error) {
-	return tr.line, false, nil
+func (tr testReader) ReadLine() ([]rune, error) {
+	return tr.line, nil
 }
