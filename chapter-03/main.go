@@ -2,11 +2,17 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"fmt"
+	"math/rand"
 	"os"
+	"strings"
 
 	"tiny-go-projects/chapter-03/wordle"
 )
+
+//go:embed corpus.txt
+var corpus string
 
 const (
 	// all words in the corpus have this many letters
@@ -16,7 +22,7 @@ const (
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
-	sol := wordle.NewSolution([]byte("slice"))
+	sol := wordle.NewSolution(pickOne(corpus))
 	reader := bufio.NewReader(os.Stdin)
 	nbTries := 0
 
@@ -33,6 +39,14 @@ func main() {
 		fmt.Println(f)
 	}
 
+}
+
+// pickOne returns a random word from the corpus
+func pickOne(corpus string) []byte {
+	list := strings.Split(corpus, "\n")
+	index := rand.Int() % len(list)
+
+	return []byte(list[index])
 }
 
 type lineReader interface {
