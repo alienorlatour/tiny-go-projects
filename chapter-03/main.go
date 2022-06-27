@@ -46,7 +46,8 @@ func pickOne(corpus string) []byte {
 	list := strings.Split(corpus, "\n")
 	index := rand.Int() % len(list)
 
-	return []byte(list[index])
+	word := strings.ToUpper(list[index])
+	return []byte(word)
 }
 
 type lineReader interface {
@@ -68,6 +69,7 @@ func askWord(reader lineReader) []byte {
 			continue
 		}
 
+		attempt = []byte(strings.ToUpper(string(attempt)))
 		err = validateInput(attempt)
 		if err != nil {
 			fmt.Println(err)
