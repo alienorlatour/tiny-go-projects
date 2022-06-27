@@ -43,7 +43,9 @@ func main() {
 
 		if sol.IsWord(attempt) {
 			// win
-			fmt.Printf("Bravo! You found the word in %d attempts.\n", nbTries)
+			f := sol.Feedback(attempt)
+			fmt.Println(wordle.StatusesToString(f))
+			fmt.Printf("🎉 You won! You found in %d attempts, the word: %s.\n", nbTries, string(solution))
 			return
 		}
 
