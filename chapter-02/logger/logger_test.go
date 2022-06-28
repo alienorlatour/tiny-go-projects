@@ -3,11 +3,11 @@ package logger_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-02/logger"
+	"tiny-go-projects/chapter-02/logger"
 )
 
 func ExampleLogger_Debug_debug() {
-	debugLogger := logger.New(logger.LevelDebug)
+	debugLogger := logger.New(logger.WithLevel(logger.LevelDebug))
 	debugLogger.Debug("Hello, %s", "world")
 	// Output: Hello, world
 }
@@ -40,11 +40,12 @@ func TestLogger_LevelInfo(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			tw := &testWriter{}
-			underTest := logger.New(tc.level).WithOutput(tw)
 
-			underTest.Debug(debugMessage)
-			underTest.Info(infoMessage)
-			underTest.Error(errorMessage)
+			testedLogger := logger.New(logger.WithLevel(tc.level), logger.WithOutput(tw))
+
+			testedLogger.Debug(debugMessage)
+			testedLogger.Info(infoMessage)
+			testedLogger.Error(errorMessage)
 
 			if tw.contents != tc.expectedOutput {
 				t.Errorf("invalid contents, expected %q, got %q", tc.expectedOutput, tw.contents)
