@@ -10,10 +10,3 @@ func WithOutput(output io.Writer) ConfigFunc {
 		lgr.output = output
 	}
 }
-
-// WithLevel returns a configuration function that sets the level of logs
-func WithLevel(lvl Level) ConfigFunc {
-	return func(lgr *Logger) {
-		lgr.level = lvl
-	}
-}

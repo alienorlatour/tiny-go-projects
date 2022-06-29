@@ -3,13 +3,13 @@ package logger_test
 import (
 	"testing"
 
-	"tiny-go-projects/chapter-02/logger"
+	"tiny-go-projects/chapter-02/final/logger"
 )
 
 func ExampleLogger_Debug_debug() {
-	debugLogger := logger.New(logger.WithLevel(logger.LevelDebug))
+	debugLogger := logger.New(logger.LevelDebug)
 	debugLogger.Debug("Hello, %s", "world")
-	// Output: Hello, world
+	// Output: [DEBUG] Hello, world
 }
 
 const (
@@ -25,15 +25,15 @@ func TestLogger_LevelInfo(t *testing.T) {
 	}{
 		"debug": {
 			level:          logger.LevelDebug,
-			expectedOutput: debugMessage + "\n" + infoMessage + "\n" + errorMessage + "\n",
+			expectedOutput: "[DEBUG] " + debugMessage + "\n" + "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"info": {
 			level:          logger.LevelInfo,
-			expectedOutput: infoMessage + "\n" + errorMessage + "\n",
+			expectedOutput: "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"error": {
 			level:          logger.LevelError,
-			expectedOutput: errorMessage + "\n",
+			expectedOutput: "[ERROR] " + errorMessage + "\n",
 		},
 	}
 
@@ -41,7 +41,7 @@ func TestLogger_LevelInfo(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tw := &testWriter{}
 
-			testedLogger := logger.New(logger.WithLevel(tc.level), logger.WithOutput(tw))
+			testedLogger := logger.New(tc.level, logger.WithOutput(tw))
 
 			testedLogger.Debug(debugMessage)
 			testedLogger.Info(infoMessage)

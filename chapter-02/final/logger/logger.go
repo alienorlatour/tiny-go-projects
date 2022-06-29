@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"io"
+	"os"
 	"sync"
 )
 
@@ -16,8 +17,8 @@ type Logger struct {
 // New returns you a logger, ready to log at the required threshold.
 // Give it a list of configuration functions to tune it at your will
 // The default output is Stdout.
-func New(configFuncs ...ConfigFunc) *Logger {
-	lgr := &Logger{}
+func New(level Level, configFuncs ...ConfigFunc) *Logger {
+	lgr := &Logger{level: level, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
 	}

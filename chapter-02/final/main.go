@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"tiny-go-projects/chapter-02/logger"
+	"tiny-go-projects/chapter-02/final/logger"
 )
 
 var lgr *logger.Logger
@@ -18,5 +18,5 @@ func main() {
 }
 
 func init() {
-	lgr = logger.New(logger.WithLevel(logger.LevelInfo), logger.WithOutput(os.Stdout))
+	lgr = logger.New(logger.LevelInfo, logger.WithOutput(os.Stdout))
 }
