@@ -1,4 +1,4 @@
-package wordle
+package gordle
 
 import "testing"
 

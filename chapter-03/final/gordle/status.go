@@ -1,4 +1,4 @@
-package wordle
+package gordle
 
 type status int
 

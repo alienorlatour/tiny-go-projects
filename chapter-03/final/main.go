@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"tiny-go-projects/chapter-03/wordle"
+	"tiny-go-projects/chapter03/gordle"
 )
 
 //go:embed corpus_5letters.txt
@@ -25,11 +25,13 @@ const (
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
-	solution := pickOne(corpus)
-	sol := wordle.NewSolution(solution)
-	reader := runeReader{
-		byteReader: bufio.NewReader(os.Stdin),
+	reader := bufio.NewReader(os.Stdin)
+	g, err := gordle.New(gordle.WithReader(reader))
+	if err != nil {
+		panic(err)
 	}
+
+	g.Play()
 
 	nbTries := 0
 

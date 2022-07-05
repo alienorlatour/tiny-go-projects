@@ -1,4 +1,4 @@
-package wordle
+package gordle
 
 // Solution holds the positions of the valid characters
 // since a single character can appear several times, we store these times as a slice of indexes
