@@ -22,6 +22,8 @@ func New(cfs ...ConfigFunc) (*Gordle, error) {
 		}
 	}
 
+	// delay the checker creation till here, in case the solution was passed as a config func.
+	g.solutionChecker = &solutionChecker{solution: g.solution}
 	return g, nil
 }
 
@@ -33,7 +35,7 @@ func (g *Gordle) Play() {
 		word := g.ask()
 
 		// check it
-		fb := g.checkAgainstSolution(word)
+		fb := g.solutionChecker.check(word)
 
 		// print the feedback
 		fmt.Println(fb)
@@ -49,11 +51,11 @@ func (g *Gordle) Play() {
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	scanner        scanner
-	solution       []rune
-	maxAttempts    int
-	currentAttempt int
-	positions      map[rune][]int
+	scanner         scanner
+	solution        []rune
+	maxAttempts     int
+	currentAttempt  int
+	solutionChecker *solutionChecker
 }
 
 // ask scans until a valid suggestion is made (and returned).
@@ -87,79 +89,4 @@ func (g *Gordle) validateAttempt(attempt []rune) error {
 		return errInvalidWordLength
 	}
 	return nil
-}
-
-// checkAgainstSolution checks every letter of the word against the solution.
-func (g *Gordle) checkAgainstSolution(word []rune) feedback {
-	// reset the positions map
-	g.positions = make(map[rune][]int)
-
-	for i, letter := range g.solution {
-		// appending to a nil slice will return a slice, this is safe
-		g.positions[letter] = append(g.positions[letter], i)
-	}
-
-	fb := make(feedback, len(g.solution))
-
-	// scan the attempts and check if they are in the solution
-	for i, letter := range word {
-		// keep track of already seen characters
-		correctness := g.checkLetterAtPosition(letter, i)
-		if correctness == correctPosition {
-			// remove found letter from positions
-			g.markLetterAsSeen(letter, i)
-			fb[i] = correctPosition
-		}
-	}
-
-	for i, letter := range word {
-		if fb[i] == correctPosition {
-			continue
-		}
-
-		correctness := g.checkLetterAtPosition(letter, i)
-
-		if correctness == wrongPosition {
-			// remove the left-most occurrence
-			g.positions[letter] = g.positions[letter][1:]
-		}
-
-		fb[i] = correctness
-	}
-
-	return fb
-}
-
-// markLetterAsSeen removes one occurrence of the letter from the positions map.
-func (g *Gordle) markLetterAsSeen(letter rune, positionInWord int) {
-	positions := g.positions[letter]
-
-	if len(positions) == 0 {
-		g.positions[letter] = nil
-	}
-
-	for i, pos := range positions {
-		if pos == positionInWord {
-			// remove the seen letter from the list
-			g.positions[letter] = append(positions[:i], positions[i+1:]...)
-			// we found it
-			return
-		}
-	}
-}
-
-// checkLetterAtPosition returns the correctness of a letter at the specified index in the solution.
-func (g *Gordle) checkLetterAtPosition(letter rune, index int) status {
-	positions, ok := g.positions[letter]
-	if !ok || len(positions) == 0 {
-		return absentCharacter
-	}
-
-	for _, pos := range positions {
-		if pos == index {
-			return correctPosition
-		}
-	}
-
-	return wrongPosition
 }
