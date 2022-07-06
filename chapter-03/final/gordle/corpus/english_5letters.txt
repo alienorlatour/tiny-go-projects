@@ -1,9 +1,3 @@
-slice
-raven
-never
-fever
-frame
-right
 TERSE
 CLAIM
 WHOOP
