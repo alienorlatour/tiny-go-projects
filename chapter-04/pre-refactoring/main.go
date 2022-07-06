@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"tiny-go-projects/chapter-03/wordle"
+	"tiny-go-projects/chapter04/wordle"
 )
 
 //go:embed corpus_5letters.txt

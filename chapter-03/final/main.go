@@ -1,21 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"time"
 
-	"tiny-go-projects/chapter03/gordle"
+	"tiny-go-projects/chapter03/final/logger"
 )
 
+var lgr *logger.Logger
+
 func main() {
-	fmt.Println("Welcome to Gordle!")
+	lgr.Info("Hallo, Welt")
+	lgr.Error("Hello %s", "Susan")
+	lgr.Debug("Hello %s", "Paul")
 
-	// Create the game.
-	g, err := gordle.New(gordle.WithReader(os.Stdin))
-	if err != nil {
-		panic(err)
-	}
+	lgr.Info("Hallo, %d %v", 2022, time.Now())
+}
 
-	// Run the game ! It will end when it's over.
-	g.Play()
+func init() {
+	lgr = logger.New(logger.LevelInfo, logger.WithOutput(os.Stdout))
 }

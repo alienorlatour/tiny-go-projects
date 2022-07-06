@@ -1,5 +1,4 @@
 projects := \
-	pre-refactoring \
 	final
 
 build:
