@@ -1,8 +1,8 @@
 package gordle
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -10,9 +10,9 @@ import (
 // New returns a Gordle variable, which can be used to Play!
 func New(cfs ...ConfigFunc) (*Gordle, error) {
 	g := &Gordle{
-		scanner:     bufio.NewScanner(os.Stdin), // read from stdin by default
-		maxAttempts: -1,                         // no maximum number of attempts by default
-		solution:    randomWord(),               // pick a random word from the corpus
+		reader:      os.Stdin,     // read from stdin by default
+		maxAttempts: -1,           // no maximum number of attempts by default
+		solution:    randomWord(), // pick a random word from the corpus
 	}
 
 	for _, cf := range cfs {
@@ -51,7 +51,7 @@ func (g *Gordle) Play() {
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	scanner         scanner
+	reader          io.Reader
 	solution        []rune
 	maxAttempts     int
 	currentAttempt  int
@@ -61,16 +61,21 @@ type Gordle struct {
 // ask scans until a valid suggestion is made (and returned).
 func (g *Gordle) ask() []rune {
 	fmt.Println("Enter a guess:")
-
-	for g.scanner.Scan() {
-		suggestion := g.scanner.Text()
-		if g.scanner.Err() != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", g.scanner.Err())
+	var suggestion string
+	for {
+		wordCount, err := fmt.Fscanf(g.reader, "%s", &suggestion)
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
+			continue
+		}
+		// We expect a single word.
+		if wordCount != 1 {
+			fmt.Fprintf(os.Stderr, "error while reading the player's word: a single word wasn't provided, got %d instead", wordCount)
 			continue
 		}
 
 		attempt := []rune(strings.ToUpper(suggestion))
-		err := g.validateAttempt(attempt)
+		err = g.validateAttempt(attempt)
 		if err != nil {
 			fmt.Println(err)
 		} else {

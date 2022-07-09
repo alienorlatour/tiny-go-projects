@@ -1,7 +1,6 @@
 package gordle
 
 import (
-	"bufio"
 	"io"
 )
 
@@ -11,7 +10,7 @@ type ConfigFunc func(g *Gordle) error
 // WithReader provider a specific reader from which the player suggestions will be read. Default value is stdin.
 func WithReader(reader io.Reader) ConfigFunc {
 	return func(g *Gordle) error {
-		g.scanner = bufio.NewScanner(reader)
+		g.reader = reader
 		return nil
 	}
 }

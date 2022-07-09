@@ -42,10 +42,10 @@ func TestGordle_validateAttempt(t *testing.T) {
 
 func TestGordle_ask(t *testing.T) {
 	expected := []rune("HELLO")
-	ts := &testScanner{
+	ts := &testReader{
 		contents: string(expected),
 	}
-	g := &Gordle{scanner: ts, solution: []rune("MUMMY")}
+	g := &Gordle{reader: ts, solution: []rune("MUMMY")}
 
 	got := g.ask()
 
@@ -54,7 +54,7 @@ func TestGordle_ask(t *testing.T) {
 	}
 }
 
-func compare[T ~int](lhs, rhs []T) bool {
+func compare(lhs, rhs []status) bool {
 	if len(lhs) != len(rhs) {
 		return false
 	}
@@ -66,24 +66,21 @@ func compare[T ~int](lhs, rhs []T) bool {
 	return true
 }
 
-type testScanner struct {
+type testReader struct {
 	contents string
-	errors   []string
+	error    string
 }
 
-func (*testScanner) Scan() bool {
-	return true
-}
-
-func (ts *testScanner) Text() string {
-	return ts.contents
-}
-
-func (ts *testScanner) Err() error {
-	if len(ts.errors) > 0 {
-		err := fmt.Errorf(ts.errors[0])
-		ts.errors = ts.errors[1:]
-		return err
+func (tr *testReader) Read(p []byte) (n int, err error) {
+	if len(tr.error) > 0 {
+		return 0, fmt.Errorf(tr.error)
 	}
-	return nil
+
+	index := 0
+	for index < len(p) && index < len(tr.contents) {
+		p[index] = tr.contents[index]
+		index++
+	}
+
+	return len(tr.contents), nil
 }
