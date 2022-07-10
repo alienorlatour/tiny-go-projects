@@ -3,6 +3,8 @@ package gordle
 import (
 	"errors"
 	"fmt"
+	"io"
+	"strings"
 	"testing"
 )
 
@@ -43,7 +45,7 @@ func TestGordle_validateAttempt(t *testing.T) {
 func TestGordle_ask(t *testing.T) {
 	expected := []rune("HELLO")
 	ts := &testReader{
-		contents: string(expected),
+		reader: strings.NewReader(string(expected)),
 	}
 	g := &Gordle{reader: ts, solution: []rune("MUMMY")}
 
@@ -67,8 +69,8 @@ func compare(lhs, rhs []status) bool {
 }
 
 type testReader struct {
-	contents string
-	error    string
+	reader io.Reader
+	error  string
 }
 
 func (tr *testReader) Read(p []byte) (n int, err error) {
@@ -76,11 +78,5 @@ func (tr *testReader) Read(p []byte) (n int, err error) {
 		return 0, fmt.Errorf(tr.error)
 	}
 
-	index := 0
-	for index < len(p) && index < len(tr.contents) {
-		p[index] = tr.contents[index]
-		index++
-	}
-
-	return len(tr.contents), nil
+	return tr.reader.Read(p)
 }

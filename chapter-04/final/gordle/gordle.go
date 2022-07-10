@@ -15,6 +15,7 @@ func New(cfs ...ConfigFunc) (*Gordle, error) {
 		solution:    randomWord(), // pick a random word from the corpus
 	}
 
+	// Apply the configuration functions after defining the default values, as they override them.
 	for _, cf := range cfs {
 		err := cf(g)
 		if err != nil {
@@ -22,7 +23,7 @@ func New(cfs ...ConfigFunc) (*Gordle, error) {
 		}
 	}
 
-	// delay the checker creation till here, in case the solution was passed as a config func.
+	// Delay the checker creation till here, in case the solution was passed as a config func.
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 	return g, nil
 }
