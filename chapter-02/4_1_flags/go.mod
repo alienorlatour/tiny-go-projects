@@ -1,3 +1,3 @@
-module bonjour
+module withflags
 
 go 1.18

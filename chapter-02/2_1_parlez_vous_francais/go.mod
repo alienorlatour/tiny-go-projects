@@ -1,2 +1,3 @@
-module greet
+module bonjour
+
 go 1.18
