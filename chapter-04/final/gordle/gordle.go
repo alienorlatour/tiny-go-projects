@@ -8,11 +8,11 @@ import (
 )
 
 // New returns a Gordle variable, which can be used to Play!
-func New(cfs ...ConfigFunc) (*Gordle, error) {
+func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 	g := &Gordle{
-		reader:      os.Stdin,     // read from stdin by default
-		maxAttempts: -1,           // no maximum number of attempts by default
-		solution:    randomWord(), // pick a random word from the corpus
+		reader:      os.Stdin,         // read from stdin by default
+		maxAttempts: -1,               // no maximum number of attempts by default
+		solution:    pickWord(corpus), // pick a random word from the corpus
 	}
 
 	// Apply the configuration functions after defining the default values, as they override them.
@@ -61,7 +61,7 @@ type Gordle struct {
 
 // ask scans until a valid suggestion is made (and returned).
 func (g *Gordle) ask() []rune {
-	fmt.Println("Enter a guess:")
+	fmt.Printf("Enter a %d-letter guess:\n", len(g.solution))
 	var suggestion string
 	for {
 		wordCount, err := fmt.Fscanf(g.reader, "%s", &suggestion)
@@ -92,7 +92,7 @@ var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the sa
 // validateAttempt ensures the attempt is valid enough.
 func (g *Gordle) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
-		return errInvalidWordLength
+		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}
 	return nil
 }

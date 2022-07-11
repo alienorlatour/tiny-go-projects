@@ -11,9 +11,9 @@ const (
 	correctPosition
 )
 
-// String implements the Stringer interface on a status.
-// TODO: Do we want to keep this ? (it's only useful if we call it inside a fmt.Print func, which we only do on feedback)
-func (s status) String() string {
+// toString returns a string that represents the status.
+// We didn't implement Stringer here, as we don't plan on calling fmt.Print on
+func (s status) toString() string {
 	switch s {
 	case absentCharacter:
 		return "⬜"
@@ -37,7 +37,7 @@ func (fb feedback) String() string {
 		if i != 0 {
 			sb.WriteString(" ")
 		}
-		sb.WriteString(s.String())
+		sb.WriteString(s.toString())
 	}
 	return sb.String()
 }
