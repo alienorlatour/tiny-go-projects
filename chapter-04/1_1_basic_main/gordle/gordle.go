@@ -4,9 +4,7 @@ import (
 	"fmt"
 )
 
-const (
-	wordLength = 5
-)
+const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct{}
