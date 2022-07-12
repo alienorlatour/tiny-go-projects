@@ -26,7 +26,7 @@ func New() *Gordle {
 
 // Play runs the game.
 func (g *Gordle) Play() {
-	fmt.Printf("Enter a %d-letter guess:\n", 5)
+	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
 
 	var (
 		suggestion     []byte
