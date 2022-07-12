@@ -4,8 +4,6 @@ import (
 	"fmt"
 )
 
-const wordLength = 5
-
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct{}
 
@@ -18,5 +16,5 @@ func New() *Gordle {
 
 // Play runs the game.
 func (g *Gordle) Play() {
-	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
+	fmt.Printf("Enter a guess:\n")
 }
