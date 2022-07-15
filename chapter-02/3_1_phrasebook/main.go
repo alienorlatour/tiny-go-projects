@@ -1,23 +1,19 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 )
 
 func main() {
-	l := flag.String("lang", "en", "The required language, e.g. en, ur...")
-	flag.Parse()
-
-	hello := greet(locale(*l))
-	fmt.Println(hello)
+	greeting := greet("en")
+	fmt.Println(greeting)
 }
 
 // locale represents a language
 type locale string
 
-// dictionary holds greeting for each supported language
-var dictionary = map[locale]string{
+// phrasebook holds greeting for each supported language
+var phrasebook = map[locale]string{
 	"el": "Χαίρετε Κόσμε",
 	"en": "Hello world",
 	"fr": "Bonjour le monde",
@@ -26,12 +22,12 @@ var dictionary = map[locale]string{
 	"vi": "Xin chào Thế Giới",
 }
 
-// greet says hello to the world
+// greet says hello to the world in various languages
 func greet(l locale) string {
-	msg, ok := dictionary[l]
+	greeting, ok := phrasebook[l]
 	if !ok {
 		return fmt.Sprintf("unsupported language: %q", l)
 	}
 
-	return msg
+	return greeting
 }

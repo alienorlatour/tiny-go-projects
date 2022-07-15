@@ -1,7 +1,6 @@
-cover:
-	go test --cover ./...
+chapters := chapter-02 \
+			chapter-03 \
+			chapter-04
 
-build-01:
-	go build -o bin/chapter01 chapter-01/main.go
-
-build: build-01
+%:
+	@for chapter in $(chapters); do (cd $${chapter}; make $@); done
