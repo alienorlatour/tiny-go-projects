@@ -1,4 +1,4 @@
-package logger_test
+package pocketlog_test
 
 import (
 	"testing"
@@ -20,20 +20,20 @@ const (
 
 func TestLogger_LevelInfo(t *testing.T) {
 	tt := map[string]struct {
-		level          logger.Level
-		expectedOutput string
+		level    logger.Level
+		expected string
 	}{
 		"debug": {
-			level:          logger.LevelDebug,
-			expectedOutput: "[DEBUG] " + debugMessage + "\n" + "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
+			level:    logger.LevelDebug,
+			expected: "[DEBUG] " + debugMessage + "\n" + "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"info": {
-			level:          logger.LevelInfo,
-			expectedOutput: "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
+			level:    logger.LevelInfo,
+			expected: "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"error": {
-			level:          logger.LevelError,
-			expectedOutput: "[ERROR] " + errorMessage + "\n",
+			level:    logger.LevelError,
+			expected: "[ERROR] " + errorMessage + "\n",
 		},
 	}
 
@@ -47,8 +47,8 @@ func TestLogger_LevelInfo(t *testing.T) {
 			testedLogger.Info(infoMessage)
 			testedLogger.Error(errorMessage)
 
-			if tw.contents != tc.expectedOutput {
-				t.Errorf("invalid contents, expected %q, got %q", tc.expectedOutput, tw.contents)
+			if tw.contents != tc.expected {
+				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)
 			}
 		})
 	}

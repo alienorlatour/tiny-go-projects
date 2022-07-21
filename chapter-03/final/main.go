@@ -4,10 +4,10 @@ import (
 	"os"
 	"time"
 
-	"tiny-go-projects/chapter03/final/logger"
+	"tiny-go-projects/chapter03/final/pocketlog"
 )
 
-var lgr *logger.Logger
+var lgr *pocketlog.Logger
 
 func main() {
 	lgr.Info("Hallo, Welt")
@@ -18,5 +18,5 @@ func main() {
 }
 
 func init() {
-	lgr = logger.New(logger.LevelInfo, logger.WithOutput(os.Stdout))
+	lgr = pocketlog.New(pocketlog.LevelInfo, pocketlog.WithOutput(os.Stdout))
 }
