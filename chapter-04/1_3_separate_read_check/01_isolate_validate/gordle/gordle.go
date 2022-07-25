@@ -1,6 +1,7 @@
 package gordle
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -23,25 +24,23 @@ func (g *Gordle) Play() {
 	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
 
 	var (
-		attempt        []rune
+		attempt        []byte
 		attemptIsValid bool
+		reader         = bufio.NewReader(os.Stdin)
+		err            error
 	)
 
 	for !attemptIsValid {
 		// Read the attempt from the player.
-		wordCount, err := fmt.Fscanf(os.Stdin, "%s", &attempt)
+		attempt, _, err = reader.ReadLine()
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
-			continue
-		}
-		// We expect a single word.
-		if wordCount != 1 {
-			fmt.Fprintf(os.Stderr, "error while reading the player's word: a single word wasn't provided, got %d instead", wordCount)
+			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 			continue
 		}
 
+		attemptRunes := []rune(string(attempt))
 		// Verify the suggestion has a valid length.
-		err = g.validateAttempt(attempt)
+		err = g.validateAttempt(attemptRunes)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		} else {

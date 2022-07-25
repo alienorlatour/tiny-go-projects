@@ -10,11 +10,14 @@ const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
+	reader *bufio.Reader
 }
 
 // New returns a Gordle variable, which can be used to Play!
 func New() *Gordle {
-	g := &Gordle{}
+	g := &Gordle{
+		reader: bufio.NewReader(os.Stdin),
+	}
 
 	return g
 }
@@ -27,24 +30,35 @@ func (g *Gordle) Play() {
 		attempt        []byte
 		attemptIsValid bool
 		err            error
-		reader         = bufio.NewReader(os.Stdin)
 	)
 
 	for !attemptIsValid {
 		// Read the attempt from the player.
-		attempt, _, err = reader.ReadLine()
+		attempt, _, err = g.reader.ReadLine()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 			continue
 		}
 
+		attemptRunes := []rune(string(attempt))
 		// Verify the suggestion has a valid length.
-		if len(attempt) != wordLength {
-			_, _ = fmt.Fprintf(os.Stderr, "invalid word length: expected %d, got %d\n", wordLength, len(attempt))
+		err = g.validateAttempt(attemptRunes)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		} else {
 			attemptIsValid = true
 		}
 	}
 
 	fmt.Printf("Your guess: %q\n", attempt)
+}
+
+var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
+
+func (g Gordle) validateAttempt(attempt []rune) error {
+	if len(attempt) != wordLength {
+		return fmt.Errorf("expected %d, got %d, %w", wordLength, len(attempt), errInvalidWordLength)
+	}
+
+	return nil
 }
