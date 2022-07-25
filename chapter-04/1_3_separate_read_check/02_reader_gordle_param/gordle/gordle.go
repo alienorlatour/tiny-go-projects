@@ -10,7 +10,7 @@ const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader *bufio.Reader
+	reader lineReader
 }
 
 // New returns a Gordle variable, which can be used to Play!
@@ -22,8 +22,12 @@ func New() *Gordle {
 	return g
 }
 
+type lineReader interface {
+	ReadLine() (line []byte, isPrefix bool, err error)
+}
+
 // Play runs the game.
-func (g *Gordle) Play() {
+func (g *Gordle) Play() string {
 	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
 
 	var (
@@ -50,7 +54,7 @@ func (g *Gordle) Play() {
 		}
 	}
 
-	fmt.Printf("Your guess: %q\n", attempt)
+	return string(attempt)
 }
 
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")

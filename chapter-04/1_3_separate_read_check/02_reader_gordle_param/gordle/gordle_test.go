@@ -1,23 +1,29 @@
 package gordle
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGordle_Play(t *testing.T) {
-	type fields struct {
-		reader *bufio.Reader
+	expected := "hello"
+	reader := testReader{
+		line: []byte(expected),
 	}
-	tests := []struct {
-		name   string
-		fields fields
-	}{
-		// TODO: Add test cases.
+
+	g := &Gordle{
+		reader: reader,
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := &Gordle{
-				reader: tt.fields.reader,
-			}
-			g.Play()
-		})
+
+	got := g.Play()
+	if got != expected {
+		t.Errorf("expected %q, got %q", expected, got)
 	}
+}
+
+type testReader struct {
+	line []byte
+}
+
+func (tr testReader) ReadLine() (line []byte, isPrefix bool, err error) {
+	return tr.line, false, nil
 }
