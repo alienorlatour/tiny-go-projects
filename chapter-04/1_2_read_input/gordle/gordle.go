@@ -2,24 +2,18 @@ package gordle
 
 import (
 	"fmt"
-	"io"
 	"os"
 )
 
-const (
-	wordLength = 5
-)
+const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader io.Reader
 }
 
 // New returns a Gordle variable, which can be used to Play!
 func New() *Gordle {
-	g := &Gordle{
-		reader: os.Stdin, // read from stdin by default
-	}
+	g := &Gordle{}
 
 	return g
 }
@@ -29,13 +23,13 @@ func (g *Gordle) Play() {
 	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
 
 	var (
-		suggestion     []byte
+		attempt        []rune
 		attemptIsValid bool
 	)
 
 	for !attemptIsValid {
-		// Read the suggestion from the player.
-		wordCount, err := fmt.Fscanf(g.reader, "%s", &suggestion)
+		// Read the attempt from the player.
+		wordCount, err := fmt.Fscanf(os.Stdin, "%s", &attempt)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
 			continue
@@ -47,12 +41,12 @@ func (g *Gordle) Play() {
 		}
 
 		// Verify the suggestion has a valid length.
-		if len(suggestion) != wordLength {
-			fmt.Printf("word %q should be %d letters, got: %d\n", suggestion, wordLength, len(suggestion))
+		if len(attempt) != wordLength {
+			fmt.Errorf("invalid word length: expected %d, got %d", wordLength, len(attempt))
 		} else {
 			attemptIsValid = true
 		}
 	}
 
-	fmt.Printf("Your guess: %s\n", suggestion)
+	fmt.Printf("Your guess: %q\n", attempt)
 }
