@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-const wordLength = 5
-
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
 	reader          *bufio.Reader
@@ -56,7 +54,7 @@ func (g *Gordle) Play() {
 
 // ask reads input until a valid suggestion is made (and returned).
 func (g Gordle) ask() []rune {
-	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
+	fmt.Printf("Enter a %d-letter guess:\n", len(g.solution))
 
 	for {
 		// Read the attempt from the player.
@@ -82,8 +80,8 @@ var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the sa
 
 // validateAttempt ensures the attempt is valid enough.
 func (g Gordle) validateAttempt(attempt []rune) error {
-	if len(attempt) != wordLength {
-		return fmt.Errorf("expected %d, got %d, %w", wordLength, len(attempt), errInvalidWordLength)
+	if len(attempt) != len(g.solution) {
+		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}
 
 	return nil

@@ -4,25 +4,37 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader         *bufio.Reader
-	solution       []rune
-	maxAttempts    int
-	currentAttempt int
+	reader          *bufio.Reader
+	solution        []rune
+	maxAttempts     int
+	currentAttempt  int
+	solutionChecker *solutionChecker
 }
 
 // New returns a Gordle variable, which can be used to Play!
-func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
+func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 	g := &Gordle{
-		reader:      reader,
-		solution:    solution,
-		maxAttempts: maxAttempts,
+		reader:      bufio.NewReader(os.Stdin), // read from stdin by default
+		maxAttempts: -1,                        // no maximum number of attempts by default
+		solution:    pickWord(corpus),          // pick a random word from the corpus
 	}
 
-	return g
+	// Apply the configuration functions after defining the default values, as they override them.
+	for _, cf := range cfs {
+		err := cf(g)
+		if err != nil {
+			return nil, fmt.Errorf("unable to apply config func: %w", err)
+		}
+	}
+
+	// Delay the checker creation till here, in case the solution was passed as a config func.
+	g.solutionChecker = &solutionChecker{solution: g.solution}
+	return g, nil
 }
 
 // Play runs the game.
@@ -31,6 +43,12 @@ func (g *Gordle) Play() {
 	for g.currentAttempt != g.maxAttempts {
 		// ask for a valid word
 		attempt := g.ask()
+
+		// check it
+		fb := g.solutionChecker.check(attempt)
+
+		// print the feedback
+		fmt.Println(fb.String())
 
 		if string(attempt) == string(g.solution) {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
@@ -55,9 +73,8 @@ func (g Gordle) ask() []rune {
 			continue
 		}
 
-		attempt := []rune(string(suggestion))
-
 		// Verify the suggestion has a valid length.
+		attempt := []rune(strings.ToUpper(string(suggestion)))
 		err = g.validateAttempt(attempt)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
