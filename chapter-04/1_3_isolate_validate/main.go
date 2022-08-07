@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-04/1_2_read_input/gordle"
+	"github.com/ablqk/tiny-go-projects/chapter-04/1_3_isolate_validate/gordle"
 )
 
 func main() {
