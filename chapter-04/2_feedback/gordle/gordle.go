@@ -10,10 +10,11 @@ const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader         *bufio.Reader
-	solution       []rune
-	maxAttempts    int
-	currentAttempt int
+	reader          *bufio.Reader
+	solution        []rune
+	maxAttempts     int
+	currentAttempt  int
+	solutionChecker *solutionChecker
 }
 
 // New returns a Gordle variable, which can be used to Play!
@@ -24,6 +25,8 @@ func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
 		maxAttempts: maxAttempts,
 	}
 
+	g.solutionChecker = &solutionChecker{solution: g.solution}
+
 	return g
 }
 
@@ -33,6 +36,12 @@ func (g *Gordle) Play() {
 	for g.currentAttempt != g.maxAttempts {
 		// ask for a valid word
 		attempt := g.ask()
+
+		// check it
+		fb := g.solutionChecker.check(attempt)
+
+		// print the feedback
+		fmt.Println(fb.String())
 
 		if string(attempt) == string(g.solution) {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
