@@ -33,7 +33,7 @@ func TestGordleAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := New(tc.reader)
+			g := Gordle{reader: tc.reader}
 
 			got := g.ask()
 			if !reflect.DeepEqual(got, tc.want) {

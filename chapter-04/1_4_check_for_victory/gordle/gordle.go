@@ -2,7 +2,6 @@ package gordle
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"os"
 )
@@ -11,62 +10,70 @@ const wordLength = 5
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader   lineReader
-	solution []rune
+	reader         *bufio.Reader
+	solution       []rune
+	maxAttempts    int
+	currentAttempt int
 }
 
 // New returns a Gordle variable, which can be used to Play!
-func New(solution []rune) *Gordle {
+func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
 	g := &Gordle{
-		reader:   bufio.NewReader(os.Stdin),
-		solution: solution,
+		reader:      reader,
+		solution:    solution,
+		maxAttempts: maxAttempts,
 	}
 
 	return g
 }
 
-type lineReader interface {
-	ReadLine() (line []byte, isPrefix bool, err error)
+// Play runs the game.
+func (g *Gordle) Play() {
+	// break condition: we've reached the maximum number of attempts
+	for g.currentAttempt != g.maxAttempts {
+		// ask for a valid word
+		attempt := g.ask()
+
+		if string(attempt) == string(g.solution) {
+			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
+			return
+		}
+		g.currentAttempt++
+	}
+
+	// we've exhausted the number of allowed attempts
+	fmt.Printf("😞 You've lost! The solution was: %s. \n", string(g.solution))
 }
 
-// Play runs the game.
-func (g *Gordle) Play() string {
+// ask reads input until a valid suggestion is made (and returned).
+func (g Gordle) ask() []rune {
 	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
-
-	var (
-		attempt []byte
-		err     error
-	)
 
 	for {
 		// Read the attempt from the player.
-		attempt, _, err = g.reader.ReadLine()
+		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 			continue
 		}
 
-		attemptRunes := []rune(string(attempt))
-		// Verify the suggestion has a valid length.
-		err = g.validateAttempt(attemptRunes)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
-			continue
-		}
+		attempt := []rune(string(suggestion))
 
-		solutionBytes := []byte(string(g.solution))
-		if bytes.Equal(attempt, solutionBytes) {
-			// win
-			fmt.Println("Bravo! You found the word.")
-			return string(attempt)
+		// Verify the suggestion has a valid length.
+		err = g.validateAttempt(attempt)
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 		} else {
-			fmt.Println("Give it again a try:")
+			return attempt
 		}
 	}
 }
 
+// errInvalidWordLength
+// TODO explain why we keep it close to the method where it is used
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
 
+// validateAttempt ensures the attempt is valid enough.
 func (g Gordle) validateAttempt(attempt []rune) error {
 	if len(attempt) != wordLength {
 		return fmt.Errorf("expected %d, got %d, %w", wordLength, len(attempt), errInvalidWordLength)
