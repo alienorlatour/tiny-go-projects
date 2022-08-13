@@ -56,7 +56,6 @@ func (g Gordle) ask() []rune {
 }
 
 // errInvalidWordLength
-// TODO explain why we keep it close to the method where it is used
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.

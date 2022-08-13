@@ -43,6 +43,7 @@ func (g *Gordle) Play() {
 	for g.currentAttempt != g.maxAttempts {
 		// ask for a valid word
 		attempt := g.ask()
+		g.currentAttempt++
 
 		// check it
 		fb := g.solutionChecker.check(attempt)
@@ -54,7 +55,6 @@ func (g *Gordle) Play() {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
 			return
 		}
-		g.currentAttempt++
 	}
 
 	// we've exhausted the number of allowed attempts

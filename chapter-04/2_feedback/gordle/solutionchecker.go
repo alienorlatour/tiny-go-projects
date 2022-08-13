@@ -43,21 +43,12 @@ func (sc *solutionChecker) check(word []rune) feedback {
 	return fb
 }
 
-// markLetterAsSeen removes one occurrence of the letter from the positions map.
-func (sc *solutionChecker) markLetterAsSeen(letter rune, positionInWord int) {
-	positions := sc.positions[letter]
-
-	if len(positions) == 0 {
-		sc.positions[letter] = nil
-	}
-
-	for i, pos := range positions {
-		if pos == positionInWord {
-			// remove the seen letter from the list
-			sc.positions[letter] = append(positions[:i], positions[i+1:]...)
-			// we found it
-			return
-		}
+// reset rebuilds the initial map holding the letters and their positions.
+func (sc *solutionChecker) reset() {
+	sc.positions = make(map[rune][]int)
+	for i, letter := range sc.solution {
+		// appending to a nil slice will return a slice, this is safe
+		sc.positions[letter] = append(sc.positions[letter], i)
 	}
 }
 
@@ -77,11 +68,20 @@ func (sc *solutionChecker) checkLetterAtPosition(letter rune, index int) status 
 	return wrongPosition
 }
 
-// reset rebuilds the initial map holding the letters and their positions.
-func (sc *solutionChecker) reset() {
-	sc.positions = make(map[rune][]int)
-	for i, letter := range sc.solution {
-		// appending to a nil slice will return a slice, this is safe
-		sc.positions[letter] = append(sc.positions[letter], i)
+// markLetterAsSeen removes one occurrence of the letter from the positions map.
+func (sc *solutionChecker) markLetterAsSeen(letter rune, positionInWord int) {
+	positions := sc.positions[letter]
+
+	if len(positions) == 0 {
+		sc.positions[letter] = nil
+	}
+
+	for i, pos := range positions {
+		if pos == positionInWord {
+			// remove the seen letter from the list
+			sc.positions[letter] = append(positions[:i], positions[i+1:]...)
+			// we found it
+			return
+		}
 	}
 }

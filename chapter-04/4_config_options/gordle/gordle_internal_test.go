@@ -10,24 +10,24 @@ import (
 
 func TestGordleAsk(t *testing.T) {
 	tt := map[string]struct {
-		reader  *bufio.Reader
-		want    []rune
-		wantErr bool
+		reader *bufio.Reader
+		want   []rune
 	}{
 		"5 letters in english": {
-			reader:  bufio.NewReader(strings.NewReader("HELLO")),
-			want:    []rune("HELLO"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("HELLO")),
+			want:   []rune("HELLO"),
 		},
 		"5 letters in arabic": {
-			reader:  bufio.NewReader(strings.NewReader("مرحبا")),
-			want:    []rune("مرحبا"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("مرحبا")),
+			want:   []rune("مرحبا"),
 		},
 		"5 letters in japanese": {
-			reader:  bufio.NewReader(strings.NewReader("のうにゅう")),
-			want:    []rune("のうにゅう"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("のうにゅう")),
+			want:   []rune("のうにゅう"),
+		},
+		"3 letters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("のうに\nのうにゅう")),
+			want:   []rune("のうにゅう"),
 		},
 	}
 
@@ -36,7 +36,6 @@ func TestGordleAsk(t *testing.T) {
 			g := Gordle{
 				reader:          tc.reader,
 				solution:        tc.want,
-				maxAttempts:     1,
 				solutionChecker: &solutionChecker{solution: tc.want}}
 
 			got := g.ask()

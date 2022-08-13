@@ -29,6 +29,10 @@ func TestGordleAsk(t *testing.T) {
 			want:    []rune("のうにゅう"),
 			wantErr: false,
 		},
+		"3 letters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("のうに\nのうにゅう")),
+			want:   []rune("のうにゅう"),
+		},
 	}
 
 	for name, tc := range tt {
