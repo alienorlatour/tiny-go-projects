@@ -1,6 +1,9 @@
 package gordle
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // status describes the validity of a letter in a word.
 type status int
@@ -38,6 +41,20 @@ func (fb feedback) String() string {
 			sb.WriteString(" ")
 		}
 		sb.WriteString(s.toString())
+
 	}
 	return sb.String()
+}
+
+// StringConcat is a naive implementation to build feedback as a string.
+// It is used only to benchmark it with the strings.Builder version.
+func (fb feedback) StringConcat() string {
+	var output string
+	for i, s := range fb {
+		if i != 0 {
+			output += fmt.Sprintf(" ")
+		}
+		output += s.toString()
+	}
+	return output
 }
