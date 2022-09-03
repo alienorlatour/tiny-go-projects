@@ -74,7 +74,7 @@ func TestGordleValidateAttempt(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := g.validateAttempt(tc.word)
 			if !errors.Is(err, tc.expected) {
-				t.Errorf("%c, expected %q, got %q", tc.word, tc.expected, err)
+				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)
 			}
 		})
 	}

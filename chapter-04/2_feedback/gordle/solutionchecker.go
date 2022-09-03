@@ -1,6 +1,6 @@
 package gordle
 
-// solutionChecker holds all the information we need to check the solution.
+// solutionChecker holds all the information we need to evaluate the solution.
 type solutionChecker struct {
 	// the solution word
 	solution []rune
@@ -8,19 +8,18 @@ type solutionChecker struct {
 	positions map[rune][]int
 }
 
-// check verifies every letter of the word against the solution.
-func (sc *solutionChecker) check(word []rune) feedback {
+// evaluate verifies every letter of the word against the solution.
+func (sc *solutionChecker) evaluate(word []rune) feedback {
 	// reset the positions map
 	sc.reset()
 
 	fb := make(feedback, len(sc.solution))
 
-	// scan the attempts and check if they are in the solution
+	// scan the attempts and evaluate if they are in the solution
 	for i, letter := range word {
-		// keep track of already seen characters
 		correctness := sc.checkLetterAtPosition(letter, i)
 		if correctness == correctPosition {
-			// remove found letter from positions at this index
+			// keep track of already seen characters
 			sc.markLetterAsSeen(letter, i)
 			fb[i] = correctPosition
 		}
@@ -35,10 +34,11 @@ func (sc *solutionChecker) check(word []rune) feedback {
 		if correctness == wrongPosition {
 			// remove the left-most occurrence
 			sc.positions[letter] = sc.positions[letter][1:]
+			fb[i] = wrongPosition
 		}
-
-		fb[i] = correctness
 	}
+
+	// letters not found in the word have the zero value absentCharacter
 
 	return fb
 }
@@ -71,10 +71,6 @@ func (sc *solutionChecker) checkLetterAtPosition(letter rune, index int) status 
 // markLetterAsSeen removes one occurrence of the letter from the positions map.
 func (sc *solutionChecker) markLetterAsSeen(letter rune, positionInWord int) {
 	positions := sc.positions[letter]
-
-	if len(positions) == 0 {
-		sc.positions[letter] = nil
-	}
 
 	for i, pos := range positions {
 		if pos == positionInWord {

@@ -31,13 +31,13 @@ func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
 // Play runs the game.
 func (g *Gordle) Play() {
 	// break condition: we've reached the maximum number of attempts
-	for g.currentAttempt != g.maxAttempts {
+	for g.currentAttempt <= g.maxAttempts {
 		// ask for a valid word
 		attempt := g.ask()
 		g.currentAttempt++
 
-		// check it
-		fb := g.solutionChecker.check(attempt)
+		// evaluate it
+		fb := g.solutionChecker.evaluate(attempt)
 
 		// print the feedback
 		fmt.Println(fb.String())
