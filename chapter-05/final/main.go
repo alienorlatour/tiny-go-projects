@@ -15,5 +15,6 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println(*from, *to, *date)
+	d := calendars.New(from).Parse(date)
+	fmt.Println(calendars.New(to).Format(d))
 }
