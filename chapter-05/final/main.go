@@ -12,7 +12,7 @@ import (
 
 func main() {
 	from := flag.String("from", "", "source currency, required")
-	to := flag.String("to", "EUR", "target currency, default to euros")
+	to := flag.String("to", "EUR", "target currency")
 
 	flag.Parse()
 
