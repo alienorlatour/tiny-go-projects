@@ -3,18 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"time"
 )
 
-// Usage: calconvert -from gregorian -to hijri -date “5 February 2022”
+// Usage: change -from USD -to EUR 34
 
 func main() {
-	from := flag.String("from", "gregorian", "source calendar")
-	to := flag.String("to", "gregorian", "target calendar")
-	date := flag.String("date", time.Now().Format("2006-01-02"), "date to convert")
+	from := flag.String("from", "", "source currency")
+	to := flag.String("to", "EUR", "target currency, default to euros")
 
 	flag.Parse()
 
-	d := calendars.New(from).Parse(date)
-	fmt.Println(calendars.New(to).Format(d))
+	amount := flag.Arg(0)
+
+	fmt.Printf("convert %s %s to %s\n", amount, *from, *to)
 }
