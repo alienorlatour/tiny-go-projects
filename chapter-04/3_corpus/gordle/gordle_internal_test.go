@@ -15,8 +15,8 @@ func TestGordleAsk(t *testing.T) {
 		wantErr bool
 	}{
 		"5 letters in english": {
-			reader:  bufio.NewReader(strings.NewReader("hello")),
-			want:    []rune("hello"),
+			reader:  bufio.NewReader(strings.NewReader("HELLO")),
+			want:    []rune("HELLO"),
 			wantErr: false,
 		},
 		"5 letters in arabic": {
@@ -37,7 +37,7 @@ func TestGordleAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Gordle{reader: tc.reader}
+			g := Gordle{reader: tc.reader, solution: tc.want}
 
 			got := g.ask()
 			if !reflect.DeepEqual(got, tc.want) {
@@ -48,7 +48,6 @@ func TestGordleAsk(t *testing.T) {
 }
 
 func TestGordleValidateAttempt(t *testing.T) {
-	g := &Gordle{}
 	tt := map[string]struct {
 		word     []rune
 		expected error
@@ -73,6 +72,8 @@ func TestGordleValidateAttempt(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
+			g := &Gordle{solution: []rune("hello")}
+
 			err := g.validateAttempt(tc.word)
 			if !errors.Is(err, tc.expected) {
 				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)

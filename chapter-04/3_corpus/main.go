@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -26,8 +25,10 @@ func main() {
 	g.Play()
 }
 
+// readCorpus reads the file located to the given path
+// and returns a list of words
 func readCorpus(path string) ([]string, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
