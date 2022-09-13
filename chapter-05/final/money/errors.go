@@ -1,9 +1,9 @@
 package money
 
-// internalError defines a sentinel error.
-type internalError string
+// moneyError defines a sentinel error.
+type moneyError string
 
-// internalError implements the error interface.
-func (e internalError) Error() string {
+// moneyError implements the error interface.
+func (e moneyError) Error() string {
 	return string(e)
 }

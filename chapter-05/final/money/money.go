@@ -9,7 +9,14 @@ func Convert(amount, from, to string) (string, error) {
 		return "", fmt.Errorf("unable to parse amount: %w", err)
 	}
 
+	// get the change rate
+	r, err := fetchChangeRate(from, to)
+	if err != nil {
+		return "", fmt.Errorf("%w: %s", errUnknownChangeRate, err.Error())
+	}
 	// convert
+	convertedValue := n.applyChangeRate(r)
+
 	// format
-	return "", nil
+	return convertedValue.String(), nil
 }
