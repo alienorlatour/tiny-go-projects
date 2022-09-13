@@ -19,8 +19,8 @@ type number struct {
 
 const (
 	// errors that we might face when parsing numbers
-	errInvalidInteger = internalError("unable to convert integer part")
-	errInvalidDecimal = internalError("unable to convert decimal part")
+	errInvalidInteger = moneyError("unable to convert integer part")
+	errInvalidDecimal = moneyError("unable to convert decimal part")
 )
 
 // parseNumber converts a string into its number representation.
@@ -44,4 +44,14 @@ func parseNumber(value string) (number, error) {
 	precision := len(decPart)
 
 	return number{integerPart: i, decimalPart: d, toUnit: precision}, nil
+}
+
+func (n number) applyChangeRate(rate changeRate) number {
+	return number{}
+}
+
+func (n number) String() string {
+	format := fmt.Sprintf("%%d.%%0%dd", n.toUnit)
+
+	return fmt.Sprintf(format, n.integerPart, n.decimalPart)
 }
