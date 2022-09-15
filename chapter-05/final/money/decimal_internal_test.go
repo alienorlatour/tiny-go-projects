@@ -185,6 +185,19 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				toUnit:      2,
 			},
 		},
+		"265_413.87 * 5.05935e-5": {
+			in: number{
+				integerPart: 265_413,
+				decimalPart: 87,
+				toUnit:      2,
+			},
+			rate: 5.05935e-5,
+			expected: number{
+				integerPart: 2,
+				decimalPart: 0,
+				toUnit:      8,
+			},
+		},
 	}
 
 	for name, tc := range tt {
