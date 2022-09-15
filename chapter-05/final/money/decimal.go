@@ -53,10 +53,11 @@ func (n number) applyChangeRate(rate changeRate) number {
 	converted := n.float() * float64(rate)
 
 	floor := math.Floor(converted)
+	decimal := math.Round((converted - floor) * math.Pow10(n.toUnit))
 
 	return number{
 		integerPart: int(floor),
-		decimalPart: int((converted - floor) * math.Pow10(n.toUnit)),
+		decimalPart: int(decimal),
 		toUnit:      n.toUnit,
 	}
 }
