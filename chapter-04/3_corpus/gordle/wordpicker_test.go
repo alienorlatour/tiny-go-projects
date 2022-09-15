@@ -5,8 +5,11 @@ import (
 )
 
 func TestCorpus_randomWord(t *testing.T) {
-	corpus := []string{"HELLO", "ხალხი"}
-	word := pickWord([]string{"HELLO", ""})
+	corpus, err := ReadCorpus("../corpus/english.txt")
+	if err != nil {
+		t.Errorf("failed to read corpus")
+	}
+	word := pickWord(corpus)
 
 	if !inCorpus(corpus, string(word)) {
 		t.Errorf("expected a word in the corpus, got %q", word)

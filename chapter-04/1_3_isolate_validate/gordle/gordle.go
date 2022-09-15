@@ -28,7 +28,6 @@ func (g *Gordle) Play() {
 	attempt := g.ask()
 
 	fmt.Printf("Your guess is: %s\n", string(attempt))
-
 }
 
 // ask reads input until a valid suggestion is made (and returned).
