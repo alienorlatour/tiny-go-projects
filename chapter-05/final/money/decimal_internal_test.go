@@ -107,7 +107,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 		rate     changeRate
 		expected number
 	}{
-		"rate is 1": {
+		"1.52 * 1": {
 			in: number{
 				integerPart: 1,
 				decimalPart: 52,
@@ -170,6 +170,19 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				integerPart: 11,
 				decimalPart: 0,
 				toUnit:      1,
+			},
+		},
+		"1_000_000_000.01 * 2": {
+			in: number{
+				integerPart: 1_000_000_000,
+				decimalPart: 1,
+				toUnit:      2,
+			},
+			rate: 2,
+			expected: number{
+				integerPart: 2_000_000_000,
+				decimalPart: 2,
+				toUnit:      2,
 			},
 		},
 	}
