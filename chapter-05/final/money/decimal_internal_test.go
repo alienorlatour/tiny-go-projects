@@ -100,3 +100,86 @@ func TestNumberString(t *testing.T) {
 		})
 	}
 }
+
+func TestNumberApplyChangeRate(t *testing.T) {
+	tt := map[string]struct {
+		in       number
+		rate     changeRate
+		expected number
+	}{
+		"rate is 1": {
+			in: number{
+				integerPart: 1,
+				decimalPart: 52,
+				toUnit:      2,
+			},
+			rate: 1,
+			expected: number{
+				integerPart: 1,
+				decimalPart: 52,
+				toUnit:      2,
+			},
+		},
+		"2.50 * 4": {
+			in: number{
+				integerPart: 2,
+				decimalPart: 50,
+				toUnit:      2,
+			},
+			rate: 4,
+			expected: number{
+				integerPart: 10,
+				decimalPart: 0,
+				toUnit:      2,
+			},
+		},
+		"4 * 2.5": {
+			in: number{
+				integerPart: 4,
+				decimalPart: 0,
+				toUnit:      0,
+			},
+			rate: 2.5,
+			expected: number{
+				integerPart: 10,
+				decimalPart: 0,
+				toUnit:      0,
+			},
+		},
+		"3.14 * 2.52678": {
+			in: number{
+				integerPart: 3,
+				decimalPart: 14,
+				toUnit:      2,
+			},
+			rate: 2.52678,
+			expected: number{
+				integerPart: 7,
+				decimalPart: 93,
+				toUnit:      2,
+			},
+		},
+		"1.1 * 10": {
+			in: number{
+				integerPart: 1,
+				decimalPart: 1,
+				toUnit:      1,
+			},
+			rate: 10,
+			expected: number{
+				integerPart: 11,
+				decimalPart: 0,
+				toUnit:      1,
+			},
+		},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			got := tc.in.applyChangeRate(tc.rate)
+			if got != tc.expected {
+				t.Errorf("expected %v, got %v", tc.expected, got)
+			}
+		})
+	}
+}

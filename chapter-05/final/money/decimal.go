@@ -2,6 +2,7 @@ package money
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -46,10 +47,29 @@ func parseNumber(value string) (number, error) {
 	return number{integerPart: i, decimalPart: d, toUnit: precision}, nil
 }
 
+// applyChangeRate returns a new number representing n multiplied by the rate.
+// The precision is the same in and out.
 func (n number) applyChangeRate(rate changeRate) number {
-	return number{}
+	converted := n.float() * float64(rate)
+
+	floor := math.Floor(converted)
+
+	return number{
+		integerPart: int(floor),
+		decimalPart: int((converted - floor) * math.Pow10(n.toUnit)),
+		toUnit:      n.toUnit,
+	}
 }
 
+func (n number) float() float64 {
+	f := float64(n.integerPart)
+	f += float64(n.decimalPart) * math.Pow10(-n.toUnit)
+
+	return f
+}
+
+// String implements stringer and returns the number formatted as
+// digits optionally a decimal point followed by digits.
 func (n number) String() string {
 	format := fmt.Sprintf("%%d.%%0%dd", n.toUnit)
 
