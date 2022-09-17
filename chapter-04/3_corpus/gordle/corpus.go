@@ -7,10 +7,7 @@ import (
 	"time"
 )
 
-const (
-	errCorpusIsEmpty = corpusError("corpus is empty")
-	errCorpusNoWord  = corpusError("there is no word in corpus")
-)
+const errCorpusIsEmpty = corpusError("corpus is empty")
 
 // ReadCorpus reads the file located to the given path
 // and returns a list of words.
@@ -26,9 +23,7 @@ func ReadCorpus(path string) ([]string, error) {
 
 	// we expect the corpus to be a line-separated list of words
 	words := strings.Split(string(data), "\n")
-	if len(words) == 0 {
-		return nil, errCorpusNoWord
-	}
+
 	return words, nil
 }
 

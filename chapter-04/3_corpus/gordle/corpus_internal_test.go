@@ -4,30 +4,36 @@ import (
 	"testing"
 )
 
-func TestReadCorpus_EnglishCorpus(t *testing.T) {
+func TestReadCorpus(t *testing.T) {
 	tt := map[string]struct {
-		file string
-		err  error
+		file   string
+		length int
+		err    error
 	}{
 		"english corpus": {
-			file: "../corpus/english.txt",
-			err:  nil,
+			file:   "../corpus/english.txt",
+			length: 35,
+			err:    nil,
 		},
 		"empty corpus": {
-			file: "../corpus/empty.txt",
-			err:  errCorpusIsEmpty,
+			file:   "../corpus/empty.txt",
+			length: 0,
+			err:    errCorpusIsEmpty,
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			_, err := ReadCorpus(tc.file)
+			words, err := ReadCorpus(tc.file)
 			if tc.err != err {
-				t.Errorf("expected err %s, got %v", tc.err, err)
+				t.Errorf("expected err %v, got %v", tc.err, err)
+			}
+
+			if tc.length != len(words) {
+				t.Errorf("expected %d, got %d", tc.length, len(words))
 			}
 		})
 	}
-
 }
 
 func TestPickWord(t *testing.T) {
