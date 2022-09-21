@@ -32,7 +32,7 @@ func (g *Gordle) Play() {
 
 // ask reads input until a valid suggestion is made (and returned).
 func (g Gordle) ask() []rune {
-	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
+	fmt.Printf("Enter a %d-character guess:\n", wordLength)
 
 	for {
 		// Read the attempt from the player.
@@ -55,7 +55,7 @@ func (g Gordle) ask() []rune {
 }
 
 // errInvalidWordLength
-var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
+var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
 func (g Gordle) validateAttempt(attempt []rune) error {

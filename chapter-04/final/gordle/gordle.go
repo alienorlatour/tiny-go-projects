@@ -31,7 +31,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 // Play runs the game. It will exit when the maximum number of attempts was reached, or if the word was found.
 func (g *Gordle) Play() {
 	// break condition: we've reached the maximum number of attempts
-	for g.currentAttempt != g.maxAttempts {
+	for currentAttempt := 0; currentAttempt < g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
 		word := g.ask()
 
@@ -41,10 +41,9 @@ func (g *Gordle) Play() {
 		// print the feedback
 		fmt.Println(fb)
 		if string(word) == string(g.solution) {
-			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
+			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
-		g.currentAttempt++
 	}
 	// we've exhausted the number of allowed attempts
 	fmt.Printf("😞 You've lost! The solution was: %s. \n", string(g.solution))
@@ -55,13 +54,12 @@ type Gordle struct {
 	reader          io.Reader
 	solution        []rune
 	maxAttempts     int
-	currentAttempt  int
 	solutionChecker *solutionChecker
 }
 
 // ask scans until a valid suggestion is made (and returned).
 func (g *Gordle) ask() []rune {
-	fmt.Printf("Enter a %d-letter guess:\n", len(g.solution))
+	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
 	var suggestion string
 	for {
 		wordCount, err := fmt.Fscanf(g.reader, "%s", &suggestion)
@@ -83,11 +81,12 @@ func (g *Gordle) ask() []rune {
 			return attempt
 		}
 	}
+
 	// this can't happen
 	return []rune{}
 }
 
-var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
+var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
 func (g *Gordle) validateAttempt(attempt []rune) error {

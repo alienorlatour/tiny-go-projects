@@ -32,7 +32,7 @@ func (g *Gordle) Play() {
 
 // ask reads input until a valid suggestion is made (and returned).
 func (g Gordle) ask() []rune {
-	fmt.Printf("Enter a %d-letter guess:\n", wordLength)
+	fmt.Printf("Enter a %d-character guess:\n", wordLength)
 
 	for {
 		// Read the attempt from the player.

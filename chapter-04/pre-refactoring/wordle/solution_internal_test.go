@@ -13,12 +13,12 @@ func TestSolution_Feedback(t *testing.T) {
 			solution:         NewSolution([]rune("hertz")),
 			expectedFeedback: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
-		"double letter": {
+		"double character": {
 			attempt:          []rune("hello"),
 			solution:         NewSolution([]rune("hello")),
 			expectedFeedback: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
-		"double letter with wrong answer": {
+		"double character with wrong answer": {
 			attempt:          []rune("helll"),
 			solution:         NewSolution([]rune("hello")),
 			expectedFeedback: []status{correctPosition, correctPosition, correctPosition, correctPosition, absentCharacter},
@@ -43,17 +43,17 @@ func TestSolution_Feedback(t *testing.T) {
 			solution:         NewSolution([]rune("hello")),
 			expectedFeedback: []status{wrongPosition, absentCharacter, correctPosition, absentCharacter, absentCharacter},
 		},
-		"swapped letters": {
+		"swapped characters": {
 			attempt:          []rune("holle"),
 			solution:         NewSolution([]rune("hello")),
 			expectedFeedback: []status{correctPosition, wrongPosition, correctPosition, correctPosition, wrongPosition},
 		},
-		"absent letter": {
+		"absent character": {
 			attempt:          []rune("hulfo"),
 			solution:         NewSolution([]rune("helfo")),
 			expectedFeedback: []status{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
-		"absent letter and incorrect": {
+		"absent character and incorrect": {
 			attempt:          []rune("hulpp"),
 			solution:         NewSolution([]rune("helpo")),
 			expectedFeedback: []status{correctPosition, absentCharacter, correctPosition, correctPosition, absentCharacter},

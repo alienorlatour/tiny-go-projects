@@ -4,14 +4,14 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"tiny-go-projects/chapter04/gordle"
 )
 
 func readCorpus(path string) ([]string, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -23,6 +23,8 @@ func readCorpus(path string) ([]string, error) {
 	return words, nil
 }
 
+const maxAttempts = 6
+
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
@@ -33,7 +35,7 @@ func main() {
 
 	// Create the game.
 	// Use the default values for every parameter, but set the default number of max attempts to 6.
-	g, err := gordle.New(corpus, gordle.WithMaxAttempts(6))
+	g, err := gordle.New(corpus, gordle.WithMaxAttempts(maxAttempts))
 	if err != nil {
 		panic(err)
 	}

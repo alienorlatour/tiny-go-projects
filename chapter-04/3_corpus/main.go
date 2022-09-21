@@ -8,6 +8,8 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-04/3_corpus/gordle"
 )
 
+const maxAttempts = 6
+
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
@@ -15,8 +17,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	maxAttempts := 6
 
 	// Create the game.
 	g := gordle.New(bufio.NewReader(os.Stdin), corpus, maxAttempts)

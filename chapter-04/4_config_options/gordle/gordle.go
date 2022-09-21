@@ -12,7 +12,6 @@ type Gordle struct {
 	reader          *bufio.Reader
 	solution        []rune
 	maxAttempts     int
-	currentAttempt  int
 	solutionChecker *solutionChecker
 }
 
@@ -40,10 +39,9 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 // Play runs the game.
 func (g *Gordle) Play() {
 	// break condition: we've reached the maximum number of attempts
-	for g.currentAttempt != g.maxAttempts {
+	for currentAttempt := 0; currentAttempt < g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
 		attempt := g.ask()
-		g.currentAttempt++
 
 		// check it
 		fb := g.solutionChecker.check(attempt)
@@ -52,7 +50,7 @@ func (g *Gordle) Play() {
 		fmt.Println(fb.String())
 
 		if string(attempt) == string(g.solution) {
-			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", g.currentAttempt, string(g.solution))
+			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
 	}
@@ -62,8 +60,8 @@ func (g *Gordle) Play() {
 }
 
 // ask reads input until a valid suggestion is made (and returned).
-func (g Gordle) ask() []rune {
-	fmt.Printf("Enter a %d-letter guess:\n", len(g.solution))
+func (g *Gordle) ask() []rune {
+	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
 
 	for {
 		// Read the attempt from the player.
@@ -84,10 +82,11 @@ func (g Gordle) ask() []rune {
 	}
 }
 
-var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of letters as the solution ")
+// errInvalidWordLength is only used internally
+var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
-func (g Gordle) validateAttempt(attempt []rune) error {
+func (g *Gordle) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}

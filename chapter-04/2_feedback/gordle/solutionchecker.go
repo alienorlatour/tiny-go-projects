@@ -8,7 +8,7 @@ type solutionChecker struct {
 	positions map[rune][]int
 }
 
-// evaluate verifies every letter of the word against the solution.
+// evaluate verifies every character of the word against the solution.
 func (sc *solutionChecker) evaluate(word []rune) feedback {
 	// reset the positions map
 	sc.reset()
@@ -16,45 +16,45 @@ func (sc *solutionChecker) evaluate(word []rune) feedback {
 	fb := make(feedback, len(sc.solution))
 
 	// scan the attempts and evaluate if they are in the solution
-	for i, letter := range word {
-		correctness := sc.checkLetterAtPosition(letter, i)
+	for i, character := range word {
+		correctness := sc.checkCharacterAtPosition(character, i)
 		if correctness == correctPosition {
 			// keep track of already seen characters
-			sc.markLetterAsSeen(letter, i)
+			sc.markCharacterAsSeen(character, i)
 			fb[i] = correctPosition
 		}
 	}
 
-	for i, letter := range word {
+	for i, character := range word {
 		if fb[i] == correctPosition {
 			continue
 		}
 
-		correctness := sc.checkLetterAtPosition(letter, i)
+		correctness := sc.checkCharacterAtPosition(character, i)
 		if correctness == wrongPosition {
 			// remove the left-most occurrence
-			sc.positions[letter] = sc.positions[letter][1:]
+			sc.positions[character] = sc.positions[character][1:]
 			fb[i] = wrongPosition
 		}
 	}
 
-	// letters not found in the word have the zero value absentCharacter
+	// characters not found in the word have the zero value absentCharacter
 
 	return fb
 }
 
-// reset rebuilds the initial map holding the letters and their positions.
+// reset rebuilds the initial map holding the characters and their positions.
 func (sc *solutionChecker) reset() {
 	sc.positions = make(map[rune][]int)
-	for i, letter := range sc.solution {
+	for i, character := range sc.solution {
 		// appending to a nil slice will return a slice, this is safe
-		sc.positions[letter] = append(sc.positions[letter], i)
+		sc.positions[character] = append(sc.positions[character], i)
 	}
 }
 
-// checkLetterAtPosition returns the correctness of a letter at the specified index in the solution.
-func (sc *solutionChecker) checkLetterAtPosition(letter rune, index int) status {
-	positions, ok := sc.positions[letter]
+// checkCharacterAtPosition returns the correctness of a character at the specified index in the solution.
+func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) status {
+	positions, ok := sc.positions[character]
 	if !ok || len(positions) == 0 {
 		return absentCharacter
 	}
@@ -68,14 +68,14 @@ func (sc *solutionChecker) checkLetterAtPosition(letter rune, index int) status 
 	return wrongPosition
 }
 
-// markLetterAsSeen removes one occurrence of the letter from the positions map.
-func (sc *solutionChecker) markLetterAsSeen(letter rune, positionInWord int) {
-	positions := sc.positions[letter]
+// markCharacterAsSeen removes one occurrence of the character from the positions map.
+func (sc *solutionChecker) markCharacterAsSeen(character rune, positionInWord int) {
+	positions := sc.positions[character]
 
 	for i, pos := range positions {
 		if pos == positionInWord {
-			// remove the seen letter from the list
-			sc.positions[letter] = append(positions[:i], positions[i+1:]...)
+			// remove the seen character from the list
+			sc.positions[character] = append(positions[:i], positions[i+1:]...)
 			// we found it
 			return
 		}

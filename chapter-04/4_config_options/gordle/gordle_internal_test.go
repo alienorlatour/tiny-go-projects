@@ -13,21 +13,21 @@ func TestGordleAsk(t *testing.T) {
 		reader *bufio.Reader
 		want   []rune
 	}{
-		"5 letters in english": {
+		"5 characters in english": {
 			reader: bufio.NewReader(strings.NewReader("HELLO")),
 			want:   []rune("HELLO"),
 		},
-		"5 letters in arabic": {
+		"5 characters in arabic": {
 			reader: bufio.NewReader(strings.NewReader("مرحبا")),
 			want:   []rune("مرحبا"),
 		},
-		"5 letters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("のうにゅう")),
-			want:   []rune("のうにゅう"),
+		"5 characters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("こんにちは")),
+			want:   []rune("こんにちは"),
 		},
-		"3 letters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("のうに\nのうにゅう")),
-			want:   []rune("のうにゅう"),
+		"3 and then 5 characters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("こんに\nこんにちは")),
+			want:   []rune("こんにちは"),
 		},
 	}
 

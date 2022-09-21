@@ -8,10 +8,12 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-04/2_feedback/gordle"
 )
 
+const maxAttempts = 6
+
 func main() {
 	fmt.Println("Welcome to Gordle!")
 
 	solution := "hello"
-	g := gordle.New(bufio.NewReader(os.Stdin), []rune(solution), 6)
+	g := gordle.New(bufio.NewReader(os.Stdin), []rune(solution), maxAttempts)
 	g.Play()
 }
