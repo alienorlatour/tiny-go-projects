@@ -51,6 +51,8 @@ func (g Gordle) ask() []rune {
 		// Read the attempt from the player.
 		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
+			// We failed to read this line, maybe the next one is better?
+			// Let’s give it a chance.
 			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 			continue
 		}
@@ -70,7 +72,7 @@ func (g Gordle) ask() []rune {
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
-func (g Gordle) validateAttempt(attempt []rune) error {
+func (g *Gordle) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}

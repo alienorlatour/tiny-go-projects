@@ -64,6 +64,8 @@ func (g *Gordle) ask() []rune {
 	for {
 		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
+			// We failed to read this line, maybe the next one is better?
+			// Let’s give it a chance.
 			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
 			continue
 		}
