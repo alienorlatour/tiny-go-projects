@@ -18,6 +18,8 @@ func New(reader *bufio.Reader) *Gordle {
 	g := &Gordle{
 		reader: reader,
 	}
+	fmt.Println("Welcome to Gordle!")
+
 	return g
 }
 

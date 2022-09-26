@@ -21,6 +21,7 @@ func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
 		solution:    solution,
 		maxAttempts: maxAttempts,
 	}
+	fmt.Println("Welcome to Gordle!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 

@@ -20,6 +20,7 @@ func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
 		solution:    solution,
 		maxAttempts: maxAttempts,
 	}
+	fmt.Println("Welcome to Gordle!")
 
 	return g
 }

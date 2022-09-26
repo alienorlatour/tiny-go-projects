@@ -10,6 +10,7 @@ type Gordle struct{}
 // New returns a Gordle variable, which can be used to Play!
 func New() *Gordle {
 	g := &Gordle{}
+	fmt.Println("Welcome to Gordle!")
 
 	return g
 }

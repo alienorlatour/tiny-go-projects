@@ -14,6 +14,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 		maxAttempts: -1,               // no maximum number of attempts by default
 		solution:    pickWord(corpus), // pick a random word from the corpus
 	}
+	fmt.Println("Welcome to Gordle!")
 
 	// Apply the configuration functions after defining the default values, as they override them.
 	for _, cf := range cfs {

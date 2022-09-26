@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"strings"
 
@@ -12,8 +11,6 @@ import (
 const maxAttempts = 6
 
 func main() {
-	fmt.Println("Welcome to Gordle!")
-
 	corpus, err := readCorpus("corpus/english.txt")
 	if err != nil {
 		panic(err)

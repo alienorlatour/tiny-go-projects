@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"errors"
-	"fmt"
 	"os"
 	"strings"
 
@@ -26,8 +25,6 @@ func readCorpus(path string) ([]string, error) {
 const maxAttempts = 6
 
 func main() {
-	fmt.Println("Welcome to Gordle!")
-
 	corpus, err := readCorpus("corpus/english.txt")
 	if err != nil {
 		panic(err)

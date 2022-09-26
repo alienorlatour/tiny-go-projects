@@ -22,6 +22,7 @@ func New(reader *bufio.Reader, corpus []string, maxAttempts int) *Gordle {
 		solution:    pickWord(corpus), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
 	}
+	fmt.Println("Welcome to Gordle!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 

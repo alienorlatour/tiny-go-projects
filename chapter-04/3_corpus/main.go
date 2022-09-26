@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 
 	"github.com/ablqk/tiny-go-projects/chapter-04/3_corpus/gordle"
@@ -11,8 +10,6 @@ import (
 const maxAttempts = 6
 
 func main() {
-	fmt.Println("Welcome to Gordle!")
-
 	corpus, err := gordle.ReadCorpus("corpus/english.txt")
 	if err != nil {
 		panic(err)
