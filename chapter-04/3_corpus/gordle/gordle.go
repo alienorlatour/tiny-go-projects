@@ -3,6 +3,7 @@ package gordle
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -16,9 +17,9 @@ type Gordle struct {
 }
 
 // New returns a Gordle variable, which can be used to Play!
-func New(reader *bufio.Reader, corpus []string, maxAttempts int) *Gordle {
+func New(reader io.Reader, corpus []string, maxAttempts int) *Gordle {
 	g := &Gordle{
-		reader:      reader,
+		reader:      bufio.NewReader(reader),
 		solution:    pickWord(corpus), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
 	}

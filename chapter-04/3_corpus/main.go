@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"os"
 
 	"github.com/ablqk/tiny-go-projects/chapter-04/3_corpus/gordle"
@@ -16,7 +15,7 @@ func main() {
 	}
 
 	// Create the game.
-	g := gordle.New(bufio.NewReader(os.Stdin), corpus, maxAttempts)
+	g := gordle.New(os.Stdin, corpus, maxAttempts)
 
 	// Run the game ! It will end when it's over.
 	g.Play()

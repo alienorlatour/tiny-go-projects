@@ -1,14 +1,14 @@
 package gordle
 
 import (
+	"bufio"
 	"errors"
-	"fmt"
-	"io"
+	"reflect"
 	"strings"
 	"testing"
 )
 
-func TestGordle_validateAttempt(t *testing.T) {
+func TestGordleValidateAttempt(t *testing.T) {
 	g := &Gordle{solution: []rune("SAUNA")}
 	tt := map[string]struct {
 		word     []rune
@@ -42,17 +42,41 @@ func TestGordle_validateAttempt(t *testing.T) {
 	}
 }
 
-func TestGordle_ask(t *testing.T) {
-	expected := []rune("HELLO")
-	ts := &testReader{
-		reader: strings.NewReader(string(expected)),
+func TestGordleAsk(t *testing.T) {
+	tt := map[string]struct {
+		reader *bufio.Reader
+		want   []rune
+	}{
+		"5 characters in english": {
+			reader: bufio.NewReader(strings.NewReader("HELLO")),
+			want:   []rune("HELLO"),
+		},
+		"5 characters in arabic": {
+			reader: bufio.NewReader(strings.NewReader("مرحبا")),
+			want:   []rune("مرحبا"),
+		},
+		"5 characters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("こんにちは")),
+			want:   []rune("こんにちは"),
+		},
+		"3 and then 5 characters in japanese": {
+			reader: bufio.NewReader(strings.NewReader("こんに\nこんにちは")),
+			want:   []rune("こんにちは"),
+		},
 	}
-	g := &Gordle{reader: ts, solution: []rune("MUMMY")}
 
-	got := g.ask()
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			g := Gordle{
+				reader:          tc.reader,
+				solution:        tc.want,
+				solutionChecker: &solutionChecker{solution: tc.want}}
 
-	if string(got) != string(expected) {
-		t.Errorf("expected %q, got %q", expected, got)
+			got := g.ask()
+			if !reflect.DeepEqual(got, tc.want) {
+				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
+			}
+		})
 	}
 }
 
@@ -66,17 +90,4 @@ func compare(lhs, rhs []status) bool {
 		}
 	}
 	return true
-}
-
-type testReader struct {
-	reader io.Reader
-	error  string
-}
-
-func (tr *testReader) Read(p []byte) (n int, err error) {
-	if len(tr.error) > 0 {
-		return 0, fmt.Errorf(tr.error)
-	}
-
-	return tr.reader.Read(p)
 }

@@ -3,6 +3,7 @@ package gordle
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -14,9 +15,9 @@ type Gordle struct {
 }
 
 // New returns a Gordle variable, which can be used to Play!
-func New(reader *bufio.Reader, solution []rune, maxAttempts int) *Gordle {
+func New(reader io.Reader, solution []rune, maxAttempts int) *Gordle {
 	g := &Gordle{
-		reader:      reader,
+		reader:      bufio.NewReader(reader),
 		solution:    solution,
 		maxAttempts: maxAttempts,
 	}

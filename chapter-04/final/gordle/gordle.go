@@ -1,8 +1,8 @@
 package gordle
 
 import (
+	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 )
@@ -10,9 +10,9 @@ import (
 // New returns a Gordle variable, which can be used to Play!
 func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 	g := &Gordle{
-		reader:      os.Stdin,         // read from stdin by default
-		maxAttempts: -1,               // no maximum number of attempts by default
-		solution:    pickWord(corpus), // pick a random word from the corpus
+		reader:      bufio.NewReader(os.Stdin), // read from stdin by default
+		maxAttempts: -1,                        // no maximum number of attempts by default
+		solution:    pickWord(corpus),          // pick a random word from the corpus
 	}
 	fmt.Println("Welcome to Gordle!")
 
@@ -52,7 +52,7 @@ func (g *Gordle) Play() {
 
 // Gordle holds all the information we need to play a game of gordle.
 type Gordle struct {
-	reader          io.Reader
+	reader          *bufio.Reader
 	solution        []rune
 	maxAttempts     int
 	solutionChecker *solutionChecker
@@ -61,20 +61,21 @@ type Gordle struct {
 // ask scans until a valid suggestion is made (and returned).
 func (g *Gordle) ask() []rune {
 	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
-	var suggestion string
 	for {
-		wordCount, err := fmt.Fscanf(g.reader, "%s", &suggestion)
+		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
 			continue
 		}
+
+		words := strings.Fields(string(suggestion))
 		// We expect a single word.
-		if wordCount != 1 {
-			fmt.Fprintf(os.Stderr, "error while reading the player's word: a single word wasn't provided, got %d instead", wordCount)
+		if len(words) != 1 {
+			fmt.Fprintf(os.Stderr, "error while reading the player's word: a single word wasn't provided, got %d instead", len(words))
 			continue
 		}
 
-		attempt := []rune(strings.ToUpper(suggestion))
+		attempt := []rune(strings.ToUpper(string(suggestion)))
 		err = g.validateAttempt(attempt)
 		if err != nil {
 			fmt.Println(err)
@@ -82,9 +83,6 @@ func (g *Gordle) ask() []rune {
 			return attempt
 		}
 	}
-
-	// this can't happen
-	return []rune{}
 }
 
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
