@@ -10,24 +10,20 @@ import (
 
 func TestGordleAsk(t *testing.T) {
 	tt := map[string]struct {
-		reader  *bufio.Reader
-		want    []rune
-		wantErr bool
+		reader *bufio.Reader
+		want   []rune
 	}{
 		"5 characters in english": {
-			reader:  bufio.NewReader(strings.NewReader("hello")),
-			want:    []rune("hello"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("hello")),
+			want:   []rune("hello"),
 		},
 		"5 characters in arabic": {
-			reader:  bufio.NewReader(strings.NewReader("مرحبا")),
-			want:    []rune("مرحبا"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("مرحبا")),
+			want:   []rune("مرحبا"),
 		},
 		"5 characters in japanese": {
-			reader:  bufio.NewReader(strings.NewReader("こんにちは")),
-			want:    []rune("こんにちは"),
-			wantErr: false,
+			reader: bufio.NewReader(strings.NewReader("こんにちは")),
+			want:   []rune("こんにちは"),
 		},
 		"3 characters in japanese": {
 			reader: bufio.NewReader(strings.NewReader("こんに\nこんにちは")),

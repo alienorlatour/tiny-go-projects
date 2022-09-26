@@ -52,7 +52,6 @@ func (g *Gordle) ask() []rune {
 		// Verify the suggestion has a valid length.
 		if len(attempt) != wordLength {
 			_, _ = fmt.Fprintf(os.Stderr, "invalid word length: expected %d, got %d\n", wordLength, len(attempt))
-			continue
 		} else {
 			return attempt
 		}
