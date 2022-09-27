@@ -3,7 +3,7 @@ package gordle_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-04/4_config_options/gordle"
+	"github.com/ablqk/tiny-go-projects/chapter-04/final/gordle"
 )
 
 func TestReadCorpus(t *testing.T) {

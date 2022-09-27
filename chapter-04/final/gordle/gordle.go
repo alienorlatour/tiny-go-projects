@@ -9,6 +9,9 @@ import (
 
 // New returns a Gordle variable, which can be used to Play!
 func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
+	if len(corpus) == 0 {
+		return nil, ErrCorpusIsEmpty
+	}
 	g := &Gordle{
 		reader:      bufio.NewReader(os.Stdin), // read from stdin by default
 		maxAttempts: -1,                        // no maximum number of attempts by default

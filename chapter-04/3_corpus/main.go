@@ -15,7 +15,10 @@ func main() {
 	}
 
 	// Create the game.
-	g := gordle.New(os.Stdin, corpus, maxAttempts)
+	g, err := gordle.New(os.Stdin, corpus, maxAttempts)
+	if err != nil {
+		panic(err)
+	}
 
 	// Run the game ! It will end when it's over.
 	g.Play()

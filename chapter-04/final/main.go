@@ -3,7 +3,7 @@ package main
 import (
 	_ "embed"
 
-	"tiny-go-projects/chapter04/gordle"
+	"github.com/ablqk/tiny-go-projects/chapter-04/final/gordle"
 )
 
 const maxAttempts = 6

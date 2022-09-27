@@ -16,18 +16,23 @@ type Gordle struct {
 	solutionChecker *solutionChecker
 }
 
+const ErrEmptyCorpus = corpusError("empty corpus")
+
 // New returns a Gordle variable, which can be used to Play!
-func New(reader io.Reader, corpus []string, maxAttempts int) *Gordle {
+func New(reader io.Reader, corpus []string, maxAttempts int) (*Gordle, error) {
+	if len(corpus) == 0 {
+		return nil, ErrEmptyCorpus
+	}
 	g := &Gordle{
 		reader:      bufio.NewReader(reader),
-		solution:    pickWord(corpus), // pick a random word from the corpus
+		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
 	}
 	fmt.Println("Welcome to Gordle!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 
-	return g
+	return g, nil
 }
 
 // Play runs the game.
