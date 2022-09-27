@@ -2,7 +2,6 @@ package gordle
 
 import (
 	"bufio"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -39,9 +38,23 @@ func TestGordleAsk(t *testing.T) {
 			g := Gordle{reader: tc.reader}
 
 			got := g.ask()
-			if !reflect.DeepEqual(got, tc.want) {
+			if !compareRunes(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
 	}
+}
+
+// compareRunes compares two slices and returns whether they have the same elements.
+func compareRunes(s1, s2 []rune) bool {
+	if len(s1) != len(s2) {
+		return false
+	}
+
+	for i, v1 := range s1 {
+		if v1 != s2[i] {
+			return false
+		}
+	}
+	return true
 }

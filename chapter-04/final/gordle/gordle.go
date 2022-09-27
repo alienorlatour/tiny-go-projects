@@ -32,7 +32,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 // Play runs the game. It will exit when the maximum number of attempts was reached, or if the word was found.
 func (g *Gordle) Play() {
 	// break condition: we've reached the maximum number of attempts
-	for currentAttempt := 0; currentAttempt < g.maxAttempts; currentAttempt++ {
+	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
 		word := g.ask()
 

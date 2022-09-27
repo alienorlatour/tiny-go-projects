@@ -64,9 +64,21 @@ func Test_solutionChecker_check(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 
 			statuses := tc.sc.check(tc.attempt)
-			if !compare(tc.expectedStatuses, statuses) {
+			if !compareStatus(tc.expectedStatuses, statuses) {
 				t.Errorf("attempt: %q, got the wrong feedback, expected %v, got %v", string(tc.attempt), tc.expectedStatuses, statuses)
 			}
 		})
 	}
+}
+
+func compareStatus(lhs, rhs []status) bool {
+	if len(lhs) != len(rhs) {
+		return false
+	}
+	for index, value := range lhs {
+		if value != rhs[index] {
+			return false
+		}
+	}
+	return true
 }

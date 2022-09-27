@@ -40,7 +40,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 // Play runs the game.
 func (g *Gordle) Play() {
 	// break condition: we've reached the maximum number of attempts
-	for currentAttempt := 0; currentAttempt < g.maxAttempts; currentAttempt++ {
+	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
 		attempt := g.ask()
 

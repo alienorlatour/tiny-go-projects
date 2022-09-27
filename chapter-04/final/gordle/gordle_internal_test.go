@@ -3,7 +3,6 @@ package gordle
 import (
 	"bufio"
 	"errors"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -73,19 +72,21 @@ func TestGordleAsk(t *testing.T) {
 				solutionChecker: &solutionChecker{solution: tc.want}}
 
 			got := g.ask()
-			if !reflect.DeepEqual(got, tc.want) {
+			if !compareRunes(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
 	}
 }
 
-func compare(lhs, rhs []status) bool {
-	if len(lhs) != len(rhs) {
+// compareRunes compares two slices and returns whether they have the same elements.
+func compareRunes(s1, s2 []rune) bool {
+	if len(s1) != len(s2) {
 		return false
 	}
-	for index, value := range lhs {
-		if value != rhs[index] {
+
+	for i, v1 := range s1 {
+		if v1 != s2[i] {
 			return false
 		}
 	}
