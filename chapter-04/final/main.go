@@ -2,30 +2,14 @@ package main
 
 import (
 	_ "embed"
-	"errors"
-	"os"
-	"strings"
 
 	"tiny-go-projects/chapter04/gordle"
 )
 
-func readCorpus(path string) ([]string, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	// we expect the corpus to be a line-separated list of words
-	words := strings.Split(string(data), "\n")
-	if len(words) == 0 {
-		return nil, errors.New("corpus is empty")
-	}
-	return words, nil
-}
-
 const maxAttempts = 6
 
 func main() {
-	corpus, err := readCorpus("corpus/english.txt")
+	corpus, err := gordle.ReadCorpus("corpus/english.txt")
 	if err != nil {
 		panic(err)
 	}
