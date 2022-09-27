@@ -1,7 +1,6 @@
 package gordle
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -35,10 +34,7 @@ type feedback []status
 // String implements the Stringer interface for a slice of status.
 func (fb feedback) String() string {
 	sb := strings.Builder{}
-	for i, s := range fb {
-		if i != 0 {
-			sb.WriteString(" ")
-		}
+	for _, s := range fb {
 		sb.WriteString(s.String())
 
 	}
@@ -49,10 +45,7 @@ func (fb feedback) String() string {
 // It is used only to benchmark it with the strings.Builder version.
 func (fb feedback) StringConcat() string {
 	var output string
-	for i, s := range fb {
-		if i != 0 {
-			output += fmt.Sprintf(" ")
-		}
+	for _, s := range fb {
 		output += s.String()
 	}
 	return output

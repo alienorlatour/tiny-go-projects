@@ -9,3 +9,6 @@ test:
 
 cover:
 	go test -cover
+
+benchmark:
+	go test ./... -run=^$ bench=. --benchmem

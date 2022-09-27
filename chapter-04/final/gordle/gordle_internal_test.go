@@ -72,7 +72,7 @@ func TestGordleAsk(t *testing.T) {
 				solutionChecker: &solutionChecker{solution: tc.want}}
 
 			got := g.ask()
-			if !compareRunes(got, tc.want) {
+			if !sameContents(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
@@ -80,7 +80,7 @@ func TestGordleAsk(t *testing.T) {
 }
 
 // compareRunes compares two slices and returns whether they have the same elements.
-func compareRunes(s1, s2 []rune) bool {
+func sameContents(s1, s2 []rune) bool {
 	if len(s1) != len(s2) {
 		return false
 	}

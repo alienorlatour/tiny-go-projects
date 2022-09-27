@@ -32,10 +32,7 @@ type feedback []status
 // String implements the Stringer interface for a slice of status.
 func (fb feedback) String() string {
 	sb := strings.Builder{}
-	for i, s := range fb {
-		if i != 0 {
-			sb.WriteString(" ")
-		}
+	for _, s := range fb {
 		sb.WriteString(s.String())
 	}
 	return sb.String()
