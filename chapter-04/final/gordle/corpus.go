@@ -31,7 +31,7 @@ func ReadCorpus(path string) ([]string, error) {
 // pickWord returns a random word from the corpus
 func pickWord(corpus []string) []rune {
 	rand.Seed(time.Now().UTC().UnixNano())
-	index := rand.Int() % len(corpus)
+	index := rand.Intn(len(corpus))
 
 	return []rune(strings.ToUpper(corpus[index]))
 }
