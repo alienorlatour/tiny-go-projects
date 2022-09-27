@@ -16,12 +16,10 @@ type Gordle struct {
 	solutionChecker *solutionChecker
 }
 
-const ErrEmptyCorpus = corpusError("empty corpus")
-
 // New returns a Gordle variable, which can be used to Play!
 func New(reader io.Reader, corpus []string, maxAttempts int) (*Gordle, error) {
 	if len(corpus) == 0 {
-		return nil, ErrEmptyCorpus
+		return nil, ErrCorpusIsEmpty
 	}
 	g := &Gordle{
 		reader:      bufio.NewReader(reader),
