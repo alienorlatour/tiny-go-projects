@@ -13,22 +13,22 @@ func TestParseNumber(t *testing.T) {
 	}{
 		"2 decimal digits": {
 			amount:   "1.52",
-			expected: number{integerPart: 1, decimalPart: 52, toUnit: 2},
+			expected: number{integerPart: 1, decimalPart: 52, precision: 2},
 			err:      nil,
 		},
 		"no decimal digits": {
 			amount:   "1",
-			expected: number{integerPart: 1, decimalPart: 0, toUnit: 0},
+			expected: number{integerPart: 1, decimalPart: 0, precision: 0},
 			err:      nil,
 		},
 		"suffix 0 as decimal digits": {
 			amount:   "1.50",
-			expected: number{integerPart: 1, decimalPart: 50, toUnit: 2},
+			expected: number{integerPart: 1, decimalPart: 50, precision: 2},
 			err:      nil,
 		},
 		"prefix 0 as decimal digits": {
 			amount:   "1.02",
-			expected: number{integerPart: 1, decimalPart: 2, toUnit: 2},
+			expected: number{integerPart: 1, decimalPart: 2, precision: 2},
 			err:      nil,
 		},
 		"invalid decimal part": {
@@ -77,7 +77,7 @@ func TestNumberString(t *testing.T) {
 			n: number{
 				integerPart: 15,
 				decimalPart: 2,
-				toUnit:      1,
+				precision:   1,
 			},
 			expected: "15.2",
 		},
@@ -85,9 +85,17 @@ func TestNumberString(t *testing.T) {
 			n: number{
 				integerPart: 15,
 				decimalPart: 2,
-				toUnit:      2,
+				precision:   2,
 			},
 			expected: "15.02",
+		},
+		"15.0200": {
+			n: number{
+				integerPart: 15,
+				decimalPart: 200,
+				precision:   4,
+			},
+			expected: "15.0200",
 		},
 	}
 
@@ -103,106 +111,142 @@ func TestNumberString(t *testing.T) {
 
 func TestNumberApplyChangeRate(t *testing.T) {
 	tt := map[string]struct {
-		in       number
-		rate     changeRate
-		expected number
+		in              number
+		rate            changeRate
+		targetPrecision int
+		expected        number
 	}{
 		"1.52 * 1": {
 			in: number{
 				integerPart: 1,
 				decimalPart: 52,
-				toUnit:      2,
+				precision:   2,
 			},
-			rate: 1,
+			rate:            1,
+			targetPrecision: 4,
 			expected: number{
 				integerPart: 1,
-				decimalPart: 52,
-				toUnit:      2,
+				decimalPart: 5200,
+				precision:   4,
 			},
 		},
 		"2.50 * 4": {
 			in: number{
 				integerPart: 2,
 				decimalPart: 50,
-				toUnit:      2,
+				precision:   2,
 			},
-			rate: 4,
+			rate:            4,
+			targetPrecision: 2,
 			expected: number{
 				integerPart: 10,
 				decimalPart: 0,
-				toUnit:      2,
+				precision:   2,
 			},
 		},
 		"4 * 2.5": {
 			in: number{
 				integerPart: 4,
 				decimalPart: 0,
-				toUnit:      0,
+				precision:   0,
 			},
-			rate: 2.5,
+			rate:            2.5,
+			targetPrecision: 0,
 			expected: number{
 				integerPart: 10,
 				decimalPart: 0,
-				toUnit:      0,
+				precision:   0,
 			},
 		},
 		"3.14 * 2.52678": {
 			in: number{
 				integerPart: 3,
 				decimalPart: 14,
-				toUnit:      2,
+				precision:   2,
 			},
-			rate: 2.52678,
+			rate:            2.52678,
+			targetPrecision: 2,
 			expected: number{
 				integerPart: 7,
 				decimalPart: 93,
-				toUnit:      2,
+				precision:   2,
 			},
 		},
 		"1.1 * 10": {
 			in: number{
 				integerPart: 1,
 				decimalPart: 1,
-				toUnit:      1,
+				precision:   1,
 			},
-			rate: 10,
+			rate:            10,
+			targetPrecision: 1,
 			expected: number{
 				integerPart: 11,
 				decimalPart: 0,
-				toUnit:      1,
+				precision:   1,
 			},
 		},
 		"1_000_000_000.01 * 2": {
 			in: number{
 				integerPart: 1_000_000_000,
 				decimalPart: 1,
-				toUnit:      2,
+				precision:   2,
 			},
-			rate: 2,
+			rate:            2,
+			targetPrecision: 2,
 			expected: number{
 				integerPart: 2_000_000_000,
 				decimalPart: 2,
-				toUnit:      2,
+				precision:   2,
 			},
 		},
 		"265_413.87 * 5.05935e-5": {
 			in: number{
 				integerPart: 265_413,
 				decimalPart: 87,
-				toUnit:      2,
+				precision:   2,
 			},
-			rate: 5.05935e-5,
+			rate:            5.05935e-5,
+			targetPrecision: 2,
 			expected: number{
 				integerPart: 13,
 				decimalPart: 43,
-				toUnit:      2,
+				precision:   2,
+			},
+		},
+		"265_413 * 1": {
+			in: number{
+				integerPart: 265_413,
+				decimalPart: 0,
+				precision:   0,
+			},
+			rate:            1,
+			targetPrecision: 3,
+			expected: number{
+				integerPart: 265413,
+				decimalPart: 0,
+				precision:   3,
+			},
+		},
+		"2 * 1.337": {
+			in: number{
+				integerPart: 2,
+				decimalPart: 0,
+				precision:   0,
+			},
+			rate:            1.337,
+			targetPrecision: 5,
+			expected: number{
+				integerPart: 2,
+				decimalPart: 67400,
+				precision:   5,
 			},
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := tc.in.applyChangeRate(tc.rate)
+			got := tc.in.applyChangeRate(tc.rate, tc.targetPrecision)
 			if got != tc.expected {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}

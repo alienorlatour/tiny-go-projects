@@ -2,7 +2,7 @@ package money
 
 import "fmt"
 
-func Convert(amount, from, to string) (string, error) {
+func Convert(amount, from, to string, targetPrecision int) (string, error) {
 	// parse
 	n, err := parseNumber(amount)
 	if err != nil {
@@ -15,7 +15,7 @@ func Convert(amount, from, to string) (string, error) {
 		return "", fmt.Errorf("%w: %s", errUnknownChangeRate, err.Error())
 	}
 	// convert
-	convertedValue := n.applyChangeRate(r)
+	convertedValue := n.applyChangeRate(r, targetPrecision)
 
 	// format
 	return convertedValue.String(), nil
