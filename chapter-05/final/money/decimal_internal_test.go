@@ -193,9 +193,9 @@ func TestNumberApplyChangeRate(t *testing.T) {
 			},
 			rate: 5.05935e-5,
 			expected: number{
-				integerPart: 2,
-				decimalPart: 0,
-				toUnit:      8,
+				integerPart: 13,
+				decimalPart: 43,
+				toUnit:      2,
 			},
 		},
 	}
