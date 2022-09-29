@@ -22,7 +22,7 @@ func TestConvert(t *testing.T) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
-				if got != "53.00" {
+				if got != "53.06" {
 					t.Errorf("expected 53.06, got %q", got)
 				}
 			},
@@ -31,7 +31,7 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(tc.amount, tc.from, tc.to, tc.targetPrecision)
+			got, err := money.Convert(tc.amount, tc.from, tc.to)
 			tc.validate(t, got, err)
 		})
 	}
