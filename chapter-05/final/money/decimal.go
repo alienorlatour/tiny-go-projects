@@ -15,7 +15,7 @@ type number struct {
 	// the decimal part of the number
 	decimalPart int
 	// precision of the decimal part, as the exponent of a power of 10
-	toUnit int
+	precision int
 }
 
 const (
@@ -44,27 +44,27 @@ func parseNumber(value string) (number, error) {
 
 	precision := len(decPart)
 
-	return number{integerPart: i, decimalPart: d, toUnit: precision}, nil
+	return number{integerPart: i, decimalPart: d, precision: precision}, nil
 }
 
 // applyChangeRate returns a new number representing n multiplied by the rate.
 // The precision is the same in and out.
-func (n number) applyChangeRate(rate changeRate) number {
+func (n number) applyChangeRate(rate changeRate, toPrecision int) number {
 	converted := n.float() * float64(rate)
 
 	floor := math.Floor(converted)
-	decimal := math.Round((converted - floor) * math.Pow10(n.toUnit))
+	decimal := math.Round((converted - floor) * math.Pow10(toPrecision))
 
 	return number{
 		integerPart: int(floor),
 		decimalPart: int(decimal),
-		toUnit:      n.toUnit,
+		precision:   toPrecision,
 	}
 }
 
 func (n number) float() float64 {
 	f := float64(n.integerPart)
-	f += float64(n.decimalPart) * math.Pow10(-n.toUnit)
+	f += float64(n.decimalPart) * math.Pow10(-n.precision)
 
 	return f
 }
@@ -72,7 +72,7 @@ func (n number) float() float64 {
 // String implements stringer and returns the number formatted as
 // digits optionally a decimal point followed by digits.
 func (n number) String() string {
-	format := fmt.Sprintf("%%d.%%0%dd", n.toUnit)
+	format := fmt.Sprintf("%%d.%%0%dd", n.precision)
 
 	return fmt.Sprintf(format, n.integerPart, n.decimalPart)
 }
