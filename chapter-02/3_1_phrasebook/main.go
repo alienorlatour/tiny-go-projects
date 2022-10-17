@@ -9,11 +9,11 @@ func main() {
 	fmt.Println(greeting)
 }
 
-// locale represents a language
-type locale string
+// language represents a language
+type language string
 
 // phrasebook holds greeting for each supported language
-var phrasebook = map[locale]string{
+var phrasebook = map[language]string{
 	"el": "Χαίρετε Κόσμε",
 	"en": "Hello world",
 	"fr": "Bonjour le monde",
@@ -23,7 +23,7 @@ var phrasebook = map[locale]string{
 }
 
 // greet says hello to the world in various languages
-func greet(l locale) string {
+func greet(l language) string {
 	greeting, ok := phrasebook[l]
 	if !ok {
 		return fmt.Sprintf("unsupported language: %q", l)

@@ -7,11 +7,11 @@ func main() {
 	fmt.Println(greeting)
 }
 
-// locale is used as the language’s abbreviation
-type locale string
+// language represents the language’s code
+type language string
 
 // greet says hello to the world in the specified language
-func greet(l locale) string {
+func greet(l language) string {
 	switch l {
 	case "en":
 		return "Hello world"

@@ -10,41 +10,41 @@ func ExampleMain() {
 
 func TestGreet(t *testing.T) {
 	type scenario struct {
-		language         locale
+		lang             language
 		expectedGreeting string
 	}
 
 	var tests = map[string]scenario{
 		"English": {
-			language:         "en",
+			lang:             "en",
 			expectedGreeting: "Hello world",
 		},
 		"French": {
-			language:         "fr",
+			lang:             "fr",
 			expectedGreeting: "Bonjour le monde",
 		},
 		"Akkadian, not supported": {
-			language:         "akk",
+			lang:             "akk",
 			expectedGreeting: `unsupported language: "akk"`,
 		},
 		"Greek": {
-			language:         "el",
+			lang:             "el",
 			expectedGreeting: "Χαίρετε Κόσμε",
 		},
 		"Hebrew": {
-			language:         "he",
+			lang:             "he",
 			expectedGreeting: "שלום עולם",
 		},
 		"Urdu": {
-			language:         "ur",
+			lang:             "ur",
 			expectedGreeting: "ہیلو دنیا",
 		},
 		"Vietnamese": {
-			language:         "vi",
+			lang:             "vi",
 			expectedGreeting: "Xin chào Thế Giới",
 		},
 		"Empty": {
-			language:         "",
+			lang:             "",
 			expectedGreeting: `unsupported language: ""`,
 		},
 	}
@@ -52,7 +52,7 @@ func TestGreet(t *testing.T) {
 	// range over all the scenarios
 	for scenarioName, tc := range tests {
 		t.Run(scenarioName, func(t *testing.T) {
-			greeting := greet(tc.language)
+			greeting := greet(tc.lang)
 
 			if greeting != tc.expectedGreeting {
 				t.Errorf("expected: %q, got: %q", tc.expectedGreeting, greeting)
