@@ -9,10 +9,10 @@ func ExampleMain() {
 }
 
 func TestGreet_English(t *testing.T) {
-	language := "en"
+	lang := "en"
 	expectedGreeting := "Hello world"
 
-	greeting := greet(locale(language))
+	greeting := greet(language(lang))
 
 	if greeting != expectedGreeting {
 		t.Errorf("expected: %q, got: %q", expectedGreeting, greeting)
@@ -20,10 +20,10 @@ func TestGreet_English(t *testing.T) {
 }
 
 func TestGreet_French(t *testing.T) {
-	language := "fr"
+	lang := "fr"
 	expectedGreeting := "Bonjour le monde"
 
-	greeting := greet(locale(language))
+	greeting := greet(language(lang))
 
 	if greeting != expectedGreeting {
 		t.Errorf("expected: %q, got: %q", expectedGreeting, greeting)
@@ -31,11 +31,11 @@ func TestGreet_French(t *testing.T) {
 }
 
 func TestGreet_Akkadian(t *testing.T) {
-	language := "akk"
+	lang := "akk"
 	// Akkadian is not implemented yet!
 	expectedGreeting := ""
 
-	greeting := greet(locale(language))
+	greeting := greet(language(lang))
 
 	if greeting != expectedGreeting {
 		t.Errorf("expected: %q, got: %q", expectedGreeting, greeting)
