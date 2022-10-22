@@ -1,8 +1,9 @@
 package money_test
 
 import (
-	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 	"testing"
+
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 func TestConvert(t *testing.T) {
