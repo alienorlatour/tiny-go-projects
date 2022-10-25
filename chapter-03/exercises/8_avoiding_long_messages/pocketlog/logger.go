@@ -8,18 +8,18 @@ import (
 
 // Logger is used to log information.
 type Logger struct {
-	level            Level
+	threshold        Level
 	output           io.Writer
 	maxMessageLength uint
 }
 
-// New returns you a logger, ready to log at the required threshold.
+// New returns you a logger, ready to logf at the required threshold.
 // Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
 // There is no default maximum length - messages aren't trimmed.
-func New(level Level, configFuncs ...ConfigFunc) *Logger {
+func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
 	lgr := &Logger{
-		level:            level,
+		threshold:        threshold,
 		output:           os.Stdout,
 		maxMessageLength: 0,
 	}
@@ -29,37 +29,37 @@ func New(level Level, configFuncs ...ConfigFunc) *Logger {
 	return lgr
 }
 
-// Debug formats and prints a message if the log level is debug or higher.
-func (l Logger) Debug(format string, args ...any) {
-	if l.level <= LevelDebug {
-		l.log(LevelDebug, format, args...)
+// Debugf formats and prints a message if the log level is debug or higher.
+func (l Logger) Debugf(format string, args ...any) {
+	if l.threshold <= LevelDebug {
+		l.logf(LevelDebug, format, args...)
 	}
 }
 
-// Info formats and prints a message if the log level is info or higher.
-func (l Logger) Info(format string, args ...any) {
-	if l.level <= LevelInfo {
-		l.log(LevelInfo, format, args...)
+// Infof formats and prints a message if the log level is info or higher.
+func (l Logger) Infof(format string, args ...any) {
+	if l.threshold <= LevelInfo {
+		l.logf(LevelInfo, format, args...)
 	}
 }
 
-// Error formats and prints a message if the log level is error or higher.
-func (l Logger) Error(format string, args ...any) {
-	if l.level <= LevelError {
-		l.log(LevelError, format, args...)
+// Errorf formats and prints a message if the log level is error or higher.
+func (l Logger) Errorf(format string, args ...any) {
+	if l.threshold <= LevelError {
+		l.logf(LevelError, format, args...)
 	}
 }
 
-// Log formats and prints a message if the log level is high enough
-func (l Logger) Log(lvl Level, format string, args ...any) {
-	if l.level <= lvl {
-		l.log(lvl, format, args...)
+// Logf formats and prints a message if the logf level is high enough
+func (l Logger) Logf(lvl Level, format string, args ...any) {
+	if l.threshold <= lvl {
+		l.logf(lvl, format, args...)
 	}
 }
 
-// log prints the message to the output.
+// logf prints the message to the output.
 // Add decorations here, if any.
-func (l Logger) log(lvl Level, format string, args ...any) {
+func (l Logger) logf(lvl Level, format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
 	// check the trimming is activated, and that we should apply it to this message
 	// checking the length in runes, as this won't print unexpected characters

@@ -4,19 +4,19 @@ import "fmt"
 
 // Logger is used to log information.
 type Logger struct {
-	level Level
+	threshold Level
 }
 
 // New returns you a logger, ready to log at the required threshold.
 func New(level Level) *Logger {
 	return &Logger{
-		level: level,
+		threshold: level,
 	}
 }
 
 // Debug formats and prints a message if the log level is debug or higher.
 func (l Logger) Debug(format string, args ...any) {
-	if l.level <= LevelDebug {
+	if l.threshold <= LevelDebug {
 		fmt.Printf(format+"\n", args...)
 	}
 }

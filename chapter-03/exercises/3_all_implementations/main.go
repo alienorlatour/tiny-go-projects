@@ -8,5 +8,5 @@ func main() {
 	l := pocketlog.Logger{}
 
 	// This produces nothing
-	l.Debug("hello")
+	l.Debugf("hello")
 }

@@ -8,45 +8,45 @@ import (
 
 // Logger is used to log information.
 type Logger struct {
-	level  Level
-	output io.Writer
+	threshold Level
+	output    io.Writer
 }
 
-// New returns you a logger, ready to log at the required threshold.
+// New returns you a logger, ready to logf at the required threshold.
 // Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
-func New(level Level, configFuncs ...ConfigFunc) *Logger {
-	lgr := &Logger{level: level, output: os.Stdout}
+func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
+	lgr := &Logger{threshold: level, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
 	}
 	return lgr
 }
 
-// Debug formats and prints a message if the log level is debug or higher.
-func (l Logger) Debug(format string, args ...any) {
-	if l.level <= LevelDebug {
-		l.log(LevelDebug, format, args...)
+// Debugf formats and prints a message if the log level is debug or higher.
+func (l Logger) Debugf(format string, args ...any) {
+	if l.threshold <= LevelDebug {
+		l.logf(LevelDebug, format, args...)
 	}
 }
 
-// Info formats and prints a message if the log level is info or higher.
-func (l Logger) Info(format string, args ...any) {
-	if l.level <= LevelInfo {
-		l.log(LevelInfo, format, args...)
+// Infof formats and prints a message if the log level is info or higher.
+func (l Logger) Infof(format string, args ...any) {
+	if l.threshold <= LevelInfo {
+		l.logf(LevelInfo, format, args...)
 	}
 }
 
-// Error formats and prints a message if the log level is error or higher.
-func (l Logger) Error(format string, args ...any) {
-	if l.level <= LevelError {
-		l.log(LevelError, format, args...)
+// Errorf formats and prints a message if the log level is error or higher.
+func (l Logger) Errorf(format string, args ...any) {
+	if l.threshold <= LevelError {
+		l.logf(LevelError, format, args...)
 	}
 }
 
-// log prints the message to the output.
+// logf prints the message to the output.
 // Add decorations here, if any.
-func (l Logger) log(lvl Level, format string, args ...any) {
+func (l Logger) logf(lvl Level, format string, args ...any) {
 	message := fmt.Sprintf(format, args...)
 	_, _ = fmt.Fprintf(l.output, "%s %s\n", lvl, message)
 }

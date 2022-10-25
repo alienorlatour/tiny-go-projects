@@ -9,7 +9,7 @@ import (
 
 // Logger is used to log information. Use New to get a bespoke logger!
 type Logger struct {
-	level       Level
+	threshold   Level
 	output      io.Writer
 	outputMutex sync.Mutex
 }
@@ -17,8 +17,8 @@ type Logger struct {
 // New returns you a logger, ready to log at the required threshold.
 // Give it a list of configuration functions to tune it at your will
 // The default output is Stdout.
-func New(level Level, configFuncs ...ConfigFunc) *Logger {
-	lgr := &Logger{level: level, output: os.Stdout}
+func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
+	lgr := &Logger{threshold: level, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
 	}
@@ -42,7 +42,7 @@ func (lgr *Logger) Error(format string, args ...any) {
 
 // Log formats and prints a message if the log level is high enough
 func (lgr *Logger) Log(lvl Level, format string, args ...any) {
-	if lgr.level <= lvl {
+	if lgr.threshold <= lvl {
 		lgr.log(lvl, format, args...)
 	}
 }
