@@ -11,8 +11,8 @@ func main() {
 type language string
 
 // greet says hello to the world in the specified language
-func greet(l language) string {
-	switch l {
+func greet(lang language) string {
+	switch lang {
 	case "en":
 		return "Hello world"
 	case "fr":
