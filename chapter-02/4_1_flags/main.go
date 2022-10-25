@@ -6,11 +6,11 @@ import (
 )
 
 func main() {
-	var l string
-	flag.StringVar(&l, "lang", "en", "The required language, e.g. en, ur...")
+	var lang string
+	flag.StringVar(&lang, "lang", "en", "The required language, e.g. en, ur...")
 	flag.Parse()
 
-	greeting := greet(language(l))
+	greeting := greet(language(lang))
 	fmt.Println(greeting)
 }
 
@@ -19,12 +19,12 @@ type language string
 
 // phrasebook holds greeting for each supported language
 var phrasebook = map[language]string{
-	"el": "Χαίρετε Κόσμε",
-	"en": "Hello world",
-	"fr": "Bonjour le monde",
-	"he": "שלום עולם",
-	"ur": "ہیلو دنیا",
-	"vi": "Xin chào Thế Giới",
+	"el": "Χαίρετε Κόσμε",     // Greek
+	"en": "Hello world",       // English
+	"fr": "Bonjour le monde",  // French
+	"he": "שלום עולם",         // Hebrew
+	"ur": "ہیلو دنیا",         // Urdu
+	"vi": "Xin chào Thế Giới", // Vietnamese
 }
 
 // greet says hello to the world
