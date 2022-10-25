@@ -22,34 +22,34 @@ func (s *Solution) Feedback(attempt []rune) []status {
 	// reset the positions map
 	s.positions = make(map[rune][]int)
 
-	for i, letter := range s.word {
+	for i, character := range s.word {
 		// appending to a nil slice will return a slice, this is safe
-		s.positions[letter] = append(s.positions[letter], i)
+		s.positions[character] = append(s.positions[character], i)
 	}
 
 	feedback := make([]status, len(s.word))
 
 	// scan the attempts and check if they are in the solution
-	for i, letter := range attempt {
+	for i, character := range attempt {
 		// keep track of already seen characters
-		correctness := s.checkLetterAtPosition(letter, i)
+		correctness := s.checkCharacterAtPosition(character, i)
 		if correctness == correctPosition {
-			// remove found letter from positions
-			s.markLetterAsSeen(letter, i)
+			// remove found character from positions
+			s.markCharacterAsSeen(character, i)
 			feedback[i] = correctPosition
 		}
 	}
 
-	for i, letter := range attempt {
+	for i, character := range attempt {
 		if feedback[i] == correctPosition {
 			continue
 		}
 
-		correctness := s.checkLetterAtPosition(letter, i)
+		correctness := s.checkCharacterAtPosition(character, i)
 
 		if correctness == wrongPosition {
 			// remove the left-most occurrence
-			s.positions[letter] = s.positions[letter][1:]
+			s.positions[character] = s.positions[character][1:]
 		}
 
 		feedback[i] = correctness
@@ -58,28 +58,28 @@ func (s *Solution) Feedback(attempt []rune) []status {
 	return feedback
 }
 
-// markLetterAsSeen removes one occurrence of the letter from the positions map.
-func (s *Solution) markLetterAsSeen(letter rune, positionInWord int) {
-	positions := s.positions[letter]
+// markCharacterAsSeen removes one occurrence of the character from the positions map.
+func (s *Solution) markCharacterAsSeen(character rune, positionInWord int) {
+	positions := s.positions[character]
 
 	if len(positions) == 0 {
-		s.positions[letter] = nil
+		s.positions[character] = nil
 	}
 
 	for i, pos := range positions {
 		if pos == positionInWord {
-			// remove the seen letter from the list
-			s.positions[letter] = append(positions[:i], positions[i+1:]...)
+			// remove the seen character from the list
+			s.positions[character] = append(positions[:i], positions[i+1:]...)
 			// we found it
 			return
 		}
 	}
 }
 
-// checkLetterAtPosition returns the correctness of a letter
+// checkCharacterAtPosition returns the correctness of a character
 // at the specified index in the solution.
-func (s *Solution) checkLetterAtPosition(letter rune, index int) status {
-	positions, ok := s.positions[letter]
+func (s *Solution) checkCharacterAtPosition(character rune, index int) status {
+	positions, ok := s.positions[character]
 	if !ok || len(positions) == 0 {
 		return absentCharacter
 	}

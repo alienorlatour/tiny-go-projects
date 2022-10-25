@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "embed"
+	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-04/final/gordle"
+	"github.com/ablqk/tiny-go-projects/chapter-04/3_corpus/gordle"
 )
 
 const maxAttempts = 6
@@ -15,8 +15,7 @@ func main() {
 	}
 
 	// Create the game.
-	// Use the default values for every parameter, but set the default number of max attempts to 6.
-	g, err := gordle.New(corpus, gordle.WithMaxAttempts(maxAttempts))
+	g, err := gordle.New(os.Stdin, corpus, maxAttempts)
 	if err != nil {
 		panic(err)
 	}

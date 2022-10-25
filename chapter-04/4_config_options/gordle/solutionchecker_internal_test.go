@@ -64,14 +64,14 @@ func Test_solutionChecker_check(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 
 			statuses := tc.sc.check(tc.attempt)
-			if !compareStatus(tc.expectedStatuses, statuses) {
+			if !compare(tc.expectedStatuses, statuses) {
 				t.Errorf("attempt: %q, got the wrong feedback, expected %v, got %v", string(tc.attempt), tc.expectedStatuses, statuses)
 			}
 		})
 	}
 }
 
-func compareStatus(lhs, rhs []status) bool {
+func compare(lhs, rhs []status) bool {
 	if len(lhs) != len(rhs) {
 		return false
 	}

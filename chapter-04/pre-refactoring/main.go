@@ -12,11 +12,11 @@ import (
 	"tiny-go-projects/chapter04/wordle"
 )
 
-//go:embed corpus_5letters.txt
+//go:embed corpus_5characters.txt
 var corpus string
 
 const (
-	// all words in the corpus have this many letters
+	// all words in the corpus have this many characters
 	wordLength = 5
 	// the number of attempts the player has to find the word
 	maxTries = 6

@@ -7,40 +7,6 @@ import (
 	"testing"
 )
 
-func TestGordleValidateAttempt(t *testing.T) {
-	g := &Gordle{solution: []rune("SAUNA")}
-	tt := map[string]struct {
-		word     []rune
-		expected error
-	}{
-		"nominal": {
-			word:     []rune("hello"),
-			expected: nil,
-		},
-		"too long": {
-			word:     []rune("pocket"),
-			expected: errInvalidWordLength,
-		},
-		"empty": {
-			word:     []rune(""),
-			expected: errInvalidWordLength,
-		},
-		"nil": {
-			word:     nil,
-			expected: errInvalidWordLength,
-		},
-	}
-
-	for name, tc := range tt {
-		t.Run(name, func(t *testing.T) {
-			err := g.validateAttempt(tc.word)
-			if !errors.Is(err, tc.expected) {
-				t.Errorf("%c, expected %q, got %q", tc.word, tc.expected, err)
-			}
-		})
-	}
-}
-
 func TestGordleAsk(t *testing.T) {
 	tt := map[string]struct {
 		reader *bufio.Reader
@@ -72,7 +38,7 @@ func TestGordleAsk(t *testing.T) {
 				solutionChecker: &solutionChecker{solution: tc.want}}
 
 			got := g.ask()
-			if !sameContents(got, tc.want) {
+			if !compareRunes(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
@@ -80,7 +46,7 @@ func TestGordleAsk(t *testing.T) {
 }
 
 // compareRunes compares two slices and returns whether they have the same elements.
-func sameContents(s1, s2 []rune) bool {
+func compareRunes(s1, s2 []rune) bool {
 	if len(s1) != len(s2) {
 		return false
 	}
@@ -91,4 +57,38 @@ func sameContents(s1, s2 []rune) bool {
 		}
 	}
 	return true
+}
+
+func TestGordleValidateAttempt(t *testing.T) {
+	g := &Gordle{}
+	tt := map[string]struct {
+		word     []rune
+		expected error
+	}{
+		"nominal": {
+			word:     []rune("hello"),
+			expected: nil,
+		},
+		"too long": {
+			word:     []rune("pocket"),
+			expected: errInvalidWordLength,
+		},
+		"empty": {
+			word:     []rune(""),
+			expected: errInvalidWordLength,
+		},
+		"nil": {
+			word:     nil,
+			expected: errInvalidWordLength,
+		},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			err := g.validateAttempt(tc.word)
+			if !errors.Is(err, tc.expected) {
+				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)
+			}
+		})
+	}
 }

@@ -1,5 +1,6 @@
 package gordle
 
+// solutionChecker holds all the information we need to check the solution.
 type solutionChecker struct {
 	// the solution word
 	solution []rune
@@ -7,7 +8,7 @@ type solutionChecker struct {
 	positions map[rune][]int
 }
 
-// checkAgainstSolution checks every character of the word against the solution.
+// check verifies every character of the word against the solution.
 func (sc *solutionChecker) check(word []rune) feedback {
 	// reset the positions map
 	sc.reset()
@@ -76,6 +77,7 @@ func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) s
 	return wrongPosition
 }
 
+// reset rebuilds the initial map holding the characters and their positions.
 func (sc *solutionChecker) reset() {
 	sc.positions = make(map[rune][]int)
 	for i, character := range sc.solution {
