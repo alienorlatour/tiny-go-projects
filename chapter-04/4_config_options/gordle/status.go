@@ -11,11 +11,11 @@ const (
 	correctPosition
 )
 
-// String implements the Stringer interface
+// String implements the Stringer interface.
 func (s status) String() string {
 	switch s {
 	case absentCharacter:
-		return "⬜"
+		return "⬜️"
 	case wrongPosition:
 		return "🟡"
 	case correctPosition:
@@ -26,7 +26,7 @@ func (s status) String() string {
 	}
 }
 
-// feedback is a list of status, one per character of the word
+// feedback is a list of statuses, one per character of the word.
 type feedback []status
 
 // String implements the Stringer interface for a slice of statuses.
