@@ -13,12 +13,12 @@ func Test_solutionChecker_check(t *testing.T) {
 			sc:               &solutionChecker{solution: []rune("hertz")},
 			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
-		"double letter": {
+		"double character": {
 			attempt:          []rune("hello"),
 			sc:               &solutionChecker{solution: []rune("hello")},
 			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
-		"double letter with wrong answer": {
+		"double character with wrong answer": {
 			attempt:          []rune("helll"),
 			sc:               &solutionChecker{solution: []rune("hello")},
 			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, absentCharacter},
@@ -43,17 +43,17 @@ func Test_solutionChecker_check(t *testing.T) {
 			sc:               &solutionChecker{solution: []rune("hello")},
 			expectedStatuses: []status{wrongPosition, absentCharacter, correctPosition, absentCharacter, absentCharacter},
 		},
-		"swapped letters": {
+		"swapped characters": {
 			attempt:          []rune("holle"),
 			sc:               &solutionChecker{solution: []rune("hello")},
 			expectedStatuses: []status{correctPosition, wrongPosition, correctPosition, correctPosition, wrongPosition},
 		},
-		"absent letter": {
+		"absent character": {
 			attempt:          []rune("hulfo"),
 			sc:               &solutionChecker{solution: []rune("helfo")},
 			expectedStatuses: []status{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
-		"absent letter and incorrect": {
+		"absent character and incorrect": {
 			attempt:          []rune("hulpp"),
 			sc:               &solutionChecker{solution: []rune("helpo")},
 			expectedStatuses: []status{correctPosition, absentCharacter, correctPosition, correctPosition, absentCharacter},
@@ -64,9 +64,21 @@ func Test_solutionChecker_check(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 
 			statuses := tc.sc.check(tc.attempt)
-			if !compare(tc.expectedStatuses, statuses) {
+			if !compareStatus(tc.expectedStatuses, statuses) {
 				t.Errorf("attempt: %q, got the wrong feedback, expected %v, got %v", string(tc.attempt), tc.expectedStatuses, statuses)
 			}
 		})
 	}
+}
+
+func compareStatus(lhs, rhs []status) bool {
+	if len(lhs) != len(rhs) {
+		return false
+	}
+	for index, value := range lhs {
+		if value != rhs[index] {
+			return false
+		}
+	}
+	return true
 }

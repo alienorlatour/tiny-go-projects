@@ -2,7 +2,7 @@ package gordle
 
 import "strings"
 
-// status describes the validity of a letter in a word.
+// status describes the validity of a character in a word.
 type status int
 
 const (
@@ -11,9 +11,8 @@ const (
 	correctPosition
 )
 
-// toString returns a string that represents the status.
-// We didn't implement Stringer here, as we don't plan on calling fmt.Print on
-func (s status) toString() string {
+// String implements the Stringer interface
+func (s status) String() string {
 	switch s {
 	case absentCharacter:
 		return "⬜"
@@ -27,17 +26,14 @@ func (s status) toString() string {
 	}
 }
 
-// feedback is a list of status, one per letter of the word
+// feedback is a list of status, one per character of the word
 type feedback []status
 
 // String implements the Stringer interface for a slice of status.
 func (fb feedback) String() string {
 	sb := strings.Builder{}
-	for i, s := range fb {
-		if i != 0 {
-			sb.WriteString(" ")
-		}
-		sb.WriteString(s.toString())
+	for _, s := range fb {
+		sb.WriteString(s.String())
 	}
 	return sb.String()
 }
