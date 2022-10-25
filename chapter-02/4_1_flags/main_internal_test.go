@@ -9,12 +9,12 @@ func ExampleMain() {
 }
 
 func TestGreet(t *testing.T) {
-	type scenario struct {
+	type testCase struct {
 		lang             language
 		expectedGreeting string
 	}
 
-	var tests = map[string]scenario{
+	var tests = map[string]testCase{
 		"English": {
 			lang:             "en",
 			expectedGreeting: "Hello world",
@@ -50,8 +50,8 @@ func TestGreet(t *testing.T) {
 	}
 
 	// range over all the scenarios
-	for scenarioName, tc := range tests {
-		t.Run(scenarioName, func(t *testing.T) {
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
 			greeting := greet(tc.lang)
 
 			if greeting != tc.expectedGreeting {
