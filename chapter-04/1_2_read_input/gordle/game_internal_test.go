@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestGordleAsk(t *testing.T) {
+func TestGameAsk(t *testing.T) {
 	tt := map[string]struct {
 		reader  *bufio.Reader
 		want    []rune
@@ -35,7 +35,7 @@ func TestGordleAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Gordle{reader: tc.reader}
+			g := Game{reader: tc.reader}
 
 			got := g.ask()
 			if !compareRunes(got, tc.want) {

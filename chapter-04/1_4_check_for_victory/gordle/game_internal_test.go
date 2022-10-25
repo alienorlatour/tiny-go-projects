@@ -7,14 +7,14 @@ import (
 	"testing"
 )
 
-func TestGordleAsk(t *testing.T) {
+func TestGameAsk(t *testing.T) {
 	tt := map[string]struct {
 		reader *bufio.Reader
 		want   []rune
 	}{
 		"5 characters in english": {
-			reader: bufio.NewReader(strings.NewReader("HELLO")),
-			want:   []rune("HELLO"),
+			reader: bufio.NewReader(strings.NewReader("hello")),
+			want:   []rune("hello"),
 		},
 		"5 characters in arabic": {
 			reader: bufio.NewReader(strings.NewReader("مرحبا")),
@@ -25,7 +25,7 @@ func TestGordleAsk(t *testing.T) {
 			want:   []rune("こんにちは"),
 		},
 		"3 characters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("こん\nこんにちは")),
+			reader: bufio.NewReader(strings.NewReader("こんに\nこんにちは")),
 			want:   []rune("こんにちは"),
 		},
 	}
@@ -56,7 +56,7 @@ func compareRunes(s1, s2 []rune) bool {
 	return true
 }
 
-func TestGordleValidateAttempt(t *testing.T) {
+func TestGameValidateAttempt(t *testing.T) {
 	tt := map[string]struct {
 		word     []rune
 		expected error

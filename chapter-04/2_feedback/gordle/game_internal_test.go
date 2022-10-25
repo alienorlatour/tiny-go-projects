@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestGordleAsk(t *testing.T) {
+func TestGameAsk(t *testing.T) {
 	tt := map[string]struct {
 		reader *bufio.Reader
 		want   []rune
@@ -56,7 +56,7 @@ func compareRunes(s1, s2 []rune) bool {
 	return true
 }
 
-func TestGordleValidateAttempt(t *testing.T) {
+func TestGameValidateAttempt(t *testing.T) {
 	tt := map[string]struct {
 		word     []rune
 		expected error

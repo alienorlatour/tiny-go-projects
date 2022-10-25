@@ -8,20 +8,20 @@ import (
 	"strings"
 )
 
-// Gordle holds all the information we need to play a game of gordle.
-type Gordle struct {
+// Game holds all the information we need to play a game of gordle.
+type Game struct {
 	reader          *bufio.Reader
 	solution        []rune
 	maxAttempts     int
 	solutionChecker *solutionChecker
 }
 
-// New returns a Gordle variable, which can be used to Play!
-func New(reader io.Reader, corpus []string, maxAttempts int) (*Gordle, error) {
+// New returns a Game variable, which can be used to Play!
+func New(reader io.Reader, corpus []string, maxAttempts int) (*Game, error) {
 	if len(corpus) == 0 {
 		return nil, ErrCorpusIsEmpty
 	}
-	g := &Gordle{
+	g := &Game{
 		reader:      bufio.NewReader(reader),
 		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
@@ -34,7 +34,7 @@ func New(reader io.Reader, corpus []string, maxAttempts int) (*Gordle, error) {
 }
 
 // Play runs the game.
-func (g *Gordle) Play() {
+func (g *Game) Play() {
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
@@ -57,7 +57,7 @@ func (g *Gordle) Play() {
 }
 
 // ask reads input until a valid suggestion is made (and returned).
-func (g *Gordle) ask() []rune {
+func (g *Game) ask() []rune {
 	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
 
 	for {
@@ -84,7 +84,7 @@ func (g *Gordle) ask() []rune {
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
-func (g *Gordle) validateAttempt(attempt []rune) error {
+func (g *Game) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}
