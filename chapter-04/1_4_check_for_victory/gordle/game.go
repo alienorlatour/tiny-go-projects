@@ -15,10 +15,10 @@ type Game struct {
 }
 
 // New returns a Game variable, which can be used to Play!
-func New(reader io.Reader, solution []rune, maxAttempts int) *Game {
+func New(reader io.Reader, solution string, maxAttempts int) *Game {
 	g := &Game{
 		reader:      bufio.NewReader(reader),
-		solution:    solution,
+		solution:    splitToCharacters(solution),
 		maxAttempts: maxAttempts,
 	}
 
@@ -79,4 +79,9 @@ func (g *Game) validateAttempt(attempt []rune) error {
 	}
 
 	return nil
+}
+
+// splitToCharacters is a naive implementation to turn a string into a list of characters.
+func splitToCharacters(solution string) []rune {
+	return []rune(solution)
 }

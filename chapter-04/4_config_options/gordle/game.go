@@ -21,9 +21,9 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 		return nil, ErrCorpusIsEmpty
 	}
 	g := &Game{
-		reader:      bufio.NewReader(os.Stdin),                 // read from stdin by default
-		maxAttempts: -1,                                        // no maximum number of attempts by default
-		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
+		reader:      bufio.NewReader(os.Stdin),                    // read from stdin by default
+		solution:    splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
+		maxAttempts: -1,                                           // no maximum number of attempts by default
 	}
 
 	// Apply the configuration functions after defining the default values, as they override them.
@@ -99,4 +99,9 @@ func (g *Game) validateAttempt(attempt []rune) error {
 	}
 
 	return nil
+}
+
+// splitToCharacters is a naive implementation to turn a string into a list of characters.
+func splitToUppercaseCharacters(solution string) []rune {
+	return []rune(strings.ToUpper(solution))
 }

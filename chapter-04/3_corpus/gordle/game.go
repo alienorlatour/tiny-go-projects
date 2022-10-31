@@ -23,7 +23,7 @@ func New(reader io.Reader, corpus []string, maxAttempts int) (*Game, error) {
 	}
 	g := &Game{
 		reader:      bufio.NewReader(reader),
-		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
+		solution:    splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
 	}
 
@@ -91,4 +91,9 @@ func (g *Game) validateAttempt(attempt []rune) error {
 	}
 
 	return nil
+}
+
+// splitToCharacters is a naive implementation to turn a string into a list of characters.
+func splitToUppercaseCharacters(solution string) []rune {
+	return []rune(strings.ToUpper(solution))
 }

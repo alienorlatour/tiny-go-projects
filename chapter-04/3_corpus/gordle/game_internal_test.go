@@ -14,7 +14,7 @@ func TestGameAsk(t *testing.T) {
 	}{
 		"5 characters in english": {
 			input: "hello",
-			want:  []rune("hello"),
+			want:  []rune("HELLO"),
 		},
 		"5 characters in arabic": {
 			input: "مرحبا",
