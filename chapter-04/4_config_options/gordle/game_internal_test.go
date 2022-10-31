@@ -60,7 +60,8 @@ func compareRunes(s1, s2 []rune) bool {
 }
 
 func TestGameValidateAttempt(t *testing.T) {
-	g := &Game{solution: []rune("hello")}
+	g, _ := New([]string{"hello"})
+
 	tt := map[string]struct {
 		word     []rune
 		expected error

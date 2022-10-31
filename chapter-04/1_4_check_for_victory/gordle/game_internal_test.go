@@ -32,7 +32,7 @@ func TestGameAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Gordle{reader: tc.reader, solution: tc.want}
+			g := Game{reader: tc.reader, solution: tc.want}
 
 			got := g.ask()
 			if !compareRunes(got, tc.want) {
@@ -81,7 +81,7 @@ func TestGameValidateAttempt(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := &Gordle{solution: []rune("hello")}
+			g := &Game{solution: []rune("hello")}
 
 			err := g.validateAttempt(tc.word)
 			if !errors.Is(err, tc.expected) {
