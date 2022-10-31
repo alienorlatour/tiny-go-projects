@@ -19,13 +19,13 @@ func New(reader io.Reader) *Game {
 	g := &Game{
 		reader: bufio.NewReader(reader),
 	}
-	fmt.Println("Welcome to Game!")
 
 	return g
 }
 
 // Play runs the game.
 func (g *Game) Play() {
+	fmt.Println("Welcome to Gordle!")
 
 	// ask for a valid word
 	attempt := g.ask()

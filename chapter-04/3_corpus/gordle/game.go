@@ -26,7 +26,6 @@ func New(reader io.Reader, corpus []string, maxAttempts int) (*Game, error) {
 		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
 		maxAttempts: maxAttempts,
 	}
-	fmt.Println("Welcome to Gordle!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 
@@ -35,6 +34,8 @@ func New(reader io.Reader, corpus []string, maxAttempts int) (*Game, error) {
 
 // Play runs the game.
 func (g *Game) Play() {
+	fmt.Println("Welcome to Gordlez<!")
+
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word

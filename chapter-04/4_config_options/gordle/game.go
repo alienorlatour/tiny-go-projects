@@ -25,7 +25,6 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 		maxAttempts: -1,                                        // no maximum number of attempts by default
 		solution:    []rune(strings.ToUpper(pickWord(corpus))), // pick a random word from the corpus
 	}
-	fmt.Println("Welcome to Game!")
 
 	// Apply the configuration functions after defining the default values, as they override them.
 	for _, cf := range cfs {
@@ -42,6 +41,8 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 
 // Play runs the game.
 func (g *Game) Play() {
+	fmt.Println("Welcome to Gordle!")
+
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word

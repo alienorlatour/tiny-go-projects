@@ -22,7 +22,6 @@ func New(reader io.Reader, solution []rune, maxAttempts int) *Game {
 		solution:    solution,
 		maxAttempts: maxAttempts,
 	}
-	fmt.Println("Welcome to Game!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 
@@ -31,6 +30,8 @@ func New(reader io.Reader, solution []rune, maxAttempts int) *Game {
 
 // Play runs the game.
 func (g *Game) Play() {
+	fmt.Println("Welcome to Gordle!")
+
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
