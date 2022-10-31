@@ -46,15 +46,15 @@ func (g *Game) Play() {
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
-		attempt := g.ask()
+		guess := g.ask()
 
 		// check it
-		fb := g.solutionChecker.check(attempt)
+		fb := g.solutionChecker.check(guess)
 
 		// print the feedback
 		fmt.Println(fb.String())
 
-		if string(attempt) == string(g.solution) {
+		if string(guess) == string(g.solution) {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}

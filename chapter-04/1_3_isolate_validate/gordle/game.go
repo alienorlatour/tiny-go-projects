@@ -28,9 +28,9 @@ func (g *Game) Play() {
 	fmt.Println("Welcome to Gordle!")
 
 	// ask for a valid word
-	attempt := g.ask()
+	guess := g.ask()
 
-	fmt.Printf("Your guess is: %s\n", string(attempt))
+	fmt.Printf("Your guess is: %s\n", string(guess))
 }
 
 // ask reads input until a valid suggestion is made (and returned).
