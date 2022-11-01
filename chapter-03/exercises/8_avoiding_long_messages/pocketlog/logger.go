@@ -13,7 +13,7 @@ type Logger struct {
 	maxMessageLength uint
 }
 
-// New returns you a logger, ready to logf at the required threshold.
+// New returns you a logger, ready to log at the required threshold.
 // Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
 // There is no default maximum length - messages aren't trimmed.
