@@ -11,7 +11,7 @@ type Logger struct {
 	output    io.Writer
 }
 
-// New returns you a logger, ready to logf at the required threshold.
+// New returns you a logger, ready to log at the required threshold.
 // The default output is Stdout.
 func New(threshold Level, output io.Writer) *Logger {
 	return &Logger{
@@ -22,23 +22,29 @@ func New(threshold Level, output io.Writer) *Logger {
 
 // Debugf formats and prints a message if the log level is debug or higher.
 func (l Logger) Debugf(format string, args ...any) {
-	if l.threshold <= LevelDebug {
-		l.logf(format, args...)
+	if l.threshold > LevelDebug {
+		return
 	}
+
+	l.logf(format, args...)
 }
 
 // Infof formats and prints a message if the log level is info or higher.
 func (l Logger) Infof(format string, args ...any) {
-	if l.threshold <= LevelInfo {
-		l.logf(format, args...)
+	if l.threshold > LevelInfo {
+		return
 	}
+
+	l.logf(format, args...)
 }
 
 // Errorf formats and prints a message if the log level is error or higher.
 func (l Logger) Errorf(format string, args ...any) {
-	if l.threshold <= LevelError {
-		l.logf(format, args...)
+	if l.threshold > LevelError {
+		return
 	}
+
+	l.logf(format, args...)
 }
 
 // logf prints the message to the output.

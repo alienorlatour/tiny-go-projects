@@ -5,7 +5,7 @@ build:
 	go build -o bin/logger main.go
 
 test:
-	go test .
+	go test ./...
 
 cover:
 	go test -cover
