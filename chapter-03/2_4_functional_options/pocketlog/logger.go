@@ -15,7 +15,7 @@ type Logger struct {
 // New returns you a logger, ready to logf at the required threshold.
 // Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
-func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
+func New(threshold Level, configFuncs ...Option) *Logger {
 	lgr := &Logger{threshold: threshold, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
@@ -24,7 +24,7 @@ func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
 }
 
 // Debugf formats and prints a message if the log level is debug or higher.
-func (l Logger) Debugf(format string, args ...any) {
+func (l *Logger) Debugf(format string, args ...any) {
 	if l.threshold > LevelDebug {
 		return
 	}
@@ -33,7 +33,7 @@ func (l Logger) Debugf(format string, args ...any) {
 }
 
 // Infof formats and prints a message if the log level is info or higher.
-func (l Logger) Infof(format string, args ...any) {
+func (l *Logger) Infof(format string, args ...any) {
 	if l.threshold > LevelInfo {
 		return
 	}
@@ -42,7 +42,7 @@ func (l Logger) Infof(format string, args ...any) {
 }
 
 // Errorf formats and prints a message if the log level is error or higher.
-func (l Logger) Errorf(format string, args ...any) {
+func (l *Logger) Errorf(format string, args ...any) {
 	if l.threshold > LevelError {
 		return
 	}
@@ -52,6 +52,6 @@ func (l Logger) Errorf(format string, args ...any) {
 
 // logf prints the message to the output.
 // Add decorations here, if any.
-func (l Logger) logf(format string, args ...any) {
+func (l *Logger) logf(format string, args ...any) {
 	_, _ = fmt.Fprintf(l.output, format+"\n", args...)
 }

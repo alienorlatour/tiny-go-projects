@@ -17,7 +17,7 @@ type Logger struct {
 // New returns you a logger, ready to log at the required threshold.
 // Give it a list of configuration functions to tune it at your will
 // The default output is Stdout.
-func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
+func New(threshold Level, configFuncs ...Option) *Logger {
 	lgr := &Logger{threshold: threshold, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
