@@ -5,10 +5,10 @@ build:
 	go build -o bin/helloworld main.go
 
 test:
-	go test .
+	go test ./...
 
 cover:
-	go test -cover
+	go test ./... -cover
 
 %: ## anything
 	go run main.go -lang=$@

@@ -60,7 +60,7 @@ func compareRunes(s1, s2 []rune) bool {
 }
 
 func TestGordleValidateAttempt(t *testing.T) {
-	g := &Gordle{}
+	g := &Gordle{solution: []rune("hello")}
 	tt := map[string]struct {
 		word     []rune
 		expected error
