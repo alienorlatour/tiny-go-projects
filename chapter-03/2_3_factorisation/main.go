@@ -1,7 +1,7 @@
 package main
 
 import (
-	"tiny-go-projects/chapter03/2_3_factorisation/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/2_3_factorisation/pocketlog"
 )
 
 func main() {

@@ -1,6 +1,6 @@
 package pocketlog_test
 
-import "tiny-go-projects/chapter03/exercises/3_all_implementations/pocketlog"
+import "github.com/ablqk/tiny-go-projects/chapter-03/exercises/3_all_implementations/pocketlog"
 
 func ExampleLogger_Debug() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
