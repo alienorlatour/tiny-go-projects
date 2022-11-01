@@ -8,7 +8,7 @@ import (
 
 func ExampleLogger_Debug() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
-	debugLogger.Debug("Hello, %s", "world")
+	debugLogger.Debugf("Hello, %s", "world")
 	// Output: Hello, world
 }
 
@@ -43,9 +43,9 @@ func TestLogger_DebugInfoError(t *testing.T) {
 
 			testedLogger := pocketlog.New(tc.level, pocketlog.WithOutput(tw))
 
-			testedLogger.Debug(debugMessage)
-			testedLogger.Info(infoMessage)
-			testedLogger.Error(errorMessage)
+			testedLogger.Debugf(debugMessage)
+			testedLogger.Infof(infoMessage)
+			testedLogger.Errorf(errorMessage)
 
 			if tw.contents != tc.expected {
 				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)
