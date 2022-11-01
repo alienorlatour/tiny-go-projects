@@ -9,4 +9,3 @@ test:
 
 cover:
 	go test ./... -cover
-

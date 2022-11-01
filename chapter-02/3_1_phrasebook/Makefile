@@ -4,8 +4,8 @@ run:
 build:
 	go build -o bin/helloworld main.go
 
-cover:
-	go test -cover
-
 test:
-	go test .
+	go test ./...
+
+cover:
+	go test ./... -cover
