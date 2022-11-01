@@ -7,7 +7,7 @@ type Option func(*Logger)
 
 // WithOutput returns a configuration function that sets the output of logs.
 func WithOutput(output io.Writer) Option {
-	return func(l *Logger) {
-		l.output = output
+	return func(lgr *Logger) {
+		lgr.output = output
 	}
 }

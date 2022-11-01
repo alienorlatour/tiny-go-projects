@@ -3,7 +3,7 @@ package pocketlog_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/6_logging_level/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/6_alternative_exposition/pocketlog"
 )
 
 func ExampleLogger_Debug() {
@@ -45,7 +45,7 @@ func TestLogger_DebugInfoError(t *testing.T) {
 
 			testedLogger.Debugf(debugMessage)
 			testedLogger.Infof(infoMessage)
-			testedLogger.Errorf(errorMessage)
+			testedLogger.Logf(pocketlog.LevelError, errorMessage)
 
 			if tw.contents != tc.expected {
 				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)

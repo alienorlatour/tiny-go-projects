@@ -3,13 +3,13 @@ package pocketlog_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/7_alternative_exposition/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/4_testing_at_random/pocketlog"
 )
 
 func ExampleLogger_Debug() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
 	debugLogger.Debugf("Hello, %s", "world")
-	// Output: [DEBUG] Hello, world
+	// Output: Hello, world
 }
 
 const (
@@ -19,21 +19,23 @@ const (
 )
 
 func TestLogger_DebugInfoError(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		level    pocketlog.Level
 		expected string
-	}{
+	}
+
+	tt := map[string]testCase{
 		"debug": {
 			level:    pocketlog.LevelDebug,
-			expected: "[DEBUG] Why write I still all one, ever the same,\n[INFO] And keep invention in a noted weed,\n[ERROR] That every word doth almost tell my name,\n",
+			expected: debugMessage + "\n" + infoMessage + "\n" + errorMessage + "\n",
 		},
 		"info": {
 			level:    pocketlog.LevelInfo,
-			expected: "[INFO] And keep invention in a noted weed,\n[ERROR] That every word doth almost tell my name,\n",
+			expected: infoMessage + "\n" + errorMessage + "\n",
 		},
 		"error": {
 			level:    pocketlog.LevelError,
-			expected: "[ERROR] That every word doth almost tell my name,\n",
+			expected: errorMessage + "\n",
 		},
 	}
 

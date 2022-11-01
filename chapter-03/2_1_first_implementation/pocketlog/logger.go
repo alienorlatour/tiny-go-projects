@@ -8,9 +8,9 @@ type Logger struct {
 }
 
 // New returns you a logger, ready to log at the required threshold.
-func New(level Level) *Logger {
+func New(threshold Level) *Logger {
 	return &Logger{
-		threshold: level,
+		threshold: threshold,
 	}
 }
 

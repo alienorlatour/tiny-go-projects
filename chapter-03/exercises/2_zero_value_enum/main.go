@@ -8,5 +8,6 @@ import (
 
 func main() {
 	l := pocketlog.Logger{}
+
 	fmt.Printf("Logger: %#v\n", l)
 }

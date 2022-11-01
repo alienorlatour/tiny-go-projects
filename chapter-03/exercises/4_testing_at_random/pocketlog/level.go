@@ -1,6 +1,6 @@
 package pocketlog
 
-// Level represents one available logging level
+// Level represents one available logging level.
 type Level byte
 
 const (
