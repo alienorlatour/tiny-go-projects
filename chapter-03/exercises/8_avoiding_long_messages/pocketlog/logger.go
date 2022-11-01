@@ -17,15 +17,17 @@ type Logger struct {
 // Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
 // There is no default maximum length - messages aren't trimmed.
-func New(threshold Level, configFuncs ...Option) *Logger {
+func New(threshold Level, opts ...Option) *Logger {
 	lgr := &Logger{
 		threshold:        threshold,
 		output:           os.Stdout,
 		maxMessageLength: 0,
 	}
-	for _, configFunc := range configFuncs {
+
+	for _, configFunc := range opts {
 		configFunc(lgr)
 	}
+
 	return lgr
 }
 

@@ -1,12 +1,18 @@
 package main
 
 import (
+	"os"
+	"time"
+
 	"github.com/ablqk/tiny-go-projects/chapter-03/2_3_factorisation/pocketlog"
 )
 
 func main() {
-	l := pocketlog.Logger{}
+	lgr := pocketlog.New(pocketlog.LevelInfo, os.Stdout)
 
-	// This produces nothing
-	l.Debugf("hello")
+	lgr.Infof("A little copying is better than a little dependency.")
+	lgr.Errorf("Errors are values. Documentation is for %s.", "users")
+	lgr.Debugf("Make the zero (%d) value useful.", 0)
+
+	lgr.Infof("Hallo, %d %v", 2022, time.Now())
 }

@@ -3,13 +3,13 @@ package pocketlog_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/final/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/3_2_testing/pocketlog"
 )
 
-func ExampleLogger_Debug_debug() {
+func ExampleLogger_Debug() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
-	debugLogger.Debug("Hello, %s", "world")
-	// Output: [DEBUG] Hello, world
+	debugLogger.Debugf("Hello, %s", "world")
+	// Output: Hello, world
 }
 
 const (
@@ -18,22 +18,22 @@ const (
 	errorMessage = "That every word doth almost tell my name,"
 )
 
-func TestLogger_LevelInfo(t *testing.T) {
+func TestLogger_DebugInfoError(t *testing.T) {
 	tt := map[string]struct {
 		level    pocketlog.Level
 		expected string
 	}{
 		"debug": {
 			level:    pocketlog.LevelDebug,
-			expected: "[DEBUG] " + debugMessage + "\n" + "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
+			expected: debugMessage + "\n" + infoMessage + "\n" + errorMessage + "\n",
 		},
 		"info": {
 			level:    pocketlog.LevelInfo,
-			expected: "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
+			expected: infoMessage + "\n" + errorMessage + "\n",
 		},
 		"error": {
 			level:    pocketlog.LevelError,
-			expected: "[ERROR] " + errorMessage + "\n",
+			expected: errorMessage + "\n",
 		},
 	}
 
@@ -43,9 +43,9 @@ func TestLogger_LevelInfo(t *testing.T) {
 
 			testedLogger := pocketlog.New(tc.level, pocketlog.WithOutput(tw))
 
-			testedLogger.Debug(debugMessage)
-			testedLogger.Info(infoMessage)
-			testedLogger.Error(errorMessage)
+			testedLogger.Debugf(debugMessage)
+			testedLogger.Infof(infoMessage)
+			testedLogger.Errorf(errorMessage)
 
 			if tw.contents != tc.expected {
 				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)
@@ -55,7 +55,7 @@ func TestLogger_LevelInfo(t *testing.T) {
 }
 
 // testWriter is a struct that implements io.Writer.
-// We use it to validate we can write to a specific output.
+// We use it to validate that we can write to a specific output.
 type testWriter struct {
 	contents string
 }
