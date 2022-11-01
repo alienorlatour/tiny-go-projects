@@ -3,11 +3,11 @@ package pocketlog_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-02/final/logger"
+	"github.com/ablqk/tiny-go-projects/chapter-03/final/pocketlog"
 )
 
 func ExampleLogger_Debug_debug() {
-	debugLogger := logger.New(logger.LevelDebug)
+	debugLogger := pocketlog.New(pocketlog.LevelDebug)
 	debugLogger.Debug("Hello, %s", "world")
 	// Output: [DEBUG] Hello, world
 }
@@ -20,19 +20,19 @@ const (
 
 func TestLogger_LevelInfo(t *testing.T) {
 	tt := map[string]struct {
-		level    logger.Level
+		level    pocketlog.Level
 		expected string
 	}{
 		"debug": {
-			level:    logger.LevelDebug,
+			level:    pocketlog.LevelDebug,
 			expected: "[DEBUG] " + debugMessage + "\n" + "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"info": {
-			level:    logger.LevelInfo,
+			level:    pocketlog.LevelInfo,
 			expected: "[INFO] " + infoMessage + "\n" + "[ERROR] " + errorMessage + "\n",
 		},
 		"error": {
-			level:    logger.LevelError,
+			level:    pocketlog.LevelError,
 			expected: "[ERROR] " + errorMessage + "\n",
 		},
 	}
@@ -41,7 +41,7 @@ func TestLogger_LevelInfo(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tw := &testWriter{}
 
-			testedLogger := logger.New(tc.level, logger.WithOutput(tw))
+			testedLogger := pocketlog.New(tc.level, pocketlog.WithOutput(tw))
 
 			testedLogger.Debug(debugMessage)
 			testedLogger.Info(infoMessage)
