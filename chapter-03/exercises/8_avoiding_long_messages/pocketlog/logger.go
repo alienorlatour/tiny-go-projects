@@ -50,7 +50,7 @@ func (l Logger) Errorf(format string, args ...any) {
 	}
 }
 
-// Logf formats and prints a message if the logf level is high enough
+// Logf formats and prints a message if the log level is high enough
 func (l Logger) Logf(lvl Level, format string, args ...any) {
 	if l.threshold <= lvl {
 		l.logf(lvl, format, args...)
