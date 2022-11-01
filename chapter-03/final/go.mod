@@ -1,3 +1,3 @@
-module tiny-go-projects/chapter03/final
+module github.com/ablqk/tiny-go-projects/chapter-03/final
 
 go 1.19

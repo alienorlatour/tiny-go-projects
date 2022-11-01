@@ -18,7 +18,7 @@ type Logger struct {
 // Give it a list of configuration functions to tune it at your will
 // The default output is Stdout.
 func New(threshold Level, configFuncs ...ConfigFunc) *Logger {
-	lgr := &Logger{threshold: level, output: os.Stdout}
+	lgr := &Logger{threshold: threshold, output: os.Stdout}
 	for _, configFunc := range configFuncs {
 		configFunc(lgr)
 	}

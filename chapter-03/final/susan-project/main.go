@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"tiny-go-projects/chapter03/final/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/final/pocketlog"
 )
 
 var lgr *pocketlog.Logger

@@ -1,11 +1,11 @@
 run:
-	go run main.go
+	go run susan-project/main.go
 
 build:
-	go build -o bin/logger main.go
+	go build -o bin/logger susan-project/main.go
 
 test:
-	go test .
+	go test ./...
 
 cover:
 	go test -cover

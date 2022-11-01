@@ -3,7 +3,7 @@ package pocketlog_test
 import (
 	"testing"
 
-	"tiny-go-projects/chapter03/exercises/6_logging_level/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/6_logging_level/pocketlog"
 )
 
 func ExampleLogger_Debug() {

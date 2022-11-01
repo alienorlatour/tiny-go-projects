@@ -15,7 +15,7 @@ type Logger struct {
 // The default output is Stdout.
 func New(threshold Level, output io.Writer) *Logger {
 	return &Logger{
-		threshold: level,
+		threshold: threshold,
 		output:    output,
 	}
 }

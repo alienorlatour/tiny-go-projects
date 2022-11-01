@@ -1,7 +1,7 @@
 package main
 
 import (
-	"tiny-go-projects/chapter03/1_4_testing/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/1_4_testing/pocketlog"
 )
 
 func main() {

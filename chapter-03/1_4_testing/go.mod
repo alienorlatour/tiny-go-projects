@@ -1,3 +1,3 @@
-module tiny-go-projects/chapter03/1_4_testing
+module github.com/ablqk/tiny-go-projects/chapter-03/1_4_testing
 
 go 1.19

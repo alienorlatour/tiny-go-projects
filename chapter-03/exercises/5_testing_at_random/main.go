@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"tiny-go-projects/chapter03/exercises/5_testing_at_random/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/5_testing_at_random/pocketlog"
 )
 
 func main() {
