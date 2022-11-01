@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/2_4_functional_options/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/3_1_functional_options/pocketlog"
 )
 
 func main() {

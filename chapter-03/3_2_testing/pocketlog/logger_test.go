@@ -19,10 +19,12 @@ const (
 )
 
 func TestLogger_DebugInfoError(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		level    pocketlog.Level
 		expected string
-	}{
+	}
+
+	tt := map[string]testCase{
 		"debug": {
 			level:    pocketlog.LevelDebug,
 			expected: debugMessage + "\n" + infoMessage + "\n" + errorMessage + "\n",
