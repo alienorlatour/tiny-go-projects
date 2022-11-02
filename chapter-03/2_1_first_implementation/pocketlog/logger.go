@@ -8,25 +8,27 @@ type Logger struct {
 }
 
 // New returns you a logger, ready to log at the required threshold.
-func New(level Level) *Logger {
+func New(threshold Level) *Logger {
 	return &Logger{
-		threshold: level,
+		threshold: threshold,
 	}
 }
 
-// Debug formats and prints a message if the log level is debug or higher.
-func (l Logger) Debug(format string, args ...any) {
-	if l.threshold <= LevelDebug {
-		fmt.Printf(format+"\n", args...)
+// Debugf formats and prints a message if the log level is debug or higher.
+func (l *Logger) Debugf(format string, args ...any) {
+	if l.threshold > LevelDebug {
+		return
 	}
+
+	_, _ = fmt.Printf(format+"\n", args...)
 }
 
-// Info formats and prints a message if the log level is info or higher.
-func (l Logger) Info(format string, args ...any) {
+// Infof formats and prints a message if the log level is info or higher.
+func (l *Logger) Infof(format string, args ...any) {
 	// implement me
 }
 
-// Error formats and prints a message if the log level is error or higher.
-func (l Logger) Error(format string, args ...any) {
+// Errorf formats and prints a message if the log level is error or higher.
+func (l *Logger) Errorf(format string, args ...any) {
 	// implement me
 }

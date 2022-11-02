@@ -3,6 +3,7 @@ package pocketlog
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 // Logger is used to log information.
@@ -12,12 +13,16 @@ type Logger struct {
 }
 
 // New returns you a logger, ready to log at the required threshold.
+// Give it a list of configuration functions to tune it at your will.
 // The default output is Stdout.
-func New(threshold Level, output io.Writer) *Logger {
-	return &Logger{
-		threshold: threshold,
-		output:    output,
+func New(threshold Level, opts ...Option) *Logger {
+	lgr := &Logger{threshold: threshold, output: os.Stdout}
+
+	for _, configFunc := range opts {
+		configFunc(lgr)
 	}
+
+	return lgr
 }
 
 // Debugf formats and prints a message if the log level is debug or higher.
@@ -26,7 +31,7 @@ func (l *Logger) Debugf(format string, args ...any) {
 		return
 	}
 
-	l.logf(format, args...)
+	l.logf(LevelDebug, format, args...)
 }
 
 // Infof formats and prints a message if the log level is info or higher.
@@ -35,7 +40,7 @@ func (l *Logger) Infof(format string, args ...any) {
 		return
 	}
 
-	l.logf(format, args...)
+	l.logf(LevelInfo, format, args...)
 }
 
 // Errorf formats and prints a message if the log level is error or higher.
@@ -44,11 +49,21 @@ func (l *Logger) Errorf(format string, args ...any) {
 		return
 	}
 
-	l.logf(format, args...)
+	l.logf(LevelError, format, args...)
+}
+
+// Logf formats and prints a message if the log level is high enough
+func (l *Logger) Logf(lvl Level, format string, args ...any) {
+	if l.threshold > lvl {
+		return
+	}
+
+	l.logf(lvl, format, args...)
 }
 
 // logf prints the message to the output.
 // Add decorations here, if any.
-func (l *Logger) logf(format string, args ...any) {
-	_, _ = fmt.Fprintf(l.output, format+"\n", args...)
+func (l *Logger) logf(lvl Level, format string, args ...any) {
+	message := fmt.Sprintf(format, args...)
+	_, _ = fmt.Fprintf(l.output, "%s %s\n", lvl, message)
 }

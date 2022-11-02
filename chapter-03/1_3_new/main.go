@@ -5,8 +5,8 @@ import (
 )
 
 func main() {
-	l := pocketlog.Logger{}
+	lgr := pocketlog.New(pocketlog.LevelDebug)
 
 	// This produces nothing
-	l.Debugf("hello")
+	lgr.Debugf("Make the zero (%d) value useful.", 0)
 }

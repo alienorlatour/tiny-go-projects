@@ -4,11 +4,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/2_3_factorisation/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/4_testing_at_random/pocketlog"
 )
 
 func main() {
-	lgr := pocketlog.New(pocketlog.LevelInfo, os.Stdout)
+	lgr := pocketlog.New(pocketlog.LevelInfo, pocketlog.WithOutput(os.Stdout))
 
 	lgr.Infof("A little copying is better than a little dependency.")
 	lgr.Errorf("Errors are values. Documentation is for %s.", "users")
