@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 // Game holds all the information we need to play a game of gordle.
@@ -20,6 +22,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 	if len(corpus) == 0 {
 		return nil, ErrCorpusIsEmpty
 	}
+
 	g := &Game{
 		reader:      bufio.NewReader(os.Stdin),                    // read from stdin by default
 		solution:    splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
@@ -54,8 +57,8 @@ func (g *Game) Play() {
 		// print the feedback
 		fmt.Println(fb.String())
 
-		if string(guess) == string(g.solution) {
-			fmt.Printf("🎉 You won! You found it in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
+		if slices.Equal(guess, g.solution) {
+			fmt.Printf("🎉 You won! You found it in %d guess(es)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
 	}
@@ -70,7 +73,7 @@ func (g *Game) ask() []rune {
 
 	for {
 		// Read the guess from the player.
-		suggestion, _, err := g.reader.ReadLine()
+		playerInput, _, err := g.reader.ReadLine()
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
 			// Let’s give it a chance.
@@ -78,30 +81,31 @@ func (g *Game) ask() []rune {
 			continue
 		}
 
+		guess := splitToUppercaseCharacters(string(playerInput))
+
 		// Verify the suggestion has a valid length.
-		attempt := []rune(strings.ToUpper(string(suggestion)))
-		err = g.validateAttempt(attempt)
+		err = g.validateGuess(guess)
 		if err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 		} else {
-			return attempt
+			return guess
 		}
 	}
 }
 
-// errInvalidWordLength is only used internally
-var errInvalidWordLength = fmt.Errorf("invalid guess, word doesn't have the same number of characters as the solution ")
+// errInvalidWordLength is returned when the guess has the wrong number of characters.
+var errInvalidWordLength = fmt.Errorf("invalid guess, word doesn't have the same number of characters as the solution")
 
-// validateAttempt ensures the guess is valid enough.
-func (g *Game) validateAttempt(attempt []rune) error {
-	if len(attempt) != len(g.solution) {
-		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
+// validateGuess ensures the guess is valid enough.
+func (g *Game) validateGuess(guess []rune) error {
+	if len(guess) != len(g.solution) {
+		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(guess), errInvalidWordLength)
 	}
 
 	return nil
 }
 
-// splitToCharacters is a naive implementation to turn a string into a list of characters.
-func splitToUppercaseCharacters(solution string) []rune {
-	return []rune(strings.ToUpper(solution))
+// splitToUppercaseCharacters is a naive implementation to turn a string into a list of characters.
+func splitToUppercaseCharacters(input string) []rune {
+	return []rune(strings.ToUpper(input))
 }

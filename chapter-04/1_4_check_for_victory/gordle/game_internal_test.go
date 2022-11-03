@@ -1,10 +1,11 @@
 package gordle
 
 import (
-	"bufio"
 	"errors"
 	"strings"
 	"testing"
+
+	"golang.org/x/exp/slices"
 )
 
 func TestGameAsk(t *testing.T) {
@@ -13,8 +14,8 @@ func TestGameAsk(t *testing.T) {
 		want  []rune
 	}{
 		"5 characters in english": {
-			input: "hello",
-			want:  []rune("hello"),
+			input: "HELLO",
+			want:  []rune("HELLO"),
 		},
 		"5 characters in arabic": {
 			input: "مرحبا",
@@ -32,41 +33,27 @@ func TestGameAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Game{reader: bufio.NewReader(strings.NewReader(tc.input)), solution: tc.want}
+			g := New(strings.NewReader(tc.input), string(tc.want), 0)
 
 			got := g.ask()
-			if !compareRunes(got, tc.want) {
+			if !slices.Equal(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
 	}
 }
 
-// compareRunes compares two slices and returns whether they have the same elements.
-func compareRunes(s1, s2 []rune) bool {
-	if len(s1) != len(s2) {
-		return false
-	}
-
-	for i, v1 := range s1 {
-		if v1 != s2[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func TestGameValidateAttempt(t *testing.T) {
+func TestGameValidateGuess(t *testing.T) {
 	tt := map[string]struct {
 		word     []rune
 		expected error
 	}{
 		"nominal": {
-			word:     []rune("hello"),
+			word:     []rune("GUESS"),
 			expected: nil,
 		},
 		"too long": {
-			word:     []rune("pocket"),
+			word:     []rune("POCKET"),
 			expected: errInvalidWordLength,
 		},
 		"empty": {
@@ -81,11 +68,32 @@ func TestGameValidateAttempt(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := &Game{solution: []rune("hello")}
+			g := New(nil, "SLICE", 0)
 
-			err := g.validateAttempt(tc.word)
+			err := g.validateGuess(tc.word)
 			if !errors.Is(err, tc.expected) {
 				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)
+			}
+		})
+	}
+}
+
+func Test_splitToUppercaseCharacters(t *testing.T) {
+	tt := map[string]struct {
+		input string
+		want  []rune
+	}{
+		"lowercase": {
+			input: "pocket",
+			want:  []rune("POCKET"),
+		},
+	}
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			got := splitToUppercaseCharacters(tc.input)
+
+			if !slices.Equal(tc.want, got) {
+				t.Errorf("expected %v, got %v", tc.want, got)
 			}
 		})
 	}

@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// ErrCorpusIsEmpty is returned when we cannot find any valid solution in the given corpus.
 const ErrCorpusIsEmpty = corpusError("corpus is empty")
 
 // ReadCorpus reads the file located at the given path

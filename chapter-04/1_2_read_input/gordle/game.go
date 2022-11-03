@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const wordLength = 5
+const solutionLength = 5
 
 // Game holds all the information we need to play a game of gordle.
 type Game struct {
@@ -15,9 +15,9 @@ type Game struct {
 }
 
 // New returns a Game variable, which can be used to Play!
-func New(reader io.Reader) *Game {
+func New(playerInput io.Reader) *Game {
 	g := &Game{
-		reader: bufio.NewReader(reader),
+		reader: bufio.NewReader(playerInput),
 	}
 
 	return g
@@ -35,11 +35,11 @@ func (g *Game) Play() {
 
 // ask reads input until a valid suggestion is made (and returned).
 func (g *Game) ask() []rune {
-	fmt.Printf("Enter a %d-character guess:\n", wordLength)
+	fmt.Printf("Enter a %d-character guess:\n", solutionLength)
 
 	for {
-		// Read the attempt from the player.
-		suggestion, _, err := g.reader.ReadLine()
+		// Read the guess from the player.
+		playerInput, _, err := g.reader.ReadLine()
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
 			// Let’s give it a chance.
@@ -47,13 +47,13 @@ func (g *Game) ask() []rune {
 			continue
 		}
 
-		attempt := []rune(string(suggestion))
+		guess := []rune(string(playerInput))
 
 		// Verify the suggestion has a valid length.
-		if len(attempt) != wordLength {
-			_, _ = fmt.Fprintf(os.Stderr, "invalid word length: expected %d, got %d\n", wordLength, len(attempt))
+		if len(guess) != solutionLength {
+			_, _ = fmt.Fprintf(os.Stderr, "invalid word length: expected %d, got %d\n", solutionLength, len(guess))
 		} else {
-			return attempt
+			return guess
 		}
 	}
 }
