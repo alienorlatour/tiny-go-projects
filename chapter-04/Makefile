@@ -5,9 +5,7 @@ projects := \
 	1_4_check_for_victory \
 	2_feedback \
 	3_corpus \
-	4_config_options \
-	pre-refactoring \
-	final
+	4_config_options
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done
