@@ -35,7 +35,7 @@ func (g *Game) Play() {
 		guess := g.ask()
 
 		if string(guess) == string(g.solution) {
-			fmt.Printf("🎉 You won! You found in %d guess(s)! The word was: %s.\n", currentAttempt, string(g.solution))
+			fmt.Printf("🎉 You won! You found in %d guess(es)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
 	}
