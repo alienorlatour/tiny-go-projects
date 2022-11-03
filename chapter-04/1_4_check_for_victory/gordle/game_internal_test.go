@@ -7,35 +7,32 @@ import (
 	"testing"
 )
 
-func TestGordleAsk(t *testing.T) {
+func TestGameAsk(t *testing.T) {
 	tt := map[string]struct {
-		reader *bufio.Reader
-		want   []rune
+		input string
+		want  []rune
 	}{
 		"5 characters in english": {
-			reader: bufio.NewReader(strings.NewReader("HELLO")),
-			want:   []rune("HELLO"),
+			input: "hello",
+			want:  []rune("hello"),
 		},
 		"5 characters in arabic": {
-			reader: bufio.NewReader(strings.NewReader("مرحبا")),
-			want:   []rune("مرحبا"),
+			input: "مرحبا",
+			want:  []rune("مرحبا"),
 		},
 		"5 characters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("こんにちは")),
-			want:   []rune("こんにちは"),
+			input: "こんにちは",
+			want:  []rune("こんにちは"),
 		},
-		"3 and then 5 characters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("こんに\nこんにちは")),
-			want:   []rune("こんにちは"),
+		"3 characters in japanese": {
+			input: "こんに\nこんにちは",
+			want:  []rune("こんにちは"),
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Gordle{
-				reader:          tc.reader,
-				solution:        tc.want,
-				solutionChecker: &solutionChecker{solution: tc.want}}
+			g := Game{reader: bufio.NewReader(strings.NewReader(tc.input)), solution: tc.want}
 
 			got := g.ask()
 			if !compareRunes(got, tc.want) {
@@ -59,8 +56,7 @@ func compareRunes(s1, s2 []rune) bool {
 	return true
 }
 
-func TestGordleValidateAttempt(t *testing.T) {
-	g := &Gordle{solution: []rune("hello")}
+func TestGameValidateAttempt(t *testing.T) {
 	tt := map[string]struct {
 		word     []rune
 		expected error
@@ -85,6 +81,8 @@ func TestGordleValidateAttempt(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
+			g := &Game{solution: []rune("hello")}
+
 			err := g.validateAttempt(tc.word)
 			if !errors.Is(err, tc.expected) {
 				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)

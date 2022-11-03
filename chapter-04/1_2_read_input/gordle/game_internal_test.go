@@ -6,36 +6,32 @@ import (
 	"testing"
 )
 
-func TestGordleAsk(t *testing.T) {
+func TestGameAsk(t *testing.T) {
 	tt := map[string]struct {
-		reader  *bufio.Reader
-		want    []rune
-		wantErr bool
+		input string
+		want  []rune
 	}{
 		"5 characters in english": {
-			reader:  bufio.NewReader(strings.NewReader("hello")),
-			want:    []rune("hello"),
-			wantErr: false,
+			input: "hello",
+			want:  []rune("hello"),
 		},
 		"5 characters in arabic": {
-			reader:  bufio.NewReader(strings.NewReader("مرحبا")),
-			want:    []rune("مرحبا"),
-			wantErr: false,
+			input: "مرحبا",
+			want:  []rune("مرحبا"),
 		},
 		"5 characters in japanese": {
-			reader:  bufio.NewReader(strings.NewReader("のうにゅう")),
-			want:    []rune("のうにゅう"),
-			wantErr: false,
+			input: "こんにちは",
+			want:  []rune("こんにちは"),
 		},
 		"3 characters in japanese": {
-			reader: bufio.NewReader(strings.NewReader("のうに\nのうにゅう")),
-			want:   []rune("のうにゅう"),
+			input: "こんに\nこんにちは",
+			want:  []rune("こんにちは"),
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Gordle{reader: tc.reader}
+			g := Game{reader: bufio.NewReader(strings.NewReader(tc.input))}
 
 			got := g.ask()
 			if !compareRunes(got, tc.want) {

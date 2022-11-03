@@ -1,6 +1,7 @@
 package gordle_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/ablqk/tiny-go-projects/chapter-04/4_config_options/gordle"
@@ -27,7 +28,7 @@ func TestReadCorpus(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			words, err := gordle.ReadCorpus(tc.file)
-			if tc.err != err {
+			if !errors.Is(err, tc.err) {
 				t.Errorf("expected err %v, got %v", tc.err, err)
 			}
 

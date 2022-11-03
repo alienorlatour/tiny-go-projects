@@ -10,6 +10,6 @@ const maxAttempts = 6
 
 func main() {
 	solution := "hello"
-	g := gordle.New(os.Stdin, []rune(solution), maxAttempts)
+	g := gordle.New(os.Stdin, solution, maxAttempts)
 	g.Play()
 }

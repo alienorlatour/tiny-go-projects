@@ -7,17 +7,24 @@ import (
 	"strings"
 )
 
-// New returns a Gordle variable, which can be used to Play!
-func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
+// Game holds all the information we need to play a game of gordle.
+type Game struct {
+	reader          *bufio.Reader
+	solution        []rune
+	maxAttempts     int
+	solutionChecker *solutionChecker
+}
+
+// New returns a Game variable, which can be used to Play!
+func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 	if len(corpus) == 0 {
 		return nil, ErrCorpusIsEmpty
 	}
-	g := &Gordle{
-		reader:      bufio.NewReader(os.Stdin), // read from stdin by default
-		maxAttempts: -1,                        // no maximum number of attempts by default
-		solution:    pickWord(corpus),          // pick a random word from the corpus
+	g := &Game{
+		reader:      bufio.NewReader(os.Stdin),                    // read from stdin by default
+		solution:    splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
+		maxAttempts: -1,                                           // no maximum number of attempts by default
 	}
-	fmt.Println("Welcome to Gordle!")
 
 	// Apply the configuration functions after defining the default values, as they override them.
 	for _, cf := range cfs {
@@ -32,70 +39,69 @@ func New(corpus []string, cfs ...ConfigFunc) (*Gordle, error) {
 	return g, nil
 }
 
-// Play runs the game. It will exit when the maximum number of attempts was reached, or if the word was found.
-func (g *Gordle) Play() {
+// Play runs the game.
+func (g *Game) Play() {
+	fmt.Println("Welcome to Gordle!")
+
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
-		word := g.ask()
+		guess := g.ask()
 
 		// check it
-		fb := g.solutionChecker.check(word)
+		fb := g.solutionChecker.check(guess)
 
 		// print the feedback
-		fmt.Println(fb)
-		if string(word) == string(g.solution) {
+		fmt.Println(fb.String())
+
+		if string(guess) == string(g.solution) {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
 	}
+
 	// we've exhausted the number of allowed attempts
 	fmt.Printf("😞 You've lost! The solution was: %s. \n", string(g.solution))
 }
 
-// Gordle holds all the information we need to play a game of gordle.
-type Gordle struct {
-	reader          *bufio.Reader
-	solution        []rune
-	maxAttempts     int
-	solutionChecker *solutionChecker
-}
-
-// ask scans until a valid suggestion is made (and returned).
-func (g *Gordle) ask() []rune {
+// ask reads input until a valid suggestion is made (and returned).
+func (g *Game) ask() []rune {
 	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
+
 	for {
+		// Read the attempt from the player.
 		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
 			// Let’s give it a chance.
-			_, _ = fmt.Fprintf(os.Stderr, "error while reading the player's word: %q", err)
+			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 			continue
 		}
 
-		words := strings.Fields(string(suggestion))
-		// We expect a single word.
-		if len(words) != 1 {
-			fmt.Fprintf(os.Stderr, "error while reading the player's word: a single word wasn't provided, got %d instead", len(words))
-			continue
-		}
-
+		// Verify the suggestion has a valid length.
 		attempt := []rune(strings.ToUpper(string(suggestion)))
 		err = g.validateAttempt(attempt)
 		if err != nil {
-			fmt.Println(err)
+			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
 		} else {
 			return attempt
 		}
 	}
 }
 
+// errInvalidWordLength is only used internally
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
-func (g *Gordle) validateAttempt(attempt []rune) error {
+func (g *Game) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}
+
 	return nil
+}
+
+// splitToCharacters is a naive implementation to turn a string into a list of characters.
+func splitToUppercaseCharacters(solution string) []rune {
+	return []rune(strings.ToUpper(solution))
 }

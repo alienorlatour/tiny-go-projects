@@ -7,22 +7,21 @@ import (
 	"os"
 )
 
-// Gordle holds all the information we need to play a game of gordle.
-type Gordle struct {
+// Game holds all the information we need to play a game of gordle.
+type Game struct {
 	reader          *bufio.Reader
 	solution        []rune
 	maxAttempts     int
 	solutionChecker *solutionChecker
 }
 
-// New returns a Gordle variable, which can be used to Play!
-func New(reader io.Reader, solution []rune, maxAttempts int) *Gordle {
-	g := &Gordle{
+// New returns a Game variable, which can be used to Play!
+func New(reader io.Reader, solution string, maxAttempts int) *Game {
+	g := &Game{
 		reader:      bufio.NewReader(reader),
-		solution:    solution,
+		solution:    splitToCharacters(solution),
 		maxAttempts: maxAttempts,
 	}
-	fmt.Println("Welcome to Gordle!")
 
 	g.solutionChecker = &solutionChecker{solution: g.solution}
 
@@ -30,19 +29,21 @@ func New(reader io.Reader, solution []rune, maxAttempts int) *Gordle {
 }
 
 // Play runs the game.
-func (g *Gordle) Play() {
+func (g *Game) Play() {
+	fmt.Println("Welcome to Gordle!")
+
 	// break condition: we've reached the maximum number of attempts
 	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
 		// ask for a valid word
-		attempt := g.ask()
+		guess := g.ask()
 
 		// evaluate it
-		fb := g.solutionChecker.evaluate(attempt)
+		fb := g.solutionChecker.evaluate(guess)
 
 		// print the feedback
 		fmt.Println(fb.String())
 
-		if string(attempt) == string(g.solution) {
+		if string(guess) == string(g.solution) {
 			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
@@ -53,7 +54,7 @@ func (g *Gordle) Play() {
 }
 
 // ask reads input until a valid suggestion is made (and returned).
-func (g *Gordle) ask() []rune {
+func (g *Game) ask() []rune {
 	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
 
 	for {
@@ -81,10 +82,15 @@ func (g *Gordle) ask() []rune {
 var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
 
 // validateAttempt ensures the attempt is valid enough.
-func (g *Gordle) validateAttempt(attempt []rune) error {
+func (g *Game) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)
 	}
 
 	return nil
+}
+
+// splitToCharacters is a naive implementation to turn a string into a list of characters.
+func splitToCharacters(solution string) []rune {
+	return []rune(solution)
 }
