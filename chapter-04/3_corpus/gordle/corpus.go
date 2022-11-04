@@ -22,8 +22,8 @@ func ReadCorpus(path string) ([]string, error) {
 		return nil, ErrCorpusIsEmpty
 	}
 
-	// we expect the corpus to be a line-separated list of words
-	words := strings.Split(string(data), "\n")
+	// we expect the corpus to be a line- or space-separated list of words
+	words := strings.Fields(string(data))
 
 	return words, nil
 }
