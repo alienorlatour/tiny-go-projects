@@ -62,7 +62,7 @@ func (sc *solutionChecker) markCharacterAsSeen(character rune, positionInWord in
 }
 
 // checkCharacterAtPosition returns the correctness of a character at the specified index in the solution.
-func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) status {
+func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) hint {
 	positions, ok := sc.positions[character]
 	if !ok || len(positions) == 0 {
 		return absentCharacter

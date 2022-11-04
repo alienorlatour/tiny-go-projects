@@ -4,79 +4,80 @@ import "testing"
 
 func Test_solutionChecker_check(t *testing.T) {
 	tt := map[string]struct {
-		attempt          []rune
-		sc               *solutionChecker
-		expectedStatuses []status
+		guess            []rune
+		solution         string
+		expectedStatuses feedback
 	}{
 		"nominal": {
-			attempt:          []rune("hertz"),
-			sc:               &solutionChecker{solution: []rune("hertz")},
-			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
+			guess:            []rune("hertz"),
+			solution:         "hertz",
+			expectedStatuses: feedback{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
 		"double character": {
-			attempt:          []rune("hello"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
+			guess:            []rune("hello"),
+			solution:         "hello",
+			expectedStatuses: feedback{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
 		"double character with wrong answer": {
-			attempt:          []rune("helll"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{correctPosition, correctPosition, correctPosition, correctPosition, absentCharacter},
+			guess:            []rune("helll"),
+			solution:         "hello",
+			expectedStatuses: feedback{correctPosition, correctPosition, correctPosition, correctPosition, absentCharacter},
 		},
 		"five identical, but only two are there": {
-			attempt:          []rune("lllll"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{absentCharacter, absentCharacter, correctPosition, correctPosition, absentCharacter},
+			guess:            []rune("lllll"),
+			solution:         "hello",
+			expectedStatuses: feedback{absentCharacter, absentCharacter, correctPosition, correctPosition, absentCharacter},
 		},
 		"two identical, but not in the right position (from left to right)": {
-			attempt:          []rune("hlleo"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{correctPosition, wrongPosition, correctPosition, wrongPosition, correctPosition},
+			guess:            []rune("hlleo"),
+			solution:         "hello",
+			expectedStatuses: feedback{correctPosition, wrongPosition, correctPosition, wrongPosition, correctPosition},
 		},
 		"three identical, but not in the right position (from left to right)": {
-			attempt:          []rune("hlllo"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
+			guess:            []rune("hlllo"),
+			solution:         "hello",
+			expectedStatuses: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
 		"one correct, one incorrect, one absent (left of the correct)": {
-			attempt:          []rune("lllww"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{wrongPosition, absentCharacter, correctPosition, absentCharacter, absentCharacter},
+			guess:            []rune("lllww"),
+			solution:         "hello",
+			expectedStatuses: feedback{wrongPosition, absentCharacter, correctPosition, absentCharacter, absentCharacter},
 		},
 		"swapped characters": {
-			attempt:          []rune("holle"),
-			sc:               &solutionChecker{solution: []rune("hello")},
-			expectedStatuses: []status{correctPosition, wrongPosition, correctPosition, correctPosition, wrongPosition},
+			guess:            []rune("holle"),
+			solution:         "hello",
+			expectedStatuses: feedback{correctPosition, wrongPosition, correctPosition, correctPosition, wrongPosition},
 		},
 		"absent character": {
-			attempt:          []rune("hulfo"),
-			sc:               &solutionChecker{solution: []rune("helfo")},
-			expectedStatuses: []status{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
+			guess:            []rune("hulfo"),
+			solution:         "helfo",
+			expectedStatuses: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
 		"absent character and incorrect": {
-			attempt:          []rune("hulpp"),
-			sc:               &solutionChecker{solution: []rune("helpo")},
-			expectedStatuses: []status{correctPosition, absentCharacter, correctPosition, correctPosition, absentCharacter},
+			guess:            []rune("hulpp"),
+			solution:         "helpo",
+			expectedStatuses: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, absentCharacter},
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-
-			statuses := tc.sc.check(tc.attempt)
-			if !compare(tc.expectedStatuses, statuses) {
-				t.Errorf("attempt: %q, got the wrong feedback, expected %v, got %v", string(tc.attempt), tc.expectedStatuses, statuses)
+			solChecker := &solutionChecker{solution: []rune(tc.solution)}
+			statuses := solChecker.check(tc.guess)
+			if !tc.expectedStatuses.Equal(statuses) {
+				t.Errorf("guess: %q, got the wrong feedback, expected %v, got %v", string(tc.guess), tc.expectedStatuses, statuses)
 			}
 		})
 	}
 }
 
-func compare(lhs, rhs []status) bool {
-	if len(lhs) != len(rhs) {
+// Equal determines equality of two feedbacks.
+func (fb feedback) Equal(other feedback) bool {
+	if len(fb) != len(other) {
 		return false
 	}
-	for index, value := range lhs {
-		if value != rhs[index] {
+	for index, value := range fb {
+		if value != other[index] {
 			return false
 		}
 	}

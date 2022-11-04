@@ -3,7 +3,7 @@ projects := \
 	1_2_read_input \
 	1_3_isolate_validate \
 	1_4_check_for_victory \
-	2_feedback \
+	2_hints \
 	3_corpus \
 	4_config_options
 
