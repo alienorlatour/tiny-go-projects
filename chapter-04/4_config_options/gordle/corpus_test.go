@@ -15,7 +15,7 @@ func TestReadCorpus(t *testing.T) {
 	}{
 		"English corpus": {
 			file:   "../corpus/english.txt",
-			length: 35,
+			length: 34,
 			err:    nil,
 		},
 		"empty corpus": {
