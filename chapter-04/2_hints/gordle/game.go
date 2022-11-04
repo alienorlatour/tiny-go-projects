@@ -37,14 +37,14 @@ func (g *Game) Play() {
 		// ask for a valid word
 		guess := g.ask()
 
-		// evaluate it
-		fb := g.solutionChecker.evaluate(guess)
+		// check it
+		fb := g.solutionChecker.check(guess)
 
 		// print the feedback
 		fmt.Println(fb.String())
 
 		if string(guess) == string(g.solution) {
-			fmt.Printf("🎉 You won! You found in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
+			fmt.Printf("🎉 You won! You found it in %d attempt(s)! The word was: %s.\n", currentAttempt, string(g.solution))
 			return
 		}
 	}
@@ -58,7 +58,7 @@ func (g *Game) ask() []rune {
 	fmt.Printf("Enter a %d-character guess:\n", len(g.solution))
 
 	for {
-		// Read the attempt from the player.
+		// Read the guess from the player.
 		suggestion, _, err := g.reader.ReadLine()
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
@@ -79,9 +79,9 @@ func (g *Game) ask() []rune {
 	}
 }
 
-var errInvalidWordLength = fmt.Errorf("invalid attempt, word doesn't have the same number of characters as the solution ")
+var errInvalidWordLength = fmt.Errorf("invalid guess, word doesn't have the same number of characters as the solution ")
 
-// validateAttempt ensures the attempt is valid enough.
+// validateAttempt ensures the guess is valid enough.
 func (g *Game) validateAttempt(attempt []rune) error {
 	if len(attempt) != len(g.solution) {
 		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(attempt), errInvalidWordLength)

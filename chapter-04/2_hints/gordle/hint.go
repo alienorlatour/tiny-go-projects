@@ -2,18 +2,18 @@ package gordle
 
 import "strings"
 
-// status describes the validity of a character in a word.
-type status int
+// hint describes the validity of a character in a word.
+type hint int
 
 const (
-	absentCharacter status = iota
+	absentCharacter hint = iota
 	wrongPosition
 	correctPosition
 )
 
 // String implements the Stringer interface.
-func (s status) String() string {
-	switch s {
+func (h hint) String() string {
+	switch h {
 	case absentCharacter:
 		return "⬜️"
 	case wrongPosition:
@@ -26,14 +26,14 @@ func (s status) String() string {
 	}
 }
 
-// feedback is a list of statuses, one per character of the word.
-type feedback []status
+// feedback is a list of hints, one per character of the word.
+type feedback []hint
 
-// String implements the Stringer interface for a slice of statuses.
+// String implements the Stringer interface for a slice of hints.
 func (fb feedback) String() string {
 	sb := strings.Builder{}
-	for _, s := range fb {
-		sb.WriteString(s.String())
+	for _, h := range fb {
+		sb.WriteString(h.String())
 	}
 	return sb.String()
 }
@@ -42,8 +42,8 @@ func (fb feedback) String() string {
 // It is used only to benchmark it with the strings.Builder version.
 func (fb feedback) StringConcat() string {
 	var output string
-	for _, s := range fb {
-		output += s.String()
+	for _, h := range fb {
+		output += h.String()
 	}
 	return output
 }

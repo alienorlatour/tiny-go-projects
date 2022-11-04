@@ -1,6 +1,6 @@
 package gordle
 
-// solutionChecker holds all the information we need to evaluate the solution.
+// solutionChecker holds all the information we need to check the solution.
 type solutionChecker struct {
 	// the solution word
 	solution []rune
@@ -8,14 +8,14 @@ type solutionChecker struct {
 	positions map[rune][]int
 }
 
-// evaluate verifies every character of the word against the solution.
-func (sc *solutionChecker) evaluate(word []rune) feedback {
+// check verifies every character of the word against the solution.
+func (sc *solutionChecker) check(word []rune) feedback {
 	// reset the positions map
 	sc.reset()
 
 	fb := make(feedback, len(sc.solution))
 
-	// scan the attempts and evaluate if they are in the solution
+	// scan the attempts and check if they are in the solution
 	for i, character := range word {
 		correctness := sc.checkCharacterAtPosition(character, i)
 		if correctness == correctPosition {
@@ -53,7 +53,7 @@ func (sc *solutionChecker) reset() {
 }
 
 // checkCharacterAtPosition returns the correctness of a character at the specified index in the solution.
-func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) status {
+func (sc *solutionChecker) checkCharacterAtPosition(character rune, index int) hint {
 	positions, ok := sc.positions[character]
 	if !ok || len(positions) == 0 {
 		return absentCharacter
