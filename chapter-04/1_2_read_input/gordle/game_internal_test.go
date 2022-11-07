@@ -1,9 +1,10 @@
 package gordle
 
 import (
-	"bufio"
 	"strings"
 	"testing"
+
+	"golang.org/x/exp/slices"
 )
 
 func TestGameAsk(t *testing.T) {
@@ -12,8 +13,8 @@ func TestGameAsk(t *testing.T) {
 		want  []rune
 	}{
 		"5 characters in english": {
-			input: "hello",
-			want:  []rune("hello"),
+			input: "HELLO",
+			want:  []rune("HELLO"),
 		},
 		"5 characters in arabic": {
 			input: "مرحبا",
@@ -31,26 +32,12 @@ func TestGameAsk(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g := Game{reader: bufio.NewReader(strings.NewReader(tc.input))}
+			g := New(strings.NewReader(tc.input))
 
 			got := g.ask()
-			if !compareRunes(got, tc.want) {
+			if !slices.Equal(got, tc.want) {
 				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
 			}
 		})
 	}
-}
-
-// compareRunes compares two slices and returns whether they have the same elements.
-func compareRunes(s1, s2 []rune) bool {
-	if len(s1) != len(s2) {
-		return false
-	}
-
-	for i, v1 := range s1 {
-		if v1 != s2[i] {
-			return false
-		}
-	}
-	return true
 }

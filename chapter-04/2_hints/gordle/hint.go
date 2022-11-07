@@ -39,7 +39,7 @@ func (fb feedback) String() string {
 }
 
 // StringConcat is a naive implementation to build feedback as a string.
-// It is used only to benchmark it with the strings.Builder version.
+// It is used only to benchmark it against the strings.Builder version.
 func (fb feedback) StringConcat() string {
 	var output string
 	for _, h := range fb {

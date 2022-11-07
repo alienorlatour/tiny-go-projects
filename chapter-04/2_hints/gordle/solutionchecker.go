@@ -15,11 +15,12 @@ func (sc *solutionChecker) check(word []rune) feedback {
 
 	fb := make(feedback, len(sc.solution))
 
-	// scan the attempts and check if they are in the solution
+	// scan the guesses and evaluate if they are in the solution
 	for i, character := range word {
+		// keep track of already seen characters
 		correctness := sc.checkCharacterAtPosition(character, i)
 		if correctness == correctPosition {
-			// keep track of already seen characters
+			// remove found character from positions at this index
 			sc.markCharacterAsSeen(character, i)
 			fb[i] = correctPosition
 		}
