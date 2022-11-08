@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Game holds all the information we need to play a game of gordle.
+// Game holds all the information we need to play a game of Gordle.
 type Game struct{}
 
 // New returns a Game, which can be used to Play!

@@ -9,7 +9,7 @@ import (
 
 const solutionLength = 5
 
-// Game holds all the information we need to play a game of gordle.
+// Game holds all the information we need to play a game of Gordle.
 type Game struct {
 	reader *bufio.Reader
 }

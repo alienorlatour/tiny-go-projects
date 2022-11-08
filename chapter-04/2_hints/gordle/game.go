@@ -10,12 +10,11 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// Game holds all the information we need to play a game of gordle.
+// Game holds all the information we need to play a game of Gordle.
 type Game struct {
-	reader          *bufio.Reader
-	solution        []rune
-	maxAttempts     int
-	solutionChecker *solutionChecker
+	reader      *bufio.Reader
+	solution    []rune
+	maxAttempts int
 }
 
 // New returns a Game variable, which can be used to Play!
@@ -25,8 +24,6 @@ func New(playerInput io.Reader, solution string, maxAttempts int) *Game {
 		solution:    splitToUppercaseCharacters(solution),
 		maxAttempts: maxAttempts,
 	}
-
-	g.solutionChecker = &solutionChecker{solution: g.solution}
 
 	return g
 }
@@ -41,7 +38,7 @@ func (g *Game) Play() {
 		guess := g.ask()
 
 		// check it
-		fb := g.solutionChecker.check(guess)
+		fb := computeFeedback(guess, g.solution)
 
 		// print the feedback
 		fmt.Println(fb.String())
@@ -97,4 +94,42 @@ func (g *Game) validateGuess(guess []rune) error {
 // splitToUppercaseCharacters is a naive implementation to turn a string into a list of characters.
 func splitToUppercaseCharacters(input string) []rune {
 	return []rune(strings.ToUpper(input))
+}
+
+// computeFeedback verifies every character of the guess against the solution.
+func computeFeedback(guess, solution []rune) feedback {
+	// initialise holders for marks
+	result := make(feedback, len(guess))
+	used := make([]bool, len(solution))
+
+	for i, character := range guess {
+		if character == solution[i] {
+			result[i] = correctPosition
+			used[i] = true
+		}
+	}
+
+	for i, character := range guess {
+		if result[i] != absentCharacter {
+			// The character has already been marked, ignore it.
+			continue
+		}
+
+		for j, target := range solution {
+			if used[j] {
+				// The letter of the solution is already assigned to a letter of the guess.
+				// Skip to the next letter of the solution.
+				continue
+			}
+
+			if character == target {
+				result[i] = wrongPosition
+				used[j] = true
+				// Skip to the next letter of the guess.
+				break
+			}
+		}
+	}
+
+	return result
 }
