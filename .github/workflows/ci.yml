@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: setup go environment
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
-          go-version: '1.19'
+          go-version: '^1.18'
 
       - name: run tests with coverage
         run: make cover
@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: setup go environment
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
-          go-version: '1.19'
+          go-version: '^1.18'
 
       - name: run tests with coverage
         run: make build
@@ -40,8 +40,10 @@ jobs:
     steps:
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: 1.18
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
-        run: make lint
+        with:
+          version: latest
+          working-directory: chapter-04/final
