@@ -12,3 +12,6 @@ cover:
 
 test_french:
 	go test ./... -run French
+
+lint:
+	 golangci-lint run ./...

@@ -12,3 +12,6 @@ cover:
 
 benchmark:
 	go test ./... -run=^$ bench=. --benchmem
+
+lint:
+	 golangci-lint run ./...
