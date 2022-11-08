@@ -9,7 +9,7 @@ import (
 
 const solutionLength = 5
 
-// Game holds all the information we need to play a game of gordle.
+// Game holds all the information we need to play a game of Gordle.
 type Game struct {
 	reader *bufio.Reader
 }
@@ -43,7 +43,7 @@ func (g *Game) ask() []rune {
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
 			// Let’s give it a chance.
-			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
+			_, _ = fmt.Fprintf(os.Stderr, "Gordle failed to read your guess: %s\n", err.Error())
 			continue
 		}
 
@@ -51,7 +51,7 @@ func (g *Game) ask() []rune {
 
 		// Verify the suggestion has a valid length.
 		if len(guess) != solutionLength {
-			_, _ = fmt.Fprintf(os.Stderr, "invalid word length: expected %d, got %d\n", solutionLength, len(guess))
+			_, _ = fmt.Fprintf(os.Stderr, "Your attempt is invalid with Gordle's solution! Expected %d characters, got %d.\n", solutionLength, len(guess))
 		} else {
 			return guess
 		}

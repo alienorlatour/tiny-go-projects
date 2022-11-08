@@ -11,10 +11,9 @@ import (
 
 // Game holds all the information we need to play a game of gordle.
 type Game struct {
-	reader          *bufio.Reader
-	solution        []rune
-	maxAttempts     int
-	solutionChecker *solutionChecker
+	reader      *bufio.Reader
+	solution    []rune
+	maxAttempts int
 }
 
 // New returns a Game variable, which can be used to Play!
@@ -37,8 +36,6 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 		}
 	}
 
-	// Delay the checker creation till here, in case the solution was passed as a config func.
-	g.solutionChecker = &solutionChecker{solution: g.solution}
 	return g, nil
 }
 
@@ -52,7 +49,7 @@ func (g *Game) Play() {
 		guess := g.ask()
 
 		// check it
-		fb := g.solutionChecker.check(guess)
+		fb := computeFeedback(guess, g.solution)
 
 		// print the feedback
 		fmt.Println(fb.String())
@@ -108,4 +105,50 @@ func (g *Game) validateGuess(guess []rune) error {
 // splitToUppercaseCharacters is a naive implementation to turn a string into a list of characters.
 func splitToUppercaseCharacters(input string) []rune {
 	return []rune(strings.ToUpper(input))
+}
+
+// computeFeedback verifies every character of the guess against the solution.
+func computeFeedback(guess, solution []rune) feedback {
+	// initialise holders for marks
+	result := make(feedback, len(guess))
+	used := make([]bool, len(solution))
+
+	if len(guess) != len(solution) {
+		_, _ = fmt.Fprintf(os.Stderr, "guess and solution have different lengths: %d vs %d", len(guess), len(solution))
+		// return a feedback full of absent characters
+		return result
+	}
+
+	// check for correct letters
+	for posInGuess, character := range guess {
+		if character == solution[posInGuess] {
+			result[posInGuess] = correctPosition
+			used[posInGuess] = true
+		}
+	}
+
+	// look for letters in the wrong position
+	for posInGuess, character := range guess {
+		if result[posInGuess] != absentCharacter {
+			// The character has already been marked, ignore it.
+			continue
+		}
+
+		for posInSolution, target := range solution {
+			if used[posInSolution] {
+				// The letter of the solution is already assigned to a letter of the guess.
+				// Skip to the next letter of the solution.
+				continue
+			}
+
+			if character == target {
+				result[posInGuess] = wrongPosition
+				used[posInSolution] = true
+				// Skip to the next letter of the guess.
+				break
+			}
+		}
+	}
+
+	return result
 }
