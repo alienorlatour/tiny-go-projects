@@ -44,7 +44,7 @@ func (g *Game) ask() []rune {
 		if err != nil {
 			// We failed to read this line, maybe the next one is better?
 			// Let’s give it a chance.
-			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
+			_, _ = fmt.Fprintf(os.Stderr, "Gordle failed to read your guess: %s\n", err.Error())
 			continue
 		}
 
@@ -53,7 +53,7 @@ func (g *Game) ask() []rune {
 		// Verify the suggestion has a valid length.
 		err = g.validateGuess(guess)
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
+			_, _ = fmt.Fprintf(os.Stderr, "Your attempt is invalid with Gordle's solution: %s.\n", err.Error())
 		} else {
 			return guess
 		}
