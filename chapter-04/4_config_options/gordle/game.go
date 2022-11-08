@@ -113,29 +113,37 @@ func computeFeedback(guess, solution []rune) feedback {
 	result := make(feedback, len(guess))
 	used := make([]bool, len(solution))
 
-	for i, character := range guess {
-		if character == solution[i] {
-			result[i] = correctPosition
-			used[i] = true
+	if len(guess) != len(solution) {
+		_, _ = fmt.Fprintf(os.Stderr, "guess and solution have different lengths: %d vs %d", len(guess), len(solution))
+		// return a feedback full of absent characters
+		return result
+	}
+
+	// check for correct letters
+	for posInGuess, character := range guess {
+		if character == solution[posInGuess] {
+			result[posInGuess] = correctPosition
+			used[posInGuess] = true
 		}
 	}
 
-	for i, character := range guess {
-		if result[i] != absentCharacter {
+	// look for letters in the wrong position
+	for posInGuess, character := range guess {
+		if result[posInGuess] != absentCharacter {
 			// The character has already been marked, ignore it.
 			continue
 		}
 
-		for j, target := range solution {
-			if used[j] {
+		for posInSolution, target := range solution {
+			if used[posInSolution] {
 				// The letter of the solution is already assigned to a letter of the guess.
 				// Skip to the next letter of the solution.
 				continue
 			}
 
 			if character == target {
-				result[i] = wrongPosition
-				used[j] = true
+				result[posInGuess] = wrongPosition
+				used[posInSolution] = true
 				// Skip to the next letter of the guess.
 				break
 			}

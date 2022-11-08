@@ -106,53 +106,53 @@ func Test_computeFeedback(t *testing.T) {
 		expectedFeedback feedback
 	}{
 		"nominal": {
-			guess:            "hertz",
-			solution:         "hertz",
+			guess:            "HERTZ",
+			solution:         "HERTZ",
 			expectedFeedback: feedback{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
 		"double character": {
-			guess:            "hello",
-			solution:         "hello",
+			guess:            "HELLO",
+			solution:         "HELLO",
 			expectedFeedback: feedback{correctPosition, correctPosition, correctPosition, correctPosition, correctPosition},
 		},
 		"double character with wrong answer": {
-			guess:            "helll",
-			solution:         "hello",
+			guess:            "HELLL",
+			solution:         "HELLO",
 			expectedFeedback: feedback{correctPosition, correctPosition, correctPosition, correctPosition, absentCharacter},
 		},
 		"five identical, but only two are there": {
-			guess:            "lllll",
-			solution:         "hello",
+			guess:            "LLLLL",
+			solution:         "HELLO",
 			expectedFeedback: feedback{absentCharacter, absentCharacter, correctPosition, correctPosition, absentCharacter},
 		},
 		"two identical, but not in the right position (from left to right)": {
-			guess:            "hlleo",
-			solution:         "hello",
+			guess:            "HLLEO",
+			solution:         "HELLO",
 			expectedFeedback: feedback{correctPosition, wrongPosition, correctPosition, wrongPosition, correctPosition},
 		},
 		"three identical, but not in the right position (from left to right)": {
-			guess:            "hlllo",
-			solution:         "hello",
+			guess:            "HLLLO",
+			solution:         "HELLO",
 			expectedFeedback: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
 		"one correct, one incorrect, one absent (left of the correct)": {
-			guess:            "lllww",
-			solution:         "hello",
+			guess:            "LLLWW",
+			solution:         "HELLO",
 			expectedFeedback: feedback{wrongPosition, absentCharacter, correctPosition, absentCharacter, absentCharacter},
 		},
 		"swapped characters": {
-			guess:            "holle",
-			solution:         "hello",
+			guess:            "HOLLE",
+			solution:         "HELLO",
 			expectedFeedback: feedback{correctPosition, wrongPosition, correctPosition, correctPosition, wrongPosition},
 		},
 		"absent character": {
-			guess:            "hulfo",
-			solution:         "helfo",
+			guess:            "HULFO",
+			solution:         "HELFO",
 			expectedFeedback: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, correctPosition},
 		},
 		"absent character and incorrect": {
-			guess:            "hulpp",
-			solution:         "helpo",
+			guess:            "HULPP",
+			solution:         "HELPO",
 			expectedFeedback: feedback{correctPosition, absentCharacter, correctPosition, correctPosition, absentCharacter},
 		},
 	}
