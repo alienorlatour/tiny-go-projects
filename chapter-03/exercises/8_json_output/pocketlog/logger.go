@@ -1,6 +1,7 @@
 package pocketlog
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -70,11 +71,28 @@ func (l *Logger) Logf(lvl Level, format string, args ...any) {
 // logf prints the message to the output.
 // Add decorations here, if any.
 func (l *Logger) logf(lvl Level, format string, args ...any) {
-	message := fmt.Sprintf(format, args...)
+	contents := fmt.Sprintf(format, args...)
 	// check the trimming is activated, and that we should apply it to this message
 	// checking the length in runes, as this won't print unexpected characters
-	if l.maxMessageLength != 0 && uint(len([]rune(message))) > l.maxMessageLength {
-		message = string([]rune(message)[:l.maxMessageLength]) + "[TRIMMED]"
+	if l.maxMessageLength != 0 && uint(len([]rune(contents))) > l.maxMessageLength {
+		contents = string([]rune(contents)[:l.maxMessageLength]) + "[TRIMMED]"
 	}
-	_, _ = fmt.Fprintf(l.output, "{\"level\": \"%s\", \"message\": %q}\n", lvl, message)
+	msg := message{
+		Level:   lvl.String(),
+		Message: contents,
+	}
+
+	// encode the message
+	formattedMessage, err := json.Marshal(msg)
+	if err != nil {
+		_, _ = fmt.Fprintf(l.output, "unable to format message for %v\n", contents)
+		return
+	}
+
+	_, _ = fmt.Fprintln(l.output, string(formattedMessage))
+}
+
+type message struct {
+	Level   string `json:"level"`
+	Message string `json:"message"`
 }

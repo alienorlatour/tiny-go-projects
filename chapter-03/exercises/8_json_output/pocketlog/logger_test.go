@@ -3,17 +3,17 @@ package pocketlog_test
 import (
 	"testing"
 
-	"tiny-go-projects/chapter-03/exercises/8_json_output/pocketlog"
+	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/8_json_output/pocketlog"
 )
 
 func ExampleLogger_Debug() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
-	debugLogger.Debugf("Hello, %s", "world")
-	// Output: {"level": "[DEBUG]", "message": "Hello, world"}
+	debugLogger.Debugf("Hello,%s", "world")
+	// Output:{"level":"[DEBUG]","message":"Hello,world"}
 }
 
 const (
-	debugMessage = "Why write I still all one, ever the same,"
+	debugMessage = "Why write I still all one,ever the same,"
 	infoMessage  = "And keep invention in a noted weed,"
 	errorMessage = "That every word doth almost tell my name,"
 )
@@ -25,18 +25,18 @@ func TestLogger_DebugInfoError(t *testing.T) {
 	}{
 		"debug": {
 			level: pocketlog.LevelDebug,
-			expected: `{"level": "[DEBUG]", "message": "` + debugMessage + "\"}\n" +
-				`{"level": "[INFO]", "message": "` + infoMessage + "\"}\n" +
-				`{"level": "[ERROR]", "message": "` + errorMessage + "\"}\n",
+			expected: `{"level":"[DEBUG]","message":"` + debugMessage + "\"}\n" +
+				`{"level":"[INFO]","message":"` + infoMessage + "\"}\n" +
+				`{"level":"[ERROR]","message":"` + errorMessage + "\"}\n",
 		},
 		"info": {
 			level: pocketlog.LevelInfo,
-			expected: `{"level": "[INFO]", "message": "` + infoMessage + "\"}\n" +
-				`{"level": "[ERROR]", "message": "` + errorMessage + "\"}\n",
+			expected: `{"level":"[INFO]","message":"` + infoMessage + "\"}\n" +
+				`{"level":"[ERROR]","message":"` + errorMessage + "\"}\n",
 		},
 		"error": {
 			level:    pocketlog.LevelError,
-			expected: `{"level": "[ERROR]", "message": "` + errorMessage + "\"}\n",
+			expected: `{"level":"[ERROR]","message":"` + errorMessage + "\"}\n",
 		},
 	}
 
@@ -51,7 +51,7 @@ func TestLogger_DebugInfoError(t *testing.T) {
 			testedLogger.Errorf(errorMessage)
 
 			if tw.contents != tc.expected {
-				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)
+				t.Errorf("invalid contents,expected %q,got %q", tc.expected, tw.contents)
 			}
 		})
 	}
