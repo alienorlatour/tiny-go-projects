@@ -6,7 +6,7 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-03/3_2_testing/pocketlog"
 )
 
-func ExampleLogger_Debug() {
+func ExampleLogger_Debugf() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
 	debugLogger.Debugf("Hello, %s", "world")
 	// Output: Hello, world
@@ -18,7 +18,7 @@ const (
 	errorMessage = "That every word doth almost tell my name,"
 )
 
-func TestLogger_DebugInfoError(t *testing.T) {
+func TestLogger_DebugfInfofErrorf(t *testing.T) {
 	type testCase struct {
 		level    pocketlog.Level
 		expected string

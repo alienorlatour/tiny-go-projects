@@ -10,5 +10,8 @@ test:
 cover:
 	go test ./... -cover
 
+lint:
+	 golangci-lint run ./...
+
 %: ## anything
 	go run main.go -lang=$@

@@ -9,3 +9,6 @@ test:
 
 cover:
 	go test ./... -cover
+
+lint:
+	 golangci-lint run ./...
