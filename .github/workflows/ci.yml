@@ -46,4 +46,3 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: chapter-04/final
