@@ -51,7 +51,7 @@ func TestLogger_DebugInfoError(t *testing.T) {
 			testedLogger.Errorf(errorMessage)
 
 			if tw.contents != tc.expected {
-				t.Errorf("invalid contents,expected %q,got %q", tc.expected, tw.contents)
+				t.Errorf("invalid contents, expected %q, got %q", tc.expected, tw.contents)
 			}
 		})
 	}

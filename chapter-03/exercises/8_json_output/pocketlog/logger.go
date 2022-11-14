@@ -72,11 +72,13 @@ func (l *Logger) Logf(lvl Level, format string, args ...any) {
 // Add decorations here, if any.
 func (l *Logger) logf(lvl Level, format string, args ...any) {
 	contents := fmt.Sprintf(format, args...)
+
 	// check the trimming is activated, and that we should apply it to this message
 	// checking the length in runes, as this won't print unexpected characters
 	if l.maxMessageLength != 0 && uint(len([]rune(contents))) > l.maxMessageLength {
 		contents = string([]rune(contents)[:l.maxMessageLength]) + "[TRIMMED]"
 	}
+
 	msg := message{
 		Level:   lvl.String(),
 		Message: contents,
@@ -92,6 +94,7 @@ func (l *Logger) logf(lvl Level, format string, args ...any) {
 	_, _ = fmt.Fprintln(l.output, string(formattedMessage))
 }
 
+// message represents the JSON structure of the logged messages.
 type message struct {
 	Level   string `json:"level"`
 	Message string `json:"message"`
