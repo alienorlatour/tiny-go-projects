@@ -6,7 +6,7 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/7_avoiding_long_messages/pocketlog"
 )
 
-func ExampleLogger_Debug() {
+func ExampleLogger_Debugf() {
 	debugLogger := pocketlog.New(pocketlog.LevelDebug)
 	debugLogger.Debugf("Hello, %s", "world")
 	// Output: [DEBUG] Hello, world
