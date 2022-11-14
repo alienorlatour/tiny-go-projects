@@ -13,7 +13,8 @@ projects := \
 	exercises/4_testing_at_random \
 	exercises/5_logging_level \
 	exercises/6_alternative_exposition \
-	exercises/7_avoiding_long_messages
+	exercises/7_avoiding_long_messages \
+	exercises/8_json_output
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done
