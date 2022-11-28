@@ -17,7 +17,7 @@ func TestGetCurrency_EUR(t *testing.T) {
 	}
 
 	if got != expected {
-		t.Errorf("expected %q, got %q", expected, got)
+		t.Errorf("expected %v, got %v", expected, got)
 	}
 }
 
