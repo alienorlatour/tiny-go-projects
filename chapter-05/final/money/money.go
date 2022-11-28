@@ -10,20 +10,14 @@ func Convert(amount, from, to string) (string, error) {
 		return "", fmt.Errorf("unable to parse amount: %w", err)
 	}
 
-	// get the output currency
-	c, err := getCurrency(to)
-	if err != nil {
-		return "", fmt.Errorf("unable to parse get output currency: %w", err)
-	}
-
 	// get the change rate
-	r, err := fetchChangeRate(from, c.code)
+	r, err := fetchChangeRate(from, to)
 	if err != nil {
 		return "", fmt.Errorf("%w: %s", errUnknownChangeRate, err.Error())
 	}
 
 	// convert
-	convertedValue := n.applyChangeRate(r, c.precision)
+	convertedValue := n.applyChangeRate(r, 2)
 
 	// format
 	return convertedValue.String(), nil

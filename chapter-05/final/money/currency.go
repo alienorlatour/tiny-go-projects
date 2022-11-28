@@ -4,6 +4,7 @@ package money
 type currency struct {
 	code      string
 	precision int
+	toEuro    float32
 }
 
 // errUnknownCurrency is returned when a currency is unsupported.
@@ -13,7 +14,8 @@ const errUnknownCurrency = moneyError("unknown currency")
 var currencies = map[string]currency{
 	"EUR": {code: "EUR", precision: 2},
 	"USD": {code: "USD", precision: 2},
-	"ETH": {code: "ETH", precision: 9},
+	"JOD": {code: "JOD", precision: 3},
+	"YEN": {code: "YEN", precision: 0},
 }
 
 // getCurrency returns the currency associated to a name and may return errUnknownCurrency.
