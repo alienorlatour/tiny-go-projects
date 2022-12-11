@@ -1,5 +1,32 @@
 package money
 
+import "fmt"
+
+func (e Envelope) changeRate(source, target currency) (changeRate, error) {
+	factor := changeRate(1.0)
+	var foundSource, foundTarget bool
+	for _, cube := range e.Cube.ParentCube.Cubes {
+		switch cube.Currency {
+		case source.code:
+			// TODO: I don't really like this
+			factor /= changeRate(cube.Rate)
+			foundSource = true
+		case target.code:
+			// TODO: I don't really like this
+			factor *= changeRate(cube.Rate)
+			foundTarget = true
+		}
+	}
+	// EUR is allowed not to be found
+	if !foundSource && source.code != "EUR" {
+		return 0., fmt.Errorf("unable to find source currency %s", source.code)
+	}
+	if !foundTarget && target.code != "EUR" {
+		return 0., fmt.Errorf("unable to find target currency %s", target.code)
+	}
+	return factor, nil
+}
+
 type Envelope struct {
 	Cube EnvelopeCube `xml:"Cube"`
 }
@@ -42,10 +69,11 @@ func (pc ParentCube) Equal(other ParentCube) bool {
 }
 
 func (c Cube) Equal(other Cube) bool {
-	if c.Rate != other.Rate {
+	if c.Currency != other.Currency {
 		return false
 	}
-	if c.Currency != other.Currency {
+	// TODO: Add a toleration?
+	if c.Rate != other.Rate {
 		return false
 	}
 	return true

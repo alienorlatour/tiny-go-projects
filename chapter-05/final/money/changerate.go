@@ -1,6 +1,7 @@
 package money
 
 import (
+	"encoding/xml"
 	"fmt"
 	"net/http"
 )
@@ -48,11 +49,27 @@ func getECBExchangeRate(source, target currency) (changeRate, error) {
 		return 0., fmt.Errorf("error while requesting URL %s: %w", exchangeRatesURL, err)
 	}
 
-	// TODO parse the response
-	//resp.StatusCode
-
 	// don't forget to close the response's body
 	defer resp.Body.Close()
 
-	return 0, nil
+	if err = checkStatusCode(resp.StatusCode); err != nil {
+		// TODO: have our own error?
+		return 0., fmt.Errorf("invalid status code: %w", err)
+	}
+
+	// read the response
+	decoder := xml.NewDecoder(resp.Body)
+	var ecbMessage Envelope
+	err = decoder.Decode(&ecbMessage)
+	if err != nil {
+		return 0., fmt.Errorf("unable to decode message: %w", err)
+	}
+
+	// do we want to returnt his directly ?
+	rate, err := ecbMessage.changeRate(source, target)
+	if err != nil {
+		return 0., fmt.Errorf("couldn't find the exchange rate: %w", err)
+	}
+
+	return rate, nil
 }
