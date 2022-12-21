@@ -2,7 +2,7 @@ package money
 
 import "strings"
 
-// Currency defines the code of a money and its precision.
+// Currency defines the code of a money and its decimal precision.
 type Currency struct {
 	code      string
 	precision int
@@ -52,7 +52,7 @@ var currencies = map[string]Currency{
 	"ZAR": {code: "ZAR", precision: 2},
 }
 
-// getCurrency returns the currency associated to a name and may return errUnknownCurrency.
+// parseCurrency returns the currency associated to a name and may return errUnknownCurrency.
 func parseCurrency(code string) (Currency, error) {
 	c, ok := currencies[strings.ToUpper(code)]
 	if !ok {

@@ -16,7 +16,7 @@ func New(url string) *ChangeRateRepository {
 	return &ChangeRateRepository{url}
 }
 
-// ExchangeRate fetches the ChangeRate for the day and returns
+// ExchangeRate fetches the ChangeRate for the day and returns it.
 func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (money.ChangeRate, error) {
 	// build the HTTP request
 	req, err := http.NewRequest(http.MethodGet, crr.url(), nil)
@@ -40,7 +40,7 @@ func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (mon
 
 	// read the response
 	decoder := xml.NewDecoder(resp.Body)
-	var ecbMessage Envelope
+	var ecbMessage envelope
 	err = decoder.Decode(&ecbMessage)
 	if err != nil {
 		return 0., fmt.Errorf("unable to decode message: %w", err)
@@ -55,8 +55,11 @@ func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (mon
 	return rate, nil
 }
 
-const route = "/stats/eurofxref/eurofxref-daily.xml"
+const (
+	ECBRepoURL  = "https://www.ecb.europa.eu/"
+	euroxfRoute = "/stats/eurofxref/eurofxref-daily.xml"
+)
 
 func (crr ChangeRateRepository) url() string {
-	return crr.exchangeRatesURL + route
+	return crr.exchangeRatesURL + euroxfRoute
 }

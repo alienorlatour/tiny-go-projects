@@ -8,28 +8,28 @@ import (
 )
 
 func TestUnmarshalXML(t *testing.T) {
-	message := `<gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref">
+	message := `<gesmes:envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref">
 	<gesmes:subject>Reference rates</gesmes:subject>
 	<gesmes:Sender>
 		<gesmes:name>European Central Bank</gesmes:name>
 	</gesmes:Sender>
-	<Cube>
-		<Cube time="2022-11-25">
-			<Cube currency="JPY" rate="144.62"/>
-			<Cube currency="TRY" rate="19.3333"/>
-			<Cube currency="KRW" rate="1383.20"/>
-			<Cube currency="NZD" rate="1.6651"/>
-		</Cube>
-	</Cube>
-</gesmes:Envelope>`
+	<cube>
+		<cube time="2022-11-25">
+			<cube currency="JPY" rate="144.62"/>
+			<cube currency="TRY" rate="19.3333"/>
+			<cube currency="KRW" rate="1383.20"/>
+			<cube currency="NZD" rate="1.6651"/>
+		</cube>
+	</cube>
+</gesmes:envelope>`
 
-	var ecbMessage Envelope
+	var ecbMessage envelope
 
-	expectedMessage := Envelope{
-		Cube: EnvelopeCube{
-			ParentCube: ParentCube{
+	expectedMessage := envelope{
+		Cube: envelopeCube{
+			ParentCube: parentCube{
 				Time: "2022-11-25",
-				Cubes: []Cube{
+				Cubes: []cube{
 					{
 						Currency: "JPY",
 						Rate:     144.62,

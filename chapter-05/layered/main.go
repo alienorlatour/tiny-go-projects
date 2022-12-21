@@ -11,8 +11,6 @@ import (
 
 // Usage: change -from USD -to EUR 34.98
 
-const configRepoURL = "https://www.ecb.europa.eu/"
-
 func main() {
 	// read currencies from the input
 	from := flag.String("from", "", "source currency, required")
@@ -26,7 +24,7 @@ func main() {
 	}
 
 	// create the repository we want to use
-	changeRepo := repository.New(configRepoURL)
+	changeRepo := repository.New(repository.ECBRepoURL)
 
 	// read the amount to convert from the command
 	amount := flag.Arg(0)

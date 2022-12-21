@@ -6,36 +6,36 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
 
-type Envelope struct {
-	Cube EnvelopeCube `xml:"Cube"`
+type envelope struct {
+	Cube envelopeCube `xml:"cube"`
 }
 
-type EnvelopeCube struct {
-	ParentCube ParentCube `xml:"Cube"`
+type envelopeCube struct {
+	ParentCube parentCube `xml:"cube"`
 }
 
-type ParentCube struct {
+type parentCube struct {
 	Time  string `xml:"time,attr"`
-	Cubes []Cube `xml:"Cube"`
+	Cubes []cube `xml:"cube"`
 }
 
-type Cube struct {
+type cube struct {
 	Currency string  `xml:"currency,attr"`
 	Rate     float32 `xml:"rate,attr"`
 }
 
-// changeRate reads the change rate from the Envelope's contents.
-func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, error) {
+// changeRate reads the change rate from the envelope's contents.
+func (e envelope) changeRate(source, target money.Currency) (money.ChangeRate, error) {
 	var foundSource, foundTarget bool
 	var factor money.ChangeRate
 
-	for _, cube := range e.Cube.ParentCube.Cubes {
-		switch cube.Currency {
+	for _, c := range e.Cube.ParentCube.Cubes {
+		switch c.Currency {
 		case source.Code():
-			factor = 1. / money.ChangeRate(cube.Rate)
+			factor = 1. / money.ChangeRate(c.Rate)
 			foundSource = true
 		case target.Code():
-			factor = money.ChangeRate(cube.Rate)
+			factor = money.ChangeRate(c.Rate)
 			foundTarget = true
 		}
 	}
@@ -56,17 +56,17 @@ func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, e
 }
 
 // Equal tells whether the 2 Envelopes are equal.
-func (e Envelope) Equal(other Envelope) bool {
+func (e envelope) Equal(other envelope) bool {
 	return e.Cube.Equal(other.Cube)
 }
 
 // Equal tells whether the 2 EnvelopeCubes are equal.
-func (ec EnvelopeCube) Equal(other EnvelopeCube) bool {
+func (ec envelopeCube) Equal(other envelopeCube) bool {
 	return ec.ParentCube.Equal(other.ParentCube)
 }
 
 // Equal tells whether the 2 ParentCubes are equal.
-func (pc ParentCube) Equal(other ParentCube) bool {
+func (pc parentCube) Equal(other parentCube) bool {
 	if pc.Time != other.Time {
 		return false
 	}
@@ -82,7 +82,7 @@ func (pc ParentCube) Equal(other ParentCube) bool {
 }
 
 // Equal tells whether the 2 Cubes are equal.
-func (c Cube) Equal(other Cube) bool {
+func (c cube) Equal(other cube) bool {
 	if c.Currency != other.Currency {
 		return false
 	}

@@ -46,6 +46,7 @@ type stubRate struct {
 	err  error
 }
 
+// ExchangeRate implements the interface rateRepository with the same signature but fields are unused for tests purposes.
 func (m stubRate) ExchangeRate(source, target money.Currency) (money.ChangeRate, error) {
 	return m.rate, m.err
 }

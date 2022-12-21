@@ -7,26 +7,28 @@ const (
 )
 
 type rateRepository interface {
+	// ExchangeRate fetches the ChangeRate for the day and returns it.
 	ExchangeRate(source, target Currency) (ChangeRate, error)
 }
 
+// Convert parses the input amount and applies the change rate to convert it to the target currency.
 func Convert(amount, from, to string, rateRepo rateRepository) (string, error) {
-	// parse
+	// parse the amount to convert
 	n, err := parseNumber(amount)
 	if err != nil {
 		return "", fmt.Errorf("unable to parse amount: %w", err)
 	}
 
-	// get the change rate
+	// fetch the change rate for the day
 	r, err := fetchChangeRate(from, to, rateRepo)
 	if err != nil {
 		return "", fmt.Errorf("%w: %s", errUnknownChangeRate, err.Error())
 	}
 
-	// convert
+	// convert to the target currency applying the fetched change rate
 	convertedValue := n.applyChangeRate(r, 2)
 
-	// format
+	// format the converted value to a readable format
 	return convertedValue.String(), nil
 }
 
