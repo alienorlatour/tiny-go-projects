@@ -36,7 +36,7 @@ func TestGameAsk(t *testing.T) {
 
 			got := g.ask()
 			if !slices.Equal(got, tc.want) {
-				t.Errorf("readRunes() got = %v, want %v", string(got), string(tc.want))
+				t.Errorf("got = %v, want %v", string(got), string(tc.want))
 			}
 		})
 	}
