@@ -40,6 +40,7 @@ func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (mon
 
 	// read the response
 	decoder := xml.NewDecoder(resp.Body)
+
 	var ecbMessage envelope
 	err = decoder.Decode(&ecbMessage)
 	if err != nil {
