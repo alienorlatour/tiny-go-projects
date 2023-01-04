@@ -41,13 +41,12 @@ func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (mon
 	// read the response
 	decoder := xml.NewDecoder(resp.Body)
 
-	var ecbMessage envelope
+	var ecbMessage Envelope
 	err = decoder.Decode(&ecbMessage)
 	if err != nil {
 		return 0., fmt.Errorf("unable to decode message: %w", err)
 	}
 
-	// do we want to return his directly ?
 	rate, err := ecbMessage.changeRate(source, target)
 	if err != nil {
 		return 0., fmt.Errorf("couldn't find the exchange rate: %w", err)
@@ -57,7 +56,6 @@ func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (mon
 }
 
 const (
-	ECBRepoURL  = "https://www.ecb.europa.eu/"
 	euroxfRoute = "/stats/eurofxref/eurofxref-daily.xml"
 )
 

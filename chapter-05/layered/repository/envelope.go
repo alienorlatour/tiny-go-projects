@@ -1,72 +1,77 @@
 package repository
 
 import (
-	"fmt"
-
+	"errors"
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
 
-type envelope struct {
-	Cube envelopeCube `xml:"cube"`
+type Envelope struct {
+	Cube EnvelopeCube `xml:"Cube"`
 }
 
-type envelopeCube struct {
-	ParentCube parentCube `xml:"cube"`
+type EnvelopeCube struct {
+	ParentCube ParentCube `xml:"Cube"`
 }
 
-type parentCube struct {
+type ParentCube struct {
 	Time  string `xml:"time,attr"`
-	Cubes []cube `xml:"cube"`
+	Cubes []Cube `xml:"Cube"`
 }
 
-type cube struct {
+type Cube struct {
 	Currency string  `xml:"currency,attr"`
 	Rate     float32 `xml:"rate,attr"`
 }
 
-// changeRate reads the change rate from the envelope's contents.
-func (e envelope) changeRate(source, target money.Currency) (money.ChangeRate, error) {
-	var foundSource, foundTarget bool
-	var factor money.ChangeRate
-
+func (e Envelope) loadChangeRates() map[string]float32 {
+	changeRates := make(map[string]float32)
 	for _, c := range e.Cube.ParentCube.Cubes {
-		switch c.Currency {
-		case source.Code():
-			factor = 1. / money.ChangeRate(c.Rate)
-			foundSource = true
-		case target.Code():
-			factor = money.ChangeRate(c.Rate)
-			foundTarget = true
-		}
+		changeRates[c.Currency] = c.Rate
 	}
 
-	// EUR is allowed not to be found
-	if !foundSource && source.Code() != "EUR" {
-		return 0., fmt.Errorf("unable to find source currency %s", source.Code())
+	// default ecb has EUR to x currency
+	changeRates["EUR"] = 1.
+
+	return changeRates
+}
+
+// changeRate reads the change rate from the Envelope's contents.
+func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, error) {
+	if source == target {
+		// No change rate for same source and target currencies.
+		return 1., nil
 	}
 
-	if !foundTarget && target.Code() != "EUR" {
-		return 0., fmt.Errorf("unable to find target currency %s", target.Code())
+	// changeRates stores the rates when Envelope is parsed.
+	changeRates := e.loadChangeRates()
+
+	sourceFactor, sourceFound := changeRates[source.Code()]
+	targetFactor, targetFound := changeRates[target.Code()]
+
+	if !sourceFound {
+		return 0, errors.New("failed to found the source currency")
 	}
 
-	// TODO AL: what happens with CHF to CHF?
-	// TODO AL: Why do we need the booleans?
+	if !targetFound {
+		return 0, errors.New("failed to found target currency")
 
-	return factor, nil
+	}
+
+	return money.ChangeRate(targetFactor / sourceFactor), nil
 }
 
 // Equal tells whether the 2 Envelopes are equal.
-func (e envelope) Equal(other envelope) bool {
+func (e Envelope) Equal(other Envelope) bool {
 	return e.Cube.Equal(other.Cube)
 }
 
 // Equal tells whether the 2 EnvelopeCubes are equal.
-func (ec envelopeCube) Equal(other envelopeCube) bool {
+func (ec EnvelopeCube) Equal(other EnvelopeCube) bool {
 	return ec.ParentCube.Equal(other.ParentCube)
 }
 
 // Equal tells whether the 2 ParentCubes are equal.
-func (pc parentCube) Equal(other parentCube) bool {
+func (pc ParentCube) Equal(other ParentCube) bool {
 	if pc.Time != other.Time {
 		return false
 	}
@@ -82,7 +87,7 @@ func (pc parentCube) Equal(other parentCube) bool {
 }
 
 // Equal tells whether the 2 Cubes are equal.
-func (c cube) Equal(other cube) bool {
+func (c Cube) Equal(other Cube) bool {
 	if c.Currency != other.Currency {
 		return false
 	}

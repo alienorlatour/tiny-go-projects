@@ -54,6 +54,7 @@ var currencies = map[string]Currency{
 
 // parseCurrency returns the currency associated to a name and may return errUnknownCurrency.
 func parseCurrency(code string) (Currency, error) {
+	// Make sure we are case agnostic by transforming the input to uppercase.
 	c, ok := currencies[strings.ToUpper(code)]
 	if !ok {
 		return Currency{}, errUnknownCurrency

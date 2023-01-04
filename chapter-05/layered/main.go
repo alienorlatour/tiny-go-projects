@@ -9,6 +9,8 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/repository"
 )
 
+const ecbRepoURL = "https://www.ecb.europa.eu/"
+
 // Usage: change -from USD -to EUR 34.98
 
 func main() {
@@ -24,7 +26,7 @@ func main() {
 	}
 
 	// create the repository we want to use
-	changeRepo := repository.New(repository.ECBRepoURL)
+	changeRepo := repository.New(ecbRepoURL)
 
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
