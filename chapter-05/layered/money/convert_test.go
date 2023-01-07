@@ -33,12 +33,12 @@ func TestConvert(t *testing.T) {
 			},
 		},
 		// TODO: Handle edge cases
-		"34.98 EUR to KRW": {
+		"34345982398459834.98 EUR to KRW": {
 			amount:          "34345982398459834.98",
 			from:            "EUR",
 			to:              "KRW",
 			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.2564},
+			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got string, err error) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
@@ -54,7 +54,7 @@ func TestConvert(t *testing.T) {
 			from:            "EUR",
 			to:              "KRW",
 			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.2564},
+			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got string, err error) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())

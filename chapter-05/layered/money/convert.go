@@ -19,14 +19,20 @@ func Convert(amount, from, to string, rateRepo rateRepository) (string, error) {
 		return "", fmt.Errorf("unable to parse amount: %w", err)
 	}
 
+	fmt.Println("number:", n.precision, n.integerPart, n.decimalPart)
+
 	// fetch the change rate for the day
 	r, err := fetchChangeRate(from, to, rateRepo)
 	if err != nil {
 		return "", fmt.Errorf("%w: %s", errUnknownChangeRate, err.Error())
 	}
 
+	fmt.Println("rate", r)
+
 	// convert to the target currency applying the fetched change rate
 	convertedValue := n.applyChangeRate(r, 2)
+
+	fmt.Println("converted value", convertedValue)
 
 	// format the converted value to a readable format
 	return convertedValue.String(), nil
