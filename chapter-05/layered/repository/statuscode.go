@@ -9,11 +9,11 @@ import (
 func checkStatusCode(statusCode int) error {
 	switch {
 	case statusCode >= http.StatusBadRequest:
-		return fmt.Errorf("error from the user %d", statusCode)
+		return repositoryError(fmt.Sprintf("user-end error: %d", statusCode))
 	case statusCode >= http.StatusInternalServerError:
-		return fmt.Errorf("error from the server %d", statusCode)
+		return repositoryError(fmt.Sprintf("server error: %d", statusCode))
 	case statusCode != http.StatusOK:
-		return fmt.Errorf("invalid status code %d", statusCode)
+		return repositoryError(fmt.Sprintf("invalid status code: %d", statusCode))
 	}
 	return nil
 }

@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	// errInvalidStatusCode when a status different from 200 is returned by the server.
 	errInvalidStatusCode = repositoryError("invalid response status code")
 )
 
@@ -24,7 +25,7 @@ func New(url string) *ChangeRateRepository {
 
 // ExchangeRate fetches the ChangeRate for the day and returns it.
 func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
-	// add a timeout to the context in case the external API is down
+	// add a timeout to the context in case the external API is too slow
 	getCtx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
