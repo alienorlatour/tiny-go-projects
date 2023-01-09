@@ -69,6 +69,15 @@ func (n number) float() float64 {
 	return f
 }
 
+func (n number) tooSmall() bool {
+	return n.integerPart < 1
+}
+
+func (n number) tooBig() bool {
+	// max value is a thousand billion, using the short scale -- 10^12.
+	return n.integerPart > 1_000_000_000_000
+}
+
 // String implements stringer and returns the number formatted as
 // digits optionally a decimal point followed by digits.
 func (n number) String() string {

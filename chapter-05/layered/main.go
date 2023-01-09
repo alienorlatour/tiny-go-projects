@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -28,11 +29,13 @@ func main() {
 	// create the repository we want to use
 	changeRepo := repository.New(ecbRepoURL)
 
+	ctx := context.Background()
+
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
-	convertedAmount, err := money.Convert(amount, *from, *to, changeRepo)
+	convertedAmount, err := money.Convert(ctx, amount, *from, *to, changeRepo)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.", amount, *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
 		os.Exit(1)
 	}
 

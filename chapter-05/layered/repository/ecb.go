@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
@@ -17,9 +19,12 @@ func New(url string) *ChangeRateRepository {
 }
 
 // ExchangeRate fetches the ChangeRate for the day and returns it.
-func (crr ChangeRateRepository) ExchangeRate(source, target money.Currency) (money.ChangeRate, error) {
+func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
+	getCtx, cancel := context.WithTimeout(ctx, time.Second)
+	defer cancel()
+
 	// build the HTTP request
-	req, err := http.NewRequest(http.MethodGet, crr.url(), nil)
+	req, err := http.NewRequestWithContext(getCtx, http.MethodGet, crr.url(), nil)
 	if err != nil {
 		return 0., fmt.Errorf("unable to build http request to %s: %w", crr.url(), err)
 	}

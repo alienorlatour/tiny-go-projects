@@ -1,6 +1,7 @@
 package money_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"testing"
@@ -32,48 +33,63 @@ func TestConvert(t *testing.T) {
 				}
 			},
 		},
-		// TODO: Handle edge cases
-		"34345982398459834.98 EUR to KRW": {
+		"Input amount is too large": {
 			amount:          "34345982398459834.98",
 			from:            "EUR",
 			to:              "KRW",
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got string, err error) {
-				if err != nil {
-					t.Errorf("expected no error, got %s", err.Error())
-				}
-				if got != "43.95" {
-					t.Errorf("expected 51518973597689744.40, got %q", got)
+				if !errors.Is(err, money.ErrInputTooLarge) {
+					t.Errorf("expected error %s, got %v", money.ErrInputTooLarge, err)
 				}
 			},
 		},
-		// TODO: Handle edge cases
-		"0.001 EUR to KRW": {
+		"Input amount is too small": {
 			amount:          "0.001",
 			from:            "EUR",
 			to:              "KRW",
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got string, err error) {
-				if err != nil {
-					t.Errorf("expected no error, got %s", err.Error())
-				}
-				if got != "0.00" {
-					t.Errorf("expected 0.00, got %q", got)
+				if !errors.Is(err, money.ErrInputTooSmall) {
+					t.Errorf("expected error %s, got %v", money.ErrInputTooSmall, err)
 				}
 			},
 		},
-		// TODO Fix the test
-		"Unknown currency": {
-			amount:          "0.001",
+		"Output amount is too large": {
+			amount:          "12345678901.23",
 			from:            "EUR",
-			to:              "KRW",
+			to:              "IDR",
+			targetPrecision: 2,
+			rateRepo:        stubRate{rate: 16_468.30},
+			validate: func(t *testing.T, got string, err error) {
+				if !errors.Is(err, money.ErrOutputTooLarge) {
+					t.Errorf("expected error %s, got %v", money.ErrOutputTooLarge, err)
+				}
+			},
+		},
+		"Output amount is too small": {
+			amount:          "150",
+			from:            "IDR",
+			to:              "EUR",
+			targetPrecision: 2,
+			rateRepo:        stubRate{rate: 0.000060722722},
+			validate: func(t *testing.T, got string, err error) {
+				if !errors.Is(err, money.ErrOutputTooSmall) {
+					t.Errorf("expected error %s, got %v", money.ErrOutputTooSmall, err)
+				}
+			},
+		},
+		"Unknown currency": {
+			amount:          "10",
+			from:            "EUR",
+			to:              "SUR", // Soviet Union Rubles, long gone.
 			targetPrecision: 2,
 			rateRepo:        stubRate{err: fmt.Errorf("unknown currency")},
 			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, fmt.Errorf("unknown currency")) {
-					t.Errorf("expected \"no change rate known between currencies: unable to get exchange rates: unknown currency\" error, got %s", err.Error())
+				if !errors.Is(err, money.ErrUnknownChangeRate) {
+					t.Errorf("expected error %s, got %v", money.ErrUnknownChangeRate, err)
 				}
 			},
 		},
@@ -81,7 +97,7 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(tc.amount, tc.from, tc.to, tc.rateRepo)
+			got, err := money.Convert(context.Background(), tc.amount, tc.from, tc.to, tc.rateRepo)
 			tc.validate(t, got, err)
 		})
 	}
@@ -94,6 +110,6 @@ type stubRate struct {
 }
 
 // ExchangeRate implements the interface rateRepository with the same signature but fields are unused for tests purposes.
-func (m stubRate) ExchangeRate(source, target money.Currency) (money.ChangeRate, error) {
+func (m stubRate) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
 	return m.rate, m.err
 }
