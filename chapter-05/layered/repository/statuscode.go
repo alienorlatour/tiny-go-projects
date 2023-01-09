@@ -8,7 +8,7 @@ import (
 // checkStatusCode returns a different error depending on the returned status code.
 func checkStatusCode(statusCode int) error {
 	switch {
-	case statusCode >= http.StatusBadRequest:
+	case statusCode >= http.StatusBadRequest && statusCode < http.StatusInternalServerError:
 		return repositoryError(fmt.Sprintf("user-end error: %d", statusCode))
 	case statusCode >= http.StatusInternalServerError:
 		return repositoryError(fmt.Sprintf("server error: %d", statusCode))
