@@ -69,19 +69,24 @@ func (n number) float() float64 {
 	return f
 }
 
+const (
+	minAmount = 1
+	// maxAmount value is a thousand billion, using the short scale -- 10^12.
+	maxAmount = 1_000_000_000_000
+)
+
 func (n number) tooSmall() bool {
-	return n.integerPart < 1
+	return n.integerPart < minAmount
 }
 
 func (n number) tooBig() bool {
-	// max value is a thousand billion, using the short scale -- 10^12.
-	return n.integerPart > 1_000_000_000_000
+	return n.integerPart > maxAmount
 }
 
 // String implements stringer and returns the number formatted as
 // digits optionally a decimal point followed by digits.
 func (n number) String() string {
-	// the first % escapes the second one
+	// for a precision of 2 digits formats %d.%02d
 	format := fmt.Sprintf("%%d.%%0%dd", n.precision)
 
 	return fmt.Sprintf(format, n.integerPart, n.decimalPart)

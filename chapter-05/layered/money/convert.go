@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	// ErrUnknownChangeRate is returned if we can't find the convertion rate between two currencies.
+	// ErrUnknownChangeRate is returned if we can't find the conversion rate between two currencies.
 	ErrUnknownChangeRate = moneyError("no change rate known between currencies")
 	// ErrInputTooSmall is returned if the amount to convert is too small, which could lead to precision issues.
 	ErrInputTooSmall = moneyError("input amount should be at least 1.00")
@@ -31,32 +31,46 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 		return "", fmt.Errorf("unable to parse amount: %w", err)
 	}
 
-	switch {
-	case n.tooSmall():
-		return "", ErrInputTooSmall
-	case n.tooBig():
-		return "", ErrInputTooLarge
+	// validateInput the given amount is in the handled bounded range
+	if err := n.validateInput(); err != nil {
+		return "", err
 	}
 
 	// fetch the change rate for the day
 	r, err := fetchChangeRate(ctx, from, to, rateRepo)
 	if err != nil {
-
-		return "", fmt.Errorf("%w: %s", ErrUnknownChangeRate, err.Error())
+		return "", fmt.Errorf("%w: %s", ErrUnknownChangeRate, err)
 	}
 
 	// convert to the target currency applying the fetched change rate
 	convertedValue := n.applyChangeRate(r, 2)
 
-	switch {
-	case convertedValue.tooSmall():
-		return "", ErrOutputTooSmall
-	case convertedValue.tooBig():
-		return "", ErrOutputTooLarge
+	if err := convertedValue.validateOutput(); err != nil {
+		return "", err
 	}
 
 	// format the converted value to a readable format
 	return convertedValue.String(), nil
+}
+
+func (n number) validateInput() error {
+	switch {
+	case n.tooSmall():
+		return ErrInputTooSmall
+	case n.tooBig():
+		return ErrInputTooLarge
+	}
+	return nil
+}
+
+func (n number) validateOutput() error {
+	switch {
+	case n.tooSmall():
+		return ErrOutputTooSmall
+	case n.tooBig():
+		return ErrOutputTooLarge
+	}
+	return nil
 }
 
 // fetchChangeRate is in charge of retrieving the change rate between two currencies.
