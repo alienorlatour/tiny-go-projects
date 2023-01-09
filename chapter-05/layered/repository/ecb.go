@@ -10,6 +10,10 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
 
+const (
+	errInvalidStatusCode = repositoryError("invalid response status code")
+)
+
 type ChangeRateRepository struct {
 	exchangeRatesURL string // "https://www.ecb.europa.eu"
 }
@@ -20,6 +24,7 @@ func New(url string) *ChangeRateRepository {
 
 // ExchangeRate fetches the ChangeRate for the day and returns it.
 func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
+	// add a timeout to the context in case the external API is down
 	getCtx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
@@ -39,8 +44,8 @@ func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target
 	defer resp.Body.Close()
 
 	if err = checkStatusCode(resp.StatusCode); err != nil {
-		// TODO: have our own error?
-		return 0., fmt.Errorf("invalid reponse status code: %w", err)
+		// not exposing the API error, should be logged for debug purposes
+		return 0., errInvalidStatusCode
 	}
 
 	// read the response
