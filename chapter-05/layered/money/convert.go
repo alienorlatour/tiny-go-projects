@@ -8,14 +8,6 @@ import (
 const (
 	// ErrUnknownChangeRate is returned if we can't find the conversion rate between two currencies.
 	ErrUnknownChangeRate = moneyError("no change rate known between currencies")
-	// ErrInputTooSmall is returned if the amount to convert is too small, which could lead to precision issues.
-	ErrInputTooSmall = moneyError("input amount should be at least 1.00")
-	// ErrOutputTooSmall is returned if the converted amount is too small, in order to protect against precision issues.
-	ErrOutputTooSmall = moneyError("output amount is less than 1.00")
-	// ErrInputTooLarge is returned if the input amount is too large - this would cause floating point precision errors.
-	ErrInputTooLarge = moneyError("input amount over 10^15 is too large")
-	// ErrOutputTooLarge is returned if the converted amount is too large, to protect against floating point errors.
-	ErrOutputTooLarge = moneyError("output amount is too large (over 10^15)")
 )
 
 type rateRepository interface {
@@ -51,26 +43,6 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 
 	// format the converted value to a readable format
 	return convertedValue.String(), nil
-}
-
-func (n number) validateInput() error {
-	switch {
-	case n.tooSmall():
-		return ErrInputTooSmall
-	case n.tooBig():
-		return ErrInputTooLarge
-	}
-	return nil
-}
-
-func (n number) validateOutput() error {
-	switch {
-	case n.tooSmall():
-		return ErrOutputTooSmall
-	case n.tooBig():
-		return ErrOutputTooLarge
-	}
-	return nil
 }
 
 // fetchChangeRate is in charge of retrieving the change rate between two currencies.

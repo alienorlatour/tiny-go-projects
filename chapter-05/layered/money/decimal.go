@@ -69,20 +69,6 @@ func (n number) float() float64 {
 	return f
 }
 
-const (
-	minAmount = 1
-	// maxAmount value is a thousand billion, using the short scale -- 10^12.
-	maxAmount = 1_000_000_000_000
-)
-
-func (n number) tooSmall() bool {
-	return n.integerPart < minAmount
-}
-
-func (n number) tooBig() bool {
-	return n.integerPart > maxAmount
-}
-
 // String implements stringer and returns the number formatted as
 // digits optionally a decimal point followed by digits.
 func (n number) String() string {
