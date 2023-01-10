@@ -1,5 +1,5 @@
 run:
-	go run main.go
+	go run main.go -from USD -to EUR 10.89
 
 build:
 	go build -o bin/change main.go

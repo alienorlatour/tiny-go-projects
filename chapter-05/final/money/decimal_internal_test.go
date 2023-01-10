@@ -37,12 +37,12 @@ func TestParseNumber(t *testing.T) {
 		},
 		"with apostrophes for readability": {
 			amount: "12'152.03",
-			//expected: number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
+			// expected: number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
 			err: errInvalidInteger,
 		},
 		"with underscores for readability": {
 			amount: "12_152.03",
-			//expected: number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
+			// expected: number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
 			err: errInvalidInteger,
 		},
 		"NaN": {
@@ -112,11 +112,11 @@ func TestNumberString(t *testing.T) {
 func TestNumberApplyChangeRate(t *testing.T) {
 	tt := map[string]struct {
 		in              number
-		rate            changeRate
+		rate            ChangeRate
 		targetPrecision int
 		expected        number
 	}{
-		"1.52 * 1": {
+		"number(1.52) * rate(1)": {
 			in: number{
 				integerPart: 1,
 				decimalPart: 52,
@@ -130,7 +130,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   4,
 			},
 		},
-		"2.50 * 4": {
+		"number(2.50) * rate(4)": {
 			in: number{
 				integerPart: 2,
 				decimalPart: 50,
@@ -144,7 +144,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   2,
 			},
 		},
-		"4 * 2.5": {
+		"number(4) * rate(2.5)": {
 			in: number{
 				integerPart: 4,
 				decimalPart: 0,
@@ -158,7 +158,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   0,
 			},
 		},
-		"3.14 * 2.52678": {
+		"number(3.14) * rate(2.52678)": {
 			in: number{
 				integerPart: 3,
 				decimalPart: 14,
@@ -172,7 +172,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   2,
 			},
 		},
-		"1.1 * 10": {
+		"number(1.1) * rate(10)": {
 			in: number{
 				integerPart: 1,
 				decimalPart: 1,
@@ -186,7 +186,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   1,
 			},
 		},
-		"1_000_000_000.01 * 2": {
+		"number(1_000_000_000.01) * rate(2)": {
 			in: number{
 				integerPart: 1_000_000_000,
 				decimalPart: 1,
@@ -200,7 +200,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   2,
 			},
 		},
-		"265_413.87 * 5.05935e-5": {
+		"number(265_413.87) * rate(5.05935e-5)": {
 			in: number{
 				integerPart: 265_413,
 				decimalPart: 87,
@@ -214,7 +214,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   2,
 			},
 		},
-		"265_413 * 1": {
+		"number(265_413) * rate(1)": {
 			in: number{
 				integerPart: 265_413,
 				decimalPart: 0,
@@ -228,7 +228,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 				precision:   3,
 			},
 		},
-		"2 * 1.337": {
+		"number(2) * rate(1.337)": {
 			in: number{
 				integerPart: 2,
 				decimalPart: 0,
