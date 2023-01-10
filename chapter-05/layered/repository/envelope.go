@@ -5,6 +5,8 @@ import (
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
 
+const baseCurrencyCode = "EUR"
+
 type Envelope struct {
 	Cube EnvelopeCube `xml:"Cube"`
 }
@@ -30,7 +32,7 @@ func (e Envelope) loadChangeRates() map[string]float32 {
 	}
 
 	// default ecb has EUR to x currency
-	changeRates["EUR"] = 1.
+	changeRates[baseCurrencyCode] = 1.
 
 	return changeRates
 }
@@ -46,15 +48,13 @@ func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, e
 	changeRates := e.loadChangeRates()
 
 	sourceFactor, sourceFound := changeRates[source.Code()]
-	targetFactor, targetFound := changeRates[target.Code()]
-
 	if !sourceFound {
 		return 0, errors.New("failed to found the source currency")
 	}
 
+	targetFactor, targetFound := changeRates[target.Code()]
 	if !targetFound {
 		return 0, errors.New("failed to found target currency")
-
 	}
 
 	return money.ChangeRate(targetFactor / sourceFactor), nil
