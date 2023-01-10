@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/layered/repository"
 )
+
+const ecbRepoURL = "https://www.ecb.europa.eu/"
 
 // Usage: change -from USD -to EUR 34.98
 
@@ -22,11 +26,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	// create the repository we want to use
+	changeRepo := repository.New(ecbRepoURL)
+
+	ctx := context.Background()
+
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
-	convertedAmount, err := money.Convert(amount, *from, *to)
+	convertedAmount, err := money.Convert(ctx, amount, *from, *to, changeRepo)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Unable to convert %q %q to %q: %s.", amount, *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
 		os.Exit(1)
 	}
 

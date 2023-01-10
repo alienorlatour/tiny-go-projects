@@ -2,18 +2,22 @@ package money
 
 import "strings"
 
-// currency defines the code of a money and its precision.
-type currency struct {
+// Currency defines the code of a money and its decimal precision.
+type Currency struct {
 	code      string
 	precision int
 	toEuro    float32
+}
+
+func (c Currency) Code() string {
+	return c.code
 }
 
 // errUnknownCurrency is returned when a currency is unsupported.
 const errUnknownCurrency = moneyError("unknown currency")
 
 // currencies defines the supported currencies.
-var currencies = map[string]currency{
+var currencies = map[string]Currency{
 	"EUR": {code: "EUR", precision: 2},
 	"USD": {code: "USD", precision: 2},
 	"JPY": {code: "JPY", precision: 0}, // there is no "cent" for yen
@@ -48,11 +52,12 @@ var currencies = map[string]currency{
 	"ZAR": {code: "ZAR", precision: 2},
 }
 
-// getCurrency returns the currency associated to a name and may return errUnknownCurrency.
-func getCurrency(code string) (currency, error) {
+// parseCurrency returns the currency associated to a name and may return errUnknownCurrency.
+func parseCurrency(code string) (Currency, error) {
+	// Make sure we are case agnostic by transforming the input to uppercase.
 	c, ok := currencies[strings.ToUpper(code)]
 	if !ok {
-		return currency{}, errUnknownCurrency
+		return Currency{}, errUnknownCurrency
 	}
 	return c, nil
 }

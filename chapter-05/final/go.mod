@@ -1,4 +1,4 @@
-module github.com/ablqk/tiny-go-projects/chapter-05/final
+module github.com/ablqk/tiny-go-projects/chapter-05/layered
 
 go 1.19
 
