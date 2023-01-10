@@ -84,14 +84,20 @@ const (
 	maxAmount = 1_000_000_000_000
 )
 
-func (n number) validateInput() error {
+func (n number) validateInput(sourceCurrency Currency) error {
 	switch {
 	case n.tooSmall():
 		return ErrInputTooSmall
 	case n.tooBig():
 		return ErrInputTooLarge
+	case n.tooPrecise(sourceCurrency):
+		return ErrOutputTooLarge
 	}
 	return nil
+}
+
+func (n number) tooPrecise(sourceCurrency Currency) bool {
+	return n.precision > sourceCurrency.precision
 }
 
 func (n number) validateOutput() error {
