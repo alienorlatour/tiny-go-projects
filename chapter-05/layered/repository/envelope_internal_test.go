@@ -84,7 +84,7 @@ func TestChangeRate(t *testing.T) {
 				t.Errorf("unable to marshal: %s", err.Error())
 			}
 			if got != tc.want {
-				t.Errorf("unable to marshal: %s", err.Error())
+				t.Errorf("expected %v, got %v", tc.want, got)
 			}
 		})
 	}

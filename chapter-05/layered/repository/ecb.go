@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -11,8 +12,9 @@ import (
 )
 
 const (
-	// errInvalidStatusCode when a status different from 200 is returned by the server.
-	errInvalidStatusCode = repositoryError("invalid response status code")
+	ErrBadURL             = repositoryError("unable to build http request")
+	ErrServerSide         = repositoryError("error from server")
+	ErrChangeRateNotFound = repositoryError("couldn't find the exchange rate")
 )
 
 type ChangeRateRepository struct {
@@ -32,13 +34,14 @@ func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target
 	// build the HTTP request
 	req, err := http.NewRequestWithContext(getCtx, http.MethodGet, crr.url(), nil)
 	if err != nil {
-		return 0., fmt.Errorf("unable to build http request to %s: %w", crr.url(), err)
+		return 0., fmt.Errorf("%w: %s", ErrBadURL, crr.url())
 	}
 
 	// use the default http client provided by the http library
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return 0., fmt.Errorf("error while requesting URL %s: %w", crr.url(), err)
+		log.Println("http error:", err)
+		return 0., fmt.Errorf("%w: %s", ErrServerSide, crr.url())
 	}
 
 	// don't forget to close the response's body
@@ -46,7 +49,7 @@ func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target
 
 	if err = checkStatusCode(resp.StatusCode); err != nil {
 		// not exposing the API error, should be logged for debug purposes
-		return 0., errInvalidStatusCode
+		return 0., err
 	}
 
 	// read the response
@@ -55,12 +58,12 @@ func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target
 	var ecbMessage Envelope
 	err = decoder.Decode(&ecbMessage)
 	if err != nil {
-		return 0., fmt.Errorf("unable to decode message: %w", err)
+		return 0., fmt.Errorf("%w: %s", ErrServerSide, err)
 	}
 
 	rate, err := ecbMessage.changeRate(source, target)
 	if err != nil {
-		return 0., fmt.Errorf("couldn't find the exchange rate: %w", err)
+		return 0., fmt.Errorf("%w: %s", ErrChangeRateNotFound, err)
 	}
 
 	return rate, nil
