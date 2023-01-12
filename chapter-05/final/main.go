@@ -33,7 +33,20 @@ func main() {
 
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
-	convertedAmount, err := money.Convert(ctx, amount, *from, *to, changeRepo)
+
+	number, err := money.ParseAmount(amount)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse amount %q: %s.\n", amount, err.Error())
+		os.Exit(1)
+	}
+
+	fromCurrency, toCurrency, err := money.ParseCurrencies(*from, *to)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
+		os.Exit(1)
+	}
+
+	convertedAmount, err := money.Convert(ctx, number, fromCurrency, toCurrency, changeRepo)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
 		os.Exit(1)

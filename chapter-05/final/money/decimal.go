@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-// number is a structure that can hold a number with a fixed precision.
+// Number is a structure that can hold a Number with a fixed precision.
 // example: 1.52 = 1 + 52 * 10^(-2) will be stored as {1, 52, 2}
-type number struct {
-	// the integer part of the number
+type Number struct {
+	// the integer part of the Number
 	integerPart int
-	// the decimal part of the number
+	// the decimal part of the Number
 	decimalPart int
 	// precision of the decimal part, as the exponent of a power of 10
 	precision int
@@ -24,45 +24,45 @@ const (
 	errInvalidDecimal = moneyError("unable to convert decimal part")
 )
 
-// parseNumber converts a string into its number representation.
+// parseNumber converts a string into its Number representation.
 // It assumes there is up to one decimal separator, and that the separator is '.' (full stop character).
-func parseNumber(value string) (number, error) {
+func parseNumber(value string) (Number, error) {
 	intPart, decPart, found := strings.Cut(value, ".")
 
 	i, err := strconv.Atoi(intPart)
 	if err != nil {
-		return number{}, fmt.Errorf("%w: %s", errInvalidInteger, err.Error())
+		return Number{}, fmt.Errorf("%w: %s", errInvalidInteger, err.Error())
 	}
 
 	var d int
 	if found {
 		d, err = strconv.Atoi(decPart)
 		if err != nil {
-			return number{}, fmt.Errorf("%w: %s", errInvalidDecimal, err.Error())
+			return Number{}, fmt.Errorf("%w: %s", errInvalidDecimal, err.Error())
 		}
 	}
 
 	precision := len(decPart)
 
-	return number{integerPart: i, decimalPart: d, precision: precision}, nil
+	return Number{integerPart: i, decimalPart: d, precision: precision}, nil
 }
 
-// applyChangeRate returns a new number representing n multiplied by the rate.
+// applyChangeRate returns a new Number representing n multiplied by the rate.
 // The precision is the same in and out.
-func (n number) applyChangeRate(rate ExchangeRate, toPrecision int) number {
+func (n Number) applyChangeRate(rate ExchangeRate, toPrecision int) Number {
 	converted := n.float() * float64(rate)
 
 	floor := math.Floor(converted)
 	decimal := math.Round((converted - floor) * math.Pow10(toPrecision))
 
-	return number{
+	return Number{
 		integerPart: int(floor),
 		decimalPart: int(decimal),
 		precision:   toPrecision,
 	}
 }
 
-func (n number) float() float64 {
+func (n Number) float() float64 {
 	f := float64(n.integerPart)
 	f += float64(n.decimalPart) * math.Pow10(-n.precision)
 
@@ -79,14 +79,16 @@ const (
 	// ErrOutputTooLarge is returned if the converted amount is too large, to protect against floating point errors.
 	ErrOutputTooLarge = moneyError("output amount is too large (over 10^15)")
 
+	// minAmount
 	minAmount = 1
 	// maxAmount value is a thousand billion, using the short scale -- 10^12.
-	maxAmount = 1_000_000_000_000
+	maxAmount = 1e12
 )
 
-func (n number) validateInput( /*sourceCurrency Currency*/ ) error {
+// validateInput returns an error if the given amount is not the bounded range.
+func (n Number) validateInput( sourceCurrency Currency ) error {
 	switch {
-	case n.tooSmall():
+	case n.tooSmall(sourceCurrency):
 		return ErrInputTooSmall
 	case n.tooBig():
 		return ErrInputTooLarge
@@ -96,13 +98,14 @@ func (n number) validateInput( /*sourceCurrency Currency*/ ) error {
 	return nil
 }
 
-func (n number) tooPrecise(sourceCurrency Currency) bool {
+func (n Number) tooPrecise(sourceCurrency Currency) bool {
 	return n.precision > sourceCurrency.precision
 }
 
-func (n number) validateOutput() error {
+// validateOutput returns an error if the converted amount is not the bounded range.
+func (n Number) validateOutput(currency Currency) error {
 	switch {
-	case n.tooSmall():
+	case n.tooSmall(currency):
 		return ErrOutputTooSmall
 	case n.tooBig():
 		return ErrOutputTooLarge
@@ -110,17 +113,18 @@ func (n number) validateOutput() error {
 	return nil
 }
 
-func (n number) tooSmall() bool {
-	return n.integerPart < minAmount
+func (n Number) tooSmall(currency Currency) bool {
+	f := n.float()
+	return f != 0 && f < math.Pow10(-currency.precision)
 }
 
-func (n number) tooBig() bool {
+func (n Number) tooBig() bool {
 	return n.integerPart > maxAmount
 }
 
-// String implements stringer and returns the number formatted as
+// String implements stringer and returns the Number formatted as
 // digits optionally a decimal point followed by digits.
-func (n number) String() string {
+func (n Number) String() string {
 	// for a precision of 2 digits formats %d.%02d
 	format := fmt.Sprintf("%%d.%%0%dd", n.precision)
 
