@@ -15,16 +15,10 @@ type rateRepository interface {
 	ExchangeRate(ctx context.Context, source, target Currency) (ChangeRate, error)
 }
 
-// Convert parses the input amount and applies the change rate to convert it to the target currency.
-func Convert(ctx context.Context, amount, from, to string, rateRepo rateRepository) (string, error) {
-	// parse the amount to convert
-	n, err := parseNumber(amount)
-	if err != nil {
-		return "", fmt.Errorf("unable to parse amount: %w", err)
-	}
-
-	// validateInput the given amount is in the handled bounded range
-	if err := n.validateInput(); err != nil {
+// Convert applies the change rate to convert the given amount to the target currency.
+func Convert(ctx context.Context, number Number, from, to Currency, rateRepo rateRepository) (string, error) {
+	// validate the given amount is in the handled bounded range
+	if err := number.validateInput(from); err != nil {
 		return "", err
 	}
 
@@ -35,9 +29,10 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 	}
 
 	// convert to the target currency applying the fetched change rate
-	convertedValue := n.applyChangeRate(r, 2)
+	convertedValue := number.applyChangeRate(r, 2)
 
-	if err := convertedValue.validateOutput(); err != nil {
+	// validate the converted amount is in the handled bounded range
+	if err := convertedValue.validateOutput(to); err != nil {
 		return "", err
 	}
 
@@ -46,19 +41,8 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 }
 
 // fetchChangeRate is in charge of retrieving the change rate between two currencies.
-func fetchChangeRate(ctx context.Context, from, to string, rateRepo rateRepository) (ChangeRate, error) {
-	// get the output currency
-	sourceCurrency, err := parseCurrency(from)
-	if err != nil {
-		return 0, fmt.Errorf("unable to parse source currency: %w", err)
-	}
-
-	targetCurrency, err := parseCurrency(to)
-	if err != nil {
-		return 0, fmt.Errorf("unable to parse target currency: %w", err)
-	}
-
-	exchangeRate, err := rateRepo.ExchangeRate(ctx, sourceCurrency, targetCurrency)
+func fetchChangeRate(ctx context.Context, from, to Currency, rateRepo rateRepository) (ChangeRate, error) {
+	exchangeRate, err := rateRepo.ExchangeRate(ctx, from, to)
 	if err != nil {
 		return 0, fmt.Errorf("unable to get exchange rates: %w", err)
 	}
