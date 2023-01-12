@@ -3,7 +3,6 @@ package money_test
 import (
 	"context"
 	"errors"
-	"fmt"
 	"testing"
 
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
@@ -29,7 +28,7 @@ func TestConvert(t *testing.T) {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
 				if got != "43.95" {
-					t.Errorf("expected 53.06, got %q", got)
+					t.Errorf("expected 43.95, got %q", got)
 				}
 			},
 		},
@@ -69,6 +68,8 @@ func TestConvert(t *testing.T) {
 				}
 			},
 		},
+		// TODO FIX ME, not too small cause we are rouding on the float value.
+		// I am not sure what we should do
 		"Output amount is too small": {
 			amount:          "150",
 			from:            "IDR",
@@ -81,23 +82,22 @@ func TestConvert(t *testing.T) {
 				}
 			},
 		},
-		"Unknown currency": {
-			amount:          "10",
-			from:            "EUR",
-			to:              "SUR", // Soviet Union Rubles, long gone.
-			targetPrecision: 2,
-			rateRepo:        stubRate{err: fmt.Errorf("unknown currency")},
-			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrUnknownChangeRate) {
-					t.Errorf("expected error %s, got %v", money.ErrUnknownChangeRate, err)
-				}
-			},
-		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(context.Background(), tc.amount, tc.from, tc.to, tc.rateRepo)
+			// TODO not sure we should do the parsing here but fields from Number and Currency are not exposed
+			amount, err := money.ParseAmount(tc.amount)
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+
+			from, to, err := money.ParseCurrencies(tc.from, tc.to)
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+
+			got, err := money.Convert(context.Background(), amount, from, to, tc.rateRepo)
 			tc.validate(t, got, err)
 		})
 	}

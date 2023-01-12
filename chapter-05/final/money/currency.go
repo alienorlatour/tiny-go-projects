@@ -13,8 +13,8 @@ func (c Currency) Code() string {
 	return c.code
 }
 
-// errUnknownCurrency is returned when a currency is unsupported.
-const errUnknownCurrency = moneyError("unknown currency")
+// ErrUnknownCurrency is returned when a currency is unsupported.
+const ErrUnknownCurrency = moneyError("unknown currency")
 
 // currencies defines the supported currencies.
 var currencies = map[string]Currency{
@@ -52,12 +52,12 @@ var currencies = map[string]Currency{
 	"ZAR": {code: "ZAR", precision: 2},
 }
 
-// parseCurrency returns the currency associated to a name and may return errUnknownCurrency.
+// parseCurrency returns the currency associated to a name and may return ErrUnknownCurrency.
 func parseCurrency(code string) (Currency, error) {
 	// Make sure we are case agnostic by transforming the input to uppercase.
 	c, ok := currencies[strings.ToUpper(code)]
 	if !ok {
-		return Currency{}, errUnknownCurrency
+		return Currency{}, ErrUnknownCurrency
 	}
 	return c, nil
 }
