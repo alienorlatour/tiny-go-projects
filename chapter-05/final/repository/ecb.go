@@ -25,8 +25,8 @@ func New(url string) *ChangeRateRepository {
 	return &ChangeRateRepository{url}
 }
 
-// ExchangeRate fetches the ChangeRate for the day and returns it.
-func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
+// ExchangeRate fetches the ExchangeRate for the day and returns it.
+func (crr ChangeRateRepository) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ExchangeRate, error) {
 	// add a timeout to the context in case the external API is too slow
 	getCtx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()

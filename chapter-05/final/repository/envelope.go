@@ -2,32 +2,24 @@ package repository
 
 import (
 	"errors"
+
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
 )
 
 const baseCurrencyCode = "EUR"
 
 type Envelope struct {
-	Cube EnvelopeCube `xml:"Cube"`
+	Rates []CurrencyRate `xml:"Cube>Cube>Cube"`
 }
 
-type EnvelopeCube struct {
-	ParentCube ParentCube `xml:"Cube"`
-}
-
-type ParentCube struct {
-	Time  string `xml:"time,attr"`
-	Cubes []Cube `xml:"Cube"`
-}
-
-type Cube struct {
+type CurrencyRate struct {
 	Currency string  `xml:"currency,attr"`
 	Rate     float32 `xml:"rate,attr"`
 }
 
 func (e Envelope) loadChangeRates() map[string]float32 {
 	changeRates := make(map[string]float32)
-	for _, c := range e.Cube.ParentCube.Cubes {
+	for _, c := range e.Rates {
 		changeRates[c.Currency] = c.Rate
 	}
 
@@ -38,7 +30,7 @@ func (e Envelope) loadChangeRates() map[string]float32 {
 }
 
 // changeRate reads the change rate from the Envelope's contents.
-func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, error) {
+func (e Envelope) changeRate(source, target money.Currency) (money.ExchangeRate, error) {
 	if source == target {
 		// No change rate for same source and target currencies.
 		return 1., nil
@@ -57,29 +49,17 @@ func (e Envelope) changeRate(source, target money.Currency) (money.ChangeRate, e
 		return 0, errors.New("failed to found target currency")
 	}
 
-	return money.ChangeRate(targetFactor / sourceFactor), nil
+	return money.ExchangeRate(targetFactor / sourceFactor), nil
 }
 
 // Equal tells whether the 2 Envelopes are equal.
 func (e Envelope) Equal(other Envelope) bool {
-	return e.Cube.Equal(other.Cube)
-}
-
-// Equal tells whether the 2 EnvelopeCubes are equal.
-func (ec EnvelopeCube) Equal(other EnvelopeCube) bool {
-	return ec.ParentCube.Equal(other.ParentCube)
-}
-
-// Equal tells whether the 2 ParentCubes are equal.
-func (pc ParentCube) Equal(other ParentCube) bool {
-	if pc.Time != other.Time {
+	if len(e.Rates) != len(other.Rates) {
 		return false
 	}
-	if len(pc.Cubes) != len(other.Cubes) {
-		return false
-	}
-	for i := range pc.Cubes {
-		if !pc.Cubes[i].Equal(other.Cubes[i]) {
+
+	for index := range e.Rates {
+		if e.Rates[index] != other.Rates[index] {
 			return false
 		}
 	}
@@ -87,7 +67,7 @@ func (pc ParentCube) Equal(other ParentCube) bool {
 }
 
 // Equal tells whether the 2 Cubes are equal.
-func (c Cube) Equal(other Cube) bool {
+func (c CurrencyRate) Equal(other CurrencyRate) bool {
 	if c.Currency != other.Currency {
 		return false
 	}

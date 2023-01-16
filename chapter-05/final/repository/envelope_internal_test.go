@@ -28,27 +28,22 @@ func TestUnmarshalXML(t *testing.T) {
 	var ecbMessage Envelope
 
 	expectedMessage := Envelope{
-		Cube: EnvelopeCube{
-			ParentCube: ParentCube{
-				Time: "2022-11-25",
-				Cubes: []Cube{
-					{
-						Currency: "JPY",
-						Rate:     144.62,
-					},
-					{
-						Currency: "TRY",
-						Rate:     19.3333,
-					},
-					{
-						Currency: "KRW",
-						Rate:     1383.20,
-					},
-					{
-						Currency: "NZD",
-						Rate:     1.6651,
-					},
-				},
+		Rates: []CurrencyRate{
+			{
+				Currency: "JPY",
+				Rate:     144.62,
+			},
+			{
+				Currency: "TRY",
+				Rate:     19.3333,
+			},
+			{
+				Currency: "KRW",
+				Rate:     1383.20,
+			},
+			{
+				Currency: "NZD",
+				Rate:     1.6651,
 			},
 		},
 	}
@@ -66,14 +61,14 @@ func TestChangeRate(t *testing.T) {
 		envelope Envelope
 		source   money.Currency
 		target   money.Currency
-		want     money.ChangeRate
+		want     money.ExchangeRate
 		wantErr  error
 	}{
 		"nominal": {
-			envelope: Envelope{Cube: EnvelopeCube{ParentCube: ParentCube{Cubes: []Cube{{Currency: "USD", Rate: 1.5}}}}},
+			envelope: Envelope{Rates: []CurrencyRate{{Currency: "USD", Rate: 1.5}}},
 			source:   money.NewCurrency("EUR", 2, 1),
 			target:   money.NewCurrency("USD", 2, 1.5),
-			want:     money.ChangeRate(1.5),
+			want:     money.ExchangeRate(1.5),
 			wantErr:  nil,
 		}}
 
