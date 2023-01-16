@@ -1,8 +1,8 @@
 run:
-	go run main.go
+	go run .
 
 build:
-	go build -o bin/helloworld main.go
+	go build -o bin/helloworld .
 
 test:
 	go test ./...
@@ -14,4 +14,4 @@ lint:
 	 golangci-lint run ./...
 
 %: ## anything
-	go run main.go -lang=$@
+	go run . -lang=$@

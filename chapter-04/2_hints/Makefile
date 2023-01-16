@@ -1,8 +1,8 @@
 run:
-	go run main.go
+	go run .
 
 build:
-	go build -o bin/gordle main.go
+	go build -o bin/gordle .
 
 test:
 	go test ./...
