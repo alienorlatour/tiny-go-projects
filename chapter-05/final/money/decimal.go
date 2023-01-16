@@ -49,7 +49,7 @@ func parseNumber(value string) (number, error) {
 
 // applyChangeRate returns a new number representing n multiplied by the rate.
 // The precision is the same in and out.
-func (n number) applyChangeRate(rate ChangeRate, toPrecision int) number {
+func (n number) applyChangeRate(rate ExchangeRate, toPrecision int) number {
 	converted := n.float() * float64(rate)
 
 	floor := math.Floor(converted)
@@ -84,14 +84,14 @@ const (
 	maxAmount = 1_000_000_000_000
 )
 
-func (n number) validateInput(sourceCurrency Currency) error {
+func (n number) validateInput( /*sourceCurrency Currency*/ ) error {
 	switch {
 	case n.tooSmall():
 		return ErrInputTooSmall
 	case n.tooBig():
 		return ErrInputTooLarge
-	case n.tooPrecise(sourceCurrency):
-		return ErrOutputTooLarge
+		//case n.tooPrecise(sourceCurrency):
+		//	return ErrOutputTooLarge
 	}
 	return nil
 }

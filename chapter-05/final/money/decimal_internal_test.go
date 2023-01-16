@@ -112,7 +112,7 @@ func TestNumberString(t *testing.T) {
 func TestNumberApplyChangeRate(t *testing.T) {
 	tt := map[string]struct {
 		in              number
-		rate            ChangeRate
+		rate            ExchangeRate
 		targetPrecision int
 		expected        number
 	}{

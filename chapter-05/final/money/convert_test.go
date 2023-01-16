@@ -88,8 +88,8 @@ func TestConvert(t *testing.T) {
 			targetPrecision: 2,
 			rateRepo:        stubRate{err: fmt.Errorf("unknown currency")},
 			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrUnknownChangeRate) {
-					t.Errorf("expected error %s, got %v", money.ErrUnknownChangeRate, err)
+				if !errors.Is(err, money.ErrGettingChangeRate) {
+					t.Errorf("expected error %s, got %v", money.ErrGettingChangeRate, err)
 				}
 			},
 		},
@@ -105,11 +105,11 @@ func TestConvert(t *testing.T) {
 
 // stubRate is a very simple stub for the rateRepository.
 type stubRate struct {
-	rate money.ChangeRate
+	rate money.ExchangeRate
 	err  error
 }
 
 // ExchangeRate implements the interface rateRepository with the same signature but fields are unused for tests purposes.
-func (m stubRate) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ChangeRate, error) {
+func (m stubRate) ExchangeRate(ctx context.Context, source, target money.Currency) (money.ExchangeRate, error) {
 	return m.rate, m.err
 }

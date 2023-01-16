@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -21,7 +22,8 @@ func main() {
 
 	flag.Parse()
 
-	if *from == "" {
+	if err := validateInputs(*from, *to, flag.NArg()); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, err.Error())
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -40,4 +42,20 @@ func main() {
 	}
 
 	fmt.Printf("%s %s = %s %s\n", amount, *from, convertedAmount, *to)
+}
+
+func validateInputs(from, to string, argc int) error {
+	if from == "" {
+		return errors.New("missing input currency")
+	}
+
+	if to == "" {
+		return errors.New("missing output currency")
+	}
+
+	if argc != 1 {
+		return errors.New("invalid number of arguments, expecting only the amount to convert")
+	}
+
+	return nil
 }

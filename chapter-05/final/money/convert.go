@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	// ErrUnknownChangeRate is returned if we can't find the conversion rate between two currencies.
-	ErrUnknownChangeRate = moneyError("no change rate known between currencies")
+	// ErrGettingChangeRate is returned if we can't find the conversion rate between two currencies.
+	ErrGettingChangeRate = moneyError("can't get change rate between currencies")
 )
 
 type rateRepository interface {
-	// ExchangeRate fetches the ChangeRate for the day and returns it.
-	ExchangeRate(ctx context.Context, source, target Currency) (ChangeRate, error)
+	// ExchangeRate fetches the ExchangeRate for the day and returns it.
+	ExchangeRate(ctx context.Context, source, target Currency) (ExchangeRate, error)
 }
 
 // Convert parses the input amount and applies the change rate to convert it to the target currency.
@@ -24,14 +24,14 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 	}
 
 	// validateInput the given amount is in the handled bounded range
-	if err := n.validateInput(); err != nil {
+	if err = n.validateInput(); err != nil {
 		return "", err
 	}
 
 	// fetch the change rate for the day
 	r, err := fetchChangeRate(ctx, from, to, rateRepo)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", ErrUnknownChangeRate, err)
+		return "", fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
 	}
 
 	// convert to the target currency applying the fetched change rate
@@ -46,7 +46,7 @@ func Convert(ctx context.Context, amount, from, to string, rateRepo rateReposito
 }
 
 // fetchChangeRate is in charge of retrieving the change rate between two currencies.
-func fetchChangeRate(ctx context.Context, from, to string, rateRepo rateRepository) (ChangeRate, error) {
+func fetchChangeRate(ctx context.Context, from, to string, rateRepo rateRepository) (ExchangeRate, error) {
 	// get the output currency
 	sourceCurrency, err := parseCurrency(from)
 	if err != nil {
