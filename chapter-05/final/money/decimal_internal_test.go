@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseNumber(t *testing.T) {
+func TestParseAmount(t *testing.T) {
 	tt := map[string]struct {
 		amount   string
 		expected Number
@@ -57,7 +57,7 @@ func TestParseNumber(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := parseNumber(tc.amount)
+			got, err := ParseAmount(tc.amount)
 			if !errors.Is(err, tc.err) {
 				t.Errorf("expected error %q, got %q", tc.err.Error(), err.Error())
 			}
