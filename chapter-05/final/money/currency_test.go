@@ -11,7 +11,7 @@ func TestGetCurrency_EUR(t *testing.T) {
 		precision: 2,
 	}
 
-	got, err := parseCurrency("EUR")
+	got, err := ParseCurrency("EUR")
 	if err != nil {
 		t.Errorf("expected no error, got %s", err.Error())
 	}
@@ -22,7 +22,7 @@ func TestGetCurrency_EUR(t *testing.T) {
 }
 
 func TestGetCurrency_UnknownCurrency(t *testing.T) {
-	_, err := parseCurrency("UNKNOWN")
+	_, err := ParseCurrency("UNKNOWN")
 	if !errors.Is(err, errUnknownCurrency) {
 		t.Errorf("expected error %s, got %v", errUnknownCurrency, err)
 	}
