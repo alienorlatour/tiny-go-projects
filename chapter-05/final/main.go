@@ -7,11 +7,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ablqk/tiny-go-projects/chapter-05/layered/ecbank"
 	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/repository"
 )
-
-const ecbRepoURL = "https://www.ecb.europa.eu/"
 
 // Usage: change -from USD -to EUR 34.98
 
@@ -29,7 +27,7 @@ func main() {
 	}
 
 	// create the repository we want to use
-	changeRepo := repository.New(ecbRepoURL)
+	changeRepo := ecbank.New(ecbank.Host)
 
 	ctx := context.Background()
 

@@ -1,4 +1,4 @@
-package repository
+package ecbank
 
 import (
 	"encoding/xml"
