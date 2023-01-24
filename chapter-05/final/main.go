@@ -45,6 +45,7 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
 		os.Exit(1)
 	}
+
 	toCurrency, err := money.ParseCurrency(*to)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
