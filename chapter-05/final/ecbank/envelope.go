@@ -1,4 +1,4 @@
-package repository
+package ecbank
 
 import (
 	"errors"
