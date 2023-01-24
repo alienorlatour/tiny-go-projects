@@ -26,32 +26,45 @@ func main() {
 		os.Exit(1)
 	}
 
+	if *to == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
 	// create the repository we want to use
 	changeRepo := ecbank.New(ecbank.Host)
 
-	ctx := context.Background()
-
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
+	if amount == "" {
+		_, _ = fmt.Fprintln(os.Stderr, "missing the amount to convert")
+		os.Exit(1)
+	}
 
+	// transform into a number
 	number, err := money.ParseAmount(amount)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse amount %q: %s.\n", amount, err.Error())
 		os.Exit(1)
 	}
 
+	// parse the source currency
 	fromCurrency, err := money.ParseCurrency(*from)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
 		os.Exit(1)
 	}
 
+	// parse the target currency
 	toCurrency, err := money.ParseCurrency(*to)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
 		os.Exit(1)
 	}
 
+	ctx := context.Background()
+
+	// convert the amount from the source currency to the target with the current exchange rate
 	convertedAmount, err := money.Convert(ctx, number, fromCurrency, toCurrency, changeRepo)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
