@@ -18,21 +18,18 @@ func main() {
 	from := flag.String("from", "", "source currency, required")
 	to := flag.String("to", "EUR", "target currency")
 
+	// parse flags
 	flag.Parse()
 
+	// validate inputs
 	if err := validateInputs(*from, *to, flag.NArg()); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, err.Error())
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	if *to == "" {
-		flag.Usage()
-		os.Exit(1)
-	}
-
-	// create the repository we want to use
-	changeRepo := ecbank.New(ecbank.Host)
+	// create the exchange rate we want to use
+	exchangeRate := ecbank.New(ecbank.Host)
 
 	// read the amount to convert from the command
 	amount := flag.Arg(0)
@@ -65,7 +62,7 @@ func main() {
 	ctx := context.Background()
 
 	// convert the amount from the source currency to the target with the current exchange rate
-	convertedAmount, err := money.Convert(ctx, number, fromCurrency, toCurrency, changeRepo)
+	convertedAmount, err := money.Convert(ctx, number, fromCurrency, toCurrency, exchangeRate)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
 		os.Exit(1)
@@ -74,17 +71,19 @@ func main() {
 	fmt.Printf("%s %s = %s %s\n", amount, *from, convertedAmount, *to)
 }
 
+// validateInputs returns an error if one of the input is missing.
 func validateInputs(from, to string, argc int) error {
 	if from == "" {
-		return errors.New("missing input currency")
+		return errors.New("missing input currency\n")
 	}
 
 	if to == "" {
-		return errors.New("missing output currency")
+		// will never happen, flag has a default value
+		return errors.New("missing output currency\n")
 	}
 
 	if argc != 1 {
-		return errors.New("invalid number of arguments, expecting only the amount to convert")
+		return errors.New("invalid number of arguments, expecting only the amount to convert\n")
 	}
 
 	return nil
