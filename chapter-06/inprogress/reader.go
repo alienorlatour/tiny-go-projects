@@ -14,8 +14,8 @@ type Reader struct {
 
 // Book describes a book on a reader's shelf.
 type Book struct {
-	Author string `json:"author"`
-	Title  string `json:"title"`
+	Authors string `json:"authors"`
+	Title   string `json:"title"`
 }
 
 // loadReaders reads the file and returns the list of readers, and their beloved books, found therein.

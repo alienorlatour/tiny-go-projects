@@ -2,9 +2,8 @@ package main
 
 import (
 	"errors"
+	"reflect"
 	"testing"
-
-	"golang.org/x/exp/slices"
 )
 
 func TestLoadReaders(t *testing.T) {
@@ -15,26 +14,50 @@ func TestLoadReaders(t *testing.T) {
 	}{
 		"no common book": {
 			readersFile: "testdata/no_common_book.json",
-			want:        []Reader{},
+			want:        noCommonBookContents,
 		},
 	}
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
-			readers, err := loadReaders(testCase.readersFile)
+			got, err := loadReaders(testCase.readersFile)
 			if !errors.Is(err, testCase.wantError) {
-				t.Errorf("unexpected error: %s", err.Error())
+				t.Fatalf("unexpected error: %s", err.Error())
 			}
-			if !slices.Equal[Reader](readers, testCase.want) {
 
+			if !reflect.DeepEqual(got, testCase.want) {
+				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
 		})
 	}
 }
 
-func (r Reader) Equal(other Reader) bool {
-	if r.Name != other.Name {
-		return false
+var (
+	noCommonBookContents = []Reader{
+		{
+			Name: "Fadi",
+			Books: []Book{
+				{
+					Authors: "Margaret Atwood",
+					Title:   "The Handmaid's Tale",
+				},
+				{
+					Authors: "Sylvia Plath",
+					Title:   "The Bell Jar",
+				},
+			},
+		},
+		{
+			Name: "Peggy",
+			Books: []Book{
+				{
+					Authors: "Margaret Atwood",
+					Title:   "Oryx and Crake",
+				},
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
 	}
-
-	return slices.Equal[Book](r.Books, other.Books)
-}
+)
