@@ -18,7 +18,7 @@ func TestLoadReaders(t *testing.T) {
 	}{
 		"no common book": {
 			readersFile: "testdata/no_common_book.json",
-			want:        noCommonBookContents,
+			want:        readersWithNoCommonBooks,
 			checkError:  noError,
 		},
 		"file doesn't exist": {
@@ -50,7 +50,7 @@ func TestLoadReaders(t *testing.T) {
 }
 
 var (
-	noCommonBookContents = []Reader{
+	readersWithNoCommonBooks = []Reader{
 		{
 			Name: "Fadi",
 			Books: []Book{
@@ -78,6 +78,112 @@ var (
 			},
 		},
 	}
+	twoReadersWithACommonBook = []Reader{
+		{
+			Name: "Peggy",
+			Books: []Book{
+				{
+					Authors: "Margaret Atwood",
+					Title:   "Oryx and Crake",
+				},
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
+		{
+			Name: "Did",
+			Books: []Book{
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
+	}
+	threeReadersWithACommonBook = []Reader{
+		{
+			Name: "Peggy",
+			Books: []Book{
+				{
+					Authors: "Margaret Atwood",
+					Title:   "Oryx and Crake",
+				},
+				{
+					Authors: "Niccolo Machiavelli",
+					Title:   "Il Principe",
+				},
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
+		{
+			Name: "Did",
+			Books: []Book{
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
+		{
+			Name: "Ali",
+			Books: []Book{
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+				{
+					Authors: "Niccolo Machiavelli",
+					Title:   "Il Principe",
+				},
+			},
+		},
+	}
+	readersWithTwoBooksByTheSameAuthorInCommon = []Reader{
+		{
+			Name: "Peggy",
+			Books: []Book{
+				{
+					Authors: "Niccolo Machiavelli",
+					Title:   "Il Principe",
+				},
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Villette",
+				},
+			},
+		},
+		{
+			Name: "Did",
+			Books: []Book{
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Jane Eyre",
+				},
+			},
+		},
+		{
+			Name: "Ali",
+			Books: []Book{
+				{
+					Authors: "Charlotte Brontë",
+					Title:   "Villette",
+				},
+				{
+					Authors: "Niccolo Machiavelli",
+					Title:   "Il Principe",
+				},
+			},
+		},
+	}
 )
 
 func TestFindMatchingBooks(t *testing.T) {
@@ -85,12 +191,37 @@ func TestFindMatchingBooks(t *testing.T) {
 		input []Reader
 		want  []Book
 	}{
-		"no common book": {},
+		"no common book": {
+			input: readersWithNoCommonBooks,
+			want:  []Book{},
+		},
+		"one common book": {
+			input: twoReadersWithACommonBook,
+			want:  []Book{{Authors: "Charlotte Brontë", Title: "Jane Eyre"}},
+		},
+		"three readers have the same books on their shelves": {
+			input: threeReadersWithACommonBook,
+			want: []Book{
+				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
+				{Authors: "Niccolo Machiavelli", Title: "Il Principe"},
+			},
+		},
+		"output is sorted by authors and then title": {
+			input: readersWithTwoBooksByTheSameAuthorInCommon,
+			want: []Book{
+				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
+				{Authors: "Charlotte Brontë", Title: "Villette"},
+				{Authors: "Niccolo Machiavelli", Title: "Il Principe"},
+			},
+		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			findMatchingBooks(tc.input)
+			got := findMatchingBooks(tc.input)
+			if !reflect.DeepEqual(tc.want, got) {
+				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
+			}
 		})
 	}
 }

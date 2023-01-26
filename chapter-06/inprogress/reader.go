@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"sort"
 )
 
 // A Reader contains the list of books on a reader's shelf.
@@ -59,6 +60,13 @@ func findMatchingBooks(readers []Reader) []Book {
 			matchingBooks = append(matchingBooks, book)
 		}
 	}
+
+	sort.Slice(matchingBooks, func(i, j int) bool {
+		if matchingBooks[i].Authors != matchingBooks[j].Authors {
+			return matchingBooks[i].Authors < matchingBooks[j].Authors
+		}
+		return matchingBooks[i].Title < matchingBooks[j].Title
+	})
 
 	return matchingBooks
 }
