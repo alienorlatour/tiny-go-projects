@@ -1,26 +1,44 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
+	"io/fs"
 	"reflect"
 	"testing"
 )
 
 func TestLoadReaders(t *testing.T) {
+	noError := func(err error) bool { return err == nil }
+
 	tests := map[string]struct {
 		readersFile string
 		want        []Reader
-		wantError   error
+		checkError  func(err error) bool
 	}{
 		"no common book": {
 			readersFile: "testdata/no_common_book.json",
 			want:        noCommonBookContents,
+			checkError:  noError,
+		},
+		"file doesn't exist": {
+			readersFile: "testdata/no_file_here.json",
+			checkError: func(err error) bool {
+				return errors.Is(err, fs.ErrNotExist)
+			},
+		},
+		"invalid JSON": {
+			readersFile: "testdata/invalid.json",
+			checkError: func(err error) bool {
+				var expectedErr *json.SyntaxError
+				return errors.As(err, &expectedErr)
+			},
 		},
 	}
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
 			got, err := loadReaders(testCase.readersFile)
-			if !errors.Is(err, testCase.wantError) {
+			if !testCase.checkError(err) {
 				t.Fatalf("unexpected error: %s", err.Error())
 			}
 
@@ -61,3 +79,18 @@ var (
 		},
 	}
 )
+
+func TestFindMatchingBooks(t *testing.T) {
+	tt := map[string]struct {
+		input []Reader
+		want  []Book
+	}{
+		"no common book": {},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			findMatchingBooks(tc.input)
+		})
+	}
+}
