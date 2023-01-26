@@ -111,7 +111,7 @@ var (
 					Title:   "Oryx and Crake",
 				},
 				{
-					Authors: "Niccolo Machiavelli",
+					Authors: "Niccolò Machiavelli",
 					Title:   "Il Principe",
 				},
 				{
@@ -137,7 +137,7 @@ var (
 					Title:   "Jane Eyre",
 				},
 				{
-					Authors: "Niccolo Machiavelli",
+					Authors: "Niccolò Machiavelli",
 					Title:   "Il Principe",
 				},
 			},
@@ -148,7 +148,7 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Niccolo Machiavelli",
+					Authors: "Niccolò Machiavelli",
 					Title:   "Il Principe",
 				},
 				{
@@ -178,7 +178,7 @@ var (
 					Title:   "Villette",
 				},
 				{
-					Authors: "Niccolo Machiavelli",
+					Authors: "Niccolò Machiavelli",
 					Title:   "Il Principe",
 				},
 			},
@@ -203,7 +203,7 @@ func TestFindMatchingBooks(t *testing.T) {
 			input: threeReadersWithACommonBook,
 			want: []Book{
 				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
-				{Authors: "Niccolo Machiavelli", Title: "Il Principe"},
+				{Authors: "Niccolò Machiavelli", Title: "Il Principe"},
 			},
 		},
 		"output is sorted by authors and then title": {
@@ -211,7 +211,7 @@ func TestFindMatchingBooks(t *testing.T) {
 			want: []Book{
 				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
 				{Authors: "Charlotte Brontë", Title: "Villette"},
-				{Authors: "Niccolo Machiavelli", Title: "Il Principe"},
+				{Authors: "Niccolò Machiavelli", Title: "Il Principe"},
 			},
 		},
 	}
