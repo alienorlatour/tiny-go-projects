@@ -23,7 +23,7 @@ func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRate
 	}
 
 	// fetch the change rate for the day
-	r, err := fetchExchangeRate(ctx, from, to, rates)
+	r, err := rates.FetchExchangeRate(ctx, amount.Currency, to)
 	if err != nil {
 		return Amount{}, fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
 	}
@@ -38,14 +38,4 @@ func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRate
 
 	// format the converted value to a readable format
 	return convertedValue.String(), nil
-}
-
-// fetchExchangeRate is in charge of retrieving the change rate between two currencies.
-func fetchExchangeRate(ctx context.Context, from, to Currency, rateRepo exchangeRates) (ExchangeRate, error) {
-	exchangeRate, err := rateRepo.FetchExchangeRate(ctx, from, to)
-	if err != nil {
-		return 0, fmt.Errorf("unable to get exchange rates: %w", err)
-	}
-
-	return exchangeRate, nil
 }
