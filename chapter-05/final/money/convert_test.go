@@ -39,8 +39,8 @@ func TestConvert(t *testing.T) {
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrInputTooLarge) {
-					t.Errorf("expected error %s, got %v", money.ErrInputTooLarge, err)
+				if !errors.Is(err, money.ErrTooLarge) {
+					t.Errorf("expected error %s, got %v", money.ErrTooLarge, err)
 				}
 			},
 		},
@@ -50,8 +50,8 @@ func TestConvert(t *testing.T) {
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 1.5},
 			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrInputTooSmall) {
-					t.Errorf("expected error %s, got %v", money.ErrInputTooSmall, err)
+				if !errors.Is(err, money.ErrTooSmall) {
+					t.Errorf("expected error %s, got %v", money.ErrTooSmall, err)
 				}
 			},
 		},
@@ -61,12 +61,12 @@ func TestConvert(t *testing.T) {
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 16_468.30},
 			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrOutputTooLarge) {
-					t.Errorf("expected error %s, got %v", money.ErrOutputTooLarge, err)
+				if !errors.Is(err, money.ErrTooLarge) {
+					t.Errorf("expected error %s, got %v", money.ErrTooLarge, err)
 				}
 			},
 		},
-		//// TODO FIx me
+		//// TODO FIX me
 		//"Output amount is too small": {
 		//	amount:          money.NewAmountHelper("150", "IDR"),
 		//	to:              money.NewCurrency("EUR", 2, 0),

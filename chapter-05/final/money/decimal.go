@@ -47,57 +47,9 @@ func ParseNumber(value string) (Number, error) {
 	return Number{integerPart: i, decimalPart: d, precision: precision}, nil
 }
 
-const (
-	// ErrInputTooSmall is returned if the amount to convert is too small, which could lead to precision issues.
-	ErrInputTooSmall = moneyError("input amount should be at least 1.00")
-	// ErrOutputTooSmall is returned if the converted amount is too small, in order to protect against precision issues.
-	ErrOutputTooSmall = moneyError("output amount is less than 1.00")
-	// ErrInputTooLarge is returned if the input amount is too large - this would cause floating point precision errors.
-	ErrInputTooLarge = moneyError("input amount over 10^15 is too large")
-	// ErrOutputTooLarge is returned if the converted amount is too large, to protect against floating point errors.
-	ErrOutputTooLarge = moneyError("output amount is too large (over 10^15)")
-
-	// minAmount
-	minAmount = 1
-	// maxAmount value is a thousand billion, using the short scale -- 10^12.
-	maxAmount = 1e12
-)
-
-// validateInput returns an error if the given amount is not the bounded range.
-func (n Number) validateInput(sourceCurrency Currency) error {
-	switch {
-	case n.tooSmall(sourceCurrency):
-		return ErrInputTooSmall
-	case n.tooBig():
-		return ErrInputTooLarge
-		//case n.tooPrecise(sourceCurrency):
-		//	return ErrOutputTooLarge
-	}
-	return nil
-}
-
-func (n Number) tooPrecise(sourceCurrency Currency) bool {
-	return n.precision > sourceCurrency.precision
-}
-
-// validateOutput returns an error if the converted amount is not the bounded range.
-func (n Number) validateOutput(currency Currency) error {
-	switch {
-	case n.tooSmall(currency):
-		return ErrOutputTooSmall
-	case n.tooBig():
-		return ErrOutputTooLarge
-	}
-	return nil
-}
-
 func (n Number) tooSmall(currency Currency) bool {
 	f := n.float()
 	return f != 0 && f < math.Pow10(-currency.precision)
-}
-
-func (n Number) tooBig() bool {
-	return n.integerPart > maxAmount
 }
 
 func (n Number) float() float64 {

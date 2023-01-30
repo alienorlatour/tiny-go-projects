@@ -18,7 +18,7 @@ type exchangeRates interface {
 // Convert parses the input amount and applies the change rate to convert it to the target currency.
 func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	// validate the given amount is in the handled bounded range
-	if err := amount.number.validateInput(amount.currency); err != nil {
+	if err := amount.validate(); err != nil {
 		return Amount{}, err
 	}
 
@@ -32,7 +32,7 @@ func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRate
 	convertedValue := amount.applyChangeRate(r, to)
 
 	// validate the converted amount is in the handled bounded range
-	if err := convertedValue.number.validateOutput(to); err != nil {
+	if err := convertedValue.validate(); err != nil {
 		return Amount{}, err
 	}
 

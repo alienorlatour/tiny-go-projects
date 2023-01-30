@@ -52,7 +52,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// parse into a Number
+	// parse into a number
 	number, err := money.ParseNumber(value)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse value %q: %s.\n", value, err.Error())
