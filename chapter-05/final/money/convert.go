@@ -29,13 +29,13 @@ func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRate
 	}
 
 	// convert to the target currency applying the fetched change rate
-	convertedValue := amount.Number.applyChangeRate(r)
+	convertedValue := amount.applyChangeRate(r, to)
 
 	// validate the converted amount is in the handled bounded range
-	if err := convertedValue.validateOutput(to); err != nil {
+	if err := convertedValue.Number.validateOutput(to); err != nil {
 		return Amount{}, err
 	}
 
 	// transform the converted value to an amount
-	return NewAmount(convertedValue, to), nil
+	return convertedValue, nil
 }

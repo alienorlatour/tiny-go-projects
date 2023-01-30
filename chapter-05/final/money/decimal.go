@@ -47,28 +47,6 @@ func ParseNumber(value string) (Number, error) {
 	return Number{integerPart: i, decimalPart: d, precision: precision}, nil
 }
 
-// applyChangeRate returns a new Number representing n multiplied by the rate.
-// The precision is the same in and out.
-func (n Number) applyChangeRate(rate ExchangeRate, toPrecision int) Number {
-	converted := n.float() * float64(rate)
-
-	floor := math.Floor(converted)
-	decimal := math.Round((converted - floor) * math.Pow10(toPrecision))
-
-	return Number{
-		integerPart: int(floor),
-		decimalPart: int(decimal),
-		precision:   toPrecision,
-	}
-}
-
-func (n Number) float() float64 {
-	f := float64(n.integerPart)
-	f += float64(n.decimalPart) * math.Pow10(-n.precision)
-
-	return f
-}
-
 const (
 	// ErrInputTooSmall is returned if the amount to convert is too small, which could lead to precision issues.
 	ErrInputTooSmall = moneyError("input amount should be at least 1.00")
@@ -120,6 +98,13 @@ func (n Number) tooSmall(currency Currency) bool {
 
 func (n Number) tooBig() bool {
 	return n.integerPart > maxAmount
+}
+
+func (n Number) float() float64 {
+	f := float64(n.integerPart)
+	f += float64(n.decimalPart) * math.Pow10(-n.precision)
+
+	return f
 }
 
 // String implements stringer and returns the Number formatted as
