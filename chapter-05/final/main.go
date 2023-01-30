@@ -31,17 +31,10 @@ func main() {
 	// create the exchange rate we want to use
 	exchangeRate := ecbank.New(ecbank.Host)
 
-	// read the amount to convert from the command
-	amount := flag.Arg(0)
-	if amount == "" {
+	// read the number to convert from the command
+	value := flag.Arg(0)
+	if value == "" {
 		_, _ = fmt.Fprintln(os.Stderr, "missing the amount to convert")
-		os.Exit(1)
-	}
-
-	// transform into a number
-	number, err := money.ParseAmount(amount)
-	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to parse amount %q: %s.\n", amount, err.Error())
 		os.Exit(1)
 	}
 
@@ -59,16 +52,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	ctx := context.Background()
-
-	// convert the amount from the source currency to the target with the current exchange rate
-	convertedAmount, err := money.Convert(ctx, number, fromCurrency, toCurrency, exchangeRate)
+	// parse into a Number
+	number, err := money.ParseNumber(value)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", amount, *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse value %q: %s.\n", value, err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Printf("%s %s = %s %s\n", amount, *from, convertedAmount, *to)
+	// transform value into an amount with its currency
+	amount := money.NewAmount(number, fromCurrency)
+
+	ctx := context.Background()
+
+	// convert the amount from the source currency to the target with the current exchange rate
+	convertedAmount, err := money.Convert(ctx, amount, toCurrency, exchangeRate)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", value, *from, *to, err.Error())
+		os.Exit(1)
+	}
+
+	fmt.Printf("%s %s = %s\n", value, *from, convertedAmount.String())
 }
 
 // validateInputs returns an error if one of the input is missing.

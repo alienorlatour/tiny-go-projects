@@ -24,9 +24,9 @@ const (
 	errInvalidDecimal = moneyError("unable to convert decimal part")
 )
 
-// ParseAmount converts a string into its Number representation.
+// ParseNumber converts a string into its Number representation.
 // It assumes there is up to one decimal separator, and that the separator is '.' (full stop character).
-func ParseAmount(value string) (Number, error) {
+func ParseNumber(value string) (Number, error) {
 	intPart, decPart, found := strings.Cut(value, ".")
 
 	i, err := strconv.Atoi(intPart)
@@ -86,7 +86,7 @@ const (
 )
 
 // validateInput returns an error if the given amount is not the bounded range.
-func (n Number) validateInput( sourceCurrency Currency ) error {
+func (n Number) validateInput(sourceCurrency Currency) error {
 	switch {
 	case n.tooSmall(sourceCurrency):
 		return ErrInputTooSmall

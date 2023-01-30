@@ -57,7 +57,7 @@ func TestParseAmount(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := ParseAmount(tc.amount)
+			got, err := ParseNumber(tc.amount)
 			if !errors.Is(err, tc.err) {
 				t.Errorf("expected error %q, got %q", tc.err.Error(), err.Error())
 			}
@@ -246,7 +246,7 @@ func TestNumberApplyChangeRate(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := tc.in.applyChangeRate(tc.rate, tc.targetPrecision)
+			got := tc.in.applyChangeRate(tc.rate)
 			if got != tc.expected {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}

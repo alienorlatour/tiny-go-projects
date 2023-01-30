@@ -36,6 +36,6 @@ func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRate
 		return Amount{}, err
 	}
 
-	// format the converted value to a readable format
-	return convertedValue.String(), nil
+	// transform the converted value to an amount
+	return NewAmount(convertedValue, to), nil
 }
