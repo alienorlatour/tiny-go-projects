@@ -16,24 +16,24 @@ type exchangeRates interface {
 }
 
 // Convert parses the input amount and applies the change rate to convert it to the target currency.
-func Convert(ctx context.Context, amount Number, from, to Currency, rates exchangeRates) (string, error) {
+func Convert(ctx context.Context, amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	// validate the given amount is in the handled bounded range
-	if err := amount.validateInput(from); err != nil {
-		return "", err
+	if err := amount.Number.validateInput(amount.Currency); err != nil {
+		return Amount{}, err
 	}
 
 	// fetch the change rate for the day
 	r, err := fetchExchangeRate(ctx, from, to, rates)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
+		return Amount{}, fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
 	}
 
 	// convert to the target currency applying the fetched change rate
-	convertedValue := amount.applyChangeRate(r, 2)
+	convertedValue := amount.Number.applyChangeRate(r)
 
 	// validate the converted amount is in the handled bounded range
 	if err := convertedValue.validateOutput(to); err != nil {
-		return "", err
+		return Amount{}, err
 	}
 
 	// format the converted value to a readable format
@@ -41,7 +41,7 @@ func Convert(ctx context.Context, amount Number, from, to Currency, rates exchan
 }
 
 // fetchExchangeRate is in charge of retrieving the change rate between two currencies.
-func fetchExchangeRate(ctx context.Context, from, to Currency,  rateRepo exchangeRates) (ExchangeRate, error) {
+func fetchExchangeRate(ctx context.Context, from, to Currency, rateRepo exchangeRates) (ExchangeRate, error) {
 	exchangeRate, err := rateRepo.FetchExchangeRate(ctx, from, to)
 	if err != nil {
 		return 0, fmt.Errorf("unable to get exchange rates: %w", err)
