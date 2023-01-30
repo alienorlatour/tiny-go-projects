@@ -120,12 +120,12 @@ func TestAmountApplyChangeRate(t *testing.T) {
 	}{
 		"Number(1.52) * rate(1)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 1,
 					decimalPart: 52,
 					precision:   2,
 				},
-				Currency: Currency{},
+				currency: Currency{},
 			},
 			rate:           1,
 			targetCurrency: Currency{precision: 4},
@@ -137,7 +137,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(2.50) * rate(4)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 2,
 					decimalPart: 50,
 					precision:   2,
@@ -152,7 +152,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(4) * rate(2.5)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 4,
 					decimalPart: 0,
 					precision:   0,
@@ -167,7 +167,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(3.14) * rate(2.52678)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 3,
 					decimalPart: 14,
 					precision:   2,
@@ -182,7 +182,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(1.1) * rate(10)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 1,
 					decimalPart: 1,
 					precision:   1,
@@ -197,7 +197,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(1_000_000_000.01) * rate(2)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 1_000_000_000,
 					decimalPart: 1,
 					precision:   2,
@@ -212,7 +212,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(265_413.87) * rate(5.05935e-5)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 265_413,
 					decimalPart: 87,
 					precision:   2,
@@ -227,7 +227,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(265_413) * rate(1)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 265_413,
 					decimalPart: 0,
 					precision:   0,
@@ -242,7 +242,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 		},
 		"Number(2) * rate(1.337)": {
 			in: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 2,
 					decimalPart: 0,
 					precision:   0,
@@ -260,7 +260,7 @@ func TestAmountApplyChangeRate(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := tc.in.applyChangeRate(tc.rate, tc.targetCurrency)
-			if !reflect.DeepEqual(got.Number, tc.expected) {
+			if !reflect.DeepEqual(got.number, tc.expected) {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}
 		})

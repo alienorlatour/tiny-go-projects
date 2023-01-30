@@ -9,19 +9,19 @@ func TestAmountString(t *testing.T) {
 	}{
 		"15.2 EUR": {
 			amount: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 15,
 					decimalPart: 2,
 					precision:   1,
 				},
-				Currency: NewCurrency("EUR", 2, 1),
+				currency: NewCurrency("EUR", 2, 1),
 			},
 
 			expected: "15.2 EUR",
 		},
 		"missing Currency": {
 			amount: Amount{
-				Number: Number{
+				number: Number{
 					integerPart: 15,
 					decimalPart: 2,
 					precision:   1,
@@ -31,7 +31,7 @@ func TestAmountString(t *testing.T) {
 			expected: "15.2 ",
 		},
 		"missing Number": {
-			amount:   Amount{Currency: NewCurrency("EUR", 2, 1)},
+			amount:   Amount{currency: NewCurrency("EUR", 2, 1)},
 			expected: "0.0 EUR",
 		},
 		"missing Number and Currency": {
