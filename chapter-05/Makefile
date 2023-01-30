@@ -1,4 +1,5 @@
 projects := \
+	1_1_types
 	final
 
 %:
