@@ -12,8 +12,12 @@ type Amount struct {
 }
 
 // NewAmount returns a new Amount.
-func NewAmount(number Number, currency Currency) Amount {
-	return Amount{number: number, currency: currency}
+func NewAmount(number Number, currency Currency) (Amount, error) {
+	if number.tooSmall(currency) {
+
+	}
+	// todo
+	return Amount{number: number, currency: currency}, nil
 }
 
 // String implements stringer and returns the Number formatted as

@@ -3,7 +3,7 @@ package ecbank
 import (
 	"errors"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 const baseCurrencyCode = "EUR"

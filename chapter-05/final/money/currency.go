@@ -16,8 +16,15 @@ func (c Currency) Code() string {
 // errUnknownCurrency is returned when a currency is unsupported.
 const errUnknownCurrency = moneyError("unknown currency")
 
+// errInvalidCurrencyCode is returned when the currency to parse is not a standard 3-letter code.
+const errInvalidCurrencyCode = moneyError("invalid currency code")
+
 // ParseCurrency returns the currency associated to a name and may return errUnknownCurrency.
 func ParseCurrency(code string) (Currency, error) {
+	if len(code) != 3 {
+		return Currency{}, errInvalidCurrencyCode
+	}
+
 	// currencies defines the supported currencies.
 	currencies := map[string]Currency{
 		"EUR": {code: "EUR", precision: 2},
