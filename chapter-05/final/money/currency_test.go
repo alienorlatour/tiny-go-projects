@@ -21,9 +21,9 @@ func TestGetCurrency_EUR(t *testing.T) {
 	}
 }
 
-func TestGetCurrency_UnknownCurrency(t *testing.T) {
-	_, err := ParseCurrency("UNKNOWN")
-	if !errors.Is(err, errUnknownCurrency) {
-		t.Errorf("expected error %s, got %v", errUnknownCurrency, err)
+func TestGetCurrency_InvalidCurrencyCode(t *testing.T) {
+	_, err := ParseCurrency("INVALID")
+	if !errors.Is(err, errInvalidCurrencyCode) {
+		t.Errorf("expected error %s, got %v", errInvalidCurrencyCode, err)
 	}
 }

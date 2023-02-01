@@ -1,13 +1,12 @@
 package money_test
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 func TestConvert(t *testing.T) {
@@ -66,18 +65,17 @@ func TestConvert(t *testing.T) {
 				}
 			},
 		},
-		//// TODO FIX me
-		//"Output amount is too small": {
-		//	amount:          money.NewAmountHelper("150", "IDR"),
-		//	to:              money.NewCurrency("EUR", 2, 0),
-		//	targetPrecision: 2,
-		//	rateRepo:        stubRate{rate: 0.000060722722},
-		//	validate: func(t *testing.T, got money.Amount, err error) {
-		//		if !errors.Is(err, money.ErrOutputTooSmall) {
-		//			t.Errorf("expected error %s, got %v", money.ErrOutputTooSmall, err)
-		//		}
-		//	},
-		//},
+		"Output amount is too small": {
+			amount:          money.NewAmountHelper("150", "IDR"),
+			to:              money.NewCurrency("EUR", 2, 0),
+			targetPrecision: 2,
+			rateRepo:        stubRate{rate: 0.000060722722},
+			validate: func(t *testing.T, got money.Amount, err error) {
+				if !errors.Is(err, money.ErrTooSmall) {
+					t.Errorf("expected error %s, got %v", money.ErrTooSmall, err)
+				}
+			},
+		},
 		"Unknown currency": {
 			amount:          money.NewAmountHelper("10", "EUR"),
 			to:              money.NewCurrency("SUR", 2, 0), // Soviet Union Rubles, long gone.
@@ -93,7 +91,7 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(context.Background(), tc.amount, tc.to, tc.rateRepo)
+			got, err := money.Convert(tc.amount, tc.to, tc.rateRepo)
 			tc.validate(t, got, err)
 		})
 	}
@@ -106,6 +104,6 @@ type stubRate struct {
 }
 
 // ExchangeRate implements the interface exchangeRates with the same signature but fields are unused for tests purposes.
-func (m stubRate) FetchExchangeRate(ctx context.Context, source, target money.Currency) (money.ExchangeRate, error) {
+func (m stubRate) FetchExchangeRate(_, _ money.Currency) (money.ExchangeRate, error) {
 	return m.rate, m.err
 }
