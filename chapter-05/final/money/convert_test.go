@@ -95,6 +95,8 @@ func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 }
 
 func mustParseCurrency(t *testing.T, code string) money.Currency {
+	t.Helper()
+	
 	currency, err := money.ParseCurrency(code)
 	if err != nil {
 		t.Fatalf("cannot parse currency %s code", code)
