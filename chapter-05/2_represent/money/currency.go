@@ -4,11 +4,6 @@ package money
 type Currency struct {
 	code      string
 	precision int
-	toEuro    float32
-}
-
-func (c Currency) Code() string {
-	return c.code
 }
 
 // ErrInvalidCurrencyCode is returned when the currency to parse is not a standard 3-letter code.

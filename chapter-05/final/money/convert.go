@@ -10,7 +10,7 @@ const (
 	ErrGettingChangeRate = moneyError("can't get change rate between currencies")
 )
 
-// Convert parses the input amount and applies the change rate to convert it to the target currency.
+// Convert applies the change rate to convert an amount to a target currency.
 func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	// fetch the change rate for the day
 	r, err := rates.FetchExchangeRate(amount.currency, to)

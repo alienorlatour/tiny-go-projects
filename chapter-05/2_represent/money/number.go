@@ -2,7 +2,6 @@ package money
 
 import (
 	"fmt"
-	"math"
 	"strconv"
 	"strings"
 )
@@ -57,20 +56,4 @@ func ParseNumber(value string) (Number, error) {
 	precision := len(decPart)
 
 	return Number{integerPart: i, decimalPart: d, precision: precision}, nil
-}
-
-func (n Number) float() float64 {
-	f := float64(n.integerPart)
-	f += float64(n.decimalPart) * math.Pow10(-n.precision)
-
-	return f
-}
-
-// String implements stringer and returns the Number formatted as
-// digits optionally a decimal point followed by digits.
-func (n Number) String() string {
-	// for a precision of 2 digits formats %d.%02d
-	format := fmt.Sprintf("%%d.%%0%dd", n.precision)
-
-	return fmt.Sprintf(format, n.integerPart, n.decimalPart)
 }

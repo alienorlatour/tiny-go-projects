@@ -33,25 +33,25 @@ func TestParseNumber(t *testing.T) {
 		},
 		"invalid decimal part": {
 			amount: "65.pocket",
-			err:    errInvalidDecimal,
+			err:    ErrInvalidDecimal,
 		},
 		"with apostrophes for readability": {
 			amount: "12'152.03",
 			// expected: Number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
-			err: errInvalidInteger,
+			err: ErrInvalidInteger,
 		},
 		"with underscores for readability": {
 			amount: "12_152.03",
 			// expected: Number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
-			err: errInvalidInteger,
+			err: ErrInvalidInteger,
 		},
 		"NaN": {
 			amount: "ten",
-			err:    errInvalidInteger,
+			err:    ErrInvalidInteger,
 		},
 		"empty string": {
 			amount: "",
-			err:    errInvalidInteger,
+			err:    ErrInvalidInteger,
 		},
 	}
 
