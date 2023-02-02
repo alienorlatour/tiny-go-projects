@@ -8,27 +8,27 @@ import (
 	"testing"
 )
 
-func TestLoadReaders(t *testing.T) {
+func TestLoadLectors(t *testing.T) {
 	noError := func(err error) bool { return err == nil }
 
 	tests := map[string]struct {
-		readersFile string
-		want        []Reader
+		lectorsFile string
+		want        []Lector
 		checkError  func(err error) bool
 	}{
 		"no common book": {
-			readersFile: "testdata/no_common_book.json",
-			want:        readersWithNoCommonBooks,
+			lectorsFile: "testdata/no_common_book.json",
+			want:        lectorsWithNoCommonBooks,
 			checkError:  noError,
 		},
 		"file doesn't exist": {
-			readersFile: "testdata/no_file_here.json",
+			lectorsFile: "testdata/no_file_here.json",
 			checkError: func(err error) bool {
 				return errors.Is(err, fs.ErrNotExist)
 			},
 		},
 		"invalid JSON": {
-			readersFile: "testdata/invalid.json",
+			lectorsFile: "testdata/invalid.json",
 			checkError: func(err error) bool {
 				var expectedErr *json.SyntaxError
 				return errors.As(err, &expectedErr)
@@ -37,7 +37,7 @@ func TestLoadReaders(t *testing.T) {
 	}
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := loadReaders(testCase.readersFile)
+			got, err := loadLectors(testCase.lectorsFile)
 			if !testCase.checkError(err) {
 				t.Fatalf("unexpected error: %s", err.Error())
 			}
@@ -50,7 +50,7 @@ func TestLoadReaders(t *testing.T) {
 }
 
 var (
-	readersWithNoCommonBooks = []Reader{
+	lectorsWithNoCommonBooks = []Lector{
 		{
 			Name: "Fadi",
 			Books: []Book{
@@ -78,7 +78,7 @@ var (
 			},
 		},
 	}
-	twoReadersWithACommonBook = []Reader{
+	twoLectorsWithACommonBook = []Lector{
 		{
 			Name: "Peggy",
 			Books: []Book{
@@ -102,7 +102,7 @@ var (
 			},
 		},
 	}
-	threeReadersWithACommonBook = []Reader{
+	threeLectorsWithACommonBook = []Lector{
 		{
 			Name: "Peggy",
 			Books: []Book{
@@ -143,7 +143,7 @@ var (
 			},
 		},
 	}
-	readersWithTwoBooksByTheSameAuthorInCommon = []Reader{
+	readersWithTwoBooksByTheSameAuthorInCommon = []Lector{
 		{
 			Name: "Peggy",
 			Books: []Book{
@@ -188,19 +188,19 @@ var (
 
 func TestFindMatchingBooks(t *testing.T) {
 	tt := map[string]struct {
-		input []Reader
+		input []Lector
 		want  []Book
 	}{
 		"no common book": {
-			input: readersWithNoCommonBooks,
+			input: lectorsWithNoCommonBooks,
 			want:  []Book{},
 		},
 		"one common book": {
-			input: twoReadersWithACommonBook,
+			input: twoLectorsWithACommonBook,
 			want:  []Book{{Authors: "Charlotte Brontë", Title: "Jane Eyre"}},
 		},
 		"three readers have the same books on their shelves": {
-			input: threeReadersWithACommonBook,
+			input: threeLectorsWithACommonBook,
 			want: []Book{
 				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
 				{Authors: "Niccolò Machiavelli", Title: "Il Principe"},

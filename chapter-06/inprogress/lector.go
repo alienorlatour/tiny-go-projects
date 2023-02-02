@@ -7,8 +7,8 @@ import (
 	"sort"
 )
 
-// A Reader contains the list of books on a reader's shelf.
-type Reader struct {
+// A Lector contains the list of books on a reader's shelf.
+type Lector struct {
 	Name  string `json:"name"`
 	Books []Book `json:"books"`
 }
@@ -19,8 +19,8 @@ type Book struct {
 	Title   string `json:"title"`
 }
 
-// loadReaders reads the file and returns the list of readers, and their beloved books, found therein.
-func loadReaders(filePath string) ([]Reader, error) {
+// loadLectors reads the file and returns the list of readers, and their beloved books, found therein.
+func loadLectors(filePath string) ([]Lector, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func loadReaders(filePath string) ([]Reader, error) {
 		return nil, err
 	}
 
-	readers := make([]Reader, 0)
+	readers := make([]Lector, 0)
 	err = json.Unmarshal(contents, &readers)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func loadReaders(filePath string) ([]Reader, error) {
 }
 
 // findMatchingBooks returns books that are on more than one reader's shelf.
-func findMatchingBooks(readers []Reader) []Book {
+func findMatchingBooks(readers []Lector) []Book {
 	booksOnShelves := make(map[Book]uint)
 
 	// Register all books on shelves.
