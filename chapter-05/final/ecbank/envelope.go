@@ -3,7 +3,7 @@ package ecbank
 import (
 	"errors"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 const baseCurrencyCode = "EUR"
@@ -50,30 +50,4 @@ func (e Envelope) changeRate(source, target money.Currency) (money.ExchangeRate,
 	}
 
 	return money.ExchangeRate(targetFactor / sourceFactor), nil
-}
-
-// Equal tells whether the 2 Envelopes are equal.
-func (e Envelope) Equal(other Envelope) bool {
-	if len(e.Rates) != len(other.Rates) {
-		return false
-	}
-
-	for index := range e.Rates {
-		if e.Rates[index] != other.Rates[index] {
-			return false
-		}
-	}
-	return true
-}
-
-// Equal tells whether the 2 Cubes are equal.
-func (c CurrencyRate) Equal(other CurrencyRate) bool {
-	if c.Currency != other.Currency {
-		return false
-	}
-	// TODO: Add a tolerance?
-	if c.Rate != other.Rate {
-		return false
-	}
-	return true
 }

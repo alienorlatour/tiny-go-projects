@@ -1,8 +1,8 @@
 package money
 
 import (
-	"context"
 	"fmt"
+	"math"
 )
 
 const (
@@ -10,42 +10,43 @@ const (
 	ErrGettingChangeRate = moneyError("can't get change rate between currencies")
 )
 
-type exchangeRates interface {
-	// FetchExchangeRate fetches the ExchangeRate for the day and returns it.
-	FetchExchangeRate(ctx context.Context, source, target Currency) (ExchangeRate, error)
-}
-
 // Convert parses the input amount and applies the change rate to convert it to the target currency.
-func Convert(ctx context.Context, amount Number, from, to Currency, rates exchangeRates) (string, error) {
-	// validate the given amount is in the handled bounded range
-	if err := amount.validateInput(from); err != nil {
-		return "", err
-	}
-
+func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	// fetch the change rate for the day
-	r, err := fetchExchangeRate(ctx, from, to, rates)
+	r, err := rates.FetchExchangeRate(amount.currency, to)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
+		return Amount{}, fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
 	}
 
 	// convert to the target currency applying the fetched change rate
-	convertedValue := amount.applyChangeRate(r, 2)
+	convertedValue := applyChangeRate(amount, r, to)
 
 	// validate the converted amount is in the handled bounded range
-	if err := convertedValue.validateOutput(to); err != nil {
-		return "", err
+	if err := convertedValue.validate(); err != nil {
+		return Amount{}, err
 	}
 
-	// format the converted value to a readable format
-	return convertedValue.String(), nil
+	// transform the converted value to an amount
+	return convertedValue, nil
 }
 
-// fetchExchangeRate is in charge of retrieving the change rate between two currencies.
-func fetchExchangeRate(ctx context.Context, from, to Currency,  rateRepo exchangeRates) (ExchangeRate, error) {
-	exchangeRate, err := rateRepo.FetchExchangeRate(ctx, from, to)
-	if err != nil {
-		return 0, fmt.Errorf("unable to get exchange rates: %w", err)
+// applyChangeRate returns a new Number representing n multiplied by the rate.
+// The precision is the same in and out.
+// This function does not guarantee that the output amount is supported.
+func applyChangeRate(a Amount, rate ExchangeRate, target Currency) Amount {
+	converted := a.number.float() * float64(rate)
+
+	floor := math.Floor(converted)
+	decimal := math.Round((converted - floor) * math.Pow10(target.precision))
+
+	amount := Amount{
+		number: Number{
+			integerPart: int(floor),
+			decimalPart: int(decimal),
+			precision:   target.precision,
+		},
+		currency: target,
 	}
 
-	return exchangeRate, nil
+	return amount
 }

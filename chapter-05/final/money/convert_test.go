@@ -1,93 +1,54 @@
 package money_test
 
 import (
-	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 func TestConvert(t *testing.T) {
 	tt := map[string]struct {
-		amount          string
-		from            string
-		to              string
+		amount          money.Amount
+		to              money.Currency
 		targetPrecision int
 		rateRepo        stubRate
-		validate        func(t *testing.T, got string, err error)
+		validate        func(t *testing.T, got money.Amount, err error)
 	}{
 		"34.98 USD to EUR": {
-			amount:          "34.98",
-			from:            "USD",
-			to:              "EUR",
+			amount:          mustParseAmount(t, "34.98", "USD"),
+			to:              mustParseCurrency(t, "EUR"),
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 1.2564},
-			validate: func(t *testing.T, got string, err error) {
+			validate: func(t *testing.T, got money.Amount, err error) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
-				if got != "43.95" {
-					t.Errorf("expected 53.06, got %q", got)
-				}
-			},
-		},
-		"Input amount is too large": {
-			amount:          "34345982398459834.98",
-			from:            "EUR",
-			to:              "KRW",
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.5},
-			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrInputTooLarge) {
-					t.Errorf("expected error %s, got %v", money.ErrInputTooLarge, err)
-				}
-			},
-		},
-		"Input amount is too small": {
-			amount:          "0.001",
-			from:            "EUR",
-			to:              "KRW",
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.5},
-			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrInputTooSmall) {
-					t.Errorf("expected error %s, got %v", money.ErrInputTooSmall, err)
+				expected := mustParseAmount(t, "43.95", "EUR")
+				if !reflect.DeepEqual(got, expected) {
+					t.Errorf("expected %q, got %q", expected, got)
 				}
 			},
 		},
 		"Output amount is too large": {
-			amount:          "12345678901.23",
-			from:            "EUR",
-			to:              "IDR",
+			amount:          mustParseAmount(t, "12345678901.23", "EUR"),
+			to:              mustParseCurrency(t, "IDR"),
 			targetPrecision: 2,
 			rateRepo:        stubRate{rate: 16_468.30},
-			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrOutputTooLarge) {
-					t.Errorf("expected error %s, got %v", money.ErrOutputTooLarge, err)
-				}
-			},
-		},
-		"Output amount is too small": {
-			amount:          "150",
-			from:            "IDR",
-			to:              "EUR",
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 0.000060722722},
-			validate: func(t *testing.T, got string, err error) {
-				if !errors.Is(err, money.ErrOutputTooSmall) {
-					t.Errorf("expected error %s, got %v", money.ErrOutputTooSmall, err)
+			validate: func(t *testing.T, got money.Amount, err error) {
+				if !errors.Is(err, money.ErrTooLarge) {
+					t.Errorf("expected error %s, got %v", money.ErrTooLarge, err)
 				}
 			},
 		},
 		"Unknown currency": {
-			amount:          "10",
-			from:            "EUR",
-			to:              "SUR", // Soviet Union Rubles, long gone.
+			amount:          mustParseAmount(t, "10", "EUR"),
+			to:              mustParseCurrency(t, "SUR"), // Soviet Union Rubles, long gone.
 			targetPrecision: 2,
 			rateRepo:        stubRate{err: fmt.Errorf("unknown currency")},
-			validate: func(t *testing.T, got string, err error) {
+			validate: func(t *testing.T, got money.Amount, err error) {
 				if !errors.Is(err, money.ErrGettingChangeRate) {
 					t.Errorf("expected error %s, got %v", money.ErrGettingChangeRate, err)
 				}
@@ -97,7 +58,7 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(context.Background(), tc.amount, tc.from, tc.to, tc.rateRepo)
+			got, err := money.Convert(tc.amount, tc.to, tc.rateRepo)
 			tc.validate(t, got, err)
 		})
 	}
@@ -110,6 +71,34 @@ type stubRate struct {
 }
 
 // ExchangeRate implements the interface exchangeRates with the same signature but fields are unused for tests purposes.
-func (m stubRate) FetchExchangeRate(ctx context.Context, source, target money.Currency) (money.ExchangeRate, error) {
+func (m stubRate) FetchExchangeRate(_, _ money.Currency) (money.ExchangeRate, error) {
 	return m.rate, m.err
+}
+
+func mustParseAmount(t *testing.T, value string, code string) money.Amount {
+	n, err := money.ParseNumber(value)
+	if err != nil {
+		t.Fatalf("invalid number: %s", value)
+	}
+
+	currency, err := money.ParseCurrency(code)
+	if err != nil {
+		t.Fatalf("invalid currency code: %s", code)
+	}
+
+	amount, err := money.NewAmount(n, currency)
+	if err != nil {
+		t.Fatalf("cannot create amount with value %s and currency code %s", amount, code)
+	}
+
+	return amount
+}
+
+func mustParseCurrency(t *testing.T, code string) money.Currency {
+	currency, err := money.ParseCurrency(code)
+	if err != nil {
+		t.Fatalf("cannot parse currency %s code", code)
+	}
+
+	return currency
 }

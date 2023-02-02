@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 const (
@@ -27,9 +27,9 @@ func New(url string) *ExchangeRate {
 }
 
 // FetchExchangeRate fetches the ExchangeRate for the day and returns it.
-func (er ExchangeRate) FetchExchangeRate(ctx context.Context, source, target money.Currency) (money.ExchangeRate, error) {
+func (er ExchangeRate) FetchExchangeRate(source, target money.Currency) (money.ExchangeRate, error) {
 	// add a timeout to the context in case the external API is too slow
-	getCtx, cancel := context.WithTimeout(ctx, time.Second)
+	getCtx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// build the HTTP request

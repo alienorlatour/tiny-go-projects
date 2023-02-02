@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/layered/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
 )
 
 func TestUnmarshalXML(t *testing.T) {
@@ -66,8 +66,8 @@ func TestChangeRate(t *testing.T) {
 	}{
 		"nominal": {
 			envelope: Envelope{Rates: []CurrencyRate{{Currency: "USD", Rate: 1.5}}},
-			source:   money.NewCurrency("EUR", 2, 1),
-			target:   money.NewCurrency("USD", 2, 1.5),
+			source:   mustParseCurrency(t, "EUR"),
+			target:   mustParseCurrency(t, "USD"),
 			want:     money.ExchangeRate(1.5),
 			wantErr:  nil,
 		}}
@@ -83,4 +83,13 @@ func TestChangeRate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mustParseCurrency(t *testing.T, code string) money.Currency {
+	currency, err := money.ParseCurrency(code)
+	if err != nil {
+		t.Fatalf("cannot parse currency %s code", code)
+	}
+
+	return currency
 }
