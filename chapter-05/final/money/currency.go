@@ -30,6 +30,7 @@ func ParseCurrency(code string) (Currency, error) {
 	case "BHD", "IQD", "KWD", "LYD", "OMR", "TND":
 		return Currency{code: code, precision: 3}, nil
 	default:
+		// All other circulating currencies use a hundredth division.
 		return Currency{code: code, precision: 2}, nil
 	}
 }

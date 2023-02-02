@@ -32,28 +32,6 @@ func TestConvert(t *testing.T) {
 				}
 			},
 		},
-		"Input amount is too large": {
-			amount:          mustParseAmount(t, "34345982398459834.98", "EUR"),
-			to:              mustParseCurrency(t, "KRW"),
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.5},
-			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrTooLarge) {
-					t.Errorf("expected error %s, got %v", money.ErrTooLarge, err)
-				}
-			},
-		},
-		"Input amount is too small": {
-			amount:          mustParseAmount(t, "0.001", "EUR"),
-			to:              mustParseCurrency(t, "KRW"),
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 1.5},
-			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrTooSmall) {
-					t.Errorf("expected error %s, got %v", money.ErrTooSmall, err)
-				}
-			},
-		},
 		"Output amount is too large": {
 			amount:          mustParseAmount(t, "12345678901.23", "EUR"),
 			to:              mustParseCurrency(t, "IDR"),
@@ -62,17 +40,6 @@ func TestConvert(t *testing.T) {
 			validate: func(t *testing.T, got money.Amount, err error) {
 				if !errors.Is(err, money.ErrTooLarge) {
 					t.Errorf("expected error %s, got %v", money.ErrTooLarge, err)
-				}
-			},
-		},
-		"Output amount is too small": {
-			amount:          mustParseAmount(t, "150", "IDR"),
-			to:              mustParseCurrency(t, "EUR"),
-			targetPrecision: 2,
-			rateRepo:        stubRate{rate: 0.000060722722},
-			validate: func(t *testing.T, got money.Amount, err error) {
-				if !errors.Is(err, money.ErrTooSmall) {
-					t.Errorf("expected error %s, got %v", money.ErrTooSmall, err)
 				}
 			},
 		},
@@ -111,12 +78,12 @@ func (m stubRate) FetchExchangeRate(_, _ money.Currency) (money.ExchangeRate, er
 func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 	n, err := money.ParseNumber(value)
 	if err != nil {
-		t.Fatalf("cannot parse value: %s", value)
+		t.Fatalf("invalid number: %s", value)
 	}
 
 	currency, err := money.ParseCurrency(code)
 	if err != nil {
-		t.Fatalf("cannot parse currency code: %s", code)
+		t.Fatalf("invalid currency code: %s", code)
 	}
 
 	amount, err := money.NewAmount(n, currency)

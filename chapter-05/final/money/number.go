@@ -19,9 +19,17 @@ type Number struct {
 }
 
 const (
-	// errors that we might face when parsing numbers
-	errInvalidInteger = moneyError("unable to convert integer part")
-	errInvalidDecimal = moneyError("unable to convert decimal part")
+	// ErrInvalidInteger is returned if the integer part is not a number.
+	ErrInvalidInteger = moneyError("unable to convert integer part")
+
+	// ErrInvalidDecimal is returned if the decimal part is not a number.
+	ErrInvalidDecimal = moneyError("unable to convert decimal part")
+
+	// ErrTooLarge is returned if the amount is too large - this would cause floating point precision errors.
+	ErrTooLarge = moneyError("amount over 10^15 is too large")
+
+	// maxAmount value is a thousand billion, using the short scale -- 10^12.
+	maxAmount = 1e12
 )
 
 // ParseNumber converts a string into its Number representation.
@@ -31,25 +39,24 @@ func ParseNumber(value string) (Number, error) {
 
 	i, err := strconv.Atoi(intPart)
 	if err != nil {
-		return Number{}, fmt.Errorf("%w: %s", errInvalidInteger, err.Error())
+		return Number{}, fmt.Errorf("%w: %s", ErrInvalidInteger, err.Error())
+	}
+
+	if i > maxAmount {
+		return Number{}, ErrTooLarge
 	}
 
 	var d int
 	if found {
 		d, err = strconv.Atoi(decPart)
 		if err != nil {
-			return Number{}, fmt.Errorf("%w: %s", errInvalidDecimal, err.Error())
+			return Number{}, fmt.Errorf("%w: %s", ErrInvalidDecimal, err.Error())
 		}
 	}
 
 	precision := len(decPart)
 
 	return Number{integerPart: i, decimalPart: d, precision: precision}, nil
-}
-
-func (n Number) tooSmall(currency Currency) bool {
-	f := n.float()
-	return f != 0 && f < math.Pow10(-currency.precision)
 }
 
 func (n Number) float() float64 {
