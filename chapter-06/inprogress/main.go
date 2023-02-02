@@ -3,12 +3,12 @@ package main
 import "fmt"
 
 func main() {
-	readers, err := loadBookworms("testdata/bookworms.json")
+	bookworms, err := loadBookworms("testdata/bookworms.json")
 	if err != nil {
 		panic(err)
 	}
 
-	matchingBooks := findMatchingBooks(readers)
+	matchingBooks := findMatchingBooks(bookworms)
 
 	displayMatchingBooks(matchingBooks)
 }
