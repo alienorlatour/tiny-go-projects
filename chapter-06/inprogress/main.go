@@ -10,10 +10,10 @@ func main() {
 
 	matchingBooks := findMatchingBooks(readers)
 
-	dsiplayMatchingBooks(matchingBooks)
+	displayMatchingBooks(matchingBooks)
 }
 
-func dsiplayMatchingBooks(books []Book) {
+func displayMatchingBooks(books []Book) {
 	fmt.Println("Here are the matching books:")
 	for _, book := range books {
 		fmt.Println(book.Title, "by", book.Authors)
