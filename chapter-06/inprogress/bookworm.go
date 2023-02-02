@@ -7,20 +7,20 @@ import (
 	"sort"
 )
 
-// A Lector contains the list of books on a reader's shelf.
-type Lector struct {
+// A Bookworm contains the list of books on a bookworm's shelf.
+type Bookworm struct {
 	Name  string `json:"name"`
 	Books []Book `json:"books"`
 }
 
-// Book describes a book on a reader's shelf.
+// Book describes a book on a bookworm's shelf.
 type Book struct {
 	Authors string `json:"authors"`
 	Title   string `json:"title"`
 }
 
-// loadLectors reads the file and returns the list of readers, and their beloved books, found therein.
-func loadLectors(filePath string) ([]Lector, error) {
+// loadBookworms reads the file and returns the list of bookworms, and their beloved books, found therein.
+func loadBookworms(filePath string) ([]Bookworm, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -32,22 +32,22 @@ func loadLectors(filePath string) ([]Lector, error) {
 		return nil, err
 	}
 
-	readers := make([]Lector, 0)
-	err = json.Unmarshal(contents, &readers)
+	bookworms := make([]Bookworm, 0)
+	err = json.Unmarshal(contents, &bookworms)
 	if err != nil {
 		return nil, err
 	}
 
-	return readers, nil
+	return bookworms, nil
 }
 
-// findMatchingBooks returns books that are on more than one reader's shelf.
-func findMatchingBooks(readers []Lector) []Book {
+// findMatchingBooks returns books that are on more than one bookworm's shelf.
+func findMatchingBooks(bookworms []Bookworm) []Book {
 	booksOnShelves := make(map[Book]uint)
 
 	// Register all books on shelves.
-	for _, reader := range readers {
-		for _, book := range reader.Books {
+	for _, bookworm := range bookworms {
+		for _, book := range bookworm.Books {
 			booksOnShelves[book]++
 		}
 	}

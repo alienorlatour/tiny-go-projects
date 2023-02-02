@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	readers, err := loadLectors("testdata/lectors.json")
+	readers, err := loadBookworms("testdata/bookworms.json")
 	if err != nil {
 		panic(err)
 	}
