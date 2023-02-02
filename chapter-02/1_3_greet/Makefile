@@ -1,14 +1,14 @@
 run:
-	go run .
+	@go run .
 
 build:
-	go build -o bin/helloworld .
+	@go build -o bin/helloworld main.go
 
 test:
-	go test ./...
+	@go test ./...
 
 cover:
-	go test ./... -cover
+	@go test ./... -cover
 
 lint:
-	 golangci-lint run ./...
+	@golangci-lint run ./...

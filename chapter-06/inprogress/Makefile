@@ -2,13 +2,13 @@ run:
 	@go run .
 
 build:
-	go build -o bin/gordle main.go
+	@go build -o bin/gordle main.go
 
 test:
-	go test ./...
+	@go test ./...
 
 cover:
-	go test ./... -cover
+	@go test ./... -cover
 
 lint:
-	golangci-lint run ./...
+	@@golangci-lint run ./...
