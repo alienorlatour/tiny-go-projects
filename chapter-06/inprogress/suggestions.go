@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 // bookSuggestions are the suggested books for a given book.
 // Suggestions are the neighbour-books on the shelves.
 type bookSuggestions map[Book]bookCollection
@@ -92,6 +94,13 @@ func bookCollectionToListOfBooks(bc bookCollection) []Book {
 	for book := range bc {
 		bookList = append(bookList, book)
 	}
+
+	sort.Slice(bookList, func(i, j int) bool {
+		if bookList[i].Authors != bookList[j].Authors {
+			return bookList[i].Authors < bookList[j].Authors
+		}
+		return bookList[i].Title < bookList[j].Title
+	})
 
 	return bookList
 }
