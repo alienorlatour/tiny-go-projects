@@ -21,7 +21,7 @@ func main() {
 
 func displayBooks(books []Book) {
 	for _, book := range books {
-		fmt.Println(book.Title, "by", book.Authors)
+		fmt.Println("-", book.Title, "by", book.Authors)
 	}
 }
 
