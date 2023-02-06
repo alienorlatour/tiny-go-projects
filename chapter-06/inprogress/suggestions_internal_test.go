@@ -53,16 +53,16 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -70,12 +70,12 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Sylvia Plath",
-					Title:   "The Bell Jar",
+					Author: "Sylvia Plath",
+					Title:  "The Bell Jar",
 				},
 			},
 		},
@@ -86,8 +86,8 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Sylvia Plath",
-					Title:   "The Bell Jar",
+					Author: "Sylvia Plath",
+					Title:  "The Bell Jar",
 				},
 			},
 		},
@@ -95,12 +95,12 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -111,8 +111,8 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -120,12 +120,12 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Sylvia Plath",
-					Title:   "The Bell Jar",
+					Author: "Sylvia Plath",
+					Title:  "The Bell Jar",
 				},
 			},
 		},
@@ -136,8 +136,8 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Sylvia Plath",
-					Title:   "The Bell Jar",
+					Author: "Sylvia Plath",
+					Title:  "The Bell Jar",
 				},
 			},
 		},
@@ -152,16 +152,16 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Kathryn Stockett",
-					Title:   "The Help",
+					Author: "Kathryn Stockett",
+					Title:  "The Help",
 				},
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -169,16 +169,16 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Kathryn Stockett",
-					Title:   "The Help",
+					Author: "Kathryn Stockett",
+					Title:  "The Help",
 				},
 				{
-					Authors: "Stephen King",
-					Title:   "Fairy Tale",
+					Author: "Stephen King",
+					Title:  "Fairy Tale",
 				},
 			},
 		},
@@ -186,16 +186,16 @@ var (
 			Name: "Ali",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 				{
-					Authors: "Kathryn Stockett",
-					Title:   "The Help",
+					Author: "Kathryn Stockett",
+					Title:  "The Help",
 				},
 			},
 		},
@@ -206,12 +206,12 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Stephen King",
-					Title:   "Fairy Tale",
+					Author: "Stephen King",
+					Title:  "Fairy Tale",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -219,12 +219,12 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -232,12 +232,12 @@ var (
 			Name: "Ali",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Stephen King",
-					Title:   "Fairy Tale",
+					Author: "Stephen King",
+					Title:  "Fairy Tale",
 				},
 			},
 		},

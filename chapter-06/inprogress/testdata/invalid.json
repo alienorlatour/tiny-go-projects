@@ -3,8 +3,8 @@
     "name": "Fadi",
     "books": [
       {
-        "authors": "Margaret Atwood",
+        "author": "Margaret Atwood",
         "title": "The Handmaid's Tale"
       },
       {
-        "authors": "Sylvia Plath
+        "author": "Sylvia Plath

@@ -3,11 +3,11 @@
     "name": "Fadi",
     "books": [
       {
-        "authors": "Margaret Atwood",
+        "author": "Margaret Atwood",
         "title": "The Handmaid's Tale"
       },
       {
-        "authors": "Sylvia Plath",
+        "author": "Sylvia Plath",
         "title": "The Bell Jar"
       }
     ]
@@ -16,15 +16,15 @@
     "name": "Peggy",
     "books": [
       {
-        "authors": "Margaret Atwood",
+        "author": "Margaret Atwood",
         "title": "Oryx and Crake"
       },
       {
-        "authors": "Margaret Atwood",
+        "author": "Margaret Atwood",
         "title": "The Handmaid's Tale"
       },
       {
-        "authors": "Charlotte Brontë",
+        "author": "Charlotte Brontë",
         "title": "Jane Eyre"
       }
     ]

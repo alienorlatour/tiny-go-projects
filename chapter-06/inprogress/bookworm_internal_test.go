@@ -31,7 +31,7 @@ func TestLoadBookworms(t *testing.T) {
 			bookwormsFile: "testdata/invalid.json",
 			checkError: func(err error) bool {
 				var expectedErr *json.SyntaxError
-				return errors.As(err, &expectedErr)
+				return !errors.As(err, &expectedErr)
 			},
 		},
 	}
@@ -55,12 +55,12 @@ var (
 			Name: "Fadi",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "The Handmaid's Tale",
+					Author: "Margaret Atwood",
+					Title:  "The Handmaid's Tale",
 				},
 				{
-					Authors: "Sylvia Plath",
-					Title:   "The Bell Jar",
+					Author: "Sylvia Plath",
+					Title:  "The Bell Jar",
 				},
 			},
 		},
@@ -68,12 +68,12 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -83,12 +83,12 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -96,8 +96,8 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -107,16 +107,16 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Margaret Atwood",
-					Title:   "Oryx and Crake",
+					Author: "Margaret Atwood",
+					Title:  "Oryx and Crake",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -124,8 +124,8 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -133,12 +133,12 @@ var (
 			Name: "Ali",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -148,16 +148,16 @@ var (
 			Name: "Peggy",
 			Books: []Book{
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Villette",
+					Author: "Charlotte Brontë",
+					Title:  "Villette",
 				},
 			},
 		},
@@ -165,8 +165,8 @@ var (
 			Name: "Did",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Jane Eyre",
+					Author: "Charlotte Brontë",
+					Title:  "Jane Eyre",
 				},
 			},
 		},
@@ -174,12 +174,12 @@ var (
 			Name: "Ali",
 			Books: []Book{
 				{
-					Authors: "Charlotte Brontë",
-					Title:   "Villette",
+					Author: "Charlotte Brontë",
+					Title:  "Villette",
 				},
 				{
-					Authors: "Niccolò Machiavelli",
-					Title:   "Il Principe",
+					Author: "Niccolò Machiavelli",
+					Title:  "Il Principe",
 				},
 			},
 		},
@@ -197,21 +197,21 @@ func TestFindMatchingBooks(t *testing.T) {
 		},
 		"one common book": {
 			input: twoBookwormsWithACommonBook,
-			want:  []Book{{Authors: "Charlotte Brontë", Title: "Jane Eyre"}},
+			want:  []Book{{Author: "Charlotte Brontë", Title: "Jane Eyre"}},
 		},
 		"three bookworms have the same books on their shelves": {
 			input: threeBookwormsWithACommonBook,
 			want: []Book{
-				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
-				{Authors: "Niccolò Machiavelli", Title: "Il Principe"},
+				{Author: "Charlotte Brontë", Title: "Jane Eyre"},
+				{Author: "Niccolò Machiavelli", Title: "Il Principe"},
 			},
 		},
 		"output is sorted by authors and then title": {
 			input: bookwormsWithTwoBooksByTheSameAuthorInCommon,
 			want: []Book{
-				{Authors: "Charlotte Brontë", Title: "Jane Eyre"},
-				{Authors: "Charlotte Brontë", Title: "Villette"},
-				{Authors: "Niccolò Machiavelli", Title: "Il Principe"},
+				{Author: "Charlotte Brontë", Title: "Jane Eyre"},
+				{Author: "Charlotte Brontë", Title: "Villette"},
+				{Author: "Niccolò Machiavelli", Title: "Il Principe"},
 			},
 		},
 	}
