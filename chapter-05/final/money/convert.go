@@ -30,9 +30,8 @@ func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	return convertedValue, nil
 }
 
-// applyChangeRate returns a new Number representing n multiplied by the rate.
-// The precision is the same in and out.
-// This function does not guarantee that the output amount is supported.
+// applyChangeRate returns a new Amount representing a multiplied by the rate.
+// This function does not guarantee that the output amount is supported by the rest of the library.
 func applyChangeRate(a Amount, rate ExchangeRate, target Currency) Amount {
 	converted := a.number.float() * float64(rate)
 
