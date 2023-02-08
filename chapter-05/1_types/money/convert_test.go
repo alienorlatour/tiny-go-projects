@@ -30,7 +30,7 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(tc.amount, tc.to, nil)
+			got, err := money.Convert(tc.amount, tc.to)
 			tc.validate(t, got, err)
 		})
 	}
