@@ -22,18 +22,18 @@ func main() {
 	// parse the source currency
 	fromCurrency, err := money.ParseCurrency(*from)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q: %s.\n", *from, err.Error())
 		os.Exit(1)
 	}
 
 	// parse the target currency
 	toCurrency, err := money.ParseCurrency(*to)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q to %q: %s.\n", *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q: %s.\n", *to, err.Error())
 		os.Exit(1)
 	}
 
-	// read the number to convert from the command
+	// read the argument
 	value := flag.Arg(0)
 	if value == "" {
 		_, _ = fmt.Fprintln(os.Stderr, "missing amount to convert")
@@ -61,9 +61,9 @@ func main() {
 	// convert the amount from the source currency to the target with the current exchange rate
 	convertedAmount, err := money.Convert(amount, toCurrency, exchangeRate)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %q %q to %q: %s.\n", value, *from, *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to convert %s to %s: %s.\n", amount, toCurrency, err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Printf("%s %s = %s\n", value, *from, convertedAmount.String())
+	fmt.Printf("%s = %s\n", amount, convertedAmount.String())
 }

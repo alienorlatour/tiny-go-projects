@@ -4,32 +4,24 @@ import (
 	"fmt"
 )
 
-const (
-	// ErrTooPrecise is returned if the amount is too precise.
-	ErrTooPrecise = moneyError("amount value is too precise")
-)
-
-// Amount defines a quantity of money in a given Currency.
+// Amount defines a quantity of money in a given currency.
 type Amount struct {
 	number   Number
 	currency Currency
 }
 
-// NewAmount returns a new Amount.
-func NewAmount(number Number, currency Currency) (Amount, error) {
-	a := Amount{number: number, currency: currency}
+const (
+	// ErrTooPrecise is returned if the number is too precise for the currency.
+	ErrTooPrecise = moneyError("amount value is too precise")
+)
 
-	if err := a.validate(); err != nil {
-		return Amount{}, err
+// NewAmount returns an Amount of money.
+func NewAmount(number Number, currency Currency) (Amount, error) {
+	if number.precision > currency.precision {
+		return Amount{}, ErrTooPrecise
 	}
 
-	return a, nil
-}
-
-// String implements stringer and returns the Number formatted as
-// digits optionally a decimal point followed by digits.
-func (a Amount) String() string {
-	return fmt.Sprintf("%s %s", a.number.String(), a.currency.code)
+	return Amount{number: number, currency: currency}, nil
 }
 
 func (a Amount) validate() error {
@@ -41,4 +33,9 @@ func (a Amount) validate() error {
 	}
 
 	return nil
+}
+
+// String implements stringer.
+func (a Amount) String() string {
+	return fmt.Sprintf("%s %s", a.number.String(), a.currency.code)
 }

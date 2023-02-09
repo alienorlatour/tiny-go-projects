@@ -67,7 +67,7 @@ func (n Number) float() float64 {
 }
 
 // String implements stringer and returns the Number formatted as
-// digits optionally a decimal point followed by digits.
+// digits and optionally a decimal point followed by digits.
 func (n Number) String() string {
 	// for a precision of 2 digits formats %d.%02d
 	format := fmt.Sprintf("%%d.%%0%dd", n.precision)

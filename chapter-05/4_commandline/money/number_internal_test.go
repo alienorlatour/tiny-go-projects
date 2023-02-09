@@ -71,3 +71,44 @@ func TestParseNumber(t *testing.T) {
 		})
 	}
 }
+
+func TestNumberString(t *testing.T) {
+	tt := map[string]struct {
+		n        Number
+		expected string
+	}{
+		"15.2": {
+			n: Number{
+				integerPart: 15,
+				decimalPart: 2,
+				precision:   1,
+			},
+			expected: "15.2",
+		},
+		"15.02": {
+			n: Number{
+				integerPart: 15,
+				decimalPart: 2,
+				precision:   2,
+			},
+			expected: "15.02",
+		},
+		"15.0200": {
+			n: Number{
+				integerPart: 15,
+				decimalPart: 200,
+				precision:   4,
+			},
+			expected: "15.0200",
+		},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			got := tc.n.String()
+			if got != tc.expected {
+				t.Errorf("expected %q, got %q", tc.expected, got)
+			}
+		})
+	}
+}

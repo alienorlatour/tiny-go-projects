@@ -4,10 +4,7 @@ package money
 type Currency struct {
 	code      string
 	precision int
-}
-
-func (c Currency) String() string {
-	return c.code
+	toEuro    float32
 }
 
 // ErrInvalidCurrencyCode is returned when the currency to parse is not a standard 3-letter code.
@@ -32,4 +29,9 @@ func ParseCurrency(code string) (Currency, error) {
 		// All other circulating currencies use a hundredth division.
 		return Currency{code: code, precision: 2}, nil
 	}
+}
+
+// String implements Stringer.
+func (c Currency) String() string {
+	return c.code
 }
