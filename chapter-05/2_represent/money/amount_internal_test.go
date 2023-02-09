@@ -5,5 +5,5 @@ import (
 )
 
 func TestNewAmount(t *testing.T) {
-	// TODO!!!
+	// TODO !!!
 }

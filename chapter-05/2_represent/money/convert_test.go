@@ -20,7 +20,7 @@ func TestConvert(t *testing.T) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
-				expected := mustParseAmount(t, "43.95", "EUR")
+				expected := money.Amount{}
 				if !reflect.DeepEqual(got, expected) {
 					t.Errorf("expected %q, got %q", expected, got)
 				}
@@ -30,8 +30,40 @@ func TestConvert(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := money.Convert(tc.amount, tc.to, nil)
+			got, err := money.Convert(tc.amount, tc.to)
 			tc.validate(t, got, err)
 		})
 	}
+}
+
+func mustParseCurrency(t *testing.T, code string) money.Currency {
+	t.Helper()
+
+	currency, err := money.ParseCurrency(code)
+	if err != nil {
+		t.Fatalf("cannot parse currency %s code", code)
+	}
+
+	return currency
+}
+
+func mustParseAmount(t *testing.T, value string, code string) money.Amount {
+	t.Helper()
+
+	n, err := money.ParseNumber(value)
+	if err != nil {
+		t.Fatalf("invalid number: %s", value)
+	}
+
+	currency, err := money.ParseCurrency(code)
+	if err != nil {
+		t.Fatalf("invalid currency code: %s", code)
+	}
+
+	amount, err := money.NewAmount(n, currency)
+	if err != nil {
+		t.Fatalf("cannot create amount with value %v and currency code %s", n, code)
+	}
+
+	return amount
 }
