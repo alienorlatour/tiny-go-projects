@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetCurrency_Success(t *testing.T) {
+func TestParseCurrency_Success(t *testing.T) {
 	tt := map[string]struct {
 		in       string
 		expected Currency
@@ -30,9 +30,9 @@ func TestGetCurrency_Success(t *testing.T) {
 	}
 }
 
-func TestGetCurrency_InvalidCurrencyCode(t *testing.T) {
+func TestParseCurrency_InvalidCurrencyCode(t *testing.T) {
 	_, err := ParseCurrency("INVALID")
-	if !errors.Is(err, errInvalidCurrencyCode) {
-		t.Errorf("expected error %s, got %v", errInvalidCurrencyCode, err)
+	if !errors.Is(err, ErrInvalidCurrencyCode) {
+		t.Errorf("expected error %s, got %v", ErrInvalidCurrencyCode, err)
 	}
 }

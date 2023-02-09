@@ -90,7 +90,7 @@ func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 
 	amount, err := money.NewAmount(n, currency)
 	if err != nil {
-		t.Fatalf("cannot create amount with value %s and currency code %s", amount, code)
+		t.Fatalf("cannot create amount with value %v and currency code %s", n, code)
 	}
 
 	return amount

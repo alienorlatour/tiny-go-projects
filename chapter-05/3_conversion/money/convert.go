@@ -1,25 +1,11 @@
 package money
 
-import (
-	"fmt"
-	"math"
-)
-
-const (
-	// ErrGettingChangeRate is returned if we can't find the conversion rate between two currencies.
-	ErrGettingChangeRate = moneyError("can't get change rate between currencies")
-)
+import "math"
 
 // Convert applies the change rate to convert an amount to a target currency.
-func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
-	// fetch the change rate for the day
-	r, err := rates.FetchExchangeRate(amount.currency, to)
-	if err != nil {
-		return Amount{}, fmt.Errorf("%w: %s", ErrGettingChangeRate, err)
-	}
-
+func Convert(amount Amount, to Currency) (Amount, error) {
 	// convert to the target currency applying the fetched change rate
-	convertedValue := applyChangeRate(amount, to, r)
+	convertedValue := applyChangeRate(amount, to, 2)
 
 	// validate the converted amount is in the handled bounded range
 	if err := convertedValue.validate(); err != nil {
@@ -29,8 +15,13 @@ func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	return convertedValue, nil
 }
 
-// applyChangeRate returns a new Amount representing a multiplied by the rate.
-// This function does not guarantee that the output amount is supported by the rest of the library.
+// ExchangeRate represents a rate to convert from a currency to another.
+// It is a float64, because the precision of an official change rate is 5 significant digits.
+type ExchangeRate float64
+
+// applyChangeRate returns a new Number representing n multiplied by the rate.
+// The precision is the same in and out.
+// This function does not guarantee that the output amount is supported.
 func applyChangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
 	converted := a.number.float() * float64(rate)
 

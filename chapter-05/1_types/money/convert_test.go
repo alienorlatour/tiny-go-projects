@@ -22,7 +22,7 @@ func TestConvert(t *testing.T) {
 				}
 				expected := money.Amount{}
 				if !reflect.DeepEqual(got, expected) {
-					t.Errorf("expected %q, got %q", expected, got)
+					t.Errorf("expected %v, got %v", expected, got)
 				}
 			},
 		},

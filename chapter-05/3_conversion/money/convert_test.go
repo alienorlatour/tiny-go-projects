@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/2_represent/money"
+	"github.com/ablqk/tiny-go-projects/chapter-05/3_conversion/money"
 )
 
 func TestConvert(t *testing.T) {
@@ -20,7 +20,7 @@ func TestConvert(t *testing.T) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
-				expected := money.Amount{}
+				expected := mustParseAmount(t, "69.96", "EUR")
 				if !reflect.DeepEqual(got, expected) {
 					t.Errorf("expected %v, got %v", expected, got)
 				}
