@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/3_conversion/money"
+	"learngo-pockets/moneyconverter/money"
 )
 
 func TestConvert(t *testing.T) {
@@ -50,7 +50,7 @@ func mustParseCurrency(t *testing.T, code string) money.Currency {
 func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 	t.Helper()
 
-	n, err := money.ParseNumber(value)
+	n, err := money.ParseQuantity(value)
 	if err != nil {
 		t.Fatalf("invalid number: %s", value)
 	}

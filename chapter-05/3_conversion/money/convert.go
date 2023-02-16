@@ -23,19 +23,15 @@ type ExchangeRate float64
 // The precision is the same in and out.
 // This function does not guarantee that the output amount is supported.
 func applyChangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
-	converted := a.number.float() * float64(rate)
-
-	floor := math.Floor(converted)
-	decimal := math.Round((converted - floor) * math.Pow10(target.precision))
-
 	amount := Amount{
-		number: Number{
-			integerPart: int(floor),
-			decimalPart: int(decimal),
-			precision:   target.precision,
-		},
 		currency: target,
+		quantity: Quantity{
+			exp: target.precision,
+		},
 	}
 
+	cents := float64(a.quantity.cents) * float64(rate) * math.Pow10(target.precision-a.quantity.exp)
+
+	amount.quantity.cents = int(math.Floor(cents))
 	return amount
 }

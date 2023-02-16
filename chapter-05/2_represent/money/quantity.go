@@ -26,9 +26,9 @@ const (
 	maxAmountExp = 12
 )
 
-// ParseNumber converts a string into its Quantity representation.
+// ParseQuantity converts a string into its Quantity representation.
 // It assumes there is up to one decimal separator, and that the separator is '.' (full stop character).
-func ParseNumber(value string) (Quantity, error) {
+func ParseQuantity(value string) (Quantity, error) {
 	intPart, fracPart, _ := strings.Cut(value, ".")
 
 	if len(intPart) > maxAmountExp {

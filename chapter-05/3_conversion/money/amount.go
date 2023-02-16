@@ -1,8 +1,8 @@
 package money
 
-// Amount defines a quantity of money in a given currency.
+// Amount defines a quantity of money in a given Currency.
 type Amount struct {
-	number   Quantity
+	quantity Quantity
 	currency Currency
 }
 
@@ -12,19 +12,19 @@ const (
 )
 
 // NewAmount returns an Amount of money.
-func NewAmount(number Quantity, currency Currency) (Amount, error) {
-	if number.precision > currency.precision {
+func NewAmount(quantity Quantity, currency Currency) (Amount, error) {
+	if quantity.exp > currency.precision {
 		return Amount{}, ErrTooPrecise
 	}
 
-	return Amount{number: number, currency: currency}, nil
+	return Amount{quantity: quantity, currency: currency}, nil
 }
 
 func (a Amount) validate() error {
 	switch {
-	case a.number.integerPart > maxAmount:
+	case a.quantity.cents > maxAmount:
 		return ErrTooLarge
-	case a.number.precision > a.currency.precision:
+	case a.quantity.exp > a.currency.precision:
 		return ErrTooPrecise
 	}
 
