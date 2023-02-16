@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/5_bank/money"
+	"learngo-pockets/moneyconverter/money"
 )
 
 func main() {
@@ -38,8 +38,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// parse into a number
-	number, err := money.ParseNumber(value)
+	// parse into a quantity
+	number, err := money.ParseQuantity(value)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse value %q: %s.\n", value, err.Error())
 		os.Exit(1)

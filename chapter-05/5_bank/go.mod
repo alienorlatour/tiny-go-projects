@@ -1,3 +1,3 @@
-module github.com/ablqk/tiny-go-projects/chapter-05/5_bank
+module learngo-pockets/moneyconverter
 
-go 1.19
+go 1.20

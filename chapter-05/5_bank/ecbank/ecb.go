@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/5_bank/money"
+	"learngo-pockets/moneyconverter/money"
 )
 
 type EuroCentralBank struct {

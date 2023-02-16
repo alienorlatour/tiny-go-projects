@@ -1,9 +1,9 @@
 package ecbank
 
-// ecbankError defines a sentinel error.
-type ecbankError string
+// Error defines an error.
+type Error string
 
-// ecbankError implements the error interface.
-func (e ecbankError) Error() string {
+// Error implements the error interface.
+func (e Error) Error() string {
 	return string(e)
 }
