@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-05/1_types/money"
+	"learngo-pockets/moneyconverter/money"
 )
 
 func TestConvert(t *testing.T) {

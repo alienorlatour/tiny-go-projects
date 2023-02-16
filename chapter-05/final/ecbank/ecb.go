@@ -18,22 +18,22 @@ const (
 	ErrChangeRateNotFound = ecbankError("couldn't find the exchange rate")
 )
 
-type ExchangeRate struct {
+type EuroCentralBank struct {
 	exchangeRatesURL string // "https://www.ecb.europa.eu"
 }
 
-func New(url string) *ExchangeRate {
-	return &ExchangeRate{url}
+func New(url string) *EuroCentralBank {
+	return &EuroCentralBank{url}
 }
 
 // FetchExchangeRate fetches the ExchangeRate for the day and returns it.
-func (er ExchangeRate) FetchExchangeRate(source, target money.Currency) (money.ExchangeRate, error) {
+func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (money.ExchangeRate, error) {
 	// add a timeout to the context in case the external API is too slow
 	getCtx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// build the HTTP request
-	path, err := er.url()
+	path, err := ecb.url()
 	if err != nil {
 		return 0., fmt.Errorf("%w: %s", ErrBadURL, err)
 	}
@@ -76,12 +76,12 @@ func (er ExchangeRate) FetchExchangeRate(source, target money.Currency) (money.E
 }
 
 const (
-	Host string = "https://www.ecb.europa.eu/"
+	Host string = "https://www.ecb.europa.eu"
 	base string = "/stats/eurofxref/eurofxref-daily.xml"
 )
 
-func (er ExchangeRate) url() (string, error) {
-	return url.JoinPath(er.exchangeRatesURL, base)
+func (ecb EuroCentralBank) url() (string, error) {
+	return url.JoinPath(ecb.exchangeRatesURL, base)
 }
 
 const (

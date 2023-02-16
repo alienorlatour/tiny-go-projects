@@ -7,7 +7,7 @@ type Currency struct {
 }
 
 // ErrInvalidCurrencyCode is returned when the currency to parse is not a standard 3-letter code.
-const ErrInvalidCurrencyCode = moneyError("invalid currency code")
+const ErrInvalidCurrencyCode = Error("invalid currency code")
 
 // ParseCurrency returns the currency associated to a name and may return errUnknownCurrency.
 func ParseCurrency(code string) (Currency, error) {

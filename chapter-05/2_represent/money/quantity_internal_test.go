@@ -8,50 +8,50 @@ import (
 func TestParseNumber(t *testing.T) {
 	tt := map[string]struct {
 		amount   string
-		expected Number
+		expected Quantity
 		err      error
 	}{
 		"2 decimal digits": {
 			amount:   "1.52",
-			expected: Number{integerPart: 1, decimalPart: 52, precision: 2},
+			expected: Quantity{152, 2},
 			err:      nil,
 		},
 		"no decimal digits": {
 			amount:   "1",
-			expected: Number{integerPart: 1, decimalPart: 0, precision: 0},
+			expected: Quantity{1, 0},
 			err:      nil,
 		},
 		"suffix 0 as decimal digits": {
 			amount:   "1.50",
-			expected: Number{integerPart: 1, decimalPart: 50, precision: 2},
+			expected: Quantity{150, 2},
 			err:      nil,
 		},
 		"prefix 0 as decimal digits": {
 			amount:   "1.02",
-			expected: Number{integerPart: 1, decimalPart: 2, precision: 2},
+			expected: Quantity{102, 2},
 			err:      nil,
 		},
 		"invalid decimal part": {
 			amount: "65.pocket",
-			err:    ErrInvalidDecimal,
+			err:    ErrInvalidValue,
 		},
 		"with apostrophes for readability": {
 			amount: "12'152.03",
-			// expected: Number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
-			err: ErrInvalidInteger,
+			// expected: Quantity{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
+			err: ErrInvalidValue,
 		},
 		"with underscores for readability": {
 			amount: "12_152.03",
-			// expected: Number{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
-			err: ErrInvalidInteger,
+			// expected: Quantity{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
+			err: ErrInvalidValue,
 		},
 		"NaN": {
 			amount: "ten",
-			err:    ErrInvalidInteger,
+			err:    ErrInvalidValue,
 		},
 		"empty string": {
 			amount: "",
-			err:    ErrInvalidInteger,
+			err:    ErrInvalidValue,
 		},
 		"too large": {
 			amount: "1234567890123",

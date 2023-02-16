@@ -1,7 +1,7 @@
 package money
 
-// Amount defines a quantity of money in a given currency.
+// Amount defines a quantity of money in a given Currency.
 type Amount struct {
-	number   Number
+	quantity Quantity
 	currency Currency
 }
