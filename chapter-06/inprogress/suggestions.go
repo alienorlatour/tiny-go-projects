@@ -36,7 +36,7 @@ func suggestOtherBooks(bookworms []Bookworm) []Bookworm {
 
 // listOtherBooksOnShelves returns the list of my books except the one at the given index.
 func listOtherBooksOnShelves(bookIndexToRemove int, myBooks []Book) []Book {
-	// Initialise the first array of books with a length until the given index.
+	// Initialise the first slice: its capacity is the input slice's capacity reduced by 1, and its starting length is the number of items up to the index to discard.
 	otherBooksOnShelves := make([]Book, bookIndexToRemove, len(myBooks)-1)
 	// Copy the slice of books up to the given index into the initialised index.
 	copy(otherBooksOnShelves, myBooks[:bookIndexToRemove])
@@ -65,6 +65,7 @@ func suggestBooks(suggestions bookSuggestions, myBooks []Book) []Book {
 	bc := make(bookCollection)
 
 	// Register all the books on shelves.
+	// This step helps us to not suggest a book that has already been read.
 	myShelf := make(map[Book]bool)
 	for _, myBook := range myBooks {
 		myShelf[myBook] = true
@@ -74,6 +75,7 @@ func suggestBooks(suggestions bookSuggestions, myBooks []Book) []Book {
 	for _, myBook := range myBooks {
 		// Find suggestions in other bookworm's shelves.
 		for suggestion := range suggestions[myBook] {
+			// Find suggestions in other bookworms' shelves.
 			if myShelf[suggestion] {
 				// Book already on the shelf.
 				continue
