@@ -7,16 +7,16 @@ import (
 )
 
 // Quantity can represent money with a fixed precision.
-// example: 1.52 = 1 + 52 * 10^(-2) will be stored as {1, 52, 2}
+// example: 1.52 = 152 * 10^(-2) will be stored as {152, 2}
 type Quantity struct {
-	// cents is the amount of money, not necessarily in
+	// cents is the amount of money, not necessarily in hundredths of the unit
 	cents int
-	// precision of the cents, as the exponent of a power of 10
+	// Number of "cents" in a unit, expressed as a power of 10.
 	exp int
 }
 
 const (
-	// ErrInvalidValue is returned if the number is malformed.
+	// ErrInvalidValue is returned if the quantity is malformed.
 	ErrInvalidValue = Error("unable to convert the value")
 
 	// ErrTooLarge is returned if the amount is too large - this would cause floating point precision errors.

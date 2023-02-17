@@ -98,6 +98,13 @@ func TestQuantityString(t *testing.T) {
 			},
 			expected: "152",
 		},
+		"152.00": {
+			quantity: Quantity{
+				cents: 15200,
+				exp:   2,
+			},
+			expected: "152.00",
+		},
 	}
 
 	for name, tc := range tt {
