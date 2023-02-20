@@ -8,6 +8,15 @@ import (
 	"testing"
 )
 
+var (
+	handmaidsTale = Book{Author: "Margaret Atwood", Title: "The Handmaid's Tale"}
+	oryxAndCrake  = Book{Author: "Margaret Atwood", Title: "Oryx and Crake"}
+	theBellJar    = Book{Author: "Sylvia Plath", Title: "The Bell Jar"}
+	janeEyre      = Book{Author: "Charlotte Brontë", Title: "Jane Eyre"}
+	villette      = Book{Author: "Charlotte Brontë", Title: "Villette"}
+	ilPrincipe    = Book{Author: "Niccolò Machiavelli", Title: "Il Principe"}
+)
+
 func TestLoadBookworms(t *testing.T) {
 	noError := func(err error) bool { return err == nil }
 
@@ -18,8 +27,11 @@ func TestLoadBookworms(t *testing.T) {
 	}{
 		"no common book": {
 			bookwormsFile: "testdata/no_common_book.json",
-			want:          bookwormsWithNoCommonBooks,
-			checkError:    noError,
+			want: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre}},
+			},
+			checkError: noError,
 		},
 		"file doesn't exist": {
 			bookwormsFile: "testdata/no_file_here.json",
@@ -31,7 +43,7 @@ func TestLoadBookworms(t *testing.T) {
 			bookwormsFile: "testdata/invalid.json",
 			checkError: func(err error) bool {
 				var expectedErr *json.SyntaxError
-				return !errors.As(err, &expectedErr)
+				return errors.As(err, &expectedErr)
 			},
 		},
 	}
@@ -49,170 +61,41 @@ func TestLoadBookworms(t *testing.T) {
 	}
 }
 
-var (
-	bookwormsWithNoCommonBooks = []Bookworm{
-		{
-			Name: "Fadi",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "The Handmaid's Tale",
-				},
-				{
-					Author: "Sylvia Plath",
-					Title:  "The Bell Jar",
-				},
-			},
-		},
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-	}
-	twoBookwormsWithACommonBook = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-	}
-	threeBookwormsWithACommonBook = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Ali",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-	}
-	bookwormsWithTwoBooksByTheSameAuthorInCommon = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Villette",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Ali",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Villette",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-	}
-)
-
 func TestFindMatchingBooks(t *testing.T) {
 	tt := map[string]struct {
 		input []Bookworm
 		want  []Book
 	}{
+		// TODO FIX ME
 		"no common book": {
-			input: bookwormsWithNoCommonBooks,
-			want:  []Book{},
+			input: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre}},
+			},
+			want: []Book{},
 		},
 		"one common book": {
-			input: twoBookwormsWithACommonBook,
-			want:  []Book{{Author: "Charlotte Brontë", Title: "Jane Eyre"}},
+			input: []Bookworm{
+				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre}},
+				{Name: "Did", Books: []Book{janeEyre}},
+			},
+			want: []Book{janeEyre},
 		},
 		"three bookworms have the same books on their shelves": {
-			input: threeBookwormsWithACommonBook,
-			want: []Book{
-				{Author: "Charlotte Brontë", Title: "Jane Eyre"},
-				{Author: "Niccolò Machiavelli", Title: "Il Principe"},
+			input: []Bookworm{
+				{Name: "Peggy", Books: []Book{oryxAndCrake, ilPrincipe, janeEyre}},
+				{Name: "Did", Books: []Book{janeEyre}},
+				{Name: "Ali", Books: []Book{janeEyre, ilPrincipe}},
 			},
+			want: []Book{janeEyre, ilPrincipe},
 		},
 		"output is sorted by authors and then title": {
-			input: bookwormsWithTwoBooksByTheSameAuthorInCommon,
-			want: []Book{
-				{Author: "Charlotte Brontë", Title: "Jane Eyre"},
-				{Author: "Charlotte Brontë", Title: "Villette"},
-				{Author: "Niccolò Machiavelli", Title: "Il Principe"},
+			input: []Bookworm{
+				{Name: "Peggy", Books: []Book{ilPrincipe, janeEyre, villette}},
+				{Name: "Did", Books: []Book{janeEyre}},
+				{Name: "Ali", Books: []Book{villette, ilPrincipe}},
 			},
+			want: []Book{janeEyre, villette, ilPrincipe},
 		},
 	}
 

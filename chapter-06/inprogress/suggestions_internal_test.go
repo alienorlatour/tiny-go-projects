@@ -5,26 +5,57 @@ import (
 	"testing"
 )
 
+var (
+	theHelp   = Book{Author: "Kathryn Stockett", Title: "The Help"}
+	fairyTale = Book{Author: "Stephen King", Title: "Fairy Tale"}
+)
+
 func TestSuggestOtherBooks(t *testing.T) {
 	tt := map[string]struct {
 		bookworms []Bookworm
 		want      []Bookworm
 	}{
 		"No common books": {
-			bookworms: bookwormsWithNoCommonBooks,
-			want:      suggestionsForBookwormsWithNoCommonBooks,
+			bookworms: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre}},
+			},
+			want: []Bookworm{
+				{Name: "Fadi", Books: []Book{}},
+				{Name: "Peggy", Books: []Book{}},
+			},
 		},
 		"Two bookworms with a common book and several books on their respective shelves": {
-			bookworms: twoBookwormsWithACommonBookAndSeveralBooksOnShelves,
-			want:      suggestionsForTwoBookwormsWithACommonBookAndSeveralBooksOnShelves,
+			bookworms: []Bookworm{
+				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre, ilPrincipe}},
+				{Name: "Did", Books: []Book{janeEyre, theBellJar}},
+			},
+			want: []Bookworm{
+				{Name: "Peggy", Books: []Book{theBellJar}},
+				{Name: "Did", Books: []Book{oryxAndCrake, ilPrincipe}},
+			},
 		},
 		"Two bookworms with a common book and one has only one book on shelf": {
-			bookworms: twoBookwormsWithACommonBookAndOneBooksOnShelves,
-			want:      suggestionsForTwoBookwormsWithACommonBookAndOneBooksOnShelves,
+			bookworms: []Bookworm{
+				{Name: "Peggy", Books: []Book{janeEyre}},
+				{Name: "Did", Books: []Book{janeEyre, theBellJar}},
+			},
+			want: []Bookworm{
+				{Name: "Peggy", Books: []Book{theBellJar}},
+				{Name: "Did", Books: []Book{}},
+			},
 		},
 		"Three bookworms with two common books and several books on their respective shelves": {
-			bookworms: threeBookwormsWithTwoCommonBooksAndSeveralBooksOnShelves,
-			want:      suggestionForThreeBookwormsWithTwoCommonBooksAndSeveralBooksOnShelves,
+			bookworms: []Bookworm{
+				{Name: "Peggy", Books: []Book{theHelp, janeEyre}},
+				{Name: "Did", Books: []Book{janeEyre, theHelp, fairyTale}},
+				{Name: "Ali", Books: []Book{janeEyre, ilPrincipe, theHelp}},
+			},
+			want: []Bookworm{
+				{Name: "Peggy", Books: []Book{fairyTale, ilPrincipe}},
+				{Name: "Did", Books: []Book{oryxAndCrake, ilPrincipe}},
+				{Name: "Ali", Books: []Book{oryxAndCrake, fairyTale}},
+			},
 		},
 	}
 
@@ -37,212 +68,6 @@ func TestSuggestOtherBooks(t *testing.T) {
 		})
 	}
 }
-
-var (
-	suggestionsForBookwormsWithNoCommonBooks = []Bookworm{
-		{
-			Name: "Fadi", Books: []Book{},
-		},
-		{
-			Name: "Peggy", Books: []Book{},
-		},
-	}
-
-	twoBookwormsWithACommonBookAndSeveralBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Sylvia Plath",
-					Title:  "The Bell Jar",
-				},
-			},
-		},
-	}
-
-	suggestionsForTwoBookwormsWithACommonBookAndSeveralBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Sylvia Plath",
-					Title:  "The Bell Jar",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-	}
-
-	twoBookwormsWithACommonBookAndOneBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Sylvia Plath",
-					Title:  "The Bell Jar",
-				},
-			},
-		},
-	}
-
-	suggestionsForTwoBookwormsWithACommonBookAndOneBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Sylvia Plath",
-					Title:  "The Bell Jar",
-				},
-			},
-		},
-		{
-			Name:  "Did",
-			Books: []Book{},
-		},
-	}
-
-	threeBookwormsWithTwoCommonBooksAndSeveralBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Kathryn Stockett",
-					Title:  "The Help",
-				},
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Kathryn Stockett",
-					Title:  "The Help",
-				},
-				{
-					Author: "Stephen King",
-					Title:  "Fairy Tale",
-				},
-			},
-		},
-		{
-			Name: "Ali",
-			Books: []Book{
-				{
-					Author: "Charlotte Brontë",
-					Title:  "Jane Eyre",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-				{
-					Author: "Kathryn Stockett",
-					Title:  "The Help",
-				},
-			},
-		},
-	}
-
-	suggestionForThreeBookwormsWithTwoCommonBooksAndSeveralBooksOnShelves = []Bookworm{
-		{
-			Name: "Peggy",
-			Books: []Book{
-				{
-					Author: "Stephen King",
-					Title:  "Fairy Tale",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-		{
-			Name: "Did",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Niccolò Machiavelli",
-					Title:  "Il Principe",
-				},
-			},
-		},
-		{
-			Name: "Ali",
-			Books: []Book{
-				{
-					Author: "Margaret Atwood",
-					Title:  "Oryx and Crake",
-				},
-				{
-					Author: "Stephen King",
-					Title:  "Fairy Tale",
-				},
-			},
-		},
-	}
-)
 
 // equals compares two list of Bookworms.
 func equals(bookwormA, bookwormB []Bookworm) bool {

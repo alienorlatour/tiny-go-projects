@@ -1,11 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
 	bookworms, err := loadBookworms("testdata/bookworms.json")
 	if err != nil {
-		panic(err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to load bookworms: %s\n", err)
+		os.Exit(1)
 	}
 
 	matchingBooks := findMatchingBooks(bookworms)
@@ -27,6 +31,6 @@ func displaySuggestions(suggestionsForBookworms []Bookworm) {
 	for _, bookworm := range suggestionsForBookworms {
 		fmt.Printf("\nHere are the suggestions for %s:\n", bookworm.Name)
 		displayBooks(bookworm.Books)
-		fmt.Println("")
+		fmt.Println()
 	}
 }

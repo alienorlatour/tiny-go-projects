@@ -28,7 +28,7 @@ func loadBookworms(filePath string) ([]Bookworm, error) {
 	defer f.Close()
 
 	// Initialise the type in which the file will be decoded.
-	bookworms := make([]Bookworm, 0)
+	var bookworms []Bookworm
 
 	// Decode the file and stores the content in the value bookworms.
 	err = json.NewDecoder(f).Decode(&bookworms)
@@ -41,19 +41,13 @@ func loadBookworms(filePath string) ([]Bookworm, error) {
 
 // findMatchingBooks returns books that are on more than one bookworm's shelf.
 func findMatchingBooks(bookworms []Bookworm) []Book {
-	booksOnShelves := make(map[Book]uint)
-
 	// Register all books on shelves.
-	for _, bookworm := range bookworms {
-		for _, book := range bookworm.Books {
-			booksOnShelves[book]++
-		}
-	}
+	booksOnShelves := booksCount(bookworms)
 
 	// List containing all the books that were read by at least 2 bookworms.
-	booksReadBySeveralBookworms := make([]Book, 0)
+	var booksReadBySeveralBookworms []Book
 
-	// Find books that were added to shelves more than once.
+	// Find books that were added to shelve more than once.
 	for book, count := range booksOnShelves {
 		if count > 1 {
 			booksReadBySeveralBookworms = append(booksReadBySeveralBookworms, book)
@@ -61,12 +55,30 @@ func findMatchingBooks(bookworms []Bookworm) []Book {
 	}
 
 	// sort allows us to be deterministic, sorted alphabetically by authors and then by title.
-	sort.Slice(booksReadBySeveralBookworms, func(i, j int) bool {
-		if booksReadBySeveralBookworms[i].Author != booksReadBySeveralBookworms[j].Author {
-			return booksReadBySeveralBookworms[i].Author < booksReadBySeveralBookworms[j].Author
+	return sortBooks(booksReadBySeveralBookworms)
+}
+
+// booksCount registers all the books and their occurrences from the bookworms shelves.
+func booksCount(bookworms []Bookworm) map[Book]uint {
+	count := make(map[Book]uint)
+
+	for _, bookworm := range bookworms {
+		for _, book := range bookworm.Books {
+			count[book]++
 		}
-		return booksReadBySeveralBookworms[i].Title < booksReadBySeveralBookworms[j].Title
+	}
+
+	return count
+}
+
+// sortBooks sorts the books by Author and then Title.
+func sortBooks(books []Book) []Book {
+	sort.Slice(books, func(i, j int) bool {
+		if books[i].Author != books[j].Author {
+			return books[i].Author < books[j].Author
+		}
+		return books[i].Title < books[j].Title
 	})
 
-	return booksReadBySeveralBookworms
+	return books
 }
