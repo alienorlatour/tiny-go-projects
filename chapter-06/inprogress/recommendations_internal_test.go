@@ -10,7 +10,7 @@ var (
 	fairyTale = Book{Author: "Stephen King", Title: "Fairy Tale"}
 )
 
-func TestSuggestOtherBooks(t *testing.T) {
+func TestRecommendOtherBooks(t *testing.T) {
 	tt := map[string]struct {
 		bookworms []Bookworm
 		want      []Bookworm
@@ -61,9 +61,9 @@ func TestSuggestOtherBooks(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := suggestOtherBooks(tc.bookworms)
+			got := recommendOtherBooks(tc.bookworms)
 			if !equals(got, tc.want) {
-				t.Errorf("suggestOtherBooks() = %v, want %v", got, tc.want)
+				t.Errorf("recommendOtherBooks() = %v, want %v", got, tc.want)
 			}
 		})
 	}

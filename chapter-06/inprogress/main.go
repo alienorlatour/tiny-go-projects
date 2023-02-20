@@ -17,8 +17,8 @@ func main() {
 	fmt.Println("Here are the matching books:")
 	displayBooks(matchingBooks)
 
-	suggestions := suggestOtherBooks(bookworms)
-	displaySuggestions(suggestions)
+	recommendations := recommendOtherBooks(bookworms)
+	displayRecommendations(recommendations)
 }
 
 func displayBooks(books []Book) {
@@ -27,9 +27,9 @@ func displayBooks(books []Book) {
 	}
 }
 
-func displaySuggestions(suggestionsForBookworms []Bookworm) {
-	for _, bookworm := range suggestionsForBookworms {
-		fmt.Printf("\nHere are the suggestions for %s:\n", bookworm.Name)
+func displayRecommendations(recommendations []Bookworm) {
+	for _, bookworm := range recommendations {
+		fmt.Printf("\nHere are the recommendations for %s:\n", bookworm.Name)
 		displayBooks(bookworm.Books)
 		fmt.Println()
 	}
