@@ -9,7 +9,12 @@ type bookRecommendations map[Book]bookCollection
 // bookCollection is a collection of books.
 type bookCollection map[Book]struct{}
 
-// recommendOtherBooks returns the recommendations book from the matching-book.
+// newCollection initialises a new bookCollection.
+func newCollection() bookCollection {
+	return make(bookCollection)
+}
+
+// recommendOtherBooks returns the recommendations book from the common-book.
 func recommendOtherBooks(bookworms []Bookworm) []Bookworm {
 	sb := make(bookRecommendations)
 
@@ -50,13 +55,15 @@ func listOtherBooksOnShelves(bookIndexToRemove int, myBooks []Book) []Book {
 func registerBookRecommendations(recommendations bookRecommendations, reference Book, otherBooksOnShelves []Book) {
 	for _, book := range otherBooksOnShelves {
 		// Check if this reference has already been added to the map.
-		if recommendations[reference] == nil {
+		collection, ok := recommendations[reference]
+		if !ok {
 			// Create a new bookCollection.
-			recommendations[reference] = make(bookCollection)
+			collection = newCollection()
+			recommendations[reference] = collection
 		}
 
 		// Fill the associated books for the book reference.
-		recommendations[reference][book] = struct{}{}
+		collection[book] = struct{}{}
 	}
 }
 

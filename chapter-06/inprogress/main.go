@@ -12,10 +12,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	matchingBooks := findMatchingBooks(bookworms)
+	commonBooks := findCommonBooks(bookworms)
 
-	fmt.Println("Here are the matching books:")
-	displayBooks(matchingBooks)
+	fmt.Println("Here are the common books:")
+	displayBooks(commonBooks)
 
 	recommendations := recommendOtherBooks(bookworms)
 	displayRecommendations(recommendations)

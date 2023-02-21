@@ -61,7 +61,7 @@ func TestLoadBookworms(t *testing.T) {
 	}
 }
 
-func TestFindMatchingBooks(t *testing.T) {
+func TestFindCommonBooks(t *testing.T) {
 	tt := map[string]struct {
 		input []Bookworm
 		want  []Book
@@ -101,7 +101,7 @@ func TestFindMatchingBooks(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := findMatchingBooks(tc.input)
+			got := findCommonBooks(tc.input)
 			if !reflect.DeepEqual(tc.want, got) {
 				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
 			}

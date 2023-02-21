@@ -52,9 +52,9 @@ func TestRecommendOtherBooks(t *testing.T) {
 				{Name: "Ali", Books: []Book{janeEyre, ilPrincipe, theHelp}},
 			},
 			want: []Bookworm{
-				{Name: "Peggy", Books: []Book{fairyTale, ilPrincipe}},
-				{Name: "Did", Books: []Book{oryxAndCrake, ilPrincipe}},
-				{Name: "Ali", Books: []Book{oryxAndCrake, fairyTale}},
+				{Name: "Peggy", Books: []Book{ilPrincipe, fairyTale}},
+				{Name: "Did", Books: []Book{ilPrincipe}},
+				{Name: "Ali", Books: []Book{fairyTale}},
 			},
 		},
 	}
@@ -72,7 +72,7 @@ func TestRecommendOtherBooks(t *testing.T) {
 // equals compares two list of Bookworms.
 func equals(bookwormA, bookwormB []Bookworm) bool {
 	for i := range bookwormA {
-		if !reflect.DeepEqual(bookwormB[i], bookwormB[i]) {
+		if !reflect.DeepEqual(bookwormA[i], bookwormB[i]) {
 			return false
 		}
 	}

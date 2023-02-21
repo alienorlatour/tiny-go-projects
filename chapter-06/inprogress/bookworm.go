@@ -39,8 +39,8 @@ func loadBookworms(filePath string) ([]Bookworm, error) {
 	return bookworms, nil
 }
 
-// findMatchingBooks returns books that are on more than one bookworm's shelf.
-func findMatchingBooks(bookworms []Bookworm) []Book {
+// findCommonBooks returns books that are on more than one bookworm's shelf.
+func findCommonBooks(bookworms []Bookworm) []Book {
 	// Register all books on shelves.
 	booksOnShelves := booksCount(bookworms)
 
