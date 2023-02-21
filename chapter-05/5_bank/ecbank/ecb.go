@@ -1,3 +1,4 @@
+// Package ecbank exposes a way to query the API of the European Central Bank.
 package ecbank
 
 import (
@@ -19,6 +20,7 @@ type EuroCentralBank struct {
 	client http.Client
 }
 
+// NewBank builds a EuroCentralBank that can fetch exchange rates within a given timeout.
 func NewBank(timeout time.Duration) EuroCentralBank {
 	return EuroCentralBank{
 		client: http.Client{Timeout: timeout},
