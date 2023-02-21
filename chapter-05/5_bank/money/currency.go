@@ -34,3 +34,8 @@ func ParseCurrency(code string) (Currency, error) {
 func (c Currency) String() string {
 	return c.code
 }
+
+// Code returns the ISO code for the currency.
+func (c Currency) Code() string {
+	return c.code
+}

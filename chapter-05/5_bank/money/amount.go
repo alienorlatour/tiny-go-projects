@@ -2,7 +2,7 @@ package money
 
 import "fmt"
 
-// Amount defines a quantity of money in a given Currency.
+// Amount defines a quantity of money in a given currency.
 type Amount struct {
 	quantity Quantity
 	currency Currency

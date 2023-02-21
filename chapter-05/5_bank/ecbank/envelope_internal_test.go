@@ -2,11 +2,10 @@ package ecbank
 
 import (
 	"encoding/xml"
+	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
-	"github.com/ablqk/tiny-go-projects/chapter-05/final/money"
+	"learngo-pockets/moneyconverter/money"
 )
 
 func TestUnmarshalXML(t *testing.T) {
@@ -25,10 +24,10 @@ func TestUnmarshalXML(t *testing.T) {
 	</Cube>
 </gesmes:Envelope>`
 
-	var ecbMessage Envelope
+	var got envelope
 
-	expectedMessage := Envelope{
-		Rates: []CurrencyRate{
+	want := envelope{
+		Rates: []currencyRate{
 			{
 				Currency: "JPY",
 				Rate:     144.62,
@@ -48,29 +47,33 @@ func TestUnmarshalXML(t *testing.T) {
 		},
 	}
 
-	err := xml.Unmarshal([]byte(message), &ecbMessage)
+	err := xml.Unmarshal([]byte(message), &got)
 	if err != nil {
 		t.Errorf("unable to marshal: %s", err.Error())
 	}
 
-	assert.Equal(t, expectedMessage, ecbMessage)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("expected %v, got %v", want, got)
+	}
 }
 
 func TestChangeRate(t *testing.T) {
 	tt := map[string]struct {
-		envelope Envelope
-		source   money.Currency
-		target   money.Currency
+		envelope envelope
+		source   string
+		target   string
 		want     money.ExchangeRate
 		wantErr  error
 	}{
 		"nominal": {
-			envelope: Envelope{Rates: []CurrencyRate{{Currency: "USD", Rate: 1.5}}},
-			source:   mustParseCurrency(t, "EUR"),
-			target:   mustParseCurrency(t, "USD"),
+			envelope: envelope{Rates: []currencyRate{{Currency: "USD", Rate: 1.5}}},
+			source:   "EUR",
+			target:   "USD",
 			want:     money.ExchangeRate(1.5),
 			wantErr:  nil,
-		}}
+		},
+		// TODO this is not enough
+	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
@@ -83,13 +86,4 @@ func TestChangeRate(t *testing.T) {
 			}
 		})
 	}
-}
-
-func mustParseCurrency(t *testing.T, code string) money.Currency {
-	currency, err := money.ParseCurrency(code)
-	if err != nil {
-		t.Fatalf("cannot parse currency %s code", code)
-	}
-
-	return currency
 }
