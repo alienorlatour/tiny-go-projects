@@ -38,8 +38,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// parse into a quantity
-	number, err := money.ParseQuantity(value)
+	// parse into a decimal
+	number, err := money.ParseDecimal(value)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse value %q: %s.\n", value, err.Error())
 		os.Exit(1)

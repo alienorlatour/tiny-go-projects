@@ -1,19 +1,19 @@
 package money
 
-// Amount defines a quantity of money in a given Currency.
+// Amount defines a decimal of money in a given currency.
 type Amount struct {
-	quantity Quantity
+	quantity Decimal
 	currency Currency
 }
 
 const (
 	// ErrTooPrecise is returned if the number is too precise for the currency.
-	ErrTooPrecise = Error("quantity is too precise")
+	ErrTooPrecise = Error("decimal is too precise")
 )
 
 // NewAmount returns an Amount of money.
-func NewAmount(quantity Quantity, currency Currency) (Amount, error) {
-	if quantity.precisionExp > currency.precision {
+func NewAmount(quantity Decimal, currency Currency) (Amount, error) {
+	if quantity.precision > currency.precision {
 		return Amount{}, ErrTooPrecise
 	}
 
@@ -23,9 +23,9 @@ func NewAmount(quantity Quantity, currency Currency) (Amount, error) {
 // validate returns an error if and only if an Amount is unsafe to use.
 func (a Amount) validate() error {
 	switch {
-	case a.quantity.cents > maxQuantityExp:
+	case a.quantity.subunits > maxAmount:
 		return ErrTooLarge
-	case a.quantity.precisionExp > a.currency.precision:
+	case a.quantity.precision > a.currency.precision:
 		return ErrTooPrecise
 	}
 

@@ -3,7 +3,7 @@ package money
 // Currency defines the code of a currency and its decimal precision.
 type Currency struct {
 	code      string
-	precision int
+	precision byte
 }
 
 // ErrInvalidCurrencyCode is returned when the currency to parse is not a standard 3-letter code.

@@ -50,7 +50,7 @@ func mustParseCurrency(t *testing.T, code string) money.Currency {
 func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 	t.Helper()
 
-	n, err := money.ParseQuantity(value)
+	n, err := money.ParseDecimal(value)
 	if err != nil {
 		t.Fatalf("invalid number: %s", value)
 	}

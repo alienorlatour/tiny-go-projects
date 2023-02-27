@@ -14,147 +14,147 @@ func TestApplyChangeRate(t *testing.T) {
 	}{
 		"Amount(1.52) * rate(1)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        152,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  152,
+					precision: 2,
 				},
 				currency: Currency{code: "TST", precision: 2},
 			},
 			rate:           1,
 			targetCurrency: Currency{code: "TRG", precision: 4},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        15200,
-					precisionExp: 4,
+				quantity: Decimal{
+					subunits:  15200,
+					precision: 4,
 				},
 				currency: Currency{code: "TRG", precision: 4},
 			},
 		},
 		"Amount(2.50) * rate(4)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        250,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  250,
+					precision: 2,
 				}},
 			rate:           4,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        1000,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  1000,
+					precision: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
 		},
 		"Amount(4) * rate(2.5)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        4,
-					precisionExp: 0,
+				quantity: Decimal{
+					subunits:  4,
+					precision: 0,
 				},
 			},
 			rate:           2.5,
 			targetCurrency: Currency{code: "TRG", precision: 0},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        10,
-					precisionExp: 0,
+				quantity: Decimal{
+					subunits:  10,
+					precision: 0,
 				},
 				currency: Currency{code: "TRG", precision: 0},
 			},
 		},
 		"Amount(3.14) * rate(2.52678)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        314,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  314,
+					precision: 2,
 				}},
 			rate:           2.52678,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        793,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  793,
+					precision: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
 		},
 		"Amount(1.1) * rate(10)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        11,
-					precisionExp: 1,
+				quantity: Decimal{
+					subunits:  11,
+					precision: 1,
 				}},
 			rate:           10,
 			targetCurrency: Currency{code: "TRG", precision: 1},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        110,
-					precisionExp: 1,
+				quantity: Decimal{
+					subunits:  110,
+					precision: 1,
 				},
 				currency: Currency{code: "TRG", precision: 1},
 			},
 		},
 		"Amount(1_000_000_000.01) * rate(2)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        1_000_000_001,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  1_000_000_001,
+					precision: 2,
 				}},
 			rate:           2,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        2_000_000_002,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  2_000_000_002,
+					precision: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
 		},
 		"Amount(265_413.87) * rate(5.05935e-5)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        265_413_87,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  265_413_87,
+					precision: 2,
 				}},
 			rate:           5.05935e-5,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        13_42,
-					precisionExp: 2,
+				quantity: Decimal{
+					subunits:  13_42,
+					precision: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
 		},
 		"Amount(265_413) * rate(1)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        265_413,
-					precisionExp: 0,
+				quantity: Decimal{
+					subunits:  265_413,
+					precision: 0,
 				}},
 			rate:           1,
 			targetCurrency: Currency{code: "TRG", precision: 3},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        265_413_000,
-					precisionExp: 3,
+				quantity: Decimal{
+					subunits:  265_413_000,
+					precision: 3,
 				},
 				currency: Currency{code: "TRG", precision: 3},
 			},
 		},
 		"Amount(2) * rate(1.337)": {
 			in: Amount{
-				quantity: Quantity{
-					cents:        2,
-					precisionExp: 0,
+				quantity: Decimal{
+					subunits:  2,
+					precision: 0,
 				}},
 			rate:           1.337,
 			targetCurrency: Currency{code: "TRG", precision: 5},
 			expected: Amount{
-				quantity: Quantity{
-					cents:        267400,
-					precisionExp: 5,
+				quantity: Decimal{
+					subunits:  267400,
+					precision: 5,
 				},
 				currency: Currency{code: "TRG", precision: 5},
 			},

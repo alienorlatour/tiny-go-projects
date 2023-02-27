@@ -25,15 +25,15 @@ type ExchangeRate float64
 func applyChangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
 	amount := Amount{
 		currency: target,
-		quantity: Quantity{
-			precisionExp: target.precision,
+		quantity: Decimal{
+			precision: target.precision,
 		},
 	}
 
 	// Apply the change rate and use the target's subunit.
-	cents := float64(a.quantity.cents) * float64(rate) * math.Pow10(target.precision-a.quantity.precisionExp)
+	cents := float64(a.quantity.subunits) * float64(rate) * math.Pow10(int(target.precision)-int(a.quantity.precision))
 
 	// We floor the result, which avoids creating money.
-	amount.quantity.cents = int(math.Floor(cents))
+	amount.quantity.subunits = int64(math.Floor(cents))
 	return amount
 }
