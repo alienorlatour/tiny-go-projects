@@ -33,7 +33,7 @@ func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (mon
 
 	resp, err := ecb.client.Get(path)
 	if err != nil {
-		return 0., fmt.Errorf("%w: %s", ErrServerSide, err.Error())
+		return money.ExchangeRate(0.), fmt.Errorf("%w: %s", ErrServerSide, err.Error())
 	}
 
 	// don't forget to close the response's body
