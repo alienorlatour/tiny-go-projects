@@ -13,15 +13,15 @@ type Quantity struct {
 	// cents is the amount of money, not necessarily in hundredths of the unit
 	cents int
 	// Number of "cents" in a unit, expressed as a power of 10.
-	exp int
+	precisionExp int
 }
 
 const (
 	// ErrInvalidValue is returned if the quantity is malformed.
 	ErrInvalidValue = Error("unable to convert the value")
 
-	// ErrTooLarge is returned if the amount is too large - this would cause floating point precision errors.
-	ErrTooLarge = Error("amount over 10^12 is too large")
+	// ErrTooLarge is returned if the quantity is too large - this would cause floating point precision errors.
+	ErrTooLarge = Error("quantity over 10^12 is too large")
 
 	// maxAmount value is a thousand billion, using the short scale -- 10^12.
 	maxAmount = 1e12
@@ -43,23 +43,23 @@ func ParseQuantity(value string) (Quantity, error) {
 
 	precision := len(fracPart)
 
-	return Quantity{cents: cents, exp: precision}, nil
+	return Quantity{cents: cents, precisionExp: precision}, nil
 }
 
 // String implements stringer and returns the Quantity formatted as
 // digits and optionally a decimal point followed by digits.
 func (q Quantity) String() string {
 	// Quick-win, no need to do maths.
-	if q.exp == 0 {
+	if q.precisionExp == 0 {
 		return fmt.Sprintf("%d", q.cents)
 	}
 
-	centsPerUnit := tenToThe(q.exp)
+	centsPerUnit := tenToThe(q.precisionExp)
 	frac := q.cents % centsPerUnit
 	integer := q.cents / centsPerUnit
 
-	// We always want to print the correct number of digits - even if they finish with 0.
-	quantityFormat := fmt.Sprintf("%%d.%%0%dd", q.exp)
+	// Build the format of the quantity: we need to generate "%d.02d" if the precision is 2.
+	quantityFormat := "%d.%0" + strconv.Itoa(q.precisionExp) + "d"
 	return fmt.Sprintf(quantityFormat, integer, frac)
 }
 

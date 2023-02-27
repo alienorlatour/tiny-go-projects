@@ -1,9 +1,10 @@
-// Package ecbank exposes a way to query the API of the European Central Bank.
 package ecbank
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"learngo-pockets/moneyconverter/money"
@@ -11,6 +12,7 @@ import (
 
 const (
 	ErrServerSide           = ecbankError("error from server")
+	ErrTimeout              = ecbankError("timed out when waiting for response")
 	ErrUnexpectedFormat     = ecbankError("unexpected response format")
 	ErrChangeRateNotFound   = ecbankError("couldn't find the exchange rate")
 	ErrECBUserEnd           = ecbankError("user-end error when contacting ECB")
@@ -23,7 +25,6 @@ type EuroCentralBank struct {
 	client http.Client
 }
 
-// NewBank builds a EuroCentralBank that can fetch exchange rates within a given timeout.
 func NewBank(timeout time.Duration) EuroCentralBank {
 	return EuroCentralBank{
 		client: http.Client{Timeout: timeout},
@@ -36,7 +37,11 @@ func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (mon
 
 	resp, err := ecb.client.Get(path)
 	if err != nil {
-		return money.ExchangeRate(0.), fmt.Errorf("%w: %s", ErrServerSide, err.Error())
+		var urlErr *url.Error
+		if ok := errors.As(err, &urlErr); ok && urlErr.Timeout() {
+			return 0., fmt.Errorf("%w: %s", ErrTimeout, err.Error())
+		}
+		return 0., fmt.Errorf("%w: %s", ErrServerSide, err.Error())
 	}
 
 	// don't forget to close the response's body

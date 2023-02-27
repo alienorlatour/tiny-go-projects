@@ -12,18 +12,18 @@ type Quantity struct {
 	// cents is the amount of money, not necessarily in hundredths of the unit
 	cents int
 	// Number of "cents" in a unit, expressed as a power of 10.
-	exp int
+	precisionExp int
 }
 
 const (
 	// ErrInvalidValue is returned if the quantity is malformed.
 	ErrInvalidValue = Error("unable to convert the value")
 
-	// ErrTooLarge is returned if the amount is too large - this would cause floating point precision errors.
-	ErrTooLarge = Error("amount over 10^15 is too large")
+	// ErrTooLarge is returned if the quantity is too large - this would cause floating point precision errors.
+	ErrTooLarge = Error("quantity over 10^15 is too large")
 
-	// max value is a thousand billion, this is the power of 10.
-	maxAmountExp = 12
+	// maxQuantityExp is the number of digits in a thousand billion.
+	maxQuantityExp = 12
 )
 
 // ParseQuantity converts a string into its Quantity representation.
@@ -31,7 +31,7 @@ const (
 func ParseQuantity(value string) (Quantity, error) {
 	intPart, fracPart, _ := strings.Cut(value, ".")
 
-	if len(intPart) > maxAmountExp {
+	if len(intPart) > maxQuantityExp {
 		return Quantity{}, ErrTooLarge
 	}
 
@@ -42,5 +42,5 @@ func ParseQuantity(value string) (Quantity, error) {
 
 	precision := len(fracPart)
 
-	return Quantity{cents: cents, exp: precision}, nil
+	return Quantity{cents: cents, precisionExp: precision}, nil
 }

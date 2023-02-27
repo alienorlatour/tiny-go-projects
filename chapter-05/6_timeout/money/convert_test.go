@@ -20,7 +20,7 @@ func TestConvert(t *testing.T) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
 				}
-				expected := money.Amount{}
+				expected := mustParseAmount(t, "69.96", "EUR")
 				if !reflect.DeepEqual(got, expected) {
 					t.Errorf("expected %v, got %v", expected, got)
 				}
@@ -62,7 +62,7 @@ func mustParseAmount(t *testing.T, value string, code string) money.Amount {
 
 	amount, err := money.NewAmount(n, currency)
 	if err != nil {
-		t.Fatalf("cannot create quantity with value %v and currency code %s", n, code)
+		t.Fatalf("cannot create amount with value %v and currency code %s", n, code)
 	}
 
 	return amount

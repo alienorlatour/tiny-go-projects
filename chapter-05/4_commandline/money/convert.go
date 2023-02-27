@@ -19,19 +19,21 @@ func Convert(amount Amount, to Currency) (Amount, error) {
 // It is a float64, because the precision of an official change rate is 5 significant digits.
 type ExchangeRate float64
 
-// applyChangeRate returns a new Number representing n multiplied by the rate.
-// The precision is the same in and out.
+// applyChangeRate returns a new Amount representing the input multiplied by the rate.
+// The precision of the returned value is that of the target Currency.
 // This function does not guarantee that the output amount is supported.
 func applyChangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
 	amount := Amount{
 		currency: target,
 		quantity: Quantity{
-			exp: target.precision,
+			precisionExp: target.precision,
 		},
 	}
 
-	cents := float64(a.quantity.cents) * float64(rate) * math.Pow10(target.precision-a.quantity.exp)
+	// Apply the change rate and use the target's subunit.
+	cents := float64(a.quantity.cents) * float64(rate) * math.Pow10(target.precision-a.quantity.precisionExp)
 
+	// We floor the result, which avoids creating money.
 	amount.quantity.cents = int(math.Floor(cents))
 	return amount
 }

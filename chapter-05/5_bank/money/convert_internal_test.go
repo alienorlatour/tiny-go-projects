@@ -15,8 +15,8 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(1.52) * rate(1)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 152,
-					exp:   2,
+					cents:        152,
+					precisionExp: 2,
 				},
 				currency: Currency{code: "TST", precision: 2},
 			},
@@ -24,8 +24,8 @@ func TestApplyChangeRate(t *testing.T) {
 			targetCurrency: Currency{code: "TRG", precision: 4},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 15200,
-					exp:   4,
+					cents:        15200,
+					precisionExp: 4,
 				},
 				currency: Currency{code: "TRG", precision: 4},
 			},
@@ -33,15 +33,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(2.50) * rate(4)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 250,
-					exp:   2,
+					cents:        250,
+					precisionExp: 2,
 				}},
 			rate:           4,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 1000,
-					exp:   2,
+					cents:        1000,
+					precisionExp: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
@@ -49,16 +49,16 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(4) * rate(2.5)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 4,
-					exp:   0,
+					cents:        4,
+					precisionExp: 0,
 				},
 			},
 			rate:           2.5,
 			targetCurrency: Currency{code: "TRG", precision: 0},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 10,
-					exp:   0,
+					cents:        10,
+					precisionExp: 0,
 				},
 				currency: Currency{code: "TRG", precision: 0},
 			},
@@ -66,15 +66,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(3.14) * rate(2.52678)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 314,
-					exp:   2,
+					cents:        314,
+					precisionExp: 2,
 				}},
 			rate:           2.52678,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 793,
-					exp:   2,
+					cents:        793,
+					precisionExp: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
@@ -82,15 +82,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(1.1) * rate(10)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 11,
-					exp:   1,
+					cents:        11,
+					precisionExp: 1,
 				}},
 			rate:           10,
 			targetCurrency: Currency{code: "TRG", precision: 1},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 110,
-					exp:   1,
+					cents:        110,
+					precisionExp: 1,
 				},
 				currency: Currency{code: "TRG", precision: 1},
 			},
@@ -98,15 +98,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(1_000_000_000.01) * rate(2)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 1_000_000_001,
-					exp:   2,
+					cents:        1_000_000_001,
+					precisionExp: 2,
 				}},
 			rate:           2,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 2_000_000_002,
-					exp:   2,
+					cents:        2_000_000_002,
+					precisionExp: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
@@ -114,15 +114,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(265_413.87) * rate(5.05935e-5)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 265_413_87,
-					exp:   2,
+					cents:        265_413_87,
+					precisionExp: 2,
 				}},
 			rate:           5.05935e-5,
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 13_42,
-					exp:   2,
+					cents:        13_42,
+					precisionExp: 2,
 				},
 				currency: Currency{code: "TRG", precision: 2},
 			},
@@ -130,15 +130,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(265_413) * rate(1)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 265_413,
-					exp:   0,
+					cents:        265_413,
+					precisionExp: 0,
 				}},
 			rate:           1,
 			targetCurrency: Currency{code: "TRG", precision: 3},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 265_413_000,
-					exp:   3,
+					cents:        265_413_000,
+					precisionExp: 3,
 				},
 				currency: Currency{code: "TRG", precision: 3},
 			},
@@ -146,15 +146,15 @@ func TestApplyChangeRate(t *testing.T) {
 		"Amount(2) * rate(1.337)": {
 			in: Amount{
 				quantity: Quantity{
-					cents: 2,
-					exp:   0,
+					cents:        2,
+					precisionExp: 0,
 				}},
 			rate:           1.337,
 			targetCurrency: Currency{code: "TRG", precision: 5},
 			expected: Amount{
 				quantity: Quantity{
-					cents: 267400,
-					exp:   5,
+					cents:        267400,
+					precisionExp: 5,
 				},
 				currency: Currency{code: "TRG", precision: 5},
 			},

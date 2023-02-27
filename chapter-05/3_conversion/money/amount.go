@@ -8,23 +8,24 @@ type Amount struct {
 
 const (
 	// ErrTooPrecise is returned if the number is too precise for the currency.
-	ErrTooPrecise = Error("amount value is too precise")
+	ErrTooPrecise = Error("quantity is too precise")
 )
 
 // NewAmount returns an Amount of money.
 func NewAmount(quantity Quantity, currency Currency) (Amount, error) {
-	if quantity.exp > currency.precision {
+	if quantity.precisionExp > currency.precision {
 		return Amount{}, ErrTooPrecise
 	}
 
 	return Amount{quantity: quantity, currency: currency}, nil
 }
 
+// validate returns an error if and only if an Amount is unsafe to use.
 func (a Amount) validate() error {
 	switch {
-	case a.quantity.cents > maxAmount:
+	case a.quantity.cents > maxQuantityExp:
 		return ErrTooLarge
-	case a.quantity.exp > a.currency.precision:
+	case a.quantity.precisionExp > a.currency.precision:
 		return ErrTooPrecise
 	}
 

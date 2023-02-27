@@ -10,7 +10,7 @@ import (
 
 const baseCurrencyCode = "EUR"
 
-func readRateFromResponse(source, target string, respBody io.Reader) (money.ExchangeRate, error) {
+func readRateFromResponse(source string, target string, respBody io.Reader) (money.ExchangeRate, error) {
 	// read the response
 	decoder := xml.NewDecoder(respBody)
 

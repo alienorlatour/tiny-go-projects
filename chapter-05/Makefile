@@ -4,6 +4,7 @@ projects := \
 	3_conversion \
 	4_commandline \
 	5_bank \
+	6_timeout \
 	final
 
 %:

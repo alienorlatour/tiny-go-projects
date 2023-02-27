@@ -7,61 +7,61 @@ import (
 
 func TestParseQuantity(t *testing.T) {
 	tt := map[string]struct {
-		amount   string
+		quantity string
 		expected Quantity
 		err      error
 	}{
 		"2 decimal digits": {
-			amount:   "1.52",
+			quantity: "1.52",
 			expected: Quantity{152, 2},
 			err:      nil,
 		},
 		"no decimal digits": {
-			amount:   "1",
+			quantity: "1",
 			expected: Quantity{1, 0},
 			err:      nil,
 		},
 		"suffix 0 as decimal digits": {
-			amount:   "1.50",
+			quantity: "1.50",
 			expected: Quantity{150, 2},
 			err:      nil,
 		},
 		"prefix 0 as decimal digits": {
-			amount:   "1.02",
+			quantity: "1.02",
 			expected: Quantity{102, 2},
 			err:      nil,
 		},
 		"invalid decimal part": {
-			amount: "65.pocket",
-			err:    ErrInvalidValue,
+			quantity: "65.pocket",
+			err:      ErrInvalidValue,
 		},
 		"with apostrophes for readability": {
-			amount: "12'152.03",
+			quantity: "12'152.03",
 			// expected: Quantity{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
 			err: ErrInvalidValue,
 		},
 		"with underscores for readability": {
-			amount: "12_152.03",
+			quantity: "12_152.03",
 			// expected: Quantity{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
 			err: ErrInvalidValue,
 		},
 		"NaN": {
-			amount: "ten",
-			err:    ErrInvalidValue,
+			quantity: "ten",
+			err:      ErrInvalidValue,
 		},
 		"empty string": {
-			amount: "",
-			err:    ErrInvalidValue,
+			quantity: "",
+			err:      ErrInvalidValue,
 		},
 		"too large": {
-			amount: "1234567890123",
-			err:    ErrTooLarge,
+			quantity: "1234567890123",
+			err:      ErrTooLarge,
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := ParseQuantity(tc.amount)
+			got, err := ParseQuantity(tc.quantity)
 			if !errors.Is(err, tc.err) {
 				t.Errorf("expected error %v, got %v", tc.err, err)
 			}
@@ -79,29 +79,29 @@ func TestQuantityString(t *testing.T) {
 	}{
 		"15.2": {
 			quantity: Quantity{
-				cents: 152,
-				exp:   1,
+				cents:        152,
+				precisionExp: 1,
 			},
 			expected: "15.2",
 		},
 		"0.0152": {
 			quantity: Quantity{
-				cents: 152,
-				exp:   4,
+				cents:        152,
+				precisionExp: 4,
 			},
 			expected: "0.0152",
 		},
 		"152": {
 			quantity: Quantity{
-				cents: 152,
-				exp:   0,
+				cents:        152,
+				precisionExp: 0,
 			},
 			expected: "152",
 		},
 		"152.00": {
 			quantity: Quantity{
-				cents: 15200,
-				exp:   2,
+				cents:        15200,
+				precisionExp: 2,
 			},
 			expected: "152.00",
 		},
