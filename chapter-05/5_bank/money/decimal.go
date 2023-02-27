@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Decimal can represent money with a fixed precision.
+// Decimal can represent a floating-point number with a fixed precision.
 // example: 1.52 = 152 * 10^(-2) will be stored as {152, 2}
 type Decimal struct {
 	// subunits is the amount of subunits. Multiply it by the precision to get the real value
@@ -23,8 +23,8 @@ const (
 	// ErrTooLarge is returned if the decimal is too large - this would cause floating point precision errors.
 	ErrTooLarge = Error("decimal over 10^12 is too large")
 
-	// maxAmount value is a thousand billion, using the short scale -- 10^12.
-	maxAmount = 1e12
+	// maxDecimal value is a thousand billion, using the short scale -- 10^12.
+	maxDecimal = 1e12
 )
 
 // ParseDecimal converts a string into its Decimal representation.
@@ -37,7 +37,7 @@ func ParseDecimal(value string) (Decimal, error) {
 		return Decimal{}, fmt.Errorf("%w: %s", ErrInvalidDecimal, err.Error())
 	}
 
-	if subunits > maxAmount {
+	if subunits > maxDecimal {
 		return Decimal{}, ErrTooLarge
 	}
 
@@ -48,18 +48,18 @@ func ParseDecimal(value string) (Decimal, error) {
 
 // String implements stringer and returns the Decimal formatted as
 // digits and optionally a decimal point followed by digits.
-func (q Decimal) String() string {
+func (d Decimal) String() string {
 	// Quick-win, no need to do maths.
-	if q.precision == 0 {
-		return fmt.Sprintf("%d", q.subunits)
+	if d.precision == 0 {
+		return fmt.Sprintf("%d", d.subunits)
 	}
 
-	centsPerUnit := tenToThe(q.precision)
-	frac := q.subunits % centsPerUnit
-	integer := q.subunits / centsPerUnit
+	centsPerUnit := tenToThe(d.precision)
+	frac := d.subunits % centsPerUnit
+	integer := d.subunits / centsPerUnit
 
 	// We always want to print the correct number of digits - even if they finish with 0.
-	decimalFormat := fmt.Sprintf("%%d.%%0%dd", q.precision)
+	decimalFormat := "%d.%0" + strconv.Itoa(int(d.precision)) + "d"
 	return fmt.Sprintf(decimalFormat, integer, frac)
 }
 

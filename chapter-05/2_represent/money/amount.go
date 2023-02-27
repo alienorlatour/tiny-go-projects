@@ -8,7 +8,7 @@ type Amount struct {
 
 const (
 	// ErrTooPrecise is returned if the number is too precise for the currency.
-	ErrTooPrecise = Error("decimal is too precise")
+	ErrTooPrecise = Error("quantity is too precise")
 )
 
 // NewAmount returns an Amount of money.
