@@ -63,6 +63,7 @@ func applyChangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, erro
 	}, nil
 }
 
+// multiply a Decimal with an ExchangeRate and return the product
 func multiply(d Decimal, r ExchangeRate) (Decimal, error) {
 	// first, convert the ExchangeRate to a Decimal
 	rate, err := ParseDecimal(fmt.Sprintf("%f", r))

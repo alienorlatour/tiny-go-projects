@@ -185,3 +185,45 @@ func TestApplyChangeRate(t *testing.T) {
 		})
 	}
 }
+
+func TestMultiply(t *testing.T) {
+	tt := map[string]struct {
+		decimal Decimal
+		rate    ExchangeRate
+		want    Decimal
+		err     error
+	}{
+		"10.0 * 1.2 = 12.00": {
+			decimal: Decimal{100, 1},
+			rate:    1.2,
+			want:    Decimal{1200, 2},
+		},
+		"10 * 2 = 20": {
+			decimal: Decimal{10, 0},
+			rate:    2,
+			want:    Decimal{20, 0},
+		},
+		"10 * 1e15 = error": {
+			decimal: Decimal{10, 0},
+			rate:    1e15,
+			err:     ErrInvalidDecimal,
+		},
+		"1698.188 * 2.198677818 = 3733.768286393784": {
+			decimal: Decimal{1698188, 3},
+			rate:    2.198677818,
+			want:    Decimal{3733768286393784, 12},
+		},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			got, err := multiply(tc.decimal, tc.rate)
+			if !errors.Is(err, tc.err) {
+				t.Errorf("expected error %v, got %v", tc.err, err)
+			}
+			if !reflect.DeepEqual(got, tc.want) {
+				t.Errorf("expected %v, got %v", tc.want, got)
+			}
+		})
+	}
+}
