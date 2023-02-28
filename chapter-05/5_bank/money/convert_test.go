@@ -38,13 +38,13 @@ func TestConvert(t *testing.T) {
 	}
 }
 
-// stubRate is a very simple stub for the exchangeRates.
+// stubRate is a very simple stub for the ratesFetcher.
 type stubRate struct {
 	rate money.ExchangeRate
 	err  error
 }
 
-// ExchangeRate implements the interface exchangeRates with the same signature but fields are unused for tests purposes.
+// ExchangeRate implements the interface ratesFetcher with the same signature but fields are unused for tests purposes.
 func (m stubRate) FetchExchangeRate(_, _ money.Currency) (money.ExchangeRate, error) {
 	return m.rate, m.err
 }

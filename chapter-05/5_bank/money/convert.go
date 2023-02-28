@@ -5,7 +5,7 @@ import (
 )
 
 // Convert applies the change rate to convert an amount to a target currency.
-func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
+func Convert(amount Amount, to Currency, rates ratesFetcher) (Amount, error) {
 	// fetch the change rate for the day
 	r, err := rates.FetchExchangeRate(amount.currency, to)
 	if err != nil {
@@ -26,7 +26,7 @@ func Convert(amount Amount, to Currency, rates exchangeRates) (Amount, error) {
 	return convertedValue, nil
 }
 
-type exchangeRates interface {
+type ratesFetcher interface {
 	// FetchExchangeRate fetches the ExchangeRate for the day and returns it.
 	FetchExchangeRate(source, target Currency) (ExchangeRate, error)
 }
