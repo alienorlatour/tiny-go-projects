@@ -15,10 +15,13 @@ const (
 
 // NewAmount returns an Amount of money.
 func NewAmount(quantity Decimal, currency Currency) (Amount, error) {
-	if quantity.precision > currency.precision {
+	switch {
+	case quantity.precision > currency.precision:
 		return Amount{}, ErrTooPrecise
+	case quantity.precision < currency.precision:
+		quantity.subunits *= tenToThe(currency.precision - quantity.precision)
+		quantity.precision = currency.precision
 	}
-
 	return Amount{quantity: quantity, currency: currency}, nil
 }
 

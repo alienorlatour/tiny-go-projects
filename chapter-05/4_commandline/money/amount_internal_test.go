@@ -26,6 +26,14 @@ func TestNewAmount(t *testing.T) {
 			currency: Currency{code: "EUR", precision: 2},
 			err:      ErrTooPrecise,
 		},
+		"1.5 €": {
+			quantity: Decimal{subunits: 15, precision: 1},
+			currency: Currency{code: "EUR", precision: 2},
+			want: Amount{
+				quantity: Decimal{subunits: 150, precision: 2},
+				currency: Currency{code: "EUR", precision: 2},
+			},
+		},
 	}
 
 	for name, tc := range tt {
