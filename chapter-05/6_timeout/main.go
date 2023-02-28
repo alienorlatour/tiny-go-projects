@@ -55,15 +55,15 @@ func parseAmount(from *string) money.Amount {
 		os.Exit(1)
 	}
 
-	// parse into a decimal
-	number, err := money.ParseDecimal(value)
+	// parse the quantity to convert
+	quantity, err := money.ParseDecimal(value)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "unable to parse value %q: %s.\n", value, err.Error())
 		os.Exit(1)
 	}
 
 	// transform value into an amount with its currency
-	amount, err := money.NewAmount(number, fromCurrency)
+	amount, err := money.NewAmount(quantity, fromCurrency)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, err.Error())
 		os.Exit(1)

@@ -1,6 +1,7 @@
 package money
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 )
@@ -11,6 +12,7 @@ func TestApplyChangeRate(t *testing.T) {
 		rate           ExchangeRate
 		targetCurrency Currency
 		expected       Amount
+		err            error
 	}{
 		"Amount(1.52) * rate(1)": {
 			in: Amount{
@@ -159,11 +161,24 @@ func TestApplyChangeRate(t *testing.T) {
 				currency: Currency{code: "TRG", precision: 5},
 			},
 		},
+		"Rate is too big": {
+			in: Amount{
+				quantity: Decimal{
+					subunits:  2,
+					precision: 0,
+				}},
+			rate:           1337651681818453.5,
+			targetCurrency: Currency{code: "TRG", precision: 5},
+			err:            ErrTooLarge,
+		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := applyChangeRate(tc.in, tc.targetCurrency, tc.rate)
+			got, err := applyChangeRate(tc.in, tc.targetCurrency, tc.rate)
+			if !errors.Is(err, tc.err) {
+				t.Errorf("expected error %v, got %v", tc.err, err)
+			}
 			if !reflect.DeepEqual(got, tc.expected) {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}
