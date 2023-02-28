@@ -12,13 +12,13 @@ func Convert(amount Amount, to Currency, rates ratesFetcher) (Amount, error) {
 		return Amount{}, fmt.Errorf("cannot get change rate: %w", err)
 	}
 
-	// convert to the target currency applying the fetched change rate
+	// Convert to the target currency applying the fetched change rate.
 	convertedValue, err := applyChangeRate(amount, to, r)
 	if err != nil {
 		return Amount{}, err
 	}
 
-	// validate the converted amount is in the handled bounded range
+	// Validate the converted amount is in the handled bounded range.
 	if err = convertedValue.validate(); err != nil {
 		return Amount{}, err
 	}

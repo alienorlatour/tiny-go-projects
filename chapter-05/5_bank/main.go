@@ -21,7 +21,7 @@ func main() {
 	// parse the target currency
 	toCurrency, err := money.ParseCurrency(*to)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q: %s.\n", *to, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse target currency %q: %s.\n", *to, err.Error())
 		os.Exit(1)
 	}
 
@@ -43,7 +43,7 @@ func parseAmount(from *string) money.Amount {
 	// parse the source currency
 	fromCurrency, err := money.ParseCurrency(*from)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "unable to parse currency %q: %s.\n", *from, err.Error())
+		_, _ = fmt.Fprintf(os.Stderr, "unable to parse source currency %q: %s.\n", *from, err.Error())
 		os.Exit(1)
 	}
 

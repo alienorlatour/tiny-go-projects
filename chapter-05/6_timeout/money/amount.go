@@ -17,6 +17,7 @@ const (
 func NewAmount(quantity Decimal, currency Currency) (Amount, error) {
 	switch {
 	case quantity.precision > currency.precision:
+		// In order to avoid converting 0.00001 cent, let's exit now.
 		return Amount{}, ErrTooPrecise
 	case quantity.precision < currency.precision:
 		quantity.subunits *= tenToThe(currency.precision - quantity.precision)

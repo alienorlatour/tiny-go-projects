@@ -4,10 +4,10 @@ import "math"
 
 // Convert applies the change rate to convert an amount to a target currency.
 func Convert(amount Amount, to Currency) (Amount, error) {
-	// convert to the target currency applying the fetched change rate
+	// Convert to the target currency applying the fetched change rate.
 	convertedValue := applyChangeRate(amount, to, 2)
 
-	// validate the converted amount is in the handled bounded range
+	// validate the converted amount is in the handled bounded range.
 	if err := convertedValue.validate(); err != nil {
 		return Amount{}, err
 	}

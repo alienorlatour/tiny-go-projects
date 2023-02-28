@@ -14,6 +14,7 @@ const (
 // NewAmount returns an Amount of money.
 func NewAmount(quantity Decimal, currency Currency) (Amount, error) {
 	if quantity.precision > currency.precision {
+		// In order to avoid converting 0.00001 cent, let's exit now.
 		return Amount{}, ErrTooPrecise
 	}
 

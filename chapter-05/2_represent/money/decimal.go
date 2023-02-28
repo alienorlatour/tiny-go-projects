@@ -19,8 +19,8 @@ const (
 	// ErrInvalidDecimal is returned if the decimal is malformed.
 	ErrInvalidDecimal = Error("unable to convert the decimal")
 
-	// ErrTooLarge is returned if the decimal is too large - this would cause floating point precision errors.
-	ErrTooLarge = Error("decimal over 10^12 is too large")
+	// ErrTooLarge is returned if the quantity is too large - this would cause floating point precision errors.
+	ErrTooLarge = Error("Quantity over 10^12 is too large")
 
 	// maxDecimal value is a thousand billion, using the short scale -- 10^12.
 	maxDecimal = 1e12
