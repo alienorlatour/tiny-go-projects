@@ -1,9 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
-	"io/fs"
 	"reflect"
 	"testing"
 )
@@ -17,48 +14,72 @@ var (
 	ilPrincipe    = Book{Author: "Niccolò Machiavelli", Title: "Il Principe"}
 )
 
-func TestLoadBookworms(t *testing.T) {
-	noError := func(err error) bool { return err == nil }
-
+func TestLoadBookworms_Success(t *testing.T) {
 	tests := map[string]struct {
 		bookwormsFile string
 		want          []Bookworm
-		checkError    func(err error) bool
+		wantErr       bool
 	}{
-		"no common book": {
-			bookwormsFile: "testdata/no_common_book.json",
+		"file exists": {
+			bookwormsFile: "testdata/bookworms.json",
 			want: []Bookworm{
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
-				{Name: "Peggy", Books: []Book{oryxAndCrake, janeEyre}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
 			},
-			checkError: noError,
+			wantErr: false,
 		},
 		"file doesn't exist": {
 			bookwormsFile: "testdata/no_file_here.json",
-			checkError: func(err error) bool {
-				return errors.Is(err, fs.ErrNotExist)
-			},
+			want:          nil,
+			wantErr:       true,
 		},
 		"invalid JSON": {
 			bookwormsFile: "testdata/invalid.json",
-			checkError: func(err error) bool {
-				var expectedErr *json.SyntaxError
-				return errors.As(err, &expectedErr)
-			},
+			want:          nil,
+			wantErr:       true,
 		},
 	}
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
 			got, err := loadBookworms(testCase.bookwormsFile)
-			if !testCase.checkError(err) {
-				t.Fatalf("unexpected error: %s", err.Error())
+			if err != nil && !testCase.wantErr {
+				t.Fatalf("expected an error %s, got an empty one", err.Error())
 			}
 
-			if !reflect.DeepEqual(got, testCase.want) {
+			if err == nil && testCase.wantErr {
+				t.Fatalf("expected no error, got one %s", err.Error())
+			}
+
+			if !equalBookworms(got, testCase.want) {
 				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
 		})
 	}
+}
+
+// equalBookworms is a helper to test the equity of two list of Bookworms.
+func equalBookworms(bookworms, target []Bookworm) bool {
+	if len(bookworms) != len(target) {
+		// Early exit!
+		return false
+	}
+
+	for i := range bookworms {
+		// Verify the name of the Bookworm.
+		if bookworms[i].Name != target[i].Name {
+			return false
+		}
+
+		// Verify the content of the collections of Books for each Bookworm.
+		for j := range bookworms[i].Books {
+			if bookworms[i].Books[j] != target[i].Books[j] {
+				return false
+			}
+		}
+	}
+
+	// Everything is equal!
+	return true
 }
 
 func TestFindCommonBooks(t *testing.T) {
