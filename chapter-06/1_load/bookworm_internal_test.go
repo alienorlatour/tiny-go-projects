@@ -1,7 +1,6 @@
 package main
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -48,9 +47,34 @@ func TestLoadBookworms_Success(t *testing.T) {
 				t.Fatalf("expected no error, got one %s", err.Error())
 			}
 
-			if !reflect.DeepEqual(got, testCase.want) {
+			if !equalBookworms(got, testCase.want) {
 				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
 		})
 	}
+}
+
+// equalBookworms is a helper to test the equity of two list of Bookworms.
+func equalBookworms(bookworms, target []Bookworm) bool {
+	if len(bookworms) != len(target) {
+		// Early exit!
+		return false
+	}
+
+	for i := range bookworms {
+		// Verify the name of the Bookworm.
+		if bookworms[i].Name != target[i].Name {
+			return false
+		}
+
+		// Verify the content of the collections of Books for each Bookworm.
+		for j := range bookworms[i].Books {
+			if bookworms[i].Books[j] != target[i].Books[j] {
+				return false
+			}
+		}
+	}
+
+	// Everything is equal!
+	return true
 }
