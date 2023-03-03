@@ -16,7 +16,7 @@ func TestLoadBookworms_Success(t *testing.T) {
 	tests := map[string]struct {
 		bookwormsFile string
 		want          []Bookworm
-		err           error
+		wantErr       bool
 	}{
 		"file exists": {
 			bookwormsFile: "testdata/bookworms.json",
@@ -24,19 +24,30 @@ func TestLoadBookworms_Success(t *testing.T) {
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
 				{Name: "Peggy", Books: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
 			},
-			err: nil,
+			wantErr: false,
 		},
 		"file doesn't exist": {
 			bookwormsFile: "testdata/no_file_here.json",
 			want:          nil,
+			wantErr:       true,
 		},
 		"invalid JSON": {
 			bookwormsFile: "testdata/invalid.json",
+			want:          nil,
+			wantErr:       true,
 		},
 	}
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, _ := loadBookworms(testCase.bookwormsFile)
+			got, err := loadBookworms(testCase.bookwormsFile)
+			if err != nil && !testCase.wantErr {
+				t.Fatalf("expected an error %s, got an empty one", err.Error())
+			}
+
+			if err == nil && testCase.wantErr {
+				t.Fatalf("expected no error, got one %s", err.Error())
+			}
+
 			if !reflect.DeepEqual(got, testCase.want) {
 				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
