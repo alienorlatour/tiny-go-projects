@@ -57,7 +57,7 @@ func TestLoadBookworms(t *testing.T) {
 	}
 }
 
-// equalBookworms is a helper to test the equity of two list of Bookworms.
+// equalBookworms is a helper to test the equality of two lists of Bookworms.
 func equalBookworms(bookworms, target []Bookworm) bool {
 	if len(bookworms) != len(target) {
 		// Early exit!
@@ -109,6 +109,7 @@ func TestBooksCount(t *testing.T) {
 		})
 	}
 }
+
 func TestFindCommonBooks(t *testing.T) {
 	tt := map[string]struct {
 		input []Bookworm

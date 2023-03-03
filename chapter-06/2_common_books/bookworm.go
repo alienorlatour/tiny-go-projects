@@ -44,17 +44,17 @@ func findCommonBooks(bookworms []Bookworm) []Book {
 	booksOnShelves := booksCount(bookworms)
 
 	// List containing all the books that were read by at least 2 bookworms.
-	var booksReadBySeveralBookworms []Book
+	var commonBooks []Book
 
 	// Find books that were added to shelve more than once.
 	for book, count := range booksOnShelves {
 		if count > 1 {
-			booksReadBySeveralBookworms = append(booksReadBySeveralBookworms, book)
+			commonBooks = append(commonBooks, book)
 		}
 	}
 
 	// Sort allows us to be deterministic, sorted alphabetically by authors and then by title.
-	return sortBooks(booksReadBySeveralBookworms)
+	return sortBooks(commonBooks)
 }
 
 // booksCount registers all the books and their occurrences from the bookworms shelves.
@@ -63,6 +63,7 @@ func booksCount(bookworms []Bookworm) map[Book]uint {
 
 	for _, bookworm := range bookworms {
 		for _, book := range bookworm.Books {
+			// If a bookworm has two copies, that counts as two.
 			count[book]++
 		}
 	}
