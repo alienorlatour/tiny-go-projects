@@ -28,7 +28,7 @@ func loadBookworms(filePath string) ([]Bookworm, error) {
 	// Initialise the type in which the file will be decoded.
 	var bookworms []Bookworm
 
-	// Decode the file and stores the content in the value bookworms.
+	// Decode the file and store the content in the variable bookworms.
 	err = json.NewDecoder(f).Decode(&bookworms)
 	if err != nil {
 		return nil, err
