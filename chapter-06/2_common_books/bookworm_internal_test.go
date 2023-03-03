@@ -14,7 +14,7 @@ var (
 	ilPrincipe    = Book{Author: "Niccolò Machiavelli", Title: "Il Principe"}
 )
 
-func TestLoadBookworms_Success(t *testing.T) {
+func TestLoadBookworms(t *testing.T) {
 	tests := map[string]struct {
 		bookwormsFile string
 		want          []Bookworm
@@ -82,6 +82,33 @@ func equalBookworms(bookworms, target []Bookworm) bool {
 	return true
 }
 
+func TestBooksCount(t *testing.T) {
+	tt := map[string]struct {
+		input []Bookworm
+		want  map[Book]uint
+	}{
+		"nominal use case": {
+			input: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
+			},
+			want: map[Book]uint{handmaidsTale: 2, theBellJar: 1, oryxAndCrake: 1, janeEyre: 1},
+		},
+		"no bookworms": {
+			input: []Bookworm{},
+			want:  map[Book]uint{},
+		},
+	}
+
+	for name, tc := range tt {
+		t.Run(name, func(t *testing.T) {
+			got := booksCount(tc.input)
+			if !reflect.DeepEqual(tc.want, got) {
+				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
+			}
+		})
+	}
+}
 func TestFindCommonBooks(t *testing.T) {
 	tt := map[string]struct {
 		input []Bookworm
