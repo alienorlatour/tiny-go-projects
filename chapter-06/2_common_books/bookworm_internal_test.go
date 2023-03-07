@@ -98,6 +98,20 @@ func TestBooksCount(t *testing.T) {
 			input: []Bookworm{},
 			want:  map[Book]uint{},
 		},
+		"bookworm without books": {
+			input: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
+				{Name: "Peggy", Books: []Book{}},
+			},
+			want: map[Book]uint{handmaidsTale: 1, theBellJar: 1},
+		},
+		"bookworm with twice the same book": {
+			input: []Bookworm{
+				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar, handmaidsTale}},
+				{Name: "Peggy", Books: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
+			},
+			want: map[Book]uint{handmaidsTale: 3, theBellJar: 1, oryxAndCrake: 1, janeEyre: 1},
+		},
 	}
 
 	for name, tc := range tt {
