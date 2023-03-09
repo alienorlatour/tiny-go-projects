@@ -26,7 +26,7 @@ func loadBookworms(filePath string) ([]Bookworm, error) {
 	}
 	defer f.Close()
 
-	// Initialise the type in which the file will be decoded.
+	// Declare the variable in which the file will be decoded.
 	var bookworms []Bookworm
 
 	// Decode the file and store the content in the variable bookworms.
