@@ -172,9 +172,10 @@ func equalBooks(t *testing.T, books, target []Book) bool {
 	t.Helper()
 
 	if len(books) != len(target) {
-		// Early exit!
+		// Early exit
 		return false
 	}
+
 	// Verify the content of the collections of Books for each Bookworm.
 	for i := range target {
 		if target[i] != books[i] {
