@@ -4,7 +4,6 @@ package ecbank
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"learngo-pockets/moneyconverter/money"
 )
@@ -20,23 +19,20 @@ const (
 
 // EuroCentralBank can call the bank to retrieve exchange rates.
 type EuroCentralBank struct {
-	client http.Client
-}
-
-// NewBank builds a EuroCentralBank that can fetch exchange rates within a given timeout.
-func NewBank(timeout time.Duration) EuroCentralBank {
-	return EuroCentralBank{
-		client: http.Client{Timeout: timeout},
-	}
+	path string
 }
 
 // FetchExchangeRate fetches today's ExchangeRate and returns it.
 func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (money.ExchangeRate, error) {
 	const path = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
 
-	resp, err := ecb.client.Get(path)
+	if ecb.path == "" {
+		ecb.path = path
+	}
+
+	resp, err := http.Get(ecb.path)
 	if err != nil {
-		return money.ExchangeRate(0.), fmt.Errorf("%w: %s", ErrServerSide, err.Error())
+		return 0., fmt.Errorf("%w: %s", ErrServerSide, err.Error())
 	}
 
 	// don't forget to close the response's body
