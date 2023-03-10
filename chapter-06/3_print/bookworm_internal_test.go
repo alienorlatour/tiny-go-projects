@@ -146,6 +146,7 @@ func TestFindCommonBooks(t *testing.T) {
 // equalBookworms is a helper to test the equality of two lists of Bookworms.
 func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
 	t.Helper()
+
 	if len(bookworms) != len(target) {
 		// Early exit!
 		return false
@@ -169,6 +170,7 @@ func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
 // equalBooks is a helper to test the equality of two lists of Books.
 func equalBooks(t *testing.T, books, target []Book) bool {
 	t.Helper()
+
 	if len(books) != len(target) {
 		// Early exit!
 		return false
