@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"learngo-pockets/genericworms/books"
-	"learngo-pockets/genericworms/collectors"
 )
 
 func main() {
@@ -15,14 +14,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	commonBooks := bookworms.(collectors.Collectors[books.Book]).FindC
+	commonBooks := bookworms.FindCommon()
 
 	fmt.Println("Here are the common books:")
 	displayBooks(commonBooks)
 }
 
 // displayBooks prints out the titles and authors of a list of books
-func displayBooks(books []collectors.Book) {
+func displayBooks(books []books.Book) {
 	for _, book := range books {
 		fmt.Println("-", book.Title, "by", book.Author)
 	}

@@ -46,11 +46,9 @@ func sortBooks(books []Book) []Book {
 	return books
 }
 
-type Books []Book
-
-func (books Books) Less(i, j int) bool {
-	if books[i].Author != books[j].Author {
-		return books[i].Author < books[j].Author
+func (book Book) Less(other Book) bool {
+	if book.Author != other.Author {
+		return book.Author < other.Author
 	}
-	return books[i].Title < books[j].Title
+	return book.Title < other.Title
 }
