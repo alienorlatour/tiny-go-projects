@@ -1,16 +1,21 @@
 package collectors
 
 import (
-	"golang.org/x/exp/constraints"
+	"sort"
 )
 
 // A Collector contains the list of books on a collector's shelf.
-type Collector[T comparable] struct {
+type Collector[T lesser] struct {
 	Name  string `json:"name"`
 	Items []T    `json:"items"`
 }
 
-type Collectors[T constraints.Ordered] []Collector[T]
+type Collectors[T lesser] []Collector[T]
+
+type lesser interface {
+	comparable
+	// Less(other lesser) bool
+}
 
 // FindCommon returns items that are on more than one collector's shelf.
 func (c Collectors[T]) FindCommon() []T {
@@ -27,7 +32,7 @@ func (c Collectors[T]) FindCommon() []T {
 		}
 	}
 
-	// Sort allows us to be deterministic, sorted by the
+	// Sort allows us to be deterministic.
 	return sortItems(itemsInCommon)
 }
 
@@ -45,11 +50,11 @@ func (c Collectors[C]) countItems() map[C]uint {
 	return itemCount
 }
 
-func sortItems[T comparable](items []T) {
-	func(i, j int) bool {
-		if books[i].Author != books[j].Author {
-			return books[i].Author < books[j].Author
-		}
-		return books[i].Title < books[j].Title
-	}
+func sortItems[T lesser](items []T) []T {
+	sort.Slice(items, func(i, j int) bool {
+		// return items[i].Less(items[j])
+		return true
+	})
+
+	return items
 }
