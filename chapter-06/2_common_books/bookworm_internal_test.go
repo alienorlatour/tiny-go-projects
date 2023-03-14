@@ -42,12 +42,18 @@ func TestLoadBookworms(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			got, err := loadBookworms(testCase.bookwormsFile)
 
-			switch {
-			case err != nil && !testCase.wantErr:
-				t.Fatalf("expected an error %s, got an empty one", err.Error())
-			case err == nil && testCase.wantErr:
-				t.Fatalf("expected no error, got one %s", err.Error())
-			case !equalBookworms(t, got, testCase.want):
+			if testCase.wantErr {
+				if err == nil {
+					t.Fatal("expected err, got nothing")
+				}
+				return
+			}
+
+			// we aren't expecting errors here, this should be the happy path
+			if err != nil {
+				t.Fatalf("expected no error, got %v", err)
+			}
+			if !equalBookworms(t, got, testCase.want) {
 				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
 		})
