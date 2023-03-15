@@ -2,6 +2,7 @@ package books
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"sort"
 
@@ -12,6 +13,10 @@ import (
 type Book struct {
 	Author string `json:"author"`
 	Title  string `json:"title"`
+}
+
+func (book Book) String() string {
+	return fmt.Sprintf("%s: %s", book.Author, book.Title)
 }
 
 // Load reads the file and returns the list of collectors, and their beloved books, found therein.

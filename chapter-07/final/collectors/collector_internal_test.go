@@ -6,6 +6,10 @@ import (
 
 type item string
 
+func (i item) String() string {
+	return string(i)
+}
+
 func TestBooksCount(t *testing.T) {
 	tt := map[string]struct {
 		input Collectors[item]
@@ -74,7 +78,7 @@ func TestFindCommon(t *testing.T) {
 				{Name: "Did", Items: []item{"janeEyre"}},
 				{Name: "Ali", Items: []item{"janeEyre", "ilPrincipe"}},
 			},
-			want: []item{"janeEyre", "ilPrincipe"},
+			want: []item{"ilPrincipe", "janeEyre"},
 		},
 		"output is sorted by authors and then title": {
 			input: Collectors[item]{
@@ -82,7 +86,7 @@ func TestFindCommon(t *testing.T) {
 				{Name: "Did", Items: []item{"janeEyre"}},
 				{Name: "Ali", Items: []item{"villette", "ilPrincipe"}},
 			},
-			want: []item{"janeEyre", "villette", "ilPrincipe"},
+			want: []item{"ilPrincipe", "janeEyre", "villette"},
 		},
 	}
 

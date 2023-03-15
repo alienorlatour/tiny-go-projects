@@ -1,6 +1,7 @@
 package collectors
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -14,7 +15,7 @@ type Collectors[T lesser] []Collector[T]
 
 type lesser interface {
 	comparable
-	// Less(other lesser) bool
+	fmt.Stringer
 }
 
 // FindCommon returns items that are on more than one collector's shelf.
@@ -52,8 +53,7 @@ func (c Collectors[C]) countItems() map[C]uint {
 
 func sortItems[T lesser](items []T) []T {
 	sort.Slice(items, func(i, j int) bool {
-		// return items[i].Less(items[j])
-		return true
+		return items[i].String() < items[j].String()
 	})
 
 	return items
