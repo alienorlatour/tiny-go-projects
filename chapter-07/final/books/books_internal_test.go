@@ -1,9 +1,11 @@
 package books
 
 import (
+	"encoding/json"
+	"os"
 	"testing"
 
-	"learngo-pockets/genericworms/collectors"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -15,86 +17,50 @@ var (
 	ilPrincipe    = Book{Author: "Niccolò Machiavelli", Title: "Il Principe"}
 )
 
+func noError(t *testing.T, err error) {
+	t.Helper()
+	assert.NoError(t, err)
+}
+
 func TestLoad(t *testing.T) {
 	tests := map[string]struct {
 		collsFile string
-		want      []collectors.Collector[Book]
-		wantErr   bool
+		want      Collectors
+		checkErr  func(*testing.T, error)
 	}{
 		"file exists": {
 			collsFile: "testdata/colls.json",
-			want: []collectors.Collector[Book]{
+			want: Collectors{
 				{Name: "Fadi", Items: []Book{handmaidsTale, theBellJar}},
 				{Name: "Peggy", Items: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
 			},
-			wantErr: false,
+			checkErr: noError,
 		},
 		"file doesn't exist": {
 			collsFile: "testdata/no_file_here.json",
 			want:      nil,
-			wantErr:   true,
+			checkErr: func(t *testing.T, err error) {
+				pathErr := &os.PathError{}
+				assert.ErrorAs(t, err, &pathErr)
+				assert.Equal(t, "testdata/no_file_here.json", pathErr.Path)
+			},
 		},
 		"invalid JSON": {
 			collsFile: "testdata/invalid.json",
 			want:      nil,
-			wantErr:   true,
+			checkErr: func(t *testing.T, err error) {
+				jsonErr := &json.SyntaxError{}
+				assert.ErrorAs(t, err, &jsonErr)
+				assert.Equal(t, int64(174), jsonErr.Offset)
+			},
 		},
 	}
+
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
 			got, err := Load(testCase.collsFile)
-
-			switch {
-			case err != nil && !testCase.wantErr:
-				t.Fatalf("expected an error %s, got an empty one", err.Error())
-			case err == nil && testCase.wantErr:
-				t.Fatalf("expected no error, got one %s", err.Error())
-			case !equalBookworms(t, got, testCase.want):
-				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
-			}
+			testCase.checkErr(t, err)
+			assert.Equal(t, testCase.want, got)
 		})
 	}
-}
-
-// equalBookworms is a helper to test the equality of two lists of Bookworms.
-func equalBookworms(t *testing.T, colls, target []collectors.Collector[Book]) bool {
-	t.Helper()
-
-	if len(colls) != len(target) {
-		// Early exit!
-		return false
-	}
-
-	for i := range colls {
-		// Verify the name of the Collector.
-		if colls[i].Name != target[i].Name {
-			return false
-		}
-		// Verify the content of the collections of Books for each Collector.
-		if !equalBooks(t, colls[i].Items, target[i].Items) {
-			return false
-		}
-	}
-
-	// Everything is equal!
-	return true
-}
-
-// equalBooks is a helper to test the equality of two lists of Books.
-func equalBooks(t *testing.T, books, target []Book) bool {
-	t.Helper()
-
-	if len(books) != len(target) {
-		// Early exit
-		return false
-	}
-
-	// Verify the content of the collections of Books for each Collector.
-	for i := range target {
-		if target[i] != books[i] {
-			return false
-		}
-	}
-	// Everything is equal!
-	return true
 }

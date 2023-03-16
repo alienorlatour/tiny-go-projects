@@ -10,6 +10,7 @@ type Collector[T comparable] struct {
 	Items []T    `json:"items"`
 }
 
+// Collectors is a list of collectors.
 type Collectors[T comparable] []Collector[T]
 
 // FindCommon returns items that are on more than one collector's shelf.
