@@ -8,14 +8,17 @@ import (
 	"learngo-pockets/genericworms/collectors"
 )
 
-// Book describes an item on a collectors's shelf.
+// Book describes an item on a collector's shelf.
 type Book struct {
 	Author string `json:"author"`
 	Title  string `json:"title"`
 }
 
+// Collectors describe a list of book collectors and their books
+type Collectors collectors.Collectors[Book]
+
 // Load reads the file and returns the list of collectors, and their beloved books, found therein.
-func Load(filePath string) (collectors.Collectors[Book], error) {
+func Load(filePath string) (Collectors, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -23,7 +26,7 @@ func Load(filePath string) (collectors.Collectors[Book], error) {
 	defer f.Close()
 
 	// Declare the variable in which the file will be decoded.
-	var colls []collectors.Collector[Book]
+	var colls Collectors
 
 	// Decode the file and store the content in the variable colls.
 	err = json.NewDecoder(f).Decode(&colls)
@@ -34,21 +37,31 @@ func Load(filePath string) (collectors.Collectors[Book], error) {
 	return colls, nil
 }
 
-// sortBooks sorts the books by Author and then Title.
-func sortBooks(books []Book) []Book {
-	sort.Slice(books, func(i, j int) bool {
-		if books[i].Author != books[j].Author {
-			return books[i].Author < books[j].Author
-		}
-		return books[i].Title < books[j].Title
-	})
+// FindCommon return the books in common, sorted first by author and then title.
+func (colls Collectors) FindCommon() []Book {
+	// We need a Collectors[T] here
+	booksInCommon := collectors.Collectors[Book](colls).FindCommon()
 
-	return books
+	// sort.Sort sorts the slice in place.
+	// We can instantiate a slice of the type byAuthor, which implements sort.Interface.
+	sort.Sort(byAuthor(booksInCommon))
+
+	return booksInCommon
 }
 
-func (book Book) Less(other Book) bool {
-	if book.Author != other.Author {
-		return book.Author < other.Author
+// byAuthor implements sort.Interface for a list of books.
+type byAuthor []Book
+
+// Len implements sort.Interface by returning the length of Books.
+func (b byAuthor) Len() int { return len(b) }
+
+// Less returns true if Author i is before Author j in alphabetical order.
+func (b byAuthor) Less(i, j int) bool {
+	if b[i].Author != b[j].Author {
+		return b[i].Author < b[j].Author
 	}
-	return book.Title < other.Title
+	return b[i].Title < b[j].Title
 }
+
+// Swap implements sort.Interface and swaps two books.
+func (b byAuthor) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
