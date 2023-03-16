@@ -2,6 +2,8 @@ package collectors
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type item string
@@ -41,10 +43,7 @@ func TestBooksCount(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := tc.input.countItems()
-
-			if !equalCounts(t, tc.want, got) {
-				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
-			}
+			assert.Equal(t, tc.want, got)
 		})
 	}
 }
@@ -89,46 +88,7 @@ func TestFindCommon(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := tc.input.FindCommon()
-			if !equal(t, tc.want, got) {
-				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
-			}
+			assert.ElementsMatch(t, tc.want, got)
 		})
 	}
-}
-
-// equalBooks is a helper to test the equality of two lists of Books.
-func equal[T lesser](t *testing.T, books, target []T) bool {
-	t.Helper()
-
-	if len(books) != len(target) {
-		// Early exit
-		return false
-	}
-
-	// Verify the content of the collections of Books for each Collector.
-	for i := range target {
-		if target[i] != books[i] {
-			return false
-		}
-	}
-	// Everything is equal!
-	return true
-}
-
-// equalCounts is a helper to test the equality of two maps of books count.
-func equalCounts[T lesser](t *testing.T, bookCount, target map[T]uint) bool {
-	t.Helper()
-
-	// Ranging over the target to retrieve all the keys.
-	for book, targetCount := range target {
-		// Verify the book in present in the map we check against.
-		count, ok := bookCount[book]
-		// Book is not found or if found, counts are different.
-		if !ok || targetCount != count {
-			return false
-		}
-	}
-
-	// Everything is equal!
-	return true
 }

@@ -5,17 +5,12 @@ import (
 )
 
 // A Collector contains the list of books on a collector's shelf.
-type Collector[T lesser] struct {
+type Collector[T comparable] struct {
 	Name  string `json:"name"`
 	Items []T    `json:"items"`
 }
 
-type Collectors[T lesser] []Collector[T]
-
-type lesser interface {
-	comparable
-	// Less(other lesser) bool
-}
+type Collectors[T comparable] []Collector[T]
 
 // FindCommon returns items that are on more than one collector's shelf.
 func (c Collectors[T]) FindCommon() []T {
@@ -50,7 +45,7 @@ func (c Collectors[C]) countItems() map[C]uint {
 	return itemCount
 }
 
-func sortItems[T lesser](items []T) []T {
+func sortItems[T comparable](items []T) []T {
 	sort.Slice(items, func(i, j int) bool {
 		// return items[i].Less(items[j])
 		return true
