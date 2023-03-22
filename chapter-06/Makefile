@@ -2,6 +2,7 @@ projects := \
 	1_load \
 	2_common_books \
 	3_print \
+	4_sort_improvements \
 	inprogress
 
 %:

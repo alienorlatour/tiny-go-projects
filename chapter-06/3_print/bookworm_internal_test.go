@@ -42,12 +42,18 @@ func TestLoadBookworms(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			got, err := loadBookworms(testCase.bookwormsFile)
 
-			switch {
-			case err != nil && !testCase.wantErr:
-				t.Fatalf("expected an error %s, got an empty one", err.Error())
-			case err == nil && testCase.wantErr:
-				t.Fatalf("expected no error, got one %s", err.Error())
-			case !equalBookworms(t, got, testCase.want):
+			if testCase.wantErr {
+				if err == nil {
+					t.Fatal("expected err, got nothing")
+				}
+				return
+			}
+
+			// we aren't expecting errors here, this should be the happy path
+			if err != nil {
+				t.Fatalf("expected no error, got %v", err)
+			}
+			if !equalBookworms(got, testCase.want) {
 				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
 			}
 		})
@@ -89,7 +95,7 @@ func TestBooksCount(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := booksCount(tc.input)
-			if !equalBooksCount(t, tc.want, got) {
+			if !equalBooksCount(tc.want, got) {
 				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
 			}
 		})
@@ -136,7 +142,7 @@ func TestFindCommonBooks(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := findCommonBooks(tc.input)
-			if !equalBooks(t, tc.want, got) {
+			if !equalBooks(tc.want, got) {
 				t.Fatalf("got a different list of books: %v, expected %v", got, tc.want)
 			}
 		})
@@ -144,9 +150,7 @@ func TestFindCommonBooks(t *testing.T) {
 }
 
 // equalBookworms is a helper to test the equality of two lists of Bookworms.
-func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
-	t.Helper()
-
+func equalBookworms(bookworms, target []Bookworm) bool {
 	if len(bookworms) != len(target) {
 		// Early exit!
 		return false
@@ -158,7 +162,7 @@ func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
 			return false
 		}
 		// Verify the content of the collections of Books for each Bookworm.
-		if !equalBooks(t, bookworms[i].Books, target[i].Books) {
+		if !equalBooks(bookworms[i].Books, target[i].Books) {
 			return false
 		}
 	}
@@ -168,14 +172,11 @@ func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
 }
 
 // equalBooks is a helper to test the equality of two lists of Books.
-func equalBooks(t *testing.T, books, target []Book) bool {
-	t.Helper()
-
+func equalBooks(books, target []Book) bool {
 	if len(books) != len(target) {
-		// Early exit
+		// Early exit!
 		return false
 	}
-
 	// Verify the content of the collections of Books for each Bookworm.
 	for i := range target {
 		if target[i] != books[i] {
@@ -187,13 +188,15 @@ func equalBooks(t *testing.T, books, target []Book) bool {
 }
 
 // equalBooksCount is a helper to test the equality of two maps of books count.
-func equalBooksCount(t *testing.T, bookCount, target map[Book]uint) bool {
-	t.Helper()
+func equalBooksCount(got, want map[Book]uint) bool {
+	if len(got) != len(want) {
+		return false
+	}
 
-	// Ranging over the target to retrieve all the keys.
-	for book, targetCount := range target {
+	// Ranging over the want to retrieve all the keys.
+	for book, targetCount := range want {
 		// Verify the book in present in the map we check against.
-		count, ok := bookCount[book]
+		count, ok := got[book]
 		// Book is not found or if found, counts are different.
 		if !ok || targetCount != count {
 			return false
