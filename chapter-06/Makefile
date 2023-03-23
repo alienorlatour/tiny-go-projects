@@ -1,9 +1,11 @@
 projects := \
-	1_load \
-	2_common_books \
-	3_print \
-	4_sort_improvements \
-	inprogress
+	1_types \
+	2_represent \
+	3_conversion \
+	4_commandline \
+	5_bank \
+	6_timeout \
+	final
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done

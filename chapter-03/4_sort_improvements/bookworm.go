@@ -74,7 +74,7 @@ func booksCount(bookworms []Bookworm) map[Book]uint {
 // byAuthor is a list of Book. Defining a custom type to implement sort.Interface
 type byAuthor []Book
 
-// Len implements sort.Interface by returning the length of BookByAuthor.
+// Len implements sort.Interface by returning the number of books in the slice.
 func (b byAuthor) Len() int { return len(b) }
 
 // Swap implements sort.Interface and swaps two books.
