@@ -45,8 +45,8 @@ func TestParseDecimal(t *testing.T) {
 			// expected: Decimal{integerPart: 12152, decimalPart: 3, toUnit: 2}, // for future implementations
 			err: ErrInvalidDecimal,
 		},
-		"NaN": {
-			decimal: "ten",
+		"Not a number": {
+			decimal: "NaN",
 			err:     ErrInvalidDecimal,
 		},
 		"empty string": {

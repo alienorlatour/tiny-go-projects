@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestApplyChangeRate(t *testing.T) {
+func TestApplyExchangeRate(t *testing.T) {
 	tt := map[string]struct {
 		in             Amount
 		rate           ExchangeRate
@@ -163,7 +163,7 @@ func TestApplyChangeRate(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := applyChangeRate(tc.in, tc.targetCurrency, tc.rate)
+			got := applyExchangeRate(tc.in, tc.targetCurrency, tc.rate)
 			if !reflect.DeepEqual(got, tc.expected) {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}

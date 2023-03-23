@@ -13,7 +13,7 @@ func Convert(amount Amount, to Currency, rates ratesFetcher) (Amount, error) {
 	}
 
 	// Convert to the target currency applying the fetched change rate.
-	convertedValue, err := applyChangeRate(amount, to, r)
+	convertedValue, err := applyExchangeRate(amount, to, r)
 	if err != nil {
 		return Amount{}, err
 	}
@@ -35,10 +35,10 @@ type ratesFetcher interface {
 // It is a float64, because the precision of an official change rate is 5 significant digits.
 type ExchangeRate float64
 
-// applyChangeRate returns a new Amount representing the input multiplied by the rate.
+// applyExchangeRate returns a new Amount representing the input multiplied by the rate.
 // The precision of the returned value is that of the target Currency.
 // This function does not guarantee that the output amount is supported.
-func applyChangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, error) {
+func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, error) {
 	// Multiply the input amount.
 	converted, err := multiply(a.quantity, rate)
 	if err != nil {
@@ -66,7 +66,7 @@ func applyChangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, erro
 // multiply a Decimal with an ExchangeRate and return the product
 func multiply(d Decimal, r ExchangeRate) (Decimal, error) {
 	// first, convert the ExchangeRate to a Decimal
-	rate, err := ParseDecimal(fmt.Sprintf("%f", r))
+	rate, err := ParseDecimal(fmt.Sprintf("%g", r))
 	if err != nil {
 		return Decimal{}, fmt.Errorf("%w: exchange rate is %f", ErrInvalidDecimal, r)
 	}
