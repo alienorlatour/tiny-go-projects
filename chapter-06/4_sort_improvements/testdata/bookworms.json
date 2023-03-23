@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Fadi",
+    "books": [
+      {
+        "author": "Margaret Atwood",
+        "title": "The Handmaid's Tale"
+      },
+      {
+        "author": "Sylvia Plath",
+        "title": "The Bell Jar"
+      }
+    ]
+  },
+  {
+    "name": "Peggy",
+    "books": [
+      {
+        "author": "Margaret Atwood",
+        "title": "Oryx and Crake"
+      },
+      {
+        "author": "Margaret Atwood",
+        "title": "The Handmaid's Tale"
+      },
+      {
+        "author": "Charlotte Brontë",
+        "title": "Jane Eyre"
+      }
+    ]
+  }
+]
