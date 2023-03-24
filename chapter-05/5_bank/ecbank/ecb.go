@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	ErrServerSide           = ecbankError("error from server")
+	ErrCallingServer        = ecbankError("error calling server")
 	ErrUnexpectedFormat     = ecbankError("unexpected response format")
 	ErrChangeRateNotFound   = ecbankError("couldn't find the exchange rate")
 	ErrECBUserEnd           = ecbankError("user-end error when contacting ECB")
@@ -32,7 +32,7 @@ func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (mon
 
 	resp, err := http.Get(ecb.path)
 	if err != nil {
-		return 0., fmt.Errorf("%w: %s", ErrServerSide, err.Error())
+		return 0., fmt.Errorf("%w: %s", ErrCallingServer, err.Error())
 	}
 
 	// don't forget to close the response's body

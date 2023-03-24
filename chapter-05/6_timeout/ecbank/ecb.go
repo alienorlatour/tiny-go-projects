@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	ErrServerSide           = ecbankError("error from server")
+	ErrCallingServer        = ecbankError("error calling server")
 	ErrTimeout              = ecbankError("timed out when waiting for response")
 	ErrUnexpectedFormat     = ecbankError("unexpected response format")
 	ErrChangeRateNotFound   = ecbankError("couldn't find the exchange rate")
@@ -41,7 +41,7 @@ func (ecb EuroCentralBank) FetchExchangeRate(source, target money.Currency) (mon
 		if ok := errors.As(err, &urlErr); ok && urlErr.Timeout() {
 			return 0., fmt.Errorf("%w: %s", ErrTimeout, err.Error())
 		}
-		return 0., fmt.Errorf("%w: %s", ErrServerSide, err.Error())
+		return 0., fmt.Errorf("%w: %s", ErrCallingServer, err.Error())
 	}
 
 	// don't forget to close the response's body

@@ -6,7 +6,7 @@ import (
 	"sort"
 )
 
-// A Bookworm contains the list of books of a specific person.
+// A Bookworm contains the list of books on a bookworm's shelf.
 type Bookworm struct {
 	Name  string `json:"name"`
 	Books []Book `json:"books"`
@@ -20,7 +20,6 @@ type Book struct {
 
 // loadBookworms reads the file and returns the list of bookworms, and their beloved books, found therein.
 func loadBookworms(filePath string) ([]Bookworm, error) {
-	// Open the file to get an io.Reader.
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -72,14 +71,25 @@ func booksCount(bookworms []Bookworm) map[Book]uint {
 	return count
 }
 
-// sortBooks sorts the books by Author and then Title.
-func sortBooks(books []Book) []Book {
-	sort.Slice(books, func(i, j int) bool {
-		if books[i].Author != books[j].Author {
-			return books[i].Author < books[j].Author
-		}
-		return books[i].Title < books[j].Title
-	})
+// byAuthor is a list of Book. Defining a custom type to implement sort.Interface
+type byAuthor []Book
 
+// Len implements sort.Interface by returning the length of BookByAuthor.
+func (b byAuthor) Len() int { return len(b) }
+
+// Swap implements sort.Interface and swaps two books.
+func (b byAuthor) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
+
+// Less implements sort.Interface and returns BookByAuthor sorted by Author and then Title.
+func (b byAuthor) Less(i, j int) bool {
+	if b[i].Author != b[j].Author {
+		return b[i].Author < b[j].Author
+	}
+	return b[i].Title < b[j].Title
+}
+
+// sortBooks sorts the books by Author and then Title in alphabetical order.
+func sortBooks(books []Book) []Book {
+	sort.Sort(byAuthor(books))
 	return books
 }

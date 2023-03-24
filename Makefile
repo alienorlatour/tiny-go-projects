@@ -1,6 +1,7 @@
 chapters := chapter-02 \
 			chapter-03 \
 			chapter-04 \
+			chapter-06 \
 			chapter-07
 
 %:
