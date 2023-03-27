@@ -49,11 +49,11 @@ func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, er
 	switch {
 	case converted.precision > target.precision:
 		// The converted value is too precise, let's chunk some digits off. This will floor down the result.
-		converted.subunits = converted.subunits / tenToThe(converted.precision-target.precision)
+		converted.subunits = converted.subunits / pow10(converted.precision-target.precision)
 		converted.precision = target.precision
 	case converted.precision < target.precision:
 		// Multiply, adding enough zeroes to reach the desired precision.
-		converted.subunits = converted.subunits * tenToThe(target.precision-converted.precision)
+		converted.subunits = converted.subunits * pow10(target.precision-converted.precision)
 		converted.precision = target.precision
 	}
 

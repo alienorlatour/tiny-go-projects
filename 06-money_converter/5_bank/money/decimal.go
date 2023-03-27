@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Decimal can represent a floating-point number with a fixed precision.
+// Decimal is capable of storing a decimal value such as 30 or 1543.243.
 // example: 1.52 = 152 * 10^(-2) will be stored as {152, 2}
 type Decimal struct {
 	// subunits is the amount of subunits. Multiply it by the precision to get the real value
@@ -54,7 +54,7 @@ func (d Decimal) String() string {
 		return fmt.Sprintf("%d", d.subunits)
 	}
 
-	centsPerUnit := tenToThe(d.precision)
+	centsPerUnit := pow10(d.precision)
 	frac := d.subunits % centsPerUnit
 	integer := d.subunits / centsPerUnit
 
@@ -63,9 +63,9 @@ func (d Decimal) String() string {
 	return fmt.Sprintf(decimalFormat, integer, frac)
 }
 
-// tenToThe is a quick implementation of how to raise 10 to a given power.
+// pow10 is a quick implementation of how to raise 10 to a given power.
 // It's optimised for small powers, and slow for unusually high powers.
-func tenToThe(power byte) int64 {
+func pow10(power byte) int64 {
 	switch power {
 	case 0:
 		return 1

@@ -77,7 +77,7 @@ func TestChangeRate(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := tc.envelope.changeRate(tc.source, tc.target)
+			got, err := tc.envelope.exchangeRate(tc.source, tc.target)
 			if tc.wantErr != err {
 				t.Errorf("unable to marshal: %s", err.Error())
 			}

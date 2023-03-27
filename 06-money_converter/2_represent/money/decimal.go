@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Decimal can represent a floating-point number with a fixed precision.
+// Decimal is capable of storing a decimal value such as 30 or 1543.243.
 // example: 1.52 = 152 * 10^(-2) will be stored as {152, 2}
 type Decimal struct {
 	// subunits is the amount of subunits. Multiply it by the precision to get the real value

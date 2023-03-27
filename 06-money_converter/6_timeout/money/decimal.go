@@ -54,7 +54,7 @@ func (d Decimal) String() string {
 		return fmt.Sprintf("%d", d.subunits)
 	}
 
-	centsPerUnit := tenToThe(d.precision)
+	centsPerUnit := pow10(d.precision)
 	frac := d.subunits % centsPerUnit
 	integer := d.subunits / centsPerUnit
 
@@ -63,9 +63,9 @@ func (d Decimal) String() string {
 	return fmt.Sprintf(decimalFormat, integer, frac)
 }
 
-// tenToThe is a quick implementation of how to raise 10 to a given power.
+// pow10 is a quick implementation of how to raise 10 to a given power.
 // It's optimised for small powers, and slow for unusually high powers.
-func tenToThe(power byte) int64 {
+func pow10(power byte) int64 {
 	switch power {
 	case 0:
 		return 1

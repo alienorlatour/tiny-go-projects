@@ -1,14 +1,17 @@
 package money
 
-import "math"
+import "fmt"
 
 // Convert applies the change rate to convert an amount to a target currency.
 func Convert(amount Amount, to Currency) (Amount, error) {
 	// Convert to the target currency applying the fetched change rate.
-	convertedValue := applyExchangeRate(amount, to, 2)
+	convertedValue, err := applyExchangeRate(amount, to, 2)
+	if err != nil {
+		return Amount{}, err
+	}
 
 	// validate the converted amount is in the handled bounded range.
-	if err := convertedValue.validate(); err != nil {
+	if err = convertedValue.validate(); err != nil {
 		return Amount{}, err
 	}
 
@@ -22,18 +25,41 @@ type ExchangeRate float64
 // applyExchangeRate returns a new Amount representing the input multiplied by the rate.
 // The precision of the returned value is that of the target Currency.
 // This function does not guarantee that the output amount is supported.
-func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
-	amount := Amount{
-		currency: target,
-		quantity: Decimal{
-			precision: target.precision,
-		},
+func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, error) {
+	// Multiply the input amount.
+	converted, err := multiply(a.quantity, rate)
+	if err != nil {
+		return Amount{}, err
 	}
 
-	// Apply the change rate and use the target's subunit.
-	cents := float64(a.quantity.subunits) * float64(rate) * math.Pow10(int(target.precision)-int(a.quantity.precision))
+	// Adjust precision
+	switch {
+	case converted.precision > target.precision:
+		// The converted value is too precise, let's chunk some digits off. This will floor down the result.
+		converted.subunits = converted.subunits / pow10(converted.precision-target.precision)
+		converted.precision = target.precision
+	case converted.precision < target.precision:
+		// Multiply, adding enough zeroes to reach the desired precision.
+		converted.subunits = converted.subunits * pow10(target.precision-converted.precision)
+		converted.precision = target.precision
+	}
 
-	// We floor the result, which avoids creating money.
-	amount.quantity.subunits = int64(math.Floor(cents))
-	return amount
+	return Amount{
+		currency: target,
+		quantity: converted,
+	}, nil
+}
+
+// multiply a Decimal with an ExchangeRate and return the product
+func multiply(d Decimal, r ExchangeRate) (Decimal, error) {
+	// first, convert the ExchangeRate to a Decimal
+	rate, err := ParseDecimal(fmt.Sprintf("%g", r))
+	if err != nil {
+		return Decimal{}, fmt.Errorf("%w: exchange rate is %f", ErrInvalidDecimal, r)
+	}
+
+	return Decimal{
+		subunits:  d.subunits * rate.subunits,
+		precision: d.precision + rate.precision,
+	}, nil
 }
