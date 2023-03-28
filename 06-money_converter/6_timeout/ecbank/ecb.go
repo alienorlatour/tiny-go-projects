@@ -39,21 +39,21 @@ func (c Client) FetchExchangeRate(source, target money.Currency) (money.Exchange
 	if err != nil {
 		var urlErr *url.Error
 		if ok := errors.As(err, &urlErr); ok && urlErr.Timeout() {
-			return money.ExchangeRate(0), fmt.Errorf("%w: %s", ErrTimeout, err.Error())
+			return money.ExchangeRate{}, fmt.Errorf("%w: %s", ErrTimeout, err.Error())
 		}
-		return money.ExchangeRate(0), fmt.Errorf("%w: %s", ErrCallingServer, err.Error())
+		return money.ExchangeRate{}, fmt.Errorf("%w: %s", ErrCallingServer, err.Error())
 	}
 
 	// don't forget to close the response's body
 	defer resp.Body.Close()
 
 	if err = checkStatusCode(resp.StatusCode); err != nil {
-		return money.ExchangeRate(0), err
+		return money.ExchangeRate{}, err
 	}
 
 	rate, err := readRateFromResponse(source.Code(), target.Code(), resp.Body)
 	if err != nil {
-		return money.ExchangeRate(0), err
+		return money.ExchangeRate{}, err
 	}
 
 	return rate, nil

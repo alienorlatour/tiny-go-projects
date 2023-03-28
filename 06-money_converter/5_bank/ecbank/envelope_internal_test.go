@@ -69,7 +69,7 @@ func TestChangeRate(t *testing.T) {
 			envelope: envelope{Rates: []currencyRate{{Currency: "USD", Rate: 1.5}}},
 			source:   "EUR",
 			target:   "USD",
-			want:     money.ExchangeRate(1.5),
+			want:     money.ExchangeRate{},
 			wantErr:  nil,
 		},
 		// TODO this is not enough

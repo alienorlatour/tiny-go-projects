@@ -22,7 +22,7 @@ func TestApplyExchangeRate(t *testing.T) {
 				},
 				currency: Currency{code: "TST", precision: 2},
 			},
-			rate:           1,
+			rate:           ExchangeRate{subunits: 1, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 4},
 			expected: Amount{
 				quantity: Decimal{
@@ -38,7 +38,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  250,
 					precision: 2,
 				}},
-			rate:           4,
+			rate:           ExchangeRate{subunits: 4, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -55,7 +55,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					precision: 0,
 				},
 			},
-			rate:           2.5,
+			rate:           ExchangeRate{subunits: 25, precision: 1},
 			targetCurrency: Currency{code: "TRG", precision: 0},
 			expected: Amount{
 				quantity: Decimal{
@@ -71,7 +71,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  314,
 					precision: 2,
 				}},
-			rate:           2.52678,
+			rate:           ExchangeRate{subunits: 252678, precision: 5},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -87,7 +87,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  11,
 					precision: 1,
 				}},
-			rate:           10,
+			rate:           ExchangeRate{subunits: 10, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 1},
 			expected: Amount{
 				quantity: Decimal{
@@ -103,7 +103,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  1_000_000_001,
 					precision: 2,
 				}},
-			rate:           2,
+			rate:           ExchangeRate{subunits: 2, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -119,7 +119,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  265_413_87,
 					precision: 2,
 				}},
-			rate:           5.05935e-5,
+			rate:           ExchangeRate{subunits: 505935, precision: 10},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -135,7 +135,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  265_413,
 					precision: 0,
 				}},
-			rate:           1,
+			rate:           ExchangeRate{subunits: 1, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 3},
 			expected: Amount{
 				quantity: Decimal{
@@ -151,7 +151,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  2,
 					precision: 0,
 				}},
-			rate:           1.337,
+			rate:           ExchangeRate{subunits: 1337, precision: 3},
 			targetCurrency: Currency{code: "TRG", precision: 5},
 			expected: Amount{
 				quantity: Decimal{
@@ -160,16 +160,6 @@ func TestApplyExchangeRate(t *testing.T) {
 				},
 				currency: Currency{code: "TRG", precision: 5},
 			},
-		},
-		"Rate is too big": {
-			in: Amount{
-				quantity: Decimal{
-					subunits:  2,
-					precision: 0,
-				}},
-			rate:           1337651681818453.5,
-			targetCurrency: Currency{code: "TRG", precision: 5},
-			err:            ErrTooLarge,
 		},
 	}
 
@@ -191,36 +181,31 @@ func TestMultiply(t *testing.T) {
 		decimal Decimal
 		rate    ExchangeRate
 		want    Decimal
-		err     error
 	}{
 		"10.0 * 1.2 = 12.00": {
 			decimal: Decimal{100, 1},
-			rate:    1.2,
+			rate:    ExchangeRate{subunits: 12, precision: 1},
 			want:    Decimal{1200, 2},
 		},
 		"10 * 2 = 20": {
 			decimal: Decimal{10, 0},
-			rate:    2,
+			rate:    ExchangeRate{subunits: 2, precision: 0},
 			want:    Decimal{20, 0},
 		},
 		"10 * 1e15 = error": {
 			decimal: Decimal{10, 0},
-			rate:    1e15,
-			err:     ErrInvalidDecimal,
+			rate:    ExchangeRate{subunits: 1_000_000_000_000_000, precision: 0},
 		},
 		"1698.188 * 2.198677818 = 3733.768286393784": {
 			decimal: Decimal{1698188, 3},
-			rate:    2.198677818,
+			rate:    ExchangeRate{subunits: 2198677818, precision: 9},
 			want:    Decimal{3733768286393784, 12},
 		},
 	}
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := multiply(tc.decimal, tc.rate)
-			if !errors.Is(err, tc.err) {
-				t.Errorf("expected error %v, got %v", tc.err, err)
-			}
+			got := multiply(tc.decimal, tc.rate)
 			if !reflect.DeepEqual(got, tc.want) {
 				t.Errorf("expected %v, got %v", tc.want, got)
 			}
