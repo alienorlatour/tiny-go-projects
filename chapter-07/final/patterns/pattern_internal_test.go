@@ -1,1 +1,1 @@
-package patterns
+package patterns_test
