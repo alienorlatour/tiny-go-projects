@@ -41,6 +41,6 @@ func (colls Collectors) FindCommon() []Pattern {
 // Display prints out the titles and authors of a list of books
 func Display(w io.Writer, patterns []Pattern) {
 	for _, pattern := range patterns {
-		_, _ = fmt.Fprintf(w, "Craft: %10s; Name: %20s; Yardage: %d yards", pattern.Craft, pattern.Name, pattern.Yardage)
+		_, _ = fmt.Fprintf(w, "Craft: %10s; Name: %20s; Yardage: %d yards\n", pattern.Craft, pattern.Name, pattern.Yardage)
 	}
 }
