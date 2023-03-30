@@ -29,7 +29,7 @@ func TestLoad(t *testing.T) {
 		checkErr  func(*testing.T, error)
 	}{
 		"file exists": {
-			collsFile: "testdata/colls.json",
+			collsFile: "testdata/bookworms.json",
 			want: Collectors{
 				{Name: "Fadi", Items: []Book{handmaidsTale, theBellJar}},
 				{Name: "Peggy", Items: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
