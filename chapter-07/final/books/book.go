@@ -26,5 +26,5 @@ func (b Book) Before(sortable collectors.Sortable) bool {
 }
 
 func (b Book) String() string {
-	return fmt.Sprintf(b.Title, "by", b.Author)
+	return fmt.Sprint(b.Title + " by " + b.Author)
 }
