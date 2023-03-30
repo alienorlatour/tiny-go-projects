@@ -5,10 +5,11 @@ import (
 	"os"
 
 	"learngo-pockets/genericworms/books"
+	"learngo-pockets/genericworms/collectors"
 )
 
 func main() {
-	bookworms, err := books.Load("books/testdata/bookworms.json")
+	bookworms, err := collectors.Load[books.Book]("books/testdata/bookworms.json")
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "failed to load bookworms: %s\n", err)
 		os.Exit(1)

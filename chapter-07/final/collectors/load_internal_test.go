@@ -1,4 +1,4 @@
-package books
+package collectors
 
 import (
 	"encoding/json"
@@ -6,15 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-)
-
-var (
-	handmaidsTale = Book{Author: "Margaret Atwood", Title: "The Handmaid's Tale"}
-	oryxAndCrake  = Book{Author: "Margaret Atwood", Title: "Oryx and Crake"}
-	theBellJar    = Book{Author: "Sylvia Plath", Title: "The Bell Jar"}
-	janeEyre      = Book{Author: "Charlotte Brontë", Title: "Jane Eyre"}
-	villette      = Book{Author: "Charlotte Brontë", Title: "Villette"}
-	ilPrincipe    = Book{Author: "Niccolò Machiavelli", Title: "Il Principe"}
 )
 
 func noError(t *testing.T, err error) {
@@ -25,14 +16,14 @@ func noError(t *testing.T, err error) {
 func TestLoad(t *testing.T) {
 	tests := map[string]struct {
 		collsFile string
-		want      Collectors
+		want      Collectors[string]
 		checkErr  func(*testing.T, error)
 	}{
 		"file exists": {
-			collsFile: "testdata/bookworms.json",
-			want: Collectors{
-				{Name: "Fadi", Items: []Book{handmaidsTale, theBellJar}},
-				{Name: "Peggy", Items: []Book{oryxAndCrake, handmaidsTale, janeEyre}},
+			collsFile: "testdata/genericitems.json",
+			want: Collectors[string]{
+				{Name: "Fadi", Items: []string{"The Handmaid's Tale", "The Bell Jar"}},
+				{Name: "Peggy", Items: []string{"Oryx and Crake", "The Handmaid's Tale", "Jane Eyre"}},
 			},
 			checkErr: noError,
 		},
@@ -58,7 +49,7 @@ func TestLoad(t *testing.T) {
 
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := Load(testCase.collsFile)
+			got, err := Load[string](testCase.collsFile)
 			testCase.checkErr(t, err)
 			assert.Equal(t, testCase.want, got)
 		})
