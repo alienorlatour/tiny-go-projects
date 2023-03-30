@@ -15,6 +15,7 @@ type Collector[T collectible] struct {
 type collectible interface {
 	comparable
 	Sortable
+	fmt.Stringer
 }
 
 // Sortable exposes a way of telling if an item should appear before another.
