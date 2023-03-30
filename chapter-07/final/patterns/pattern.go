@@ -2,8 +2,6 @@ package patterns
 
 import (
 	"fmt"
-	"io"
-	"sort"
 
 	"learngo-pockets/genericworms/collectors"
 )
@@ -16,31 +14,20 @@ type Pattern struct {
 	Yardage int    `json:"yardage"`
 }
 
-// Collectors describe a list of pattern collectors and their pattern
-type Collectors collectors.Collectors[Pattern]
+func (pattern Pattern) Before(sortable collectors.Sortable) bool {
+	other, ok := sortable.(Pattern)
+	if !ok {
+		return false
+	}
 
-// FindCommon return the patterns in common, sorted first by craft, title, needle size, and then yardage.
-func (colls Collectors) FindCommon() []Pattern {
-	// We need a Collectors[T] here
-	patternsInCommon := collectors.Collectors[Pattern](colls).FindCommon()
+	if pattern.Craft != other.Craft {
+		return pattern.Craft < other.Craft
+	}
 
-	// sort.Sort sorts the slice in place.
-	// We can instantiate a slice of the type byCraft, which implements sort.Interface.
-	sort.Slice(patternsInCommon, func(i, j int) bool {
-		if patternsInCommon[i].Craft != patternsInCommon[j].Craft {
-			return patternsInCommon[i].Craft < patternsInCommon[j].Craft
-		}
-
-		// Since the pair of Craft and Name create a unique pattern, we don't need to check further fields.
-		return patternsInCommon[i].Name < patternsInCommon[j].Name
-	})
-
-	return patternsInCommon
+	return pattern.Name < other.Name
 }
 
-// Display prints out the titles and authors of a list of books
-func Display(w io.Writer, patterns []Pattern) {
-	for _, pattern := range patterns {
-		_, _ = fmt.Fprintf(w, "Craft: %10s; Name: %20s; Yardage: %d yards\n", pattern.Craft, pattern.Name, pattern.Yardage)
-	}
+// String implements the Stringer interface.
+func (pattern Pattern) String() string {
+	return fmt.Sprintf("Craft: %10s; Name: %20s; Yardage: %d yards\n", pattern.Craft, pattern.Name, pattern.Yardage)
 }

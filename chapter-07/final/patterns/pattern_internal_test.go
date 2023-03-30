@@ -9,7 +9,7 @@ import (
 	"learngo-pockets/genericworms/patterns"
 )
 
-func TestDecodePattern(t *testing.T) {
+func TestUnmarshalPattern(t *testing.T) {
 	encoding := []byte(`{
         "craft": "crochet",
         "name": "Rainbow in my pocket",
@@ -18,10 +18,20 @@ func TestDecodePattern(t *testing.T) {
 
 	var pattern patterns.Pattern
 
-	json.Unmarshal(encoding, &pattern)
+	err := json.Unmarshal(encoding, &pattern)
+
+	assert.NoError(t, err)
 	assert.Equal(t, patterns.Pattern{
 		Craft:   "crochet",
 		Name:    "Rainbow in my pocket",
 		Yardage: 2370,
 	}, pattern)
+}
+
+func TestPatternBefore(t *testing.T) {
+	// TODO
+}
+
+func TestPatternString(t *testing.T) {
+	// TODO
 }

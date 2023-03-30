@@ -1,7 +1,6 @@
 package books_test
 
 import (
-	"bytes"
 	"encoding/json"
 	"testing"
 
@@ -10,7 +9,7 @@ import (
 	"learngo-pockets/genericworms/books"
 )
 
-func TestDecodeBook(t *testing.T) {
+func TestUnmarshalBook(t *testing.T) {
 	bookJson := []byte(`
 {
   "author": "Sylvia Plath",
@@ -24,24 +23,18 @@ func TestDecodeBook(t *testing.T) {
 	assert.Equal(t, books.Book{Author: "Sylvia Plath", Title: "The Bell Jar"}, book)
 }
 
-func TestDisplay(t *testing.T) {
-	onShelf := []books.Book{
-		{
-			Author: "Sylvia Plath",
-			Title:  "The Bell Jar",
-		},
-		{
-			Author: "Orhan Pamuk",
-			Title:  "Kırmızı Saçlı Kadın",
-		},
+func TestPatternString(t *testing.T) {
+	book := books.Book{
+		Author: "Orhan Pamuk",
+		Title:  "Kırmızı Saçlı Kadın",
 	}
 
-	want := `- The Bell Jar by Sylvia Plath
-- Kırmızı Saçlı Kadın by Orhan Pamuk
-`
+	want := `Kırmızı Saçlı Kadın by Orhan Pamuk`
 
-	bfr := bytes.Buffer{}
-	books.Display(&bfr, onShelf)
+	assert.Equal(t, want, book.String())
+}
 
-	assert.Equal(t, want, bfr.String())
+func TestPatternBefore(t *testing.T) {
+	// TODO
+
 }

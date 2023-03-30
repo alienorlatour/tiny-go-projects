@@ -6,8 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type item string
-
 func TestCountItems(t *testing.T) {
 	tt := map[string]struct {
 		input Collectors[item]
