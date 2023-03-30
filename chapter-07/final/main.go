@@ -18,12 +18,7 @@ func main() {
 	commonBooks := bookworms.FindCommon()
 
 	fmt.Println("Here are the common books:")
-	displayBooks(commonBooks)
-}
+	books.Display(commonBooks)
 
-// displayBooks prints out the titles and authors of a list of books
-func displayBooks(books []books.Book) {
-	for _, book := range books {
-		fmt.Println("-", book.Title, "by", book.Author)
-	}
+	// TODO: Test patterns
 }

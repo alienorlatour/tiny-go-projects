@@ -1,6 +1,7 @@
 package books
 
 import (
+	"fmt"
 	"sort"
 
 	"learngo-pockets/genericworms/collectors"
@@ -25,6 +26,13 @@ func (colls Collectors) FindCommon() []Book {
 	sort.Sort(byAuthor(booksInCommon))
 
 	return booksInCommon
+}
+
+// Display prints out the titles and authors of a list of books
+func Display(books []Book) {
+	for _, book := range books {
+		fmt.Println("-", book.Title, "by", book.Author)
+	}
 }
 
 // byAuthor implements sort.Interface for a list of books.

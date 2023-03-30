@@ -5,4 +5,6 @@ func Example_main() {
 	// Output:
 	// Here are the common books:
 	// - The Handmaid's Tale by Margaret Atwood
+
+	// TODO: Include patterns
 }
