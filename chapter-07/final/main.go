@@ -18,7 +18,7 @@ func main() {
 	commonBooks := bookworms.FindCommon()
 
 	fmt.Println("Here are the common books:")
-	books.Display(commonBooks)
+	books.Display(os.Stdout, commonBooks)
 
 	// TODO: Test patterns
 }
