@@ -8,7 +8,7 @@ import (
 
 type item string
 
-func TestBooksCount(t *testing.T) {
+func TestCountItems(t *testing.T) {
 	tt := map[string]struct {
 		input Collectors[item]
 		want  map[item]uint

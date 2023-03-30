@@ -1,7 +1,7 @@
 [
   {
     "name": "Fadi",
-    "books": [
+    "items": [
       {
         "author": "Margaret Atwood",
         "title": "The Handmaid's Tale"
@@ -14,7 +14,7 @@
   },
   {
     "name": "Peggy",
-    "books": [
+    "items": [
       {
         "author": "Margaret Atwood",
         "title": "Oryx and Crake"
