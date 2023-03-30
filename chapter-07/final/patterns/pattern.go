@@ -1,6 +1,8 @@
 package patterns
 
 import (
+	"fmt"
+	"io"
 	"sort"
 
 	"learngo-pockets/genericworms/collectors"
@@ -24,26 +26,21 @@ func (colls Collectors) FindCommon() []Pattern {
 
 	// sort.Sort sorts the slice in place.
 	// We can instantiate a slice of the type byCraft, which implements sort.Interface.
-	sort.Sort(byCraft(patternsInCommon))
+	sort.Slice(patternsInCommon, func(i, j int) bool {
+		if patternsInCommon[i].Craft != patternsInCommon[j].Craft {
+			return patternsInCommon[i].Craft < patternsInCommon[j].Craft
+		}
+
+		// Since the pair of Craft and Name create a unique pattern, we don't need to check further fields.
+		return patternsInCommon[i].Name < patternsInCommon[j].Name
+	})
 
 	return patternsInCommon
 }
 
-// byCraft implements sort.Interface for a list of patterns.
-type byCraft []Pattern
-
-// Len implements sort.Interface by returning the length of Books.
-func (b byCraft) Len() int { return len(b) }
-
-// Less returns true if Craft_i is before Craft_j in alphabetical order.
-func (b byCraft) Less(i, j int) bool {
-	if b[i].Craft != b[j].Craft {
-		return b[i].Craft < b[j].Craft
+// Display prints out the titles and authors of a list of books
+func Display(w io.Writer, patterns []Pattern) {
+	for _, pattern := range patterns {
+		_, _ = fmt.Fprintf(w, "Craft: %10s; Name: %20s; Yardage: %d yards", pattern.Craft, pattern.Name, pattern.Yardage)
 	}
-
-	// Since the pair of Craft and Name create a unique pattern, we don't need to check further fields.
-	return b[i].Name < b[j].Name
 }
-
-// Swap implements sort.Interface and swaps two books.
-func (b byCraft) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
