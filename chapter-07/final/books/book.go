@@ -1,8 +1,6 @@
 package books
 
 import (
-	"encoding/json"
-	"os"
 	"sort"
 
 	"learngo-pockets/genericworms/collectors"
@@ -16,26 +14,6 @@ type Book struct {
 
 // Collectors describe a list of book collectors and their books
 type Collectors collectors.Collectors[Book]
-
-// Load reads the file and returns the list of collectors, and their beloved books, found therein.
-func Load(filePath string) (Collectors, error) {
-	f, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	// Declare the variable in which the file will be decoded.
-	var colls Collectors
-
-	// Decode the file and store the content in the variable colls.
-	err = json.NewDecoder(f).Decode(&colls)
-	if err != nil {
-		return nil, err
-	}
-
-	return colls, nil
-}
 
 // FindCommon return the books in common, sorted first by author and then title.
 func (colls Collectors) FindCommon() []Book {
