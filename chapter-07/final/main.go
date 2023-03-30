@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	bookworms, err := collectors.Load[books.Book]("books/testdata/bookworms.json")
+	bookworms, err := collectors.Load[books.Book]("testdata/bookworms.json")
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "failed to load bookworms: %s\n", err)
 		os.Exit(1)
