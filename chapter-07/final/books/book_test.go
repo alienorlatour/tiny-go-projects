@@ -29,7 +29,7 @@ func TestPatternString(t *testing.T) {
 		Title:  "Kırmızı Saçlı Kadın",
 	}
 
-	want := `Kırmızı Saçlı Kadın by Orhan Pamuk`
+	want := `Kırmızı Saçlı Kadın, by Orhan Pamuk`
 
 	assert.Equal(t, want, book.String())
 }
