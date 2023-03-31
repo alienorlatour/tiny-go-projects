@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Andrea",
+    "items": [
+      {
+        "craft": "knit",
+        "name": "Sparky",
+        "yardage": 2620
+      },
+      {
+        "craft": "knit",
+        "name": "Plaid Pocket Socks",
+        "yardage": 450
+      }
+    ]
+  },
+  {
+    "name": "Stephen",
+    "items": [
+      {
+        "craft": "knit",
+        "name": "Sparky",
+        "yardage": 2620
+      },
+      {
+        "craft": "crochet",
+        "name": "Rainbow in my pocket",
+        "yardage": 2370
+      }
+    ]
+  },
+  {
+    "name":"Johanna",
+    "items": [
+      {
+        "craft": "knit",
+        "name": "Plaid Pocket Socks",
+        "yardage": 450
+      },
+      {
+        "craft": "sewing",
+        "name": "Rosalie Skirt",
+        "yardage": 3
+      }
+    ]
+  },
+  {
+    "name":"Muhammad",
+    "items": [
+      {
+        "craft": "sewing",
+        "name": "Rosalie Skirt",
+        "yardage": 3
+      }
+    ]
+  }
+]
