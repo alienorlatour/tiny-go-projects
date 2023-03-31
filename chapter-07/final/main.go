@@ -30,5 +30,5 @@ func main() {
 	commonPatterns := crafters.FindCommon()
 
 	fmt.Println("Here are the common patterns:")
-	patterns.Display(os.Stdout, commonPatterns)
+	collectors.Display(os.Stdout, commonPatterns)
 }

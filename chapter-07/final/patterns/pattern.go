@@ -29,5 +29,5 @@ func (pattern Pattern) Before(sortable collectors.Sortable) bool {
 
 // String implements the Stringer interface.
 func (pattern Pattern) String() string {
-	return fmt.Sprintf("Craft: %10s; Name: %20s; Yardage: %d yards\n", pattern.Craft, pattern.Name, pattern.Yardage)
+	return fmt.Sprintf("Craft: %-10s; Name: %-20s; Yardage: %5d yards", pattern.Craft, pattern.Name, pattern.Yardage)
 }
