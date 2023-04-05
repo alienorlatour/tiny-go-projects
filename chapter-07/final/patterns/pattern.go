@@ -24,7 +24,11 @@ func (pattern Pattern) Before(sortable collectors.Sortable) bool {
 		return pattern.Craft < other.Craft
 	}
 
-	return pattern.Name < other.Name
+	if pattern.Name != other.Name {
+		return pattern.Name < other.Name
+	}
+
+	return pattern.Yardage < other.Yardage
 }
 
 // String implements the Stringer interface.

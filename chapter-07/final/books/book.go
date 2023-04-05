@@ -15,14 +15,16 @@ type Book struct {
 func (b Book) Before(sortable collectors.Sortable) bool {
 	other, ok := sortable.(Book)
 	if !ok {
+		// We shouldn't end up calling Before a non-book entity.
+		// The returned value here doesn't mean that books matter less than other things.
 		return false
 	}
 
-	if b.Title != other.Title {
-		return b.Title < other.Title
+	if b.Author != other.Author {
+		return b.Author < other.Author
 	}
 
-	return b.Author < other.Author
+	return b.Title < other.Title
 }
 
 func (b Book) String() string {

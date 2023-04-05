@@ -15,7 +15,6 @@ type Collector[T collectible] struct {
 type collectible interface {
 	comparable
 	Sortable
-	fmt.Stringer
 }
 
 // Sortable exposes a way of telling if an item should appear before another.
@@ -47,9 +46,9 @@ func (c Collectors[T]) FindCommon() []T {
 }
 
 // Display prints the collectible items nicely.
-func Display[T collectible](w io.Writer, items []T) {
+func Display[T any](w io.Writer, items []T) {
 	for _, item := range items {
-		_, _ = fmt.Fprintf(w, "- %s\n", item)
+		_, _ = fmt.Fprintf(w, "- %v\n", item)
 	}
 }
 
