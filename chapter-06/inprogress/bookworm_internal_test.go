@@ -20,11 +20,13 @@ var (
 func TestLoadBookworms(t *testing.T) {
 	noError := func(err error) bool { return err == nil }
 
-	tests := map[string]struct {
+	type testCase struct {
 		bookwormsFile string
 		want          []Bookworm
 		checkError    func(err error) bool
-	}{
+	}
+
+	tests := map[string]testCase{
 		"no common book": {
 			bookwormsFile: "testdata/no_common_book.json",
 			want: []Bookworm{
@@ -47,25 +49,27 @@ func TestLoadBookworms(t *testing.T) {
 			},
 		},
 	}
-	for name, testCase := range tests {
+	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := loadBookworms(testCase.bookwormsFile)
-			if !testCase.checkError(err) {
+			got, err := loadBookworms(tc.bookwormsFile)
+			if !tc.checkError(err) {
 				t.Fatalf("unexpected error: %s", err.Error())
 			}
 
-			if !reflect.DeepEqual(got, testCase.want) {
-				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
+			if !reflect.DeepEqual(got, tc.want) {
+				t.Fatalf("different result: got %v, expected %v", got, tc.want)
 			}
 		})
 	}
 }
 
 func TestFindCommonBooks(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		input []Bookworm
 		want  []Book
-	}{
+	}
+
+	tt := map[string]testCase{
 		"no common book": {
 			input: []Bookworm{
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},

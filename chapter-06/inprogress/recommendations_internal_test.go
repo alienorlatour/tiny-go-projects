@@ -11,10 +11,12 @@ var (
 )
 
 func TestRecommendOtherBooks(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		bookworms []Bookworm
 		want      []Bookworm
-	}{
+	}
+
+	tt := map[string]testCase{
 		"No common books": {
 			bookworms: []Bookworm{
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
