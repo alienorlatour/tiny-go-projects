@@ -14,11 +14,13 @@ var (
 )
 
 func TestLoadBookworms(t *testing.T) {
-	tests := map[string]struct {
+	type testCase struct {
 		bookwormsFile string
 		want          []Bookworm
 		wantErr       bool
-	}{
+	}
+
+	tests := map[string]testCase{
 		"file exists": {
 			bookwormsFile: "testdata/bookworms.json",
 			want: []Bookworm{
@@ -61,10 +63,12 @@ func TestLoadBookworms(t *testing.T) {
 }
 
 func TestBooksCount(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		input []Bookworm
 		want  map[Book]uint
-	}{
+	}
+
+	tt := map[string]testCase{
 		"nominal use case": {
 			input: []Bookworm{
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},
@@ -103,10 +107,12 @@ func TestBooksCount(t *testing.T) {
 }
 
 func TestFindCommonBooks(t *testing.T) {
-	tt := map[string]struct {
+	type testCase struct {
 		input []Bookworm
 		want  []Book
-	}{
+	}
+
+	tt := map[string]testCase{
 		"no common book": {
 			input: []Bookworm{
 				{Name: "Fadi", Books: []Book{handmaidsTale, theBellJar}},

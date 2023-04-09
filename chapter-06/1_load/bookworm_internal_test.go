@@ -12,11 +12,12 @@ var (
 )
 
 func TestLoadBookworms_Success(t *testing.T) {
-	tests := map[string]struct {
+	type testCase struct {
 		bookwormsFile string
 		want          []Bookworm
 		wantErr       bool
-	}{
+	}
+	tests := map[string]testCase{
 		"file exists": {
 			bookwormsFile: "testdata/bookworms.json",
 			want: []Bookworm{
@@ -36,11 +37,11 @@ func TestLoadBookworms_Success(t *testing.T) {
 			wantErr:       true,
 		},
 	}
-	for name, testCase := range tests {
+	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := loadBookworms(testCase.bookwormsFile)
+			got, err := loadBookworms(tc.bookwormsFile)
 
-			if testCase.wantErr {
+			if tc.wantErr {
 				if err == nil {
 					t.Fatal("expected err, got nothing")
 				}
@@ -51,8 +52,8 @@ func TestLoadBookworms_Success(t *testing.T) {
 			if err != nil {
 				t.Fatalf("expected no error, got %v", err)
 			}
-			if !equalBookworms(got, testCase.want) {
-				t.Fatalf("different result: got %v, expected %v", got, testCase.want)
+			if !equalBookworms(got, tc.want) {
+				t.Fatalf("different result: got %v, expected %v", got, tc.want)
 			}
 		})
 	}
