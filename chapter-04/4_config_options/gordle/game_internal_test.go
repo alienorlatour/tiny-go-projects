@@ -78,7 +78,7 @@ func TestGameValidateGuess(t *testing.T) {
 	}
 }
 
-func Test_splitToUppercaseCharacters(t *testing.T) {
+func TestSplitToUppercaseCharacters(t *testing.T) {
 	tt := map[string]struct {
 		input string
 		want  []rune
