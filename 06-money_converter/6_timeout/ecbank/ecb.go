@@ -25,7 +25,8 @@ type Client struct {
 	client *http.Client
 }
 
-func NewBank(timeout time.Duration) Client {
+// NewClient builds a Client that can fetch exchange rates within a given timeout.
+func NewClient(timeout time.Duration) Client {
 	return Client{
 		client: &http.Client{Timeout: timeout},
 	}
@@ -60,9 +61,8 @@ func (c Client) FetchExchangeRate(source, target money.Currency) (money.Exchange
 }
 
 const (
-	userErrorClass     = 4
-	serverErrorClass   = 5
-	httpErrorClassSize = 100
+	clientErrorClass = 4
+	serverErrorClass = 5
 )
 
 // checkStatusCode returns a different error depending on the returned status code.
@@ -70,14 +70,20 @@ func checkStatusCode(statusCode int) error {
 	switch {
 	case statusCode == http.StatusOK:
 		return nil
-	case statusCode/httpErrorClassSize == userErrorClass:
+	case httpStatusClass(statusCode) == clientErrorClass:
 		// errors 4xx
 		return fmt.Errorf("%w: %d", ErrClientSide, statusCode)
-	case statusCode/httpErrorClassSize == serverErrorClass:
+	case httpStatusClass(statusCode) == serverErrorClass:
 		// errors 5xx
 		return fmt.Errorf("%w: %d", ErrServerSide, statusCode)
 	default:
 		// any other usecases
 		return fmt.Errorf("%w: %d", ErrUnknownStatusCode, statusCode)
 	}
+}
+
+// httpStatusClass returns the class of a http status code.
+func httpStatusClass(statusCode int) int {
+	const httpErrorClassSize = 100
+	return statusCode / httpErrorClassSize
 }

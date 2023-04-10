@@ -23,12 +23,17 @@ func TestParseDecimal(t *testing.T) {
 		},
 		"suffix 0 as decimal digits": {
 			decimal:  "1.50",
-			expected: Decimal{150, 2},
+			expected: Decimal{15, 1},
 			err:      nil,
 		},
 		"prefix 0 as decimal digits": {
 			decimal:  "1.02",
 			expected: Decimal{102, 2},
+			err:      nil,
+		},
+		"multiple of 10": {
+			decimal:  "150",
+			expected: Decimal{150, 0},
 			err:      nil,
 		},
 		"invalid decimal part": {

@@ -31,6 +31,11 @@ func TestParseDecimal(t *testing.T) {
 			expected: Decimal{102, 2},
 			err:      nil,
 		},
+		"multiple of 10": {
+			decimal:  "150",
+			expected: Decimal{150, 0},
+			err:      nil,
+		},
 		"invalid decimal part": {
 			decimal: "65.pocket",
 			err:     ErrInvalidDecimal,
