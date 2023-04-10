@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/ablqk/tiny-go-projects/chapter-04/3_corpus/gordle"
+	"learngo-pockets/gordle/gordle"
 )
 
 const maxAttempts = 6

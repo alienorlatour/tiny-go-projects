@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ablqk/tiny-go-projects/chapter-04/4_config_options/gordle"
+	"learngo-pockets/gordle/gordle"
 )
 
 const maxAttempts = 6

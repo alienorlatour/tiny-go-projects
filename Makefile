@@ -1,6 +1,6 @@
 chapters := 02-hello_world \
-			03-bookworms_digest \
-			04-log_story \
+			03-bookworms \
+			04-logger \
 			05-gordle \
 			06-money_converter
 

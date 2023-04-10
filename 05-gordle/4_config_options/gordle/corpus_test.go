@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-04/4_config_options/gordle"
+	"learngo-pockets/gordle/gordle"
 )
 
 func TestReadCorpus(t *testing.T) {
