@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"learngo-pockets/moneyconverter/money"
@@ -18,8 +19,17 @@ func TestEuroCentralBank_FetchExchangeRate_Success(t *testing.T) {
 	}))
 	defer ts.Close()
 
+	proxyURL, err := url.Parse(ts.URL)
+	if err != nil {
+		t.Fatalf("failed to parse proxy URL: %v", err)
+	}
+
 	ecb := Client{
-		client: ts.Client(),
+		client: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyURL(proxyURL),
+			},
+		},
 	}
 
 	got, err := ecb.FetchExchangeRate(mustParseCurrency(t, "USD"), mustParseCurrency(t, "RON"))

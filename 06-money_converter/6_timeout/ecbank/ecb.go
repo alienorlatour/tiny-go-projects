@@ -33,7 +33,7 @@ func NewBank(timeout time.Duration) Client {
 
 // FetchExchangeRate fetches today's ExchangeRate and returns it.
 func (c Client) FetchExchangeRate(source, target money.Currency) (money.ExchangeRate, error) {
-	const euroxrefURL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+	const euroxrefURL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
 
 	resp, err := c.client.Get(euroxrefURL)
 	if err != nil {
