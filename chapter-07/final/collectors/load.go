@@ -7,7 +7,7 @@ import (
 )
 
 // Load reads the file and returns the list of collectors, and their beloved books, found therein.
-func Load[T comparable](filePath string) (Collectors[T], error) {
+func Load[T collectible](filePath string) (Collectors[T], error) {
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, err

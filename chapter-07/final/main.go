@@ -19,7 +19,7 @@ func main() {
 	commonBooks := bookworms.FindCommon()
 
 	fmt.Println("Here are the common books:")
-	books.Display(os.Stdout, commonBooks)
+	collectors.Display(os.Stdout, commonBooks)
 
 	crafters, err := collectors.Load[patterns.Pattern]("testdata/patterns.json")
 	if err != nil {
@@ -30,5 +30,5 @@ func main() {
 	commonPatterns := crafters.FindCommon()
 
 	fmt.Println("Here are the common patterns:")
-	patterns.Display(os.Stdout, commonPatterns)
+	collectors.Display(os.Stdout, commonPatterns)
 }

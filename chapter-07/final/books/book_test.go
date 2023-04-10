@@ -1,16 +1,16 @@
 package books_test
 
 import (
-	"bytes"
 	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
 	"learngo-pockets/genericworms/books"
+	"learngo-pockets/genericworms/collectors"
 )
 
-func TestDecodeBook(t *testing.T) {
+func TestUnmarshalBook(t *testing.T) {
 	bookJson := []byte(`
 {
   "author": "Sylvia Plath",
@@ -24,24 +24,57 @@ func TestDecodeBook(t *testing.T) {
 	assert.Equal(t, books.Book{Author: "Sylvia Plath", Title: "The Bell Jar"}, book)
 }
 
-func TestDisplay(t *testing.T) {
-	onShelf := []books.Book{
-		{
-			Author: "Sylvia Plath",
-			Title:  "The Bell Jar",
+func TestBookBefore(t *testing.T) {
+	testCases := map[string]struct {
+		left  books.Book
+		right collectors.Sortable
+		want  bool
+	}{
+		"Different authors": {
+			left:  books.Book{Author: "Orhan Pamuk", Title: "Kırmızı Saçlı Kadın"},
+			right: books.Book{Author: "Sylvia Plath", Title: "The Bell Jar"},
+			want:  true,
 		},
-		{
-			Author: "Orhan Pamuk",
-			Title:  "Kırmızı Saçlı Kadın",
+		"Different authors, reversed": {
+			left:  books.Book{Author: "Sylvia Plath", Title: "The Bell Jar"},
+			right: books.Book{Author: "Orhan Pamuk", Title: "Kırmızı Saçlı Kadın"},
+			want:  false,
+		},
+		"Same author, different titles": {
+			left:  books.Book{Author: "Sylvia Plath", Title: "The Bell Jar"},
+			right: books.Book{Author: "Sylvia Plath", Title: "Lady Lazarus"},
+			want:  false,
+		},
+		"can't compare a book to a non-book": {
+			left:  books.Book{Author: "Orhan Pamuk", Title: "Kırmızı Saçlı Kadın"},
+			right: nonBook{},
+			want:  false,
 		},
 	}
 
-	want := `- The Bell Jar by Sylvia Plath
-- Kırmızı Saçlı Kadın by Orhan Pamuk
-`
+	for name, testCase := range testCases {
+		// go < 1.20
+		// name, testCase := name, testCase
+		t.Run(name, func(t *testing.T) {
+			got := testCase.left.Before(testCase.right)
+			assert.Equal(t, testCase.want, got)
+		})
+	}
+}
 
-	bfr := bytes.Buffer{}
-	books.Display(&bfr, onShelf)
+func TestBookString(t *testing.T) {
+	book := books.Book{
+		Author: "Orhan Pamuk",
+		Title:  "Kırmızı Saçlı Kadın",
+	}
 
-	assert.Equal(t, want, bfr.String())
+	want := `Kırmızı Saçlı Kadın, by Orhan Pamuk`
+
+	assert.Equal(t, want, book.String())
+}
+
+type nonBook struct{}
+
+func (n nonBook) Before(_ collectors.Sortable) bool {
+	panic("This is a test utility, it shouldn't be called")
 }

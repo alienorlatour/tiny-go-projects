@@ -16,14 +16,14 @@ func noError(t *testing.T, err error) {
 func TestLoad(t *testing.T) {
 	tests := map[string]struct {
 		collsFile string
-		want      Collectors[string]
+		want      Collectors[item]
 		checkErr  func(*testing.T, error)
 	}{
 		"file exists": {
 			collsFile: "testdata/genericitems.json",
-			want: Collectors[string]{
-				{Name: "Fadi", Items: []string{"The Handmaid's Tale", "The Bell Jar"}},
-				{Name: "Peggy", Items: []string{"Oryx and Crake", "The Handmaid's Tale", "Jane Eyre"}},
+			want: Collectors[item]{
+				{Name: "Fadi", Items: []item{"The Handmaid's Tale", "The Bell Jar"}},
+				{Name: "Peggy", Items: []item{"Oryx and Crake", "The Handmaid's Tale", "Jane Eyre"}},
 			},
 			checkErr: noError,
 		},
@@ -49,7 +49,7 @@ func TestLoad(t *testing.T) {
 
 	for name, testCase := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := Load[string](testCase.collsFile)
+			got, err := Load[item](testCase.collsFile)
 			testCase.checkErr(t, err)
 			assert.Equal(t, testCase.want, got)
 		})
