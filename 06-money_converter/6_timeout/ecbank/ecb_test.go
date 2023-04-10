@@ -19,7 +19,7 @@ func TestEuroCentralBank_FetchExchangeRate_Success(t *testing.T) {
 	defer ts.Close()
 
 	ecb := Client{
-		url: ts.URL,
+		client: ts.Client(),
 	}
 
 	got, err := ecb.FetchExchangeRate(mustParseCurrency(t, "USD"), mustParseCurrency(t, "RON"))

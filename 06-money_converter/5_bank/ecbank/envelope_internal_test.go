@@ -69,7 +69,7 @@ func TestChangeRate(t *testing.T) {
 			envelope: envelope{Rates: []currencyRate{{Currency: "USD", Rate: 1.5}}},
 			source:   "EUR",
 			target:   "USD",
-			want:     money.ExchangeRate{},
+			want:     mustParseExchangeRate(t, "1.5"),
 			wantErr:  nil,
 		},
 		// TODO this is not enough
@@ -86,4 +86,14 @@ func TestChangeRate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mustParseExchangeRate(t *testing.T, rate string) money.ExchangeRate {
+	t.Helper()
+
+	exchRate, err := money.ParseDecimal(rate)
+	if err != nil {
+		t.Fatalf("unable to parse exchange rate %s", rate)
+	}
+	return money.ExchangeRate(exchRate)
 }

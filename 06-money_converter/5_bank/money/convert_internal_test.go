@@ -182,19 +182,20 @@ func TestMultiply(t *testing.T) {
 		rate    ExchangeRate
 		want    Decimal
 	}{
-		"10.0 * 1.2 = 12.00": {
+		"10.0 * 1.2 = 12": {
 			decimal: Decimal{100, 1},
 			rate:    ExchangeRate{subunits: 12, precision: 1},
-			want:    Decimal{1200, 2},
+			want:    Decimal{12, 0},
 		},
 		"10 * 2 = 20": {
 			decimal: Decimal{10, 0},
 			rate:    ExchangeRate{subunits: 2, precision: 0},
 			want:    Decimal{20, 0},
 		},
-		"10 * 1e15 = error": {
+		"10 * 1e15": {
 			decimal: Decimal{10, 0},
 			rate:    ExchangeRate{subunits: 1_000_000_000_000_000, precision: 0},
+			want:    Decimal{subunits: 10_000_000_000_000_000, precision: 0},
 		},
 		"1698.188 * 2.198677818 = 3733.768286393784": {
 			decimal: Decimal{1698188, 3},

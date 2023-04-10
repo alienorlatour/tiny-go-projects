@@ -62,8 +62,13 @@ func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, er
 
 // multiply a Decimal with an ExchangeRate and return the product
 func multiply(d Decimal, r ExchangeRate) Decimal {
-	return Decimal{
+	dec := Decimal{
 		subunits:  d.subunits * r.subunits,
 		precision: d.precision + r.precision,
 	}
+
+	// Clean the product before returning it.
+	dec.simplify()
+
+	return dec
 }

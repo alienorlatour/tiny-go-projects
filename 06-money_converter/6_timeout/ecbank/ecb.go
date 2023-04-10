@@ -22,12 +22,12 @@ const (
 
 // Client can call the bank to retrieve exchange rates.
 type Client struct {
-	client http.Client
+	client *http.Client
 }
 
 func NewBank(timeout time.Duration) Client {
 	return Client{
-		client: http.Client{Timeout: timeout},
+		client: &http.Client{Timeout: timeout},
 	}
 }
 

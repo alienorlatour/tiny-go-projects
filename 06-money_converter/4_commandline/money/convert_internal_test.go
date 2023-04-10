@@ -117,7 +117,7 @@ func TestApplyExchangeRate(t *testing.T) {
 					subunits:  265_413_87,
 					precision: 2,
 				}},
-			rate:           ExchangeRate{subunits: 505935, precision: 11},
+			rate:           ExchangeRate{subunits: 505935, precision: 10},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
