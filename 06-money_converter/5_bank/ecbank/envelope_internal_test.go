@@ -69,7 +69,7 @@ func TestChangeRate(t *testing.T) {
 			envelope: envelope{Rates: []currencyRate{{Currency: "USD", Rate: 1.5}}},
 			source:   "EUR",
 			target:   "USD",
-			want:     money.ExchangeRate(1.5),
+			want:     mustParseExchangeRate(t, "1.5"),
 			wantErr:  nil,
 		},
 		// TODO this is not enough
@@ -77,7 +77,7 @@ func TestChangeRate(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got, err := tc.envelope.changeRate(tc.source, tc.target)
+			got, err := tc.envelope.exchangeRate(tc.source, tc.target)
 			if tc.wantErr != err {
 				t.Errorf("unable to marshal: %s", err.Error())
 			}
@@ -86,4 +86,14 @@ func TestChangeRate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func mustParseExchangeRate(t *testing.T, rate string) money.ExchangeRate {
+	t.Helper()
+
+	exchRate, err := money.ParseDecimal(rate)
+	if err != nil {
+		t.Fatalf("unable to parse exchange rate %s", rate)
+	}
+	return money.ExchangeRate(exchRate)
 }

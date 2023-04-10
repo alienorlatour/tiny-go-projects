@@ -1,7 +1,5 @@
 package money
 
-import "fmt"
-
 // Amount defines a decimal of money in a given currency.
 type Amount struct {
 	quantity Decimal
@@ -20,7 +18,7 @@ func NewAmount(quantity Decimal, currency Currency) (Amount, error) {
 		// In order to avoid converting 0.00001 cent, let's exit now.
 		return Amount{}, ErrTooPrecise
 	case quantity.precision < currency.precision:
-		quantity.subunits *= tenToThe(currency.precision - quantity.precision)
+		quantity.subunits *= pow10(currency.precision - quantity.precision)
 		quantity.precision = currency.precision
 	}
 
@@ -41,5 +39,5 @@ func (a Amount) validate() error {
 
 // String implements stringer.
 func (a Amount) String() string {
-	return fmt.Sprintf("%s %s", a.quantity.String(), a.currency.code)
+	return a.quantity.String() + " " + a.currency.code
 }

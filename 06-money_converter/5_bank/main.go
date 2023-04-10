@@ -26,7 +26,7 @@ func main() {
 
 	amount := parseAmount(from)
 
-	rates := ecbank.EuroCentralBank{}
+	rates := ecbank.Client{}
 
 	// convert the amount from the source currency to the target with the current exchange rate
 	convertedAmount, err := money.Convert(amount, toCurrency, rates)

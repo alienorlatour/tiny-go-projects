@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Decimal can represent a floating-point number with a fixed precision.
+// Decimal is capable of storing a decimal value such as 30 or 1543.243.
 // example: 1.52 = 152 * 10^(-2) will be stored as {152, 2}
 type Decimal struct {
 	// subunits is the amount of subunits. Multiply it by the precision to get the real value
@@ -42,19 +42,23 @@ func ParseDecimal(value string) (Decimal, error) {
 	}
 
 	precision := byte(len(fracPart))
+	dec := Decimal{subunits: subunits, precision: precision}
 
-	return Decimal{subunits: subunits, precision: precision}, nil
+	// Let's clean the representation a bit. Remove trailing zeroes.
+	dec.simplify()
+
+	return dec, nil
 }
 
 // String implements stringer and returns the Decimal formatted as
 // digits and optionally a decimal point followed by digits.
-func (d Decimal) String() string {
+func (d *Decimal) String() string {
 	// Quick-win, no need to do maths.
 	if d.precision == 0 {
 		return fmt.Sprintf("%d", d.subunits)
 	}
 
-	centsPerUnit := tenToThe(d.precision)
+	centsPerUnit := pow10(d.precision)
 	frac := d.subunits % centsPerUnit
 	integer := d.subunits / centsPerUnit
 
@@ -63,9 +67,9 @@ func (d Decimal) String() string {
 	return fmt.Sprintf(decimalFormat, integer, frac)
 }
 
-// tenToThe is a quick implementation of how to raise 10 to a given power.
+// pow10 is a quick implementation of how to raise 10 to a given power.
 // It's optimised for small powers, and slow for unusually high powers.
-func tenToThe(power byte) int64 {
+func pow10(power byte) int64 {
 	switch power {
 	case 0:
 		return 1
@@ -77,5 +81,15 @@ func tenToThe(power byte) int64 {
 		return 1000
 	default:
 		return int64(math.Pow(10, float64(power)))
+	}
+}
+
+// simplifies removes trailing zeroes - as long as they're on the right side of the decimal separator.
+func (d *Decimal) simplify() {
+	// Using %10 returns the last digit in base 10 of a number.
+	// If the precision is positive, that digit belongs to the right side of the decimal separator.
+	for d.subunits%10 == 0 && d.precision > 0 {
+		d.precision--
+		d.subunits /= 10
 	}
 }

@@ -13,23 +13,24 @@ func TestEuroCentralBank_FetchExchangeRate_Success(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?><gesmes:Envelope><Cube><Cube>
 			<Cube currency='USD' rate='2'/>
-			<Cube currency='RON' rate='4'/>
+			<Cube currency='RON' rate='6'/>
 		</Cube></Cube></gesmes:Envelope>`)
 	}))
 	defer ts.Close()
 
-	ecb := EuroCentralBank{
-		path: ts.URL,
+	ecb := Client{
+		url: ts.URL,
 	}
 
 	got, err := ecb.FetchExchangeRate(mustParseCurrency(t, "USD"), mustParseCurrency(t, "RON"))
+	want := mustParseDecimal(t, "3")
 
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if got != 2 {
-		t.Errorf("FetchExchangeRate() got = %v, want %v", got, 2)
+	if money.Decimal(got) != want {
+		t.Errorf("FetchExchangeRate() got = %v, want %v", money.Decimal(got), want)
 	}
 }
 
@@ -42,4 +43,15 @@ func mustParseCurrency(t *testing.T, code string) money.Currency {
 	}
 
 	return currency
+}
+
+func mustParseDecimal(t *testing.T, decimal string) money.Decimal {
+	t.Helper()
+
+	dec, err := money.ParseDecimal(decimal)
+	if err != nil {
+		t.Fatalf("cannot parse decimal %s", decimal)
+	}
+
+	return dec
 }

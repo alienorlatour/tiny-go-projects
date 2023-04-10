@@ -17,7 +17,7 @@ func TestConvert(t *testing.T) {
 		"34.98 USD to EUR": {
 			amount: mustParseAmount(t, "34.98", "USD"),
 			to:     mustParseCurrency(t, "EUR"),
-			stub:   stubRate{rate: 2},
+			stub:   stubRate{rate: "2"},
 			validate: func(t *testing.T, got money.Amount, err error) {
 				if err != nil {
 					t.Errorf("expected no error, got %s", err.Error())
@@ -40,13 +40,14 @@ func TestConvert(t *testing.T) {
 
 // stubRate is a very simple stub for the ratesFetcher.
 type stubRate struct {
-	rate money.ExchangeRate
+	rate string
 	err  error
 }
 
 // ExchangeRate implements the interface ratesFetcher with the same signature but fields are unused for tests purposes.
 func (m stubRate) FetchExchangeRate(_, _ money.Currency) (money.ExchangeRate, error) {
-	return m.rate, m.err
+	rate, _ := money.ParseDecimal(m.rate)
+	return money.ExchangeRate(rate), m.err
 }
 
 func mustParseCurrency(t *testing.T, code string) money.Currency {

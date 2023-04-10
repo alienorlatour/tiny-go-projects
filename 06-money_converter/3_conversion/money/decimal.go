@@ -2,6 +2,7 @@ package money
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -41,6 +42,37 @@ func ParseDecimal(value string) (Decimal, error) {
 	}
 
 	precision := byte(len(fracPart))
+	dec := Decimal{subunits: subunits, precision: precision}
 
-	return Decimal{subunits: subunits, precision: precision}, nil
+	// Let's clean the representation a bit. Remove trailing zeroes.
+	dec.simplify()
+
+	return dec, nil
+}
+
+// pow10 is a quick implementation of how to raise 10 to a given power.
+// It's optimised for small powers, and slow for unusually high powers.
+func pow10(power byte) int64 {
+	switch power {
+	case 0:
+		return 1
+	case 1:
+		return 10
+	case 2:
+		return 100
+	case 3:
+		return 1000
+	default:
+		return int64(math.Pow(10, float64(power)))
+	}
+}
+
+// simplifies removes trailing zeroes - as long as they're on the right side of the decimal separator.
+func (d *Decimal) simplify() {
+	// Using %10 returns the last digit in base 10 of a number.
+	// If the precision is positive, that digit belongs to the right side of the decimal separator.
+	for d.subunits%10 == 0 && d.precision > 0 {
+		d.precision--
+		d.subunits /= 10
+	}
 }

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestApplyChangeRate(t *testing.T) {
+func TestApplyExchangeRate(t *testing.T) {
 	tt := map[string]struct {
 		in             Amount
 		rate           ExchangeRate
@@ -20,7 +20,7 @@ func TestApplyChangeRate(t *testing.T) {
 				},
 				currency: Currency{code: "TST", precision: 2},
 			},
-			rate:           1,
+			rate:           ExchangeRate{subunits: 1, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 4},
 			expected: Amount{
 				quantity: Decimal{
@@ -36,7 +36,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  250,
 					precision: 2,
 				}},
-			rate:           4,
+			rate:           ExchangeRate{subunits: 4, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -53,7 +53,7 @@ func TestApplyChangeRate(t *testing.T) {
 					precision: 0,
 				},
 			},
-			rate:           2.5,
+			rate:           ExchangeRate{subunits: 25, precision: 1},
 			targetCurrency: Currency{code: "TRG", precision: 0},
 			expected: Amount{
 				quantity: Decimal{
@@ -69,7 +69,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  314,
 					precision: 2,
 				}},
-			rate:           2.52678,
+			rate:           ExchangeRate{subunits: 252678, precision: 5},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -85,7 +85,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  11,
 					precision: 1,
 				}},
-			rate:           10,
+			rate:           ExchangeRate{subunits: 10, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 1},
 			expected: Amount{
 				quantity: Decimal{
@@ -101,7 +101,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  1_000_000_001,
 					precision: 2,
 				}},
-			rate:           2,
+			rate:           ExchangeRate{subunits: 2, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -117,7 +117,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  265_413_87,
 					precision: 2,
 				}},
-			rate:           5.05935e-5,
+			rate:           ExchangeRate{subunits: 505935, precision: 10},
 			targetCurrency: Currency{code: "TRG", precision: 2},
 			expected: Amount{
 				quantity: Decimal{
@@ -133,7 +133,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  265_413,
 					precision: 0,
 				}},
-			rate:           1,
+			rate:           ExchangeRate{subunits: 1, precision: 0},
 			targetCurrency: Currency{code: "TRG", precision: 3},
 			expected: Amount{
 				quantity: Decimal{
@@ -149,7 +149,7 @@ func TestApplyChangeRate(t *testing.T) {
 					subunits:  2,
 					precision: 0,
 				}},
-			rate:           1.337,
+			rate:           ExchangeRate{subunits: 1337, precision: 3},
 			targetCurrency: Currency{code: "TRG", precision: 5},
 			expected: Amount{
 				quantity: Decimal{
@@ -163,7 +163,7 @@ func TestApplyChangeRate(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := applyChangeRate(tc.in, tc.targetCurrency, tc.rate)
+			got := applyExchangeRate(tc.in, tc.targetCurrency, tc.rate)
 			if !reflect.DeepEqual(got, tc.expected) {
 				t.Errorf("expected %v, got %v", tc.expected, got)
 			}
