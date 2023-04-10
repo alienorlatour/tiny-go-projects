@@ -1,4 +1,4 @@
-module github.com/ablqk/tiny-go-projects/chapter-04/1_2_read_input
+module learngo-pockets/gordle
 
 go 1.19
 

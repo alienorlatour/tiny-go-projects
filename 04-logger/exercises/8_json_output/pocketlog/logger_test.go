@@ -3,7 +3,7 @@ package pocketlog_test
 import (
 	"testing"
 
-	"github.com/ablqk/tiny-go-projects/chapter-03/exercises/8_json_output/pocketlog"
+	"learngo-pockets/logger/pocketlog"
 )
 
 func ExampleLogger_Debug() {
