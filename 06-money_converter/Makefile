@@ -4,8 +4,7 @@ projects := \
 	3_conversion \
 	4_commandline \
 	5_bank \
-	6_timeout \
-	final
+	6_timeout
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done
