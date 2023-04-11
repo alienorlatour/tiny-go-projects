@@ -1,5 +1,5 @@
 module learngo-pockets/gordle
 
-go 1.19
+go 1.20
 
-require golang.org/x/exp v0.0.0-20221031165847-c99f073a8326
+require golang.org/x/exp v0.0.0-20230321023759-10a507213a29
