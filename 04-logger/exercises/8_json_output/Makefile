@@ -2,7 +2,7 @@ run:
 	@go run .
 
 build:
-	@go build -o bin/logger main.go
+	@go build -o bin/ .
 
 test:
 	@go test ./...

@@ -2,7 +2,7 @@ run:
 	@go run .
 
 build:
-	@go build -o bin/gordle main.go
+	@go build -o bin/ .
 
 test:
 	@go test ./...
