@@ -10,9 +10,10 @@ import (
 	"learngo-pockets/httpgordle/api"
 )
 
+// guessHandler is the HTTP implementation of the endpoint that receives a guess and returns a feedback.
 func guessHandler(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
-	id, ok := params["id"]
+	id, ok := params[api.GameID]
 	if !ok {
 		http.Error(writer, "missing the id of the game", http.StatusNotFound)
 	}

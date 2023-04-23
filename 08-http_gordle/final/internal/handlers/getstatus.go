@@ -10,9 +10,10 @@ import (
 	"learngo-pockets/httpgordle/api"
 )
 
+// getStatus is the HTTP implementation of the endpoint that returns the status of a game.
 func getStatus(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
-	id := params["id"]
+	id := params[api.GameID]
 	log.Printf("retrieve status from id: %v", id)
 
 	// TODO: retrieve status from game id

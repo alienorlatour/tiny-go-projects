@@ -3,14 +3,17 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
-	"time"
 
 	"learngo-pockets/httpgordle/api"
 )
 
+// newGameHandler is the HTTP implementation of the endpoint that creates a new game.
 func newGameHandler(writer http.ResponseWriter, _ *http.Request) {
-	id := time.Now().Unix()
+	// Create the identified for a game.
+	// rand isn't good enough for creating IDs, but it'll do for now.
+	id := rand.Int()
 
 	response := api.GameResponse{
 		ID:           fmt.Sprint(id),
