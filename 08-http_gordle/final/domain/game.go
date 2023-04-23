@@ -1,10 +1,13 @@
 package domain
 
 type Game struct {
-	ID           string  `json:"id"`
-	AttemptsLeft string  `json:"attemptsLeft"`
-	Guesses      []Guess `json:"guesses"`
+	ID           string
+	AttemptsLeft byte
+	Guesses      []Guess
+	Solution     string
 }
 
 type Guess struct {
+	Word     string
+	Feedback string
 }
