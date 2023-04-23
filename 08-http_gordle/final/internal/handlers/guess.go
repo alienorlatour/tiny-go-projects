@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
@@ -12,11 +12,6 @@ type guessRequest struct {
 }
 
 func guessHandler(writer http.ResponseWriter, request *http.Request) {
-	if request.Method != http.MethodPost {
-		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
 	params := mux.Vars(request)
 	id, ok := params["id"]
 	if !ok {
