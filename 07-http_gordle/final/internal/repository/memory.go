@@ -31,13 +31,27 @@ func (gr *GameRepository) Create() domain.Game {
 }
 
 // Find a game based on its ID. If nothing is found, return a nil pointer.
-func (gr *GameRepository) Find(id domain.GameID) *domain.Game {
+func (gr *GameRepository) Find(id domain.GameID) (domain.Game, error) {
 	log.Printf("Looking for game %s...", id)
 
 	game, found := gr.games[id]
 	if !found {
-		return nil
+		return domain.Game{}, fmt.Errorf("can't find game %s: %w", id, ErrNotFound)
 	}
 
-	return &game
+	return game, nil
+}
+
+// Guess tries to guess if the word is the solution.
+// This returns the new state of the game, including the feedback for this guess,
+// or an error, if the guess was invalid.
+func (gr *GameRepository) Guess(id domain.GameID, guess string) (domain.Game, error) {
+	game, found := gr.games[id]
+	if !found {
+		return domain.Game{}, fmt.Errorf("can't guess in game %s: %w", id, ErrNotFound)
+	}
+
+	// TODO: Guess.
+
+	return game, nil
 }
