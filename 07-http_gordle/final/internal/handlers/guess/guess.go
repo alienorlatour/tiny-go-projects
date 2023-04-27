@@ -14,7 +14,7 @@ import (
 )
 
 type gameGuesser interface {
-	Guess(id domain.GameID, word string) (*domain.Game, error)
+	Guess(id domain.GameID, word string) (domain.Game, error)
 }
 
 func Handler(repo gameGuesser) http.HandlerFunc {

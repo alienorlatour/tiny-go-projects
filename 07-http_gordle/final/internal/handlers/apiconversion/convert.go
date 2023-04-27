@@ -1,12 +1,11 @@
-package handlers
+package apiconversion
 
 import (
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/domain"
 )
 
-// ToAPI converts a game to the API structure
-func ToAPI(g domain.Game) api.GameResponse {
+func ToAPIResponse(g domain.Game) api.GameResponse {
 	apiGame := api.GameResponse{
 		ID:           string(g.ID),
 		AttemptsLeft: g.AttemptsLeft,

@@ -10,7 +10,7 @@ import (
 
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/domain"
-	"learngo-pockets/httpgordle/internal/handlers"
+	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 	"learngo-pockets/httpgordle/internal/repository"
 )
 
@@ -37,7 +37,7 @@ func Handler(repo gameFinder) http.HandlerFunc {
 		}
 
 		// TODO: retrieve status from game id
-		apiGame := handlers.ToAPI(game)
+		apiGame := apiconversion.ToAPIResponse(game)
 
 		writer.Header().Set("Content-Type", "application/json")
 
