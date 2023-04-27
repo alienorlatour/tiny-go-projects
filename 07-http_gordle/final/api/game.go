@@ -8,6 +8,8 @@ type GameResponse struct {
 	AttemptsLeft byte `json:"attempts_left"`
 	// Guesses is the list of past guesses, and their feedback.
 	Guesses []Guess `json:"guesses"`
+	// WordLength is the number of characters in the word to guess.
+	WordLength byte
 	// Solution is Gordle's secret word. It is only provided when there are no attempts left.
 	Solution string `json:"solution,omitempty"`
 }
