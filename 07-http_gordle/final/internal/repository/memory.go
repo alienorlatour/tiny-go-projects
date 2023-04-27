@@ -29,3 +29,10 @@ func (gr *GameRepository) Create() domain.Game {
 		ID: domain.GameID(fmt.Sprintf("%d", rand.Int())),
 	}
 }
+
+// Find a game based on its ID. If nothing is found, return a nil pointer.
+func (gr *GameRepository) Find(id domain.GameID) *domain.Game {
+	log.Printf("Looking for game %s...", id)
+
+	return nil
+}

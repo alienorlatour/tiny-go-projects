@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/handlers/getstatus"
 	"learngo-pockets/httpgordle/internal/handlers/newgame"
 	"learngo-pockets/httpgordle/internal/repository"
 )
@@ -19,9 +20,9 @@ import (
 func NewRouter(gr *repository.GameRepository) *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc(api.NewGamePath, newgame.Handler(gr)).Methods(http.MethodPost) // curl -X POST -v http://localhost:9090/games
-	r.HandleFunc(api.GetStatusPath, getStatus).Methods(http.MethodGet)          // curl -X GET -v http://localhost:9090/games/1682279480
-	r.HandleFunc(api.GuessPath, guessHandler).Methods(http.MethodPut)           // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"value":"faune"}'
+	r.HandleFunc(api.NewGamePath, newgame.Handler(gr)).Methods(http.MethodPost)    // curl -X POST -v http://localhost:9090/games
+	r.HandleFunc(api.GetStatusPath, getstatus.Handler(gr)).Methods(http.MethodGet) // curl -X GET -v http://localhost:9090/games/1682279480
+	r.HandleFunc(api.GuessPath, guessHandler).Methods(http.MethodPut)              // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"value":"faune"}'
 
 	return r
 }

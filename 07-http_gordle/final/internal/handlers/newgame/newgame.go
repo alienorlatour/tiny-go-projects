@@ -12,6 +12,7 @@ type gameCreator interface {
 	Create() domain.Game
 }
 
+// Handler returns the handler for the game creation endpoint.
 func Handler(repo gameCreator) http.HandlerFunc {
 	return func(writer http.ResponseWriter, _ *http.Request) {
 		g := repo.Create()
