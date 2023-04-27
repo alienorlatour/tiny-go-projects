@@ -34,5 +34,10 @@ func (gr *GameRepository) Create() domain.Game {
 func (gr *GameRepository) Find(id domain.GameID) *domain.Game {
 	log.Printf("Looking for game %s...", id)
 
-	return nil
+	game, found := gr.games[id]
+	if !found {
+		return nil
+	}
+
+	return &game
 }
