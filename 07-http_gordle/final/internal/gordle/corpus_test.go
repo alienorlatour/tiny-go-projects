@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"learngo-pockets/gordle/gordle"
+	"learngo-pockets/httpgordle/internal/gordle"
 )
 
 func TestReadCorpus(t *testing.T) {

@@ -27,7 +27,7 @@ func WithSolution(solution []rune) ConfigFunc {
 // WithMaxAttempts changes the maximum number of attempts (default is unlimited)
 func WithMaxAttempts(maxAttempts int) ConfigFunc {
 	return func(g *Game) error {
-		g.maxAttempts = maxAttempts
+		g.MaxAttempts = maxAttempts
 		return nil
 	}
 }

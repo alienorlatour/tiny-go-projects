@@ -13,7 +13,7 @@ import (
 type Game struct {
 	reader      *bufio.Reader
 	solution    []rune
-	maxAttempts int
+	MaxAttempts int // TODO change it for attempts left change it for byte
 }
 
 // New returns a Game variable, which can be used to Play!
@@ -25,7 +25,7 @@ func New(corpus []string, cfs ...ConfigFunc) (*Game, error) {
 	g := &Game{
 		reader:      bufio.NewReader(os.Stdin),                    // read from stdin by default
 		solution:    splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
-		maxAttempts: -1,                                           // no maximum number of attempts by default
+		MaxAttempts: -1,                                           // no maximum number of attempts by default
 	}
 
 	// Apply the configuration functions after defining the default values, as they override them.
@@ -44,7 +44,7 @@ func (g *Game) Play() {
 	fmt.Println("Welcome to Gordle!")
 
 	// break condition: we've reached the maximum number of attempts
-	for currentAttempt := 1; currentAttempt <= g.maxAttempts; currentAttempt++ {
+	for currentAttempt := 1; currentAttempt <= g.MaxAttempts; currentAttempt++ {
 		// ask for a valid word
 		guess := g.ask()
 

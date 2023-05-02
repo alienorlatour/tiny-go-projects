@@ -2,10 +2,8 @@ package repository
 
 import (
 	"fmt"
-	"log"
-	"math/rand"
-
 	"learngo-pockets/httpgordle/internal/domain"
+	"log"
 )
 
 // GameRepository holds all the current games.
@@ -22,12 +20,18 @@ func New() *GameRepository {
 	}
 }
 
-// Create a game.
-func (gr *GameRepository) Create() domain.Game {
-	log.Print("Creating a game...")
-	return domain.Game{
-		ID: domain.GameID(fmt.Sprintf("%d", rand.Int())),
+// Add inserts for the first time a game in memory.
+func (gr *GameRepository) Add(game domain.Game) error {
+	log.Print("Adding a game...")
+
+	_, ok := gr.games[game.ID]
+	if ok {
+		return fmt.Errorf("gameID %s already exists", game.ID)
 	}
+
+	gr.games[game.ID] = game
+
+	return nil
 }
 
 // Find a game based on its ID. If nothing is found, return a nil pointer.
@@ -38,20 +42,6 @@ func (gr *GameRepository) Find(id domain.GameID) (domain.Game, error) {
 	if !found {
 		return domain.Game{}, fmt.Errorf("can't find game %s: %w", id, ErrNotFound)
 	}
-
-	return game, nil
-}
-
-// Guess tries to guess if the word is the solution.
-// This returns the new state of the game, including the feedback for this guess,
-// or an error, if the guess was invalid.
-func (gr *GameRepository) Guess(id domain.GameID, guess string) (domain.Game, error) {
-	game, found := gr.games[id]
-	if !found {
-		return domain.Game{}, fmt.Errorf("can't guess in game %s: %w", id, ErrNotFound)
-	}
-
-	// TODO: Guess.
 
 	return game, nil
 }

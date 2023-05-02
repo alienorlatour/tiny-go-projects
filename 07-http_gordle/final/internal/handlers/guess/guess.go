@@ -3,18 +3,18 @@ package guess
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"learngo-pockets/httpgordle/internal/domain"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
+	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/repository"
 )
 
 type gameGuesser interface {
-	Guess(id domain.GameID, word string) (domain.Game, error)
+	Find(id domain.GameID) (gordle.Game, error)
 }
 
 func Handler(repo gameGuesser) http.HandlerFunc {
@@ -31,7 +31,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 		}
 
-		game, err := repo.Guess(domain.GameID(id), r.Guess)
+		game, err := repo.Find(domain.GameID(id))
 		if err != nil {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):
@@ -42,7 +42,10 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 			return
 		}
 
-		log.Printf("feedback: %s", game.Guesses[len(game.Guesses)-1].Feedback)
+		game.Play()
+
+		// TODO
+		// game.log.Printf("feedback: %s", game.Guesses[len(game.Guesses)-1].Feedback)
 
 		writer.WriteHeader(http.StatusNoContent)
 	}
