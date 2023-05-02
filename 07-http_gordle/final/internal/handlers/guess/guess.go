@@ -9,12 +9,11 @@ import (
 	"github.com/gorilla/mux"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/repository"
 )
 
 type gameGuesser interface {
-	Find(id domain.GameID) (gordle.Game, error)
+	Find(id domain.GameID) (domain.Game, error)
 }
 
 func Handler(repo gameGuesser) http.HandlerFunc {
@@ -42,7 +41,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 			return
 		}
 
-		game.Play()
+		game.Gordle.Play()
 
 		// TODO
 		// game.log.Printf("feedback: %s", game.Guesses[len(game.Guesses)-1].Feedback)
