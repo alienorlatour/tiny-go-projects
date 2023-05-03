@@ -11,6 +11,7 @@ func ToAPIResponse(g domain.Game) api.GameResponse {
 		AttemptsLeft: g.AttemptsLeft,
 		Guesses:      make([]api.Guess, len(g.Guesses)),
 		WordLength:   byte(len(g.Solution)),
+		Status:       string(g.Status),
 	}
 
 	for index := 0; index < len(g.Guesses); index++ {

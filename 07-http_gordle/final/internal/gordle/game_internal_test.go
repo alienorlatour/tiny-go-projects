@@ -2,67 +2,27 @@ package gordle
 
 import (
 	"errors"
-	"strings"
 	"testing"
 
 	"golang.org/x/exp/slices"
 )
 
-func TestGameAsk(t *testing.T) {
-	tt := map[string]struct {
-		input string
-		want  []rune
-	}{
-		"5 characters in english": {
-			input: "HELLO",
-			want:  []rune("HELLO"),
-		},
-		"5 characters in arabic": {
-			input: "مرحبا",
-			want:  []rune("مرحبا"),
-		},
-		"5 characters in japanese": {
-			input: "こんにちは",
-			want:  []rune("こんにちは"),
-		},
-		"3 characters in japanese": {
-			input: "こんに\nこんにちは",
-			want:  []rune("こんにちは"),
-		},
-	}
-
-	for name, tc := range tt {
-		t.Run(name, func(t *testing.T) {
-			g, _ := New([]string{string(tc.want)}, WithReader(strings.NewReader(tc.input)))
-
-			got := g.ask()
-			if !slices.Equal(got, tc.want) {
-				t.Errorf("got = %v, want %v", string(got), string(tc.want))
-			}
-		})
-	}
-}
-
 func TestGameValidateGuess(t *testing.T) {
 	tt := map[string]struct {
-		word     []rune
+		word     string
 		expected error
 	}{
 		"nominal": {
-			word:     []rune("GUESS"),
+			word:     "GUESS",
 			expected: nil,
 		},
 		"too long": {
-			word:     []rune("POCKET"),
-			expected: errInvalidWordLength,
+			word:     "POCKET",
+			expected: ErrInvalidGuessLength,
 		},
 		"empty": {
-			word:     []rune(""),
-			expected: errInvalidWordLength,
-		},
-		"nil": {
-			word:     nil,
-			expected: errInvalidWordLength,
+			word:     "",
+			expected: ErrInvalidGuessLength,
 		},
 	}
 
@@ -72,7 +32,7 @@ func TestGameValidateGuess(t *testing.T) {
 
 			err := g.validateGuess(tc.word)
 			if !errors.Is(err, tc.expected) {
-				t.Errorf("%c, expected %v, got %v", tc.word, tc.expected, err)
+				t.Errorf("%s, expected %v, got %v", tc.word, tc.expected, err)
 			}
 		})
 	}

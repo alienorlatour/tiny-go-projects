@@ -2,8 +2,9 @@ package repository
 
 import (
 	"fmt"
-	"learngo-pockets/httpgordle/internal/domain"
 	"log"
+
+	"learngo-pockets/httpgordle/internal/domain"
 )
 
 // GameRepository holds all the current games.
@@ -44,4 +45,15 @@ func (gr *GameRepository) Find(id domain.GameID) (domain.Game, error) {
 	}
 
 	return game, nil
+}
+
+// Update a game in the database, overwriting it.
+func (gr *GameRepository) Update(id domain.GameID, game domain.Game) error {
+	_, found := gr.games[id]
+	if !found {
+		return fmt.Errorf("can't find game %s: %w", id, ErrNotFound)
+	}
+
+	gr.games[id] = game
+	return nil
 }

@@ -17,7 +17,19 @@ type Game struct {
 	Guesses []Guess
 	// Solution is Gordle's secret word. It is only provided when there are no attempts left.
 	Solution string
+
+	// Status tells whether the game is playable.
+	Status Status
 }
+
+// Status is a value of either Playing, Won, or Lost.
+type Status string
+
+const (
+	StatusPlaying = "Playing"
+	StatusWon     = "Won"
+	StatusLost    = "Lost"
+)
 
 // A Guess is a pair of a word (submitted by the player) and its feedback (provided by Gordle).
 type Guess struct {

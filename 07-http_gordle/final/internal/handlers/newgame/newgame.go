@@ -7,9 +7,9 @@ import (
 	"math/rand"
 	"net/http"
 
-	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/gordle"
+	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 )
 
 type gameCreator interface {
@@ -25,22 +25,20 @@ func Handler(repo gameCreator) http.HandlerFunc {
 			http.Error(writer, "failed to create a new game", http.StatusInternalServerError)
 		}
 
-		response := api.GameResponse{
-			ID:           string(game.ID),
-			AttemptsLeft: byte(game.Gordle.MaxAttempts), // TODO
-			Guesses:      []api.Guess{},
-		}
+		apiGame := apiconversion.ToAPIResponse(game)
 
 		// Header should be set before the writer.Write call.
 		writer.WriteHeader(http.StatusCreated)
 
 		writer.Header().Set("Content-Type", "application/json")
-		err = json.NewEncoder(writer).Encode(response)
+		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {
 			http.Error(writer, "failed to write response", http.StatusInternalServerError)
 		}
 	}
 }
+
+const maxAttempts = 5
 
 func create(repo gameCreator) (domain.Game, error) {
 	game, err := gordle.New([]string{"LOGIN", "HELLO"})
@@ -49,7 +47,14 @@ func create(repo gameCreator) (domain.Game, error) {
 	}
 
 	id := domain.GameID(fmt.Sprintf("%d", rand.Int()))
-	g := domain.Game{ID: id, Gordle: *game}
+	g := domain.Game{
+		ID:           id,
+		Gordle:       *game,
+		AttemptsLeft: maxAttempts,
+		Guesses:      []domain.Guess{},
+		Solution:     game.ShowAnswer(),
+		Status:       domain.StatusPlaying,
+	}
 
 	err = repo.Add(g)
 	if err != nil {

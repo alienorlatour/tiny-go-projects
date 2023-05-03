@@ -12,6 +12,8 @@ type GameResponse struct {
 	WordLength byte
 	// Solution is Gordle's secret word. It is only provided when there are no attempts left.
 	Solution string `json:"solution,omitempty"`
+	// Status displays whether the game is still playable.
+	Status string `json:"status"`
 }
 
 // A Guess is a pair of a word (submitted by the player) and its feedback (provided by Gordle).
