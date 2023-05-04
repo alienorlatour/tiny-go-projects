@@ -35,7 +35,7 @@ func (gr *GameRepository) Add(game domain.Game) error {
 	return nil
 }
 
-// Find a game based on its ID. If nothing is found, return a nil pointer.
+// Find a game based on its ID. If nothing is found, return a nil pointer and an ErrNotFound error.
 func (gr *GameRepository) Find(id domain.GameID) (domain.Game, error) {
 	log.Printf("Looking for game %s...", id)
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Game holds all the information we need to play a game of gordle.
+// Game holds the information we need to get the feedback of a play.
 type Game struct {
 	solution []rune
 }
@@ -25,10 +25,10 @@ func New(corpus []string) (*Game, error) {
 }
 
 const (
-	ErrInvalidGuessLength = gameError("invalid guess length")
+	ErrInvalidGuess = gameError("invalid guess length")
 )
 
-// Play runs the game.
+// Play runs the game. If the guess is not valid, we return ErrInvalidGuess.
 func (g *Game) Play(guess string) (string, error) {
 	err := g.validateGuess(guess)
 	if err != nil {
@@ -44,7 +44,7 @@ func (g *Game) Play(guess string) (string, error) {
 // validateGuess ensures the guess is valid enough.
 func (g *Game) validateGuess(guess string) error {
 	if len(guess) != len(g.solution) {
-		return fmt.Errorf("expected %d, got %d, %w", len(g.solution), len(guess), ErrInvalidGuessLength)
+		return fmt.Errorf("expected %d characters, got %d, %w", len(g.solution), len(guess), ErrInvalidGuess)
 	}
 
 	return nil

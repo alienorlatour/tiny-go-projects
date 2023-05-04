@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/domain"
@@ -15,14 +15,16 @@ import (
 )
 
 type gameFinder interface {
-	Find(id domain.GameID) (domain.Game, error)
+	Find(domain.GameID) (domain.Game, error)
 }
 
 // Handler returns the handler for the game finder endpoint.
 func Handler(repo gameFinder) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		params := mux.Vars(request)
-		id := params[api.GameID]
+		id := chi.URLParam(request, api.GameID)
+		if id == "" {
+			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+		}
 		log.Printf("retrieve status from id: %v", id)
 
 		game, err := repo.Find(domain.GameID(id))

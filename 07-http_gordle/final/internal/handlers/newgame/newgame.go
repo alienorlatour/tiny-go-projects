@@ -13,7 +13,7 @@ import (
 )
 
 type gameCreator interface {
-	Add(game domain.Game) error
+	Add(domain.Game) error
 }
 
 // Handler returns the handler for the game creation endpoint.
