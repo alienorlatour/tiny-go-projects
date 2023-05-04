@@ -1,9 +1,7 @@
 package handlers
 
 import (
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/handlers/getstatus"
@@ -18,12 +16,12 @@ import (
 //   - Make a guess in a game.
 //
 // The provided router is ready to serve.
-func NewRouter(gr *repository.GameRepository) *mux.Router {
-	r := mux.NewRouter()
+func NewRouter(gr *repository.GameRepository) chi.Router {
+	r := chi.NewRouter()
 
-	r.HandleFunc(api.NewGamePath, newgame.Handler(gr)).Methods(http.MethodPost)    // curl -X POST -v http://localhost:9090/games
-	r.HandleFunc(api.GetStatusPath, getstatus.Handler(gr)).Methods(http.MethodGet) // curl -X GET -v http://localhost:9090/games/1682279480
-	r.HandleFunc(api.GuessPath, guess.Handler(gr)).Methods(http.MethodPut)         // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"value":"faune"}'
+	r.Post(api.NewGamePath, newgame.Handler(gr))    // curl -X POST -v http://localhost:9090/games
+	r.Get(api.GetStatusPath, getstatus.Handler(gr)) // curl -X GET -v http://localhost:9090/games/1682279480
+	r.Put(api.GuessPath, guess.Handler(gr))         // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"value":"faune"}'
 
 	return r
 }
