@@ -91,6 +91,7 @@ func play(repo gameGuesser, id domain.GameID, guess string) (domain.Game, error)
 		Word:     guess,
 		Feedback: feedback,
 	})
+	// TODO: If the game is won, set attempts to 0 and status to either Won or Lost
 	game.AttemptsLeft -= 1
 
 	// Update game status

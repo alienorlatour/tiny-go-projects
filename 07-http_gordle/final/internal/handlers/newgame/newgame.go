@@ -23,6 +23,7 @@ func Handler(repo gameCreator) http.HandlerFunc {
 		if err != nil {
 			log.Printf("unable to create a new game: %s", err)
 			http.Error(writer, "failed to create a new game", http.StatusInternalServerError)
+			return
 		}
 
 		apiGame := apiconversion.ToAPIResponse(game)
@@ -41,7 +42,12 @@ func Handler(repo gameCreator) http.HandlerFunc {
 const maxAttempts = 5
 
 func create(repo gameCreator) (domain.Game, error) {
-	game, err := gordle.New([]string{"LOGIN", "HELLO"})
+	corpus, err := gordle.ReadCorpus("corpus/english.txt")
+	if err != nil {
+		return domain.Game{}, fmt.Errorf("unable to read corpus: %w", err)
+	}
+
+	game, err := gordle.New(corpus)
 	if err != nil {
 		return domain.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}
@@ -52,7 +58,6 @@ func create(repo gameCreator) (domain.Game, error) {
 		Gordle:       *game,
 		AttemptsLeft: maxAttempts,
 		Guesses:      []domain.Guess{},
-		Solution:     game.ShowAnswer(),
 		Status:       domain.StatusPlaying,
 	}
 

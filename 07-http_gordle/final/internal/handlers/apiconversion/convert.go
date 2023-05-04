@@ -6,11 +6,13 @@ import (
 )
 
 func ToAPIResponse(g domain.Game) api.GameResponse {
+	solution := g.Gordle.ShowAnswer()
+
 	apiGame := api.GameResponse{
 		ID:           string(g.ID),
 		AttemptsLeft: g.AttemptsLeft,
 		Guesses:      make([]api.Guess, len(g.Guesses)),
-		WordLength:   byte(len(g.Solution)),
+		WordLength:   byte(len(solution)),
 		Status:       string(g.Status),
 	}
 
@@ -20,7 +22,7 @@ func ToAPIResponse(g domain.Game) api.GameResponse {
 	}
 
 	if g.AttemptsLeft == 0 {
-		apiGame.Solution = g.Solution
+		apiGame.Solution = solution
 	}
 
 	return apiGame

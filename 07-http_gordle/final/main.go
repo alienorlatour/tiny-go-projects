@@ -14,6 +14,7 @@ const port = 9090
 func main() {
 	gr := repository.New()
 
+	// TODO: Insert corpus here.
 	r := handlers.NewRouter(gr)
 	log.Printf("starting router on localhost:%d...", port)
 

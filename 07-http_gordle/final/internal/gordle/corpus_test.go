@@ -21,7 +21,7 @@ func TestReadCorpus(t *testing.T) {
 		"empty corpus": {
 			file:   "../corpus/empty.txt",
 			length: 0,
-			err:    gordle.ErrCorpusIsEmpty,
+			err:    gordle.ErrEmptyCorpus,
 		},
 	}
 

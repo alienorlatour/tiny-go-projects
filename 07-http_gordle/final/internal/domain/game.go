@@ -19,9 +19,6 @@ type Game struct {
 	// Guesses is the list of past guesses, and their feedback.
 	Guesses []Guess
 
-	// Solution is Gordle's secret word. It is only provided when there are no attempts left.
-	Solution string
-
 	// Status tells whether the game is playable.
 	Status Status
 }

@@ -14,7 +14,7 @@ type Game struct {
 // New returns a Game variable, which can be used to Play!
 func New(corpus []string) (*Game, error) {
 	if len(corpus) == 0 {
-		return nil, ErrCorpusIsEmpty
+		return nil, ErrEmptyCorpus
 	}
 
 	g := &Game{
@@ -29,6 +29,7 @@ const (
 )
 
 // Play runs the game. If the guess is not valid, we return ErrInvalidGuess.
+// TODO: Return a status
 func (g *Game) Play(guess string) (string, error) {
 	err := g.validateGuess(guess)
 	if err != nil {

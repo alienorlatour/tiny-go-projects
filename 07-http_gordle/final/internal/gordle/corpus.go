@@ -8,18 +8,23 @@ import (
 	"time"
 )
 
-const ErrCorpusIsEmpty = corpusError("corpus is empty")
+const (
+	// ErrInaccessibleCorpus is returned when the corpus can't be loaded.
+	ErrInaccessibleCorpus = corpusError("corpus can't be opened")
+	// ErrEmptyCorpus is returned when the provided corpus is empty.
+	ErrEmptyCorpus = corpusError("corpus is empty")
+)
 
 // ReadCorpus reads the file located at the given path
-// and returns a list of words.
+// and returns a list of words. If it fails, the error is ErrInaccessibleCorpus or ErrEmptyCorpus.
 func ReadCorpus(path string) ([]string, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("unable to open %q for reading: %w", path, err)
+		return nil, fmt.Errorf("unable to open %q for reading (%s): %w", path, err, ErrInaccessibleCorpus)
 	}
 
 	if len(data) == 0 {
-		return nil, ErrCorpusIsEmpty
+		return nil, ErrEmptyCorpus
 	}
 
 	// we expect the corpus to be a line- or space-separated list of words
