@@ -4,23 +4,23 @@ import "testing"
 
 func Test_feedback_String(t *testing.T) {
 	testCases := map[string]struct {
-		fb   feedback
+		fb   Feedback
 		want string
 	}{
 		"three correct": {
-			fb:   feedback{correctPosition, correctPosition, correctPosition},
+			fb:   Feedback{correctPosition, correctPosition, correctPosition},
 			want: "💚💚💚",
 		},
 		"one of each": {
-			fb:   feedback{correctPosition, wrongPosition, absentCharacter},
+			fb:   Feedback{correctPosition, wrongPosition, absentCharacter},
 			want: "💚🟡⬜️",
 		},
 		"different order for one of each": {
-			fb:   feedback{wrongPosition, absentCharacter, correctPosition},
+			fb:   Feedback{wrongPosition, absentCharacter, correctPosition},
 			want: "🟡⬜️💚",
 		},
 		"unknown position": {
-			fb:   feedback{404},
+			fb:   Feedback{404},
 			want: "💔",
 		},
 	}

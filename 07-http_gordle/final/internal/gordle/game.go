@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Game holds the information we need to get the feedback of a play.
+// Game holds the information we need to get the Feedback of a play.
 type Game struct {
 	solution []rune
 }
@@ -29,17 +29,16 @@ const (
 )
 
 // Play runs the game. If the guess is not valid, we return ErrInvalidGuess.
-// TODO: Return a status
-func (g *Game) Play(guess string) (string, error) {
+func (g *Game) Play(guess string) (Feedback, error) {
 	err := g.validateGuess(guess)
 	if err != nil {
-		return "", fmt.Errorf("invalid play: %w", err)
+		return Feedback{}, fmt.Errorf("invalid play: %w", err)
 	}
 
 	// check it
 	characters := splitToUppercaseCharacters(guess)
 	fb := computeFeedback(characters, g.solution)
-	return fb.String(), nil
+	return fb, nil
 }
 
 // validateGuess ensures the guess is valid enough.
@@ -62,14 +61,14 @@ func splitToUppercaseCharacters(input string) []rune {
 }
 
 // computeFeedback verifies every character of the guess against the solution.
-func computeFeedback(guess, solution []rune) feedback {
+func computeFeedback(guess, solution []rune) Feedback {
 	// initialise holders for marks
-	result := make(feedback, len(guess))
+	result := make(Feedback, len(guess))
 	used := make([]bool, len(solution))
 
 	if len(guess) != len(solution) {
 		_, _ = fmt.Fprintf(os.Stderr, "guess and solution have different lengths: %d vs %d", len(guess), len(solution))
-		// return a feedback full of absent characters
+		// return a Feedback full of absent characters
 		return result
 	}
 

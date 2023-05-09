@@ -21,7 +21,7 @@ func NewRouter(gr *repository.GameRepository) chi.Router {
 
 	r.Post(api.NewGamePath, newgame.Handler(gr))    // curl -X POST -v http://localhost:9090/games
 	r.Get(api.GetStatusPath, getstatus.Handler(gr)) // curl -X GET -v http://localhost:9090/games/1682279480
-	r.Put(api.GuessPath, guess.Handler(gr))         // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"value":"faune"}'
+	r.Put(api.GuessPath, guess.Handler(gr))         // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"guess":"faune"}'
 
 	return r
 }

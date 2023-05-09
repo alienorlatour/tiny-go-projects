@@ -9,6 +9,6 @@ func (d domainError) Error() string {
 }
 
 const (
-	// ErrNoAttemptsLeft is returned when a play is made but the game is over.
-	ErrNoAttemptsLeft = domainError("no attempts left")
+	// ErrGameOver is returned when a play is made but the game is over.
+	ErrGameOver = domainError("❌game over")
 )

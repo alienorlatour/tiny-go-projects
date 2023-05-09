@@ -45,7 +45,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 				http.Error(writer, err.Error(), http.StatusNotFound)
 			case errors.Is(err, gordle.ErrInvalidGuess):
 				http.Error(writer, err.Error(), http.StatusBadRequest)
-			case errors.Is(err, domain.ErrNoAttemptsLeft):
+			case errors.Is(err, domain.ErrGameOver):
 				http.Error(writer, err.Error(), http.StatusForbidden)
 			default:
 				http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -74,8 +74,8 @@ func play(repo gameGuesser, id domain.GameID, guess string) (domain.Game, error)
 	}
 
 	// Are plays still allowed?
-	if game.AttemptsLeft == 0 {
-		return domain.Game{}, domain.ErrNoAttemptsLeft
+	if game.AttemptsLeft == 0 || game.Status == domain.StatusWon {
+		return domain.Game{}, domain.ErrGameOver
 	}
 
 	// What does Gordle say about this guess ?
@@ -89,10 +89,20 @@ func play(repo gameGuesser, id domain.GameID, guess string) (domain.Game, error)
 	// Record the play.
 	game.Guesses = append(game.Guesses, domain.Guess{
 		Word:     guess,
-		Feedback: feedback,
+		Feedback: feedback.String(),
 	})
-	// TODO: If the game is won, set attempts to 0 and status to either Won or Lost
+
 	game.AttemptsLeft -= 1
+
+	switch {
+	case feedback.GameWon():
+		game.Status = domain.StatusWon
+	case game.AttemptsLeft == 0:
+		game.Status = domain.StatusLost
+	default:
+		// Should be already set.
+		game.Status = domain.StatusPlaying
+	}
 
 	// Update game status
 	err = repo.Update(id, game)

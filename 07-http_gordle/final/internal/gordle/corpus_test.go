@@ -14,12 +14,12 @@ func TestReadCorpus(t *testing.T) {
 		err    error
 	}{
 		"English corpus": {
-			file:   "../corpus/english.txt",
+			file:   "../../corpus/english.txt",
 			length: 34,
 			err:    nil,
 		},
 		"empty corpus": {
-			file:   "../corpus/empty.txt",
+			file:   "../../corpus/empty.txt",
 			length: 0,
 			err:    gordle.ErrEmptyCorpus,
 		},
