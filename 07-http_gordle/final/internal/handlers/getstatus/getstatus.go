@@ -38,7 +38,6 @@ func Handler(repo gameFinder) http.HandlerFunc {
 			return
 		}
 
-		// TODO: retrieve status from game id
 		apiGame := apiconversion.ToAPIResponse(game)
 
 		writer.Header().Set("Content-Type", "application/json")
