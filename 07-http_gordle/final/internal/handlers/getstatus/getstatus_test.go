@@ -13,6 +13,7 @@ import (
 
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/domain"
+	"learngo-pockets/httpgordle/internal/repository"
 )
 
 func TestHandler(t *testing.T) {
@@ -47,6 +48,14 @@ func TestHandler(t *testing.T) {
 				err: nil,
 			},
 		},
+		"not found": {
+			wantStatusCode: http.StatusNotFound,
+			finder:         gameFinderStub{err: repository.ErrNotFound},
+		},
+		"other error": {
+			wantStatusCode: http.StatusInternalServerError,
+			finder:         gameFinderStub{err: fmt.Errorf("not today")},
+		},
 	}
 
 	for name, testCase := range tt {
@@ -76,10 +85,31 @@ func TestHandler(t *testing.T) {
 			assert.Equal(t, testCase.wantStatusCode, rr.Code)
 
 			// Check the response body is what we expect. Use JSONEq rather than Equal.
-			assert.JSONEq(t, testCase.wantBody, rr.Body.String())
+			if testCase.wantBody != "" {
+				assert.JSONEq(t, testCase.wantBody, rr.Body.String())
+			}
 		})
 
 	}
+}
+
+func TestHandler_missingParameter(t *testing.T) {
+	f := Handler(nil)
+
+	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
+	// pass 'nil' as the third parameter.
+	req, err := http.NewRequest(http.MethodGet, "/games", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+	rr := httptest.NewRecorder()
+
+	f.ServeHTTP(rr, req)
+
+	// Check the status code is what we expect.
+	assert.Equal(t, http.StatusNotFound, rr.Code)
 }
 
 type gameFinderStub struct {
