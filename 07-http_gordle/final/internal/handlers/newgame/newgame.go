@@ -41,8 +41,11 @@ func Handler(repo gameCreator) http.HandlerFunc {
 
 const maxAttempts = 5
 
+// corpusPath is not a constant because we are changing it during tests. In production, it would be a configuation of the main program.
+var corpusPath = "corpus/english.txt"
+
 func create(repo gameCreator) (domain.Game, error) {
-	corpus, err := gordle.ReadCorpus("corpus/english.txt")
+	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return domain.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}

@@ -63,8 +63,7 @@ func TestHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			f := Handler(testCase.finder)
 
-			// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-			// pass 'nil' as the third parameter.
+			// Create a request to pass to our handler.
 			path := strings.Replace(api.GetStatusPath, fmt.Sprintf("{%s}", api.GameID), "123456", 1)
 			req, err := http.NewRequest(http.MethodGet, path, nil)
 			if err != nil {
