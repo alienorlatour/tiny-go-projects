@@ -50,20 +50,21 @@ func TestHandler(t *testing.T) {
 			assert.Equal(t, testCase.wantStatusCode, rr.Code)
 
 			// Check the response body is what we expect. Use JSONEq rather than Equal.
-			if testCase.wantBody != "" {
-				// replace the ID
-				body := rr.Body.String()
-				id := idFinderRegexp.FindStringSubmatch(body)
-				if len(id) != 2 {
-					t.Fatal("cannot find one single id in the json output")
-				}
-				body = strings.Replace(body, id[1], "123456", 1)
-
-				// validate the rest
-				assert.JSONEq(t, testCase.wantBody, body)
+			if testCase.wantBody == "" {
+				return
 			}
-		})
 
+			// replace the ID
+			body := rr.Body.String()
+			id := idFinderRegexp.FindStringSubmatch(body)
+			if len(id) != 2 {
+				t.Fatal("cannot find one single id in the json output")
+			}
+			body = strings.Replace(body, id[1], "123456", 1)
+
+			// validate the rest
+			assert.JSONEq(t, testCase.wantBody, body)
+		})
 	}
 }
 

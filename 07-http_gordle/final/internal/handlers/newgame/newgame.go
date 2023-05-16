@@ -41,7 +41,8 @@ func Handler(repo gameCreator) http.HandlerFunc {
 
 const maxAttempts = 5
 
-// corpusPath is not a constant because we are changing it during tests. In production, it would be a configuation of the main program.
+// corpusPath is not a constant because we are changing it during tests.
+// In production, it would be a configuration of the main program and be passed as parameter.
 var corpusPath = "corpus/english.txt"
 
 func create(repo gameCreator) (domain.Game, error) {

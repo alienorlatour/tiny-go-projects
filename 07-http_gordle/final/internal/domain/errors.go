@@ -10,5 +10,5 @@ func (d domainError) Error() string {
 
 const (
 	// ErrGameOver is returned when a play is made but the game is over.
-	ErrGameOver = domainError("❌game over")
+	ErrGameOver = domainError("❌ game over")
 )
