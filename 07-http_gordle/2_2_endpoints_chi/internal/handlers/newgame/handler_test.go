@@ -18,5 +18,5 @@ func TestHandle(t *testing.T) {
 	Handle(recorder, req)
 
 	assert.Equal(t, http.StatusCreated, recorder.Code)
-	assert.Equal(t, "Creating a new game", recorder.Body.String())
+	assert.JSONEq(t, `{"id":"","attempts_left":0,"guesses":null,"word_length":0,"status":""}`, recorder.Body.String())
 }

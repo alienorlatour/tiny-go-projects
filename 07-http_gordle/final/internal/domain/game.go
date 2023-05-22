@@ -2,7 +2,7 @@ package domain
 
 import "learngo-pockets/httpgordle/internal/gordle"
 
-// A GameID represents an identified of a game
+// A GameID represents the ID of a game
 type GameID string
 
 // Game contains the information about a game.
@@ -23,7 +23,7 @@ type Game struct {
 	Status Status
 }
 
-// Status is a value of either Playing, Won, or Lost.
+// Status is the current status of the game and tells what operations can be made on it.
 type Status string
 
 const (
