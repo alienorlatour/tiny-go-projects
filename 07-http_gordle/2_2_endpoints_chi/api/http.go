@@ -1,8 +1,8 @@
 package api
 
-import "net/http"
-
 const (
-	NewGameRoute  = "/games"
-	NewGameMethod = http.MethodPost
+	NewGameRoute = "/games"
+
+	GameID         = "id"
+	GetStatusRoute = "/games/{" + GameID + "}"
 )
