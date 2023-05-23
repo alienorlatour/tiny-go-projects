@@ -3,11 +3,11 @@ package main
 import (
 	"net/http"
 
-	"learngo-pockets/httpgordle/internal"
+	"learngo-pockets/httpgordle/internal/handlers"
 )
 
 func main() {
-	err := http.ListenAndServe(":8080", internal.Mux())
+	err := http.ListenAndServe(":8080", handlers.Mux())
 	if err != nil {
 		panic(err)
 	}
