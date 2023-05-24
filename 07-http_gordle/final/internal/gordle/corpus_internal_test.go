@@ -4,9 +4,9 @@ import (
 	"testing"
 )
 
-func TestPickWord(t *testing.T) {
+func TestPickRandomWord(t *testing.T) {
 	corpus := []string{"HELLO", "SALUT", "ПРИВЕТ", "ΧΑΙΡΕ"}
-	word := pickWord(corpus)
+	word := pickRandomWord(corpus)
 
 	if !inCorpus(corpus, word) {
 		t.Errorf("expected a word in the corpus, got %q", word)

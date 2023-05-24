@@ -18,7 +18,7 @@ func New(corpus []string) (*Game, error) {
 	}
 
 	g := &Game{
-		solution: splitToUppercaseCharacters(pickWord(corpus)), // pick a random word from the corpus
+		solution: splitToUppercaseCharacters(pickRandomWord(corpus)), // pick a random word from the corpus
 	}
 
 	return g, nil
