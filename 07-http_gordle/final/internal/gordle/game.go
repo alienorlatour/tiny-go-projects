@@ -17,11 +17,9 @@ func New(corpus []string) (*Game, error) {
 		return nil, ErrEmptyCorpus
 	}
 
-	g := &Game{
+	return &Game{
 		solution: splitToUppercaseCharacters(pickRandomWord(corpus)), // pick a random word from the corpus
-	}
-
-	return g, nil
+	}, nil
 }
 
 const (
@@ -32,7 +30,7 @@ const (
 func (g *Game) Play(guess string) (Feedback, error) {
 	err := g.validateGuess(guess)
 	if err != nil {
-		return Feedback{}, fmt.Errorf("invalid play: %w", err)
+		return Feedback{}, fmt.Errorf("this guess is not the correct length: %w", err)
 	}
 
 	// check it
@@ -44,7 +42,7 @@ func (g *Game) Play(guess string) (Feedback, error) {
 // validateGuess ensures the guess is valid enough.
 func (g *Game) validateGuess(guess string) error {
 	if len(guess) != len(g.solution) {
-		return fmt.Errorf("expected %d characters, got %d, %w", len(g.solution), len(guess), ErrInvalidGuess)
+		return fmt.Errorf("you guessed a %d word length, remember the answer is %d word length, %w", len(g.solution), len(guess), ErrInvalidGuess)
 	}
 
 	return nil

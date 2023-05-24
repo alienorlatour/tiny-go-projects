@@ -16,9 +16,9 @@ func ToAPIResponse(g session.Game) api.GameResponse {
 		Status:       string(g.Status),
 	}
 
-	for index := 0; index < len(g.Guesses); index++ {
-		apiGame.Guesses[index].Word = g.Guesses[index].Word
-		apiGame.Guesses[index].Feedback = g.Guesses[index].Feedback
+	for i := range apiGame.Guesses {
+		apiGame.Guesses[i].Word = g.Guesses[i].Word
+		apiGame.Guesses[i].Feedback = g.Guesses[i].Feedback
 	}
 
 	if g.AttemptsLeft == 0 {
