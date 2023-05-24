@@ -1,6 +1,6 @@
-package domain
+package session
 
-// domainError is a sentinel error for the domain.
+// domainError is a sentinel error for the session.
 type domainError string
 
 // Error implements the error interface.

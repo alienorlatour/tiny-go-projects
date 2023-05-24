@@ -2,10 +2,10 @@ package apiconversion
 
 import (
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
-func ToAPIResponse(g domain.Game) api.GameResponse {
+func ToAPIResponse(g session.Game) api.GameResponse {
 	solution := g.Gordle.ShowAnswer()
 
 	apiGame := api.GameResponse{

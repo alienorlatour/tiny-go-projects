@@ -9,13 +9,13 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 	"learngo-pockets/httpgordle/internal/repository"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 type gameFinder interface {
-	Find(domain.GameID) (domain.Game, error)
+	Find(session.GameID) (session.Game, error)
 }
 
 // Handler returns the handler for the game finder endpoint.
@@ -27,7 +27,7 @@ func Handler(repo gameFinder) http.HandlerFunc {
 		}
 		log.Printf("retrieve status from id: %v", id)
 
-		game, err := repo.Find(domain.GameID(id))
+		game, err := repo.Find(session.GameID(id))
 		if err != nil {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):

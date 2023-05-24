@@ -10,15 +10,15 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 	"learngo-pockets/httpgordle/internal/repository"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 type gameGuesser interface {
-	Find(domain.GameID) (domain.Game, error)
-	Update(domain.GameID, domain.Game) error
+	Find(session.GameID) (session.Game, error)
+	Update(session.GameID, session.Game) error
 }
 
 // Handler returns a handler for guess requests.
@@ -38,14 +38,14 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 			return
 		}
 
-		game, err := play(repo, domain.GameID(id), r.Guess)
+		game, err := play(repo, session.GameID(id), r.Guess)
 		if err != nil {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):
 				http.Error(writer, err.Error(), http.StatusNotFound)
 			case errors.Is(err, gordle.ErrInvalidGuess):
 				http.Error(writer, err.Error(), http.StatusBadRequest)
-			case errors.Is(err, domain.ErrGameOver):
+			case errors.Is(err, session.ErrGameOver):
 				http.Error(writer, err.Error(), http.StatusForbidden)
 			default:
 				http.Error(writer, err.Error(), http.StatusInternalServerError)
@@ -66,28 +66,28 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 	}
 }
 
-func play(repo gameGuesser, id domain.GameID, guess string) (domain.Game, error) {
+func play(repo gameGuesser, id session.GameID, guess string) (session.Game, error) {
 	// Does the game exist?
 	game, err := repo.Find(id)
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("unable to find game repository: %w", err)
+		return session.Game{}, fmt.Errorf("unable to find game repository: %w", err)
 	}
 
 	// Are plays still allowed?
-	if game.AttemptsLeft == 0 || game.Status == domain.StatusWon {
-		return domain.Game{}, domain.ErrGameOver
+	if game.AttemptsLeft == 0 || game.Status == session.StatusWon {
+		return session.Game{}, session.ErrGameOver
 	}
 
 	// What does Gordle say about this guess ?
 	feedback, err := game.Gordle.Play(guess)
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("unable to play move: %w", err)
+		return session.Game{}, fmt.Errorf("unable to play move: %w", err)
 	}
 
 	log.Printf("Guess %v is valid in game %s", guess, id)
 
 	// Record the play.
-	game.Guesses = append(game.Guesses, domain.Guess{
+	game.Guesses = append(game.Guesses, session.Guess{
 		Word:     guess,
 		Feedback: feedback.String(),
 	})
@@ -96,18 +96,18 @@ func play(repo gameGuesser, id domain.GameID, guess string) (domain.Game, error)
 
 	switch {
 	case feedback.GameWon():
-		game.Status = domain.StatusWon
+		game.Status = session.StatusWon
 	case game.AttemptsLeft == 0:
-		game.Status = domain.StatusLost
+		game.Status = session.StatusLost
 	default:
 		// Should be already set.
-		game.Status = domain.StatusPlaying
+		game.Status = session.StatusPlaying
 	}
 
 	// Update game status
 	err = repo.Update(id, game)
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("unable to save play: %w", err)
+		return session.Game{}, fmt.Errorf("unable to save play: %w", err)
 	}
 
 	return game, nil

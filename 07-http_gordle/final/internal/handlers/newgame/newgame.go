@@ -7,13 +7,13 @@ import (
 	"math/rand"
 	"net/http"
 
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 type gameCreator interface {
-	Add(domain.Game) error
+	Add(session.Game) error
 }
 
 // Handler returns the handler for the game creation endpoint.
@@ -41,29 +41,29 @@ func Handler(repo gameCreator) http.HandlerFunc {
 
 const maxAttempts = 5
 
-func create(repo gameCreator) (domain.Game, error) {
+func create(repo gameCreator) (session.Game, error) {
 	corpus, err := gordle.ReadCorpus("corpus/english.txt")
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("unable to read corpus: %w", err)
+		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
 
 	game, err := gordle.New(corpus)
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("failed to create a new gordle game")
+		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}
 
-	id := domain.GameID(fmt.Sprintf("%d", rand.Int()))
-	g := domain.Game{
+	id := session.GameID(fmt.Sprintf("%d", rand.Int()))
+	g := session.Game{
 		ID:           id,
 		Gordle:       *game,
 		AttemptsLeft: maxAttempts,
-		Guesses:      []domain.Guess{},
-		Status:       domain.StatusPlaying,
+		Guesses:      []session.Guess{},
+		Status:       session.StatusPlaying,
 	}
 
 	err = repo.Add(g)
 	if err != nil {
-		return domain.Game{}, fmt.Errorf("failed to save the new game")
+		return session.Game{}, fmt.Errorf("failed to save the new game")
 	}
 
 	return g, nil

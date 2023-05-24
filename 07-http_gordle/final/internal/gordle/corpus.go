@@ -23,12 +23,12 @@ func ReadCorpus(path string) ([]string, error) {
 		return nil, fmt.Errorf("unable to open %q for reading (%s): %w", path, err, ErrInaccessibleCorpus)
 	}
 
-	if len(data) == 0 {
-		return nil, ErrEmptyCorpus
-	}
-
 	// we expect the corpus to be a line- or space-separated list of words
 	words := strings.Fields(string(data))
+
+	if len(words) == 0 {
+		return nil, ErrEmptyCorpus
+	}
 
 	return words, nil
 }
@@ -40,6 +40,7 @@ func pickWord(corpus []string) string {
 	//nolint:staticcheck // Only if you use Go < 1.20.
 	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Intn(len(corpus))
+	// TODO DONIA use crytpoo
 
 	return corpus[index]
 }

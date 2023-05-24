@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/gordle"
+	"learngo-pockets/httpgordle/internal/session"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -13,22 +13,22 @@ import (
 func TestToAPIResponse(t *testing.T) {
 	id := "1682279480"
 	tt := map[string]struct {
-		game domain.Game
+		game session.Game
 		want api.GameResponse
 	}{
 		"nominal": {
-			game: domain.Game{
-				ID: domain.GameID(id),
+			game: session.Game{
+				ID: session.GameID(id),
 				Gordle: func() gordle.Game {
 					g, _ := gordle.New([]string{"HELLO"})
 					return *g
 				}(),
 				AttemptsLeft: 4,
-				Guesses: []domain.Guess{{
+				Guesses: []session.Guess{{
 					Word:     "FAUNE",
 					Feedback: "⬜️🟡⬜️⬜️⬜️",
 				}},
-				Status: domain.StatusPlaying,
+				Status: session.StatusPlaying,
 			},
 			want: api.GameResponse{
 				ID:           id,
@@ -39,7 +39,7 @@ func TestToAPIResponse(t *testing.T) {
 				}},
 				WordLength: 5,
 				Solution:   "",
-				Status:     domain.StatusPlaying,
+				Status:     session.StatusPlaying,
 			},
 		},
 	}
