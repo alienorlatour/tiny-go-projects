@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 func Handle(w http.ResponseWriter, req *http.Request) {
@@ -37,8 +37,8 @@ func Handle(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func guess(id string, r api.GuessRequest) domain.Game {
-	return domain.Game{
-		ID: domain.GameID(id),
+func guess(id string, r api.GuessRequest) session.Game {
+	return session.Game{
+		ID: session.GameID(id),
 	}
 }

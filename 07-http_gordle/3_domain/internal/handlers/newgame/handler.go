@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"learngo-pockets/httpgordle/internal/domain"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 func Handle(w http.ResponseWriter, req *http.Request) {
@@ -21,6 +21,6 @@ func Handle(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func createGame() domain.Game {
-	return domain.Game{}
+func createGame() session.Game {
+	return session.Game{}
 }

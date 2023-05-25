@@ -1,14 +1,14 @@
 package domain
 
-// domainError is a sentinel error for the domain.
-type domainError string
+// Error is a sentinel error for the domain.
+type Error string
 
 // Error implements the error interface.
-func (d domainError) Error() string {
+func (d Error) Error() string {
 	return string(d)
 }
 
 const (
 	// ErrGameOver is returned when a play is made but the game is over.
-	ErrGameOver = domainError("❌game over")
+	ErrGameOver = Error("❌game over")
 )

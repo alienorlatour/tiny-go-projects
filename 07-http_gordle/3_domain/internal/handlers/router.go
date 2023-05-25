@@ -5,11 +5,14 @@ import (
 
 	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/handlers/getstatus"
+	"learngo-pockets/httpgordle/internal/handlers/guess"
 	"learngo-pockets/httpgordle/internal/handlers/newgame"
 )
 
 // NewRouter returns a router that listens for requests to the following endpoints:
 //   - Create a new game;
+//   - Get the status of a game;
+//   - Make a guess in a game.
 //
 // The provided router is ready to serve.
 func NewRouter() chi.Router {
@@ -17,7 +20,7 @@ func NewRouter() chi.Router {
 
 	r.Post(api.NewGameRoute, newgame.Handle)
 	r.Get(api.GetStatusRoute, getstatus.Handle)
-	r.Put(api.GuessRoute, nil)
+	r.Put(api.GuessRoute, guess.Handle)
 
 	return r
 }
