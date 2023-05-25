@@ -11,8 +11,13 @@ import (
 	"learngo-pockets/httpgordle/internal/session"
 )
 
+type gameGuesser interface {
+	Find(session.GameID) (session.Game, error)
+	Update(session.GameID, session.Game) error
+}
+
 // Handler returns the handler for the game creation endpoint.
-func Handler(repo interface{}) http.HandlerFunc {
+func Handler(db gameGuesser) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		id := chi.URLParam(req, api.GameID)
 		if id == "" {
@@ -28,7 +33,7 @@ func Handler(repo interface{}) http.HandlerFunc {
 			return
 		}
 
-		game := guess(id, r)
+		game := guess(id, r, db)
 
 		apiGame := apiconversion.ToAPIResponse(game)
 
@@ -40,7 +45,7 @@ func Handler(repo interface{}) http.HandlerFunc {
 	}
 }
 
-func guess(id string, r api.GuessRequest) session.Game {
+func guess(id string, r api.GuessRequest, db gameGuesser) session.Game {
 	return session.Game{
 		ID: session.GameID(id),
 	}

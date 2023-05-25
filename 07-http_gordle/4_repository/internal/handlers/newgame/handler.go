@@ -13,9 +13,9 @@ type gameAdder interface {
 }
 
 // Handler returns the handler for the game creation endpoint.
-func Handler(repo gameAdder) http.HandlerFunc {
+func Handler(db gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
-		game := createGame()
+		game := createGame(db)
 
 		apiGame := apiconversion.ToAPIResponse(game)
 
@@ -28,6 +28,6 @@ func Handler(repo gameAdder) http.HandlerFunc {
 	}
 }
 
-func createGame() session.Game {
+func createGame(db gameAdder) session.Game {
 	return session.Game{}
 }
