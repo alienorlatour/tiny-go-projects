@@ -1,10 +1,12 @@
 package newgame
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
+	"math"
+	"math/big"
 	"net/http"
 
 	"learngo-pockets/httpgordle/internal/gordle"
@@ -52,7 +54,12 @@ func create(repo gameCreator) (session.Game, error) {
 		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}
 
-	id := session.GameID(fmt.Sprintf("%d", rand.Int()))
+	idInt, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt))
+	if err != nil {
+		return session.Game{}, fmt.Errorf("failed to generate a random id")
+	}
+
+	id := session.GameID(fmt.Sprintf("%d", idInt))
 	g := session.Game{
 		ID:           id,
 		Gordle:       *game,

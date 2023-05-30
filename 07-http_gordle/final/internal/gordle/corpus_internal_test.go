@@ -6,7 +6,11 @@ import (
 
 func TestPickRandomWord(t *testing.T) {
 	corpus := []string{"HELLO", "SALUT", "ПРИВЕТ", "ΧΑΙΡΕ"}
-	word := pickRandomWord(corpus)
+	word, err := pickRandomWord(corpus)
+
+	if err != nil {
+		t.Errorf("no error expected, %s", err.Error())
+	}
 
 	if !inCorpus(corpus, word) {
 		t.Errorf("expected a word in the corpus, got %q", word)

@@ -17,9 +17,13 @@ func New(corpus []string) (*Game, error) {
 		return nil, ErrEmptyCorpus
 	}
 
-	return &Game{
-		solution: splitToUppercaseCharacters(pickRandomWord(corpus)), // pick a random word from the corpus
-	}, nil
+	// pick a random word from the corpus
+	word, err := pickRandomWord(corpus)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Game{solution: splitToUppercaseCharacters(word)}, nil
 }
 
 const (

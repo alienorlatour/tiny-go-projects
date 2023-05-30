@@ -1,11 +1,11 @@
 package gordle
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"os"
 	"strings"
-	"time"
 )
 
 const (
@@ -13,6 +13,8 @@ const (
 	ErrInaccessibleCorpus = corpusError("corpus can't be opened")
 	// ErrEmptyCorpus is returned when the provided corpus is empty.
 	ErrEmptyCorpus = corpusError("corpus is empty")
+	// ErrPickWord is returned when a word has not been picked from the corpus.
+	ErrPickWord = corpusError("failed to pick solution")
 )
 
 // ReadCorpus reads the file located at the given path
@@ -33,14 +35,12 @@ func ReadCorpus(path string) ([]string, error) {
 	return words, nil
 }
 
-// pickRandomWord returns a random word from the corpus
-func pickRandomWord(corpus []string) string {
-	// rand.Seed is only necessary if your version of Go is before 1.20.
-	// It's best not to have it, if you're using Go 1.20 or more recent.
-	//nolint:staticcheck // Only if you use Go < 1.20.
-	rand.Seed(time.Now().UTC().UnixNano())
-	index := rand.Intn(len(corpus))
-	// TODO DONIA use crytpoo
+// pickRandomWord returns a random word from the corpus.
+func pickRandomWord(corpus []string) (string, error) {
+	index, err := rand.Int(rand.Reader, big.NewInt(int64(len(corpus))))
+	if err != nil {
+		return "", fmt.Errorf("failed to rand index (%s): %w", err, ErrPickWord)
+	}
 
-	return corpus[index]
+	return corpus[index.Int64()], nil
 }
