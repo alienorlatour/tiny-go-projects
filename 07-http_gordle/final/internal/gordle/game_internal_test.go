@@ -119,7 +119,9 @@ func Test_computeFeedback(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			fb := computeFeedback([]rune(tc.guess), []rune(tc.solution))
+			guess := splitToUppercaseCharacters(tc.guess)
+			solution := splitToUppercaseCharacters(tc.solution)
+			fb := computeFeedback(guess, solution)
 			if !tc.expectedFeedback.Equal(fb) {
 				t.Errorf("guess: %q, got the wrong Feedback, expected %v, got %v", tc.guess, tc.expectedFeedback, fb)
 			}
