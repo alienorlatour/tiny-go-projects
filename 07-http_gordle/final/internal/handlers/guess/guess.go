@@ -28,6 +28,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 		id := chi.URLParam(request, api.GameID)
 		if id == "" {
 			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+			return
 		}
 
 		// Read the request, containing the guess, from the body of the input.
