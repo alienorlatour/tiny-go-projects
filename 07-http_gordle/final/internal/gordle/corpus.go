@@ -35,8 +35,8 @@ func ReadCorpus(path string) ([]string, error) {
 	return words, nil
 }
 
-// pickRandomWord returns a random word from the corpus.
-func pickRandomWord(corpus []string) (string, error) {
+// PickRandomWord returns a random word from the corpus.
+func PickRandomWord(corpus []string) (string, error) {
 	index, err := rand.Int(rand.Reader, big.NewInt(int64(len(corpus))))
 	if err != nil {
 		return "", fmt.Errorf("failed to rand index (%s): %w", err, ErrPickWord)

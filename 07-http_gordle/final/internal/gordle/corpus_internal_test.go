@@ -6,7 +6,7 @@ import (
 
 func TestPickRandomWord(t *testing.T) {
 	corpus := []string{"HELLO", "SALUT", "ПРИВЕТ", "ΧΑΙΡΕ"}
-	word, err := pickRandomWord(corpus)
+	word, err := PickRandomWord(corpus)
 
 	if err != nil {
 		t.Errorf("no error expected, %s", err.Error())

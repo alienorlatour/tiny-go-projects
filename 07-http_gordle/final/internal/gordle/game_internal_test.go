@@ -28,7 +28,7 @@ func TestGameValidateGuess(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			g, _ := New([]string{"SLICE"})
+			g, _ := New("SLICE")
 
 			err := g.validateGuess(tc.word)
 			if !errors.Is(err, tc.expected) {
