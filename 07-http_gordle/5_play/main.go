@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"learngo-pockets/httpgordle/internal/handlers"
@@ -10,7 +11,11 @@ import (
 func main() {
 	db := repository.New()
 
-	err := http.ListenAndServe(":8080", handlers.NewRouter(db))
+	addr := ":8080"
+
+	log.Print("Listening on ", addr, "...")
+
+	err := http.ListenAndServe(addr, handlers.NewRouter(db))
 	if err != nil {
 		panic(err)
 	}

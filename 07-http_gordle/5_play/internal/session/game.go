@@ -1,8 +1,6 @@
 package session
 
 import (
-	"fmt"
-
 	"learngo-pockets/httpgordle/internal/gordle"
 )
 
@@ -31,23 +29,4 @@ const (
 type Guess struct {
 	Word     string
 	Feedback string
-}
-
-// ErrGameOver is returned when a play is made but the game is over.
-var ErrGameOver = fmt.Errorf("game over")
-
-func NewGame(corpus []string) Game {
-	game, err := gordle.New(corpus)
-	if err != nil {
-		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
-	}
-
-	id := session.GameID(fmt.Sprintf("%d", rand.Int()))
-	g := session.Game{
-		ID:           id,
-		Gordle:       *game,
-		AttemptsLeft: maxAttempts,
-		Guesses:      []session.Guess{},
-		Status:       session.StatusPlaying,
-	}
 }
