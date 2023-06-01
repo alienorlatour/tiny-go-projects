@@ -4,7 +4,7 @@ projects := \
 	2_2_endpoints_chi \
 	3_domain \
 	4_repository \
-	final
+	5_play
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done

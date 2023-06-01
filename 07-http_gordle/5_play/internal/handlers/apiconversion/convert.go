@@ -8,6 +8,7 @@ import (
 // ToAPIResponse converts a domain.Game into an api.Response.
 func ToAPIResponse(g session.Game) api.GameResponse {
 	solution := g.Gordle.ShowAnswer()
+
 	apiGame := api.GameResponse{
 		ID:           string(g.ID),
 		AttemptsLeft: g.AttemptsLeft,
@@ -16,9 +17,9 @@ func ToAPIResponse(g session.Game) api.GameResponse {
 		WordLength:   byte(len(solution)),
 	}
 
-	for index := 0; index < len(g.Guesses); index++ {
-		apiGame.Guesses[index].Word = g.Guesses[index].Word
-		apiGame.Guesses[index].Feedback = g.Guesses[index].Feedback
+	for i := range apiGame.Guesses {
+		apiGame.Guesses[i].Word = g.Guesses[i].Word
+		apiGame.Guesses[i].Feedback = g.Guesses[i].Feedback
 	}
 
 	if g.AttemptsLeft == 0 {
