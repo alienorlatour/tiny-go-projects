@@ -21,7 +21,7 @@ func New() *GameRepository {
 
 // Add inserts for the first time a game in memory.
 func (gr *GameRepository) Add(game session.Game) error {
-	log.Print("Adding a game...")
+	log.Print("Adding a game")
 
 	_, ok := gr.storage[game.ID]
 	if ok {
@@ -35,7 +35,7 @@ func (gr *GameRepository) Add(game session.Game) error {
 
 // Find a game based on its ID. If nothing is found, return a nil pointer and an ErrNotFound error.
 func (gr *GameRepository) Find(id session.GameID) (session.Game, error) {
-	log.Printf("Looking for game %s...", id)
+	log.Printf("Looking for game %s", id)
 
 	game, found := gr.storage[id]
 	if !found {
