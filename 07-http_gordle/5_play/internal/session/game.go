@@ -1,6 +1,8 @@
 package session
 
 import (
+	"fmt"
+
 	"learngo-pockets/httpgordle/internal/gordle"
 )
 
@@ -30,3 +32,6 @@ type Guess struct {
 	Word     string
 	Feedback string
 }
+
+// ErrGameOver can signal when the game cannot be played any further because it is over.
+var ErrGameOver = fmt.Errorf("game over")

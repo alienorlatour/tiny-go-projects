@@ -1,8 +1,9 @@
 package gordle
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_feedback_String(t *testing.T) {
@@ -12,15 +13,15 @@ func Test_feedback_String(t *testing.T) {
 	}{
 		"three correct": {
 			fb:   Feedback{correctPosition, correctPosition, correctPosition},
-			want: "💚💚💚",
+			want: "+++",
 		},
 		"one of each": {
 			fb:   Feedback{correctPosition, wrongPosition, absentCharacter},
-			want: "💚🟡⬜️",
+			want: "+?-",
 		},
 		"different order for one of each": {
 			fb:   Feedback{wrongPosition, absentCharacter, correctPosition},
-			want: "🟡⬜️💚",
+			want: "?-+",
 		},
 		"unknown position": {
 			fb:   Feedback{404},

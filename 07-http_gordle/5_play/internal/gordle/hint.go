@@ -15,11 +15,11 @@ const (
 func (h hint) String() string {
 	switch h {
 	case absentCharacter:
-		return "⬜️"
+		return "-"
 	case wrongPosition:
-		return "🟡"
+		return "?"
 	case correctPosition:
-		return "💚"
+		return "+"
 	default:
 		// This should never happen.
 		return "💔"
