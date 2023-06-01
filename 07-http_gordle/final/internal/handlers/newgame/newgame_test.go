@@ -1,70 +1,77 @@
 package newgame
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
+	"net/http/httptest"
+	"regexp"
+	"strings"
+	"testing"
 
-	"github.com/oklog/ulid/v2"
+	"github.com/stretchr/testify/assert"
 
-	"learngo-pockets/httpgordle/internal/gordle"
-	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/api"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
-type gameCreator interface {
-	Add(session.Game) error
-}
+func TestHandler(t *testing.T) {
+	corpusPath = "testdata/corpus.txt"
+	idFinderRegexp := regexp.MustCompile(`.+"id":"(\d+)".+`)
 
-// Handler returns the handler for the game creation endpoint.
-func Handler(repo gameCreator) http.HandlerFunc {
-	return func(writer http.ResponseWriter, _ *http.Request) {
-		game, err := create(repo)
-		if err != nil {
-			log.Printf("unable to create a new game: %s", err)
-			http.Error(writer, "failed to create a new game", http.StatusInternalServerError)
-			return
-		}
+	tt := map[string]struct {
+		wantStatusCode int
+		wantBody       string
+		creator        gameCreator
+	}{
+		"nominal": {
+			wantStatusCode: http.StatusCreated,
+			wantBody:       `{"id":"123456","attempts_left":5,"guesses":[],"word_length":5,"status":"Playing"}`,
+			creator: gameCreatorStub{
+				err: nil,
+			},
+		},
+	}
 
-		apiGame := apiconversion.ToAPIResponse(game)
+	for name, testCase := range tt {
 
-		// Header should be set before the writer.Write call.
-		writer.WriteHeader(http.StatusCreated)
+		t.Run(name, func(t *testing.T) {
+			f := Handler(testCase.creator)
 
-		writer.Header().Set("Content-Type", "application/json")
-		err = json.NewEncoder(writer).Encode(apiGame)
-		if err != nil {
-			http.Error(writer, "failed to write response", http.StatusInternalServerError)
-		}
+			req, err := http.NewRequest(http.MethodPost, api.NewGamePath, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
+			rr := httptest.NewRecorder()
+
+			f.ServeHTTP(rr, req)
+
+			// Check the status code is what we expect.
+			assert.Equal(t, testCase.wantStatusCode, rr.Code)
+
+			// Check the response body is what we expect. Use JSONEq rather than Equal.
+			if testCase.wantBody == "" {
+				return
+			}
+
+			// replace the ID
+			body := rr.Body.String()
+			id := idFinderRegexp.FindStringSubmatch(body)
+			if len(id) != 2 {
+				t.Fatal("cannot find one single id in the json output")
+			}
+			body = strings.Replace(body, id[1], "123456", 1)
+
+			// validate the rest
+			assert.JSONEq(t, testCase.wantBody, body)
+		})
 	}
 }
 
-const maxAttempts = 5
+type gameCreatorStub struct {
+	err error
+}
 
-func create(repo gameCreator) (session.Game, error) {
-	corpus, err := gordle.ReadCorpus("corpus/english.txt")
-	if err != nil {
-		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
-	}
-
-	game, err := gordle.New(corpus)
-	if err != nil {
-		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
-	}
-
-	g := session.Game{
-		ID:           session.GameID(ulid.Make().String()),
-		Gordle:       *game,
-		AttemptsLeft: maxAttempts,
-		Guesses:      []session.Guess{},
-		Status:       session.StatusPlaying,
-	}
-
-	err = repo.Add(g)
-	if err != nil {
-		return session.Game{}, fmt.Errorf("failed to save the new game")
-	}
-
-	return g, nil
+func (g gameCreatorStub) Add(session.Game) error {
+	return g.err
 }

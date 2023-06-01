@@ -42,8 +42,10 @@ func Handler(repo gameCreator) http.HandlerFunc {
 
 const maxAttempts = 5
 
+var corpusPath = "corpus/english.txt"
+
 func create(repo gameCreator) (session.Game, error) {
-	corpus, err := gordle.ReadCorpus("corpus/english.txt")
+	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
