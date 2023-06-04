@@ -13,13 +13,13 @@ func TestCacheRead(t *testing.T) {
 	}
 
 	// Testing key is present.
-	got, err := cache.Read(5)
-	assert.NoError(t, err)
+	got, ok := cache.Read(5)
+	assert.True(t, ok)
 	assert.Equal(t, want, got)
 
 	// Testing key is absent.
-	got, err = cache.Read(1)
-	assert.ErrorIs(t, err, ErrNotFound)
+	got, ok = cache.Read(1)
+	assert.False(t, ok)
 	assert.Equal(t, "", got)
 }
 
@@ -28,13 +28,11 @@ func TestCacheUpsert(t *testing.T) {
 		map[int]string{},
 	}
 
-	err := cache.Upsert(5, "fünf")
-	assert.NoError(t, err)
+	cache.Upsert(5, "fünf")
 	assert.Equal(t, map[int]string{5: "fünf"}, cache.data)
 
 	// Replace value for a present key.
-	err = cache.Upsert(5, "pum")
-	assert.NoError(t, err)
+	cache.Upsert(5, "pum")
 	assert.Equal(t, map[int]string{5: "pum"}, cache.data)
 }
 

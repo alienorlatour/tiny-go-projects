@@ -13,22 +13,19 @@ func New[K comparable, V any]() Cache[K, V] {
 }
 
 // Read returns the associated value for a key,
-// or ErrNotFound if the key is absent.
-func (c *Cache[K, V]) Read(key K) (V, error) {
+// and a boolean to true if the key is absent.
+func (c *Cache[K, V]) Read(key K) (V, bool) {
 	v, ok := c.data[key]
 	if !ok {
-		return v, ErrNotFound
+		return v, false
 	}
-	return v, nil
+
+	return v, true
 }
 
 // Upsert overrides the value for a given key.
-func (c *Cache[K, V]) Upsert(key K, value V) error {
+func (c *Cache[K, V]) Upsert(key K, value V) {
 	c.data[key] = value
-
-	// Do not return an error for the moment,
-	// but it can happen in the near future.
-	return nil
 }
 
 // Delete removes the entry for the given key.
