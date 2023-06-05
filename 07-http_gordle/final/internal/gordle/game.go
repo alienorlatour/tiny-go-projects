@@ -12,14 +12,8 @@ type Game struct {
 }
 
 // New returns a Game variable, which can be used to Play!
-func New(corpus []string) (*Game, error) {
-	if len(corpus) == 0 {
-		return nil, ErrEmptyCorpus
-	}
-
-	return &Game{
-		solution: splitToUppercaseCharacters(pickRandomWord(corpus)), // pick a random word from the corpus
-	}, nil
+func New(word string) (*Game, error) {
+	return &Game{solution: splitToUppercaseCharacters(word)}, nil
 }
 
 const (

@@ -1,9 +1,12 @@
 package newgame
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
+	"math/big"
 	"net/http"
 
 	"github.com/oklog/ulid/v2"
@@ -50,10 +53,26 @@ func create(repo gameCreator) (session.Game, error) {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
 
-	game, err := gordle.New(corpus)
+	if len(corpus) == 0 {
+		return session.Game{}, gordle.ErrEmptyCorpus
+	}
+
+	word, err := gordle.PickRandomWord(corpus)
+	if err != nil {
+		return session.Game{}, fmt.Errorf("unable to pick random word: %w", err)
+	}
+
+	game, err := gordle.New(word)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}
+
+	idInt, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt))
+	if err != nil {
+		return session.Game{}, fmt.Errorf("failed to generate a random id")
+	}
+
+	id := session.GameID(fmt.Sprintf("%d", idInt))
 
 	g := session.Game{
 		ID:           session.GameID(ulid.Make().String()),
