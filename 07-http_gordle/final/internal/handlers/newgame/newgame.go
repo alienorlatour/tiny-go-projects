@@ -9,6 +9,8 @@ import (
 	"math/big"
 	"net/http"
 
+	"github.com/oklog/ulid/v2"
+
 	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 	"learngo-pockets/httpgordle/internal/session"
@@ -43,8 +45,10 @@ func Handler(repo gameCreator) http.HandlerFunc {
 
 const maxAttempts = 5
 
+var corpusPath = "corpus/english.txt"
+
 func create(repo gameCreator) (session.Game, error) {
-	corpus, err := gordle.ReadCorpus("corpus/english.txt")
+	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
@@ -69,8 +73,9 @@ func create(repo gameCreator) (session.Game, error) {
 	}
 
 	id := session.GameID(fmt.Sprintf("%d", idInt))
+
 	g := session.Game{
-		ID:           id,
+		ID:           session.GameID(ulid.Make().String()),
 		Gordle:       *game,
 		AttemptsLeft: maxAttempts,
 		Guesses:      []session.Guess{},

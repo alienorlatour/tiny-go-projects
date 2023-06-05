@@ -56,8 +56,6 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 
 		apiGame := apiconversion.ToAPIResponse(game)
 
-		writer.WriteHeader(http.StatusAccepted)
-
 		writer.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {

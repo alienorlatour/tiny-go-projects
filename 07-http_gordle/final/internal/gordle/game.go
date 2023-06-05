@@ -36,7 +36,7 @@ func (g *Game) Play(guess string) (Feedback, error) {
 // validateGuess ensures the guess is valid enough.
 func (g *Game) validateGuess(guess string) error {
 	if len(guess) != len(g.solution) {
-		return fmt.Errorf("you guessed a %d word length, remember the answer is %d word length, %w", len(g.solution), len(guess), ErrInvalidGuess)
+		return fmt.Errorf("you guessed a %d word length, remember the answer is %d word length, %w", len(guess), len(g.solution), ErrInvalidGuess)
 	}
 
 	return nil
