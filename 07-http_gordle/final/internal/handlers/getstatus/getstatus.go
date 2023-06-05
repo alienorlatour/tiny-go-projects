@@ -24,15 +24,15 @@ func Handler(repo gameFinder) http.HandlerFunc {
 		id := chi.URLParam(request, api.GameID)
 		if id == "" {
 			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+			return
 		}
 		log.Printf("retrieve status from id: %v", id)
 
 		game, err := repo.Find(session.GameID(id))
 		if err != nil {
-			switch {
-			case errors.Is(err, repository.ErrNotFound):
+			if errors.Is(err, repository.ErrNotFound) {
 				writer.WriteHeader(http.StatusNotFound)
-			default:
+			} else {
 				writer.WriteHeader(http.StatusInternalServerError)
 			}
 			return
