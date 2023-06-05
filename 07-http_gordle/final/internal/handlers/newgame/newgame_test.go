@@ -15,12 +15,15 @@ import (
 
 func TestHandler(t *testing.T) {
 	corpusPath = "testdata/corpus.txt"
-	idFinderRegexp := regexp.MustCompile(`.+"id":"(\d+)".+`)
+
+	// idFinderRegexp is a regular expression that will ensure the body contains an id field with a value that contains
+	// only letters (uppercase and/or lowercase) and/or digits.
+	idFinderRegexp := regexp.MustCompile(`.+"id":"([a-zA-Z0-9]+)".+`)
 
 	tt := map[string]struct {
 		wantStatusCode int
 		wantBody       string
-		creator        gameCreator
+		creator        gameAdder
 	}{
 		"nominal": {
 			wantStatusCode: http.StatusCreated,

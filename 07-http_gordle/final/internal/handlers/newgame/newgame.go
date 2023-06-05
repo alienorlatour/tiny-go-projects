@@ -16,12 +16,12 @@ import (
 	"learngo-pockets/httpgordle/internal/session"
 )
 
-type gameCreator interface {
+type gameAdder interface {
 	Add(session.Game) error
 }
 
 // Handler returns the handler for the game creation endpoint.
-func Handler(repo gameCreator) http.HandlerFunc {
+func Handler(repo gameAdder) http.HandlerFunc {
 	return func(writer http.ResponseWriter, _ *http.Request) {
 		game, err := create(repo)
 		if err != nil {
@@ -48,7 +48,7 @@ const maxAttempts = 5
 
 var corpusPath = "corpus/english.txt"
 
-func create(repo gameCreator) (session.Game, error) {
+func create(repo gameAdder) (session.Game, error) {
 	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
