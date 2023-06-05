@@ -2,6 +2,7 @@ package guess
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -11,6 +12,7 @@ import (
 	"learngo-pockets/httpgordle/internal/session"
 )
 
+// Handle is the handler for the guess endpoint.
 func Handle(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, api.GameID)
 	if id == "" {
@@ -33,7 +35,8 @@ func Handle(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(apiGame)
 	if err != nil {
-		http.Error(w, "failed to write response", http.StatusInternalServerError)
+		// The header has already been set. Nothing much we can do here.
+		log.Printf("failed to write response: %s", err)
 	}
 }
 

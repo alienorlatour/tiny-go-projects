@@ -17,10 +17,11 @@ func New(word string) (*Game, error) {
 }
 
 const (
-	ErrInvalidGuess = gameError("invalid guess length")
+	// ErrInvalidGuessLength indicates a guess doesn't have the right number of characters.
+	ErrInvalidGuessLength = gameError("invalid guess length")
 )
 
-// Play runs the game. If the guess is not valid, we return ErrInvalidGuess.
+// Play runs the game. If the guess is not valid, we return ErrInvalidGuessLength.
 func (g *Game) Play(guess string) (Feedback, error) {
 	err := g.validateGuess(guess)
 	if err != nil {
@@ -36,7 +37,7 @@ func (g *Game) Play(guess string) (Feedback, error) {
 // validateGuess ensures the guess is valid enough.
 func (g *Game) validateGuess(guess string) error {
 	if len(guess) != len(g.solution) {
-		return fmt.Errorf("you guessed a %d word length, remember the answer is %d word length, %w", len(guess), len(g.solution), ErrInvalidGuess)
+		return fmt.Errorf("you guessed a %d word length, remember the answer is %d word length, %w", len(guess), len(g.solution), ErrInvalidGuessLength)
 	}
 
 	return nil

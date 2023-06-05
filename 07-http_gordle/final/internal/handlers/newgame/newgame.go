@@ -38,7 +38,8 @@ func Handler(repo gameCreator) http.HandlerFunc {
 		writer.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {
-			http.Error(writer, "failed to write response", http.StatusInternalServerError)
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }

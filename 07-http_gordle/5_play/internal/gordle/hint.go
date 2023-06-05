@@ -51,6 +51,7 @@ func (fb Feedback) Equal(other Feedback) bool {
 	return true
 }
 
+// GameWon returns whether a feedback indicates a player has found all characters.
 func (fb Feedback) GameWon() bool {
 	for _, c := range fb {
 		if c != correctPosition {

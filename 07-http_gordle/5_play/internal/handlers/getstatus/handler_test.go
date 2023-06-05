@@ -17,7 +17,7 @@ import (
 func TestHandle(t *testing.T) {
 	handle := Handler(gameFinderStub{session.Game{ID: "123456"}, nil})
 
-	req, err := http.NewRequest(http.MethodPost, "/games/123456", nil)
+	req, err := http.NewRequest(http.MethodPost, "/games/", nil)
 	require.NoError(t, err)
 
 	// add path parameters

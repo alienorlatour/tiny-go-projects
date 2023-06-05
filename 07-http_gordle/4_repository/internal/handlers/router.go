@@ -19,6 +19,7 @@ import (
 func NewRouter(db *repository.GameRepository) chi.Router {
 	r := chi.NewRouter()
 
+	// Register each endpoint.
 	r.Post(api.NewGameRoute, newgame.Handler(db))
 	r.Get(api.GetStatusRoute, getstatus.Handler(db))
 	r.Put(api.GuessRoute, guess.Handler(db))

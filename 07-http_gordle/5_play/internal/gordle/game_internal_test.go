@@ -18,11 +18,11 @@ func TestGameValidateGuess(t *testing.T) {
 		},
 		"too long": {
 			word:     "POCKET",
-			expected: ErrInvalidGuess,
+			expected: ErrInvalidGuessLength,
 		},
 		"empty": {
 			word:     "",
-			expected: ErrInvalidGuess,
+			expected: ErrInvalidGuessLength,
 		},
 	}
 

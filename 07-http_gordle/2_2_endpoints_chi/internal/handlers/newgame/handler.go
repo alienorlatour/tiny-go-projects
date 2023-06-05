@@ -7,6 +7,7 @@ import (
 	"learngo-pockets/httpgordle/api"
 )
 
+// Handle is the handler for the game creation endpoint.
 func Handle(w http.ResponseWriter, req *http.Request) {
 	apiGame := api.GameResponse{}
 

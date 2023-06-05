@@ -35,7 +35,8 @@ func Handler(db gameAdder) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
-			http.Error(w, "failed to write response", http.StatusInternalServerError)
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }

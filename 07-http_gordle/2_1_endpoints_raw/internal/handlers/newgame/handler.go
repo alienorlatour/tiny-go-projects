@@ -6,6 +6,7 @@ import (
 	"learngo-pockets/httpgordle/api"
 )
 
+// Handle is the handler for the game creation endpoint.
 func Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method != api.NewGameMethod {
 		w.WriteHeader(http.StatusMethodNotAllowed)

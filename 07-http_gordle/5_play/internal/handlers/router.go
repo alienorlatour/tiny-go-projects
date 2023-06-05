@@ -19,6 +19,7 @@ import (
 func NewRouter(db *repository.GameRepository) chi.Router {
 	r := chi.NewRouter()
 
+	// Register each endpoint.
 	r.Post(api.NewGameRoute, newgame.Handler(db))    // curl -X POST -v http://localhost:9090/games
 	r.Get(api.GetStatusRoute, getstatus.Handler(db)) // curl -X GET -v http://localhost:9090/games/1682279480
 	r.Put(api.GuessRoute, guess.Handler(db))         // curl -X PUT -v http://localhost:9090/games/1682279480 -d '{"guess":"faune"}'

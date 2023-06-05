@@ -12,6 +12,7 @@ func main() {
 
 	log.Print("Listening on ", addr, "...")
 
+	// Start the server.
 	err := http.ListenAndServe(addr, handlers.Mux())
 	if err != nil {
 		panic(err)

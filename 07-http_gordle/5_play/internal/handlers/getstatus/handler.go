@@ -19,7 +19,7 @@ type gameFinder interface {
 	Find(id session.GameID) (session.Game, error)
 }
 
-// Handler returns the handler for the game creation endpoint.
+// Handler returns the handler for the status retrieval endpoint.
 func Handler(db gameFinder) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		id := chi.URLParam(req, api.GameID)
@@ -45,8 +45,8 @@ func Handler(db gameFinder) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
-			http.Error(w, "failed to write response", http.StatusInternalServerError)
-			return
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }
