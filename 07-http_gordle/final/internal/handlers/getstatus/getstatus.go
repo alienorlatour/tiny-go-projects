@@ -23,7 +23,7 @@ func Handler(repo gameFinder) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		id := chi.URLParam(request, api.GameID)
 		if id == "" {
-			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+			http.Error(writer, "missing the id of the game", http.StatusBadRequest)
 			return
 		}
 		log.Printf("retrieve status from id: %v", id)

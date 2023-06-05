@@ -12,7 +12,7 @@ import (
 func Handle(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, api.GameID)
 	if id == "" {
-		http.Error(w, "missing the id of the game", http.StatusNotFound)
+		http.Error(w, "missing the id of the game", http.StatusBadRequest)
 		return
 	}
 

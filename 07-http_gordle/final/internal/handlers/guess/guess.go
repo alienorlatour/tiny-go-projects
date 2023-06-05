@@ -27,7 +27,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 		// Read the Game ID from the query parameters.
 		id := chi.URLParam(request, api.GameID)
 		if id == "" {
-			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+			http.Error(writer, "missing the id of the game", http.StatusBadRequest)
 			return
 		}
 
@@ -60,7 +60,6 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {
 			http.Error(writer, "failed to write response", http.StatusInternalServerError)
-			return
 		}
 	}
 }
