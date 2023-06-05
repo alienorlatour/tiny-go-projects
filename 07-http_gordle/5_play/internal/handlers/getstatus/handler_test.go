@@ -11,10 +11,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/session"
 )
 
 func TestHandle(t *testing.T) {
-	handle := Handler(nil)
+	handle := Handler(gameFinderStub{session.Game{ID: "123456"}, nil})
 
 	req, err := http.NewRequest(http.MethodPost, "/games/123456", nil)
 	require.NoError(t, err)
@@ -30,4 +31,13 @@ func TestHandle(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, recorder.Code)
 	assert.JSONEq(t, `{"id":"123456","attempts_left":0,"guesses":[],"word_length":0,"status":""}`, recorder.Body.String())
+}
+
+type gameFinderStub struct {
+	game session.Game
+	err  error
+}
+
+func (g gameFinderStub) Find(_ session.GameID) (session.Game, error) {
+	return g.game, g.err
 }
