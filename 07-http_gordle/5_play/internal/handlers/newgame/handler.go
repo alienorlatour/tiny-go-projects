@@ -43,15 +43,22 @@ func Handler(db gameAdder) http.HandlerFunc {
 
 const maxAttempts = 5
 
-var corpusPath = "corpus/english.txt"
-
 func createGame(db gameAdder) (session.Game, error) {
-	corpus, err := gordle.ReadCorpus(corpusPath)
+	corpus, err := gordle.ParseCorpus()
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
 
-	game, err := gordle.New(corpus)
+	if len(corpus) == 0 {
+		return session.Game{}, gordle.ErrEmptyCorpus
+	}
+
+	solution, err := gordle.PickRandomWord(corpus)
+	if err != nil {
+		return session.Game{}, fmt.Errorf("unable to pick a random solution: %w", err)
+	}
+
+	game, err := gordle.New(solution)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}

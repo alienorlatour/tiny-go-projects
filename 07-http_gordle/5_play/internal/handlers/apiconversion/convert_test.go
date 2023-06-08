@@ -20,7 +20,7 @@ func TestToAPIResponse(t *testing.T) {
 			game: session.Game{
 				ID: session.GameID(id),
 				Gordle: func() gordle.Game {
-					g, _ := gordle.New([]string{"HELLO"})
+					g, _ := gordle.New("HELLO")
 					return *g
 				}(),
 				AttemptsLeft: 4,

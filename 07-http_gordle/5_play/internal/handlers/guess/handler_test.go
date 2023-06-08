@@ -17,7 +17,7 @@ import (
 )
 
 func TestHandle(t *testing.T) {
-	game, _ := gordle.New([]string{"pocket"})
+	game, _ := gordle.New("pocket")
 	handle := Handler(successGameGuesserStub{session.Game{
 		ID:           "123456",
 		Gordle:       *game,

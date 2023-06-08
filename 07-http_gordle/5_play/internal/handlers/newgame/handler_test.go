@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
@@ -73,15 +74,15 @@ func TestHandler(t *testing.T) {
 }
 
 func Test_createGame(t *testing.T) {
-	corpusPath = "testdata/corpus.txt"
-
 	g, err := createGame(gameCreatorStub{nil})
 	require.NoError(t, err)
 
 	assert.Equal(t, uint8(5), g.AttemptsLeft)
 	assert.Equal(t, 0, len(g.Guesses))
 	assert.Regexp(t, "[A-Z0-9]+", g.ID)
-	assert.Equal(t, "GAMER", g.Gordle.ShowAnswer())
+
+	corpus, _ := gordle.ParseCorpus()
+	assert.Contains(t, corpus, g.Gordle.ShowAnswer())
 }
 
 type gameCreatorStub struct {
