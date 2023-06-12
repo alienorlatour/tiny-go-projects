@@ -21,13 +21,13 @@ type gameGuesser interface {
 	Update(game session.Game) error
 }
 
-// Handler returns the handler for the game creation endpoint.
+// Handler returns the handler for the guess endpoint.
 func Handler(db gameGuesser) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Read the Game ID from the query parameters.
 		id := chi.URLParam(req, api.GameID)
 		if id == "" {
-			http.Error(w, "missing the id of the game", http.StatusNotFound)
+			http.Error(w, "missing the id of the game", http.StatusBadRequest)
 			return
 		}
 
@@ -44,7 +44,7 @@ func Handler(db gameGuesser) http.HandlerFunc {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):
 				http.Error(w, err.Error(), http.StatusNotFound)
-			case errors.Is(err, gordle.ErrInvalidGuess):
+			case errors.Is(err, gordle.ErrInvalidGuessLength):
 				http.Error(w, err.Error(), http.StatusBadRequest)
 			case errors.Is(err, session.ErrGameOver):
 				http.Error(w, err.Error(), http.StatusForbidden)
@@ -59,8 +59,8 @@ func Handler(db gameGuesser) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
-			http.Error(w, "failed to write response", http.StatusInternalServerError)
-			return
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }

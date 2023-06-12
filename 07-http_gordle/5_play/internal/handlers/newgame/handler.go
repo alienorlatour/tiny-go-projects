@@ -35,22 +35,30 @@ func Handler(db gameAdder) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
-			http.Error(w, "failed to write response", http.StatusInternalServerError)
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }
 
 const maxAttempts = 5
 
-var corpusPath = "corpus/english.txt"
-
 func createGame(db gameAdder) (session.Game, error) {
-	corpus, err := gordle.ReadCorpus(corpusPath)
+	corpus, err := gordle.ParseCorpus()
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
 	}
 
-	game, err := gordle.New(corpus)
+	if len(corpus) == 0 {
+		return session.Game{}, gordle.ErrEmptyCorpus
+	}
+
+	solution, err := gordle.PickRandomWord(corpus)
+	if err != nil {
+		return session.Game{}, fmt.Errorf("unable to pick a random solution: %w", err)
+	}
+
+	game, err := gordle.New(solution)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}

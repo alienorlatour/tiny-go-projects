@@ -27,7 +27,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 		// Read the Game ID from the query parameters.
 		id := chi.URLParam(request, api.GameID)
 		if id == "" {
-			http.Error(writer, "missing the id of the game", http.StatusNotFound)
+			http.Error(writer, "missing the id of the game", http.StatusBadRequest)
 			return
 		}
 
@@ -44,7 +44,7 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):
 				http.Error(writer, err.Error(), http.StatusNotFound)
-			case errors.Is(err, gordle.ErrInvalidGuess):
+			case errors.Is(err, gordle.ErrInvalidGuessLength):
 				http.Error(writer, err.Error(), http.StatusBadRequest)
 			case errors.Is(err, session.ErrGameOver):
 				http.Error(writer, err.Error(), http.StatusForbidden)
@@ -59,8 +59,8 @@ func Handler(repo gameGuesser) http.HandlerFunc {
 		writer.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {
-			http.Error(writer, "failed to write response", http.StatusInternalServerError)
-			return
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }

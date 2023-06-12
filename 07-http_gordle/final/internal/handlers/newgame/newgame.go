@@ -1,12 +1,9 @@
 package newgame
 
 import (
-	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"log"
-	"math"
-	"math/big"
 	"net/http"
 
 	"github.com/oklog/ulid/v2"
@@ -16,12 +13,12 @@ import (
 	"learngo-pockets/httpgordle/internal/session"
 )
 
-type gameCreator interface {
+type gameAdder interface {
 	Add(session.Game) error
 }
 
 // Handler returns the handler for the game creation endpoint.
-func Handler(repo gameCreator) http.HandlerFunc {
+func Handler(repo gameAdder) http.HandlerFunc {
 	return func(writer http.ResponseWriter, _ *http.Request) {
 		game, err := create(repo)
 		if err != nil {
@@ -38,7 +35,8 @@ func Handler(repo gameCreator) http.HandlerFunc {
 		writer.Header().Set("Content-Type", "application/json")
 		err = json.NewEncoder(writer).Encode(apiGame)
 		if err != nil {
-			http.Error(writer, "failed to write response", http.StatusInternalServerError)
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }
@@ -47,7 +45,7 @@ const maxAttempts = 5
 
 var corpusPath = "corpus/english.txt"
 
-func create(repo gameCreator) (session.Game, error) {
+func create(repo gameAdder) (session.Game, error) {
 	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
@@ -66,13 +64,6 @@ func create(repo gameCreator) (session.Game, error) {
 	if err != nil {
 		return session.Game{}, fmt.Errorf("failed to create a new gordle game")
 	}
-
-	idInt, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt))
-	if err != nil {
-		return session.Game{}, fmt.Errorf("failed to generate a random id")
-	}
-
-	id := session.GameID(fmt.Sprintf("%d", idInt))
 
 	g := session.Game{
 		ID:           session.GameID(ulid.Make().String()),

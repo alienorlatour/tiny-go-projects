@@ -7,34 +7,27 @@ import (
 	"learngo-pockets/httpgordle/internal/gordle"
 )
 
-func TestReadCorpus(t *testing.T) {
-	tt := map[string]struct {
-		file   string
-		length int
-		err    error
-	}{
-		"English corpus": {
-			file:   "../../corpus/english.txt",
-			length: 34,
-			err:    nil,
-		},
-		"empty corpus": {
-			file:   "../../corpus/empty.txt",
-			length: 0,
-			err:    gordle.ErrEmptyCorpus,
-		},
+func TestParseCorpus(t *testing.T) {
+	words, err := gordle.ParseCorpus()
+	if err != nil {
+		t.Fatalf("expected no error, got %s", err)
 	}
 
-	for name, tc := range tt {
-		t.Run(name, func(t *testing.T) {
-			words, err := gordle.ReadCorpus(tc.file)
-			if !errors.Is(err, tc.err) {
-				t.Errorf("expected err %v, got %v", tc.err, err)
-			}
+	const wordsInEnglishCorpus = 34
+	if len(words) != wordsInEnglishCorpus {
+		t.Errorf("expected %d words, got %d", wordsInEnglishCorpus, len(words))
+	}
+}
 
-			if tc.length != len(words) {
-				t.Errorf("expected %d, got %d", tc.length, len(words))
-			}
-		})
+func TestParseCorpus_emptyCorpus(t *testing.T) {
+	gordle.OverrideCorpus("")
+
+	words, err := gordle.ParseCorpus()
+	if !errors.Is(err, gordle.ErrEmptyCorpus) {
+		t.Errorf("expected error %s, got %s", gordle.ErrEmptyCorpus, err)
+	}
+
+	if len(words) != 0 {
+		t.Errorf("expected 0 words (empty corpus), got %d", len(words))
 	}
 }

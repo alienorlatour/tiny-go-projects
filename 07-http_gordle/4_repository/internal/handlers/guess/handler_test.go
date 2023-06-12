@@ -17,7 +17,7 @@ import (
 func TestHandle(t *testing.T) {
 	handle := Handler(nil)
 
-	req, err := http.NewRequest(http.MethodPost, "/games/123456", strings.NewReader(`{"guess":"pocket"}`))
+	req, err := http.NewRequest(http.MethodPost, "/games/", strings.NewReader(`{"guess":"pocket"}`))
 	require.NoError(t, err)
 
 	// add path parameters

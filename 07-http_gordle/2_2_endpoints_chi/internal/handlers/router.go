@@ -18,6 +18,7 @@ import (
 func NewRouter() chi.Router {
 	r := chi.NewRouter()
 
+	// Register each endpoint.
 	r.Post(api.NewGameRoute, newgame.Handle)
 	r.Get(api.GetStatusRoute, getstatus.Handle)
 	r.Put(api.GuessRoute, guess.Handle)
