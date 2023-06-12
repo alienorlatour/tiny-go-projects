@@ -14,8 +14,6 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	corpusPath = "testdata/corpus.txt"
-
 	// idFinderRegexp is a regular expression that will ensure the body contains an id field with a value that contains
 	// only letters (uppercase and/or lowercase) and/or digits.
 	idFinderRegexp := regexp.MustCompile(`.+"id":"([a-zA-Z0-9]+)".+`)
@@ -39,7 +37,7 @@ func TestHandler(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			f := Handler(testCase.creator)
 
-			req, err := http.NewRequest(http.MethodPost, api.NewGamePath, nil)
+			req, err := http.NewRequest(http.MethodPost, api.NewGameRoute, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
