@@ -1,9 +1,13 @@
 package cache_test
 
 import (
-	"github.com/stretchr/testify/assert"
-	cache "learngo-pockets/genericcache"
+	"fmt"
+	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	cache "learngo-pockets/genericcache"
 )
 
 /*
@@ -50,4 +54,25 @@ func TestCache(t *testing.T) {
 	v, ok = c.Read(3)
 	assert.True(t, ok)
 	assert.Equal(t, "drei", v)
+}
+
+// TestCache_Parallel simulates a number of parallel tasks each operating on the cache.
+// It passes if we only use "go test .", but we see the error as soon as we use "go test -race ."
+func TestCache_Parallel(t *testing.T) {
+	c := cache.New[int, string]()
+
+	const parallelTasks = 10
+	wg := sync.WaitGroup{}
+	wg.Add(parallelTasks)
+
+	for i := 0; i < parallelTasks; i++ {
+		go func(j int) {
+			defer wg.Done()
+			// Perform one operation that alters the content of the cache in each go routine.
+			// The mutex prevents any race condition from happening.
+			c.Upsert(4, fmt.Sprint(j))
+		}(i)
+	}
+
+	wg.Wait()
 }

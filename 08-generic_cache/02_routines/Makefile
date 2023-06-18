@@ -7,6 +7,9 @@ build:
 test:
 	go test ./...
 
+testrace:
+	go test -race ./...
+
 cover:
 	go test ./... -cover
 
