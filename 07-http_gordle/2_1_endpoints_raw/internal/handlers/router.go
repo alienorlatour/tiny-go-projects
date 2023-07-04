@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/handlers/newgame"
 )
 

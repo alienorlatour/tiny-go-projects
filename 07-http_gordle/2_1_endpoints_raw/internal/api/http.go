@@ -1,5 +1,12 @@
 package api
 
+import "net/http"
+
+const (
+	NewGameRoute  = "/games"
+	NewGameMethod = http.MethodPost
+)
+
 // GameResponse contains the information about a game.
 type GameResponse struct {
 	// ID is the identified of a game.
