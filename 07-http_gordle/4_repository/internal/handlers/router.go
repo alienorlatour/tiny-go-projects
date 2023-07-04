@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/go-chi/chi/v5"
 
-	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/handlers/getstatus"
 	"learngo-pockets/httpgordle/internal/handlers/guess"
 	"learngo-pockets/httpgordle/internal/handlers/newgame"

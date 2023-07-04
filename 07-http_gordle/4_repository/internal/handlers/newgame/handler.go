@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
@@ -18,7 +18,7 @@ func Handler(db gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
 		game := createGame(db)
 
-		apiGame := apiconversion.ToAPIResponse(game)
+		apiGame := api.ToGameResponse(game)
 
 		w.WriteHeader(http.StatusCreated)
 		w.Header().Set("Content-Type", "application/json")
