@@ -8,8 +8,8 @@ import (
 
 	"github.com/oklog/ulid/v2"
 
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/gordle"
-	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
@@ -27,7 +27,7 @@ func Handler(db gameAdder) http.HandlerFunc {
 			return
 		}
 
-		apiGame := apiconversion.ToAPIResponse(game)
+		apiGame := api.ToGameResponse(game)
 
 		// Header should be set before the writer.Write call.
 		w.WriteHeader(http.StatusCreated)

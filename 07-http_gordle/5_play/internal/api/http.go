@@ -1,5 +1,23 @@
 package api
 
+const (
+	// GameID is the name of the field that stores the game's identifier
+	GameID = "id"
+
+	// NewGameRoute is the path to create a new game.
+	NewGameRoute = "/games"
+	// GetStatusRoute is the path to get the status of a game identified by its id.
+	GetStatusRoute = "/games/{" + GameID + "}"
+	// GuessRoute is the path to play a guess in a game, identified by its id.
+	GuessRoute = "/games/{" + GameID + "}"
+)
+
+// GuessRequest is the structure of the message used when submitting a guess.
+type GuessRequest struct {
+	// Guess is a word attempted by the player.
+	Guess string `json:"guess"`
+}
+
 // GameResponse contains the information about a game.
 type GameResponse struct {
 	// ID is the identified of a game.
