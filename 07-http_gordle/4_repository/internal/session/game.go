@@ -1,6 +1,8 @@
 package session
 
-import "fmt"
+import (
+	"errors"
+)
 
 // Game contains the information about a game.
 type Game struct {
@@ -29,4 +31,4 @@ type Guess struct {
 }
 
 // ErrGameOver is returned when a play is made but the game is over.
-var ErrGameOver = fmt.Errorf("game over")
+var ErrGameOver = errors.New("game over")
