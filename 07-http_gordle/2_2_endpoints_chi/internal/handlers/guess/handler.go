@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/api"
 )
 
 // Handle is the handler for the guess endpoint.

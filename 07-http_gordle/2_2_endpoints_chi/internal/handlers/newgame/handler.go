@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/api"
 )
 
 // Handle is the handler for the game creation endpoint.
