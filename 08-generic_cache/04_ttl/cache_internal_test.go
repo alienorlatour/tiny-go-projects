@@ -10,14 +10,14 @@ import (
 func TestCacheRead(t *testing.T) {
 	// Initialise the cache and prepare data.
 	cache := New[int, string]()
-	cache.data[5] = &entry[string]{value: "fünf", expires: time.Now().Add(time.Minute)}
+	cache.data[5] = &entry[string]{value: "ފަހެއް", expires: time.Now().Add(time.Minute)}
 
 	// Testing key is present.
 	got, err := cache.Read(5, func(i int) (string, error) {
 		return cache.data[5].value, nil
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, "fünf", got)
+	assert.Equal(t, "ފަހެއް", got)
 
 	// Testing key is absent.
 	got, err = cache.Read(1, func(i int) (string, error) {
@@ -38,10 +38,10 @@ func TestCacheUpsert(t *testing.T) {
 	assert.Equal(t, "pum", cache.data[5].value)
 }
 
-func TestCacheDelete(t *testing.T) {
+func TestCacheClear(t *testing.T) {
 	cache := New[int, string]()
 	cache.data[6] = &entry[string]{value: "six", expires: time.Now().Add(time.Minute)}
 
-	cache.Delete(6)
+	cache.Clear(6)
 	assert.Equal(t, map[int]*entry[string]{}, cache.data)
 }

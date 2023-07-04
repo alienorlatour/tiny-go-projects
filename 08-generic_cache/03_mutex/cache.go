@@ -4,8 +4,8 @@ import "sync"
 
 // Cache is key, value storage.
 type Cache[K comparable, V any] struct {
-	mutex sync.Mutex
-	data  map[K]V
+	dataMutex sync.RWMutex
+	data      map[K]V
 }
 
 // New create a new Cache with an initialised data.
@@ -18,6 +18,10 @@ func New[K comparable, V any]() Cache[K, V] {
 // Read returns the associated value for a key,
 // or ErrNotFound if the key is absent.
 func (c *Cache[K, V]) Read(key K) (V, bool) {
+	// Lock the reading and the possible writing on the map
+	c.dataMutex.RLock()
+	defer c.dataMutex.RUnlock()
+
 	v, ok := c.data[key]
 	if !ok {
 		return v, false
@@ -28,17 +32,17 @@ func (c *Cache[K, V]) Read(key K) (V, bool) {
 // Upsert overrides the value for a given key.
 func (c *Cache[K, V]) Upsert(key K, value V) {
 	// Lock the writing on the map
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
+	c.dataMutex.Lock()
+	defer c.dataMutex.Unlock()
 
 	c.data[key] = value
 }
 
-// Delete removes the entry for the given key.
-func (c *Cache[K, V]) Delete(key K) {
+// Clear removes the entry for the given key.
+func (c *Cache[K, V]) Clear(key K) {
 	// Lock the deletion on the map
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
+	c.dataMutex.Lock()
+	defer c.dataMutex.Unlock()
 
 	delete(c.data, key)
 }

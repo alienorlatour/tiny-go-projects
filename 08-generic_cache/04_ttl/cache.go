@@ -10,8 +10,8 @@ type Cache[K comparable, V any] struct {
 	now     func() time.Time
 	refresh time.Duration
 
-	mutex sync.Mutex
-	data  map[K]*entry[V]
+	dataMutex sync.RWMutex
+	data      map[K]*entry[V]
 }
 
 type entry[V any] struct {
@@ -35,8 +35,8 @@ func New[K comparable, V any]() Cache[K, V] {
 // or ErrNotFound if the key is absent.
 func (c *Cache[K, V]) Read(key K, load func(K) (V, error)) (V, error) {
 	// Lock the reading and the possible writing on the map
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
+	c.dataMutex.RLock()
+	defer c.dataMutex.RUnlock()
 
 	e, ok := c.data[key]
 	if ok && e.expires.After(c.now()) {
@@ -66,8 +66,8 @@ func (c *Cache[K, V]) Read(key K, load func(K) (V, error)) (V, error) {
 // Upsert overrides the value for a given key.
 func (c *Cache[K, V]) Upsert(key K, value V) {
 	// Lock the writing on the map
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
+	c.dataMutex.Lock()
+	defer c.dataMutex.Unlock()
 
 	// Insert the value if it does not exist,
 	// otherwise update it.
@@ -77,11 +77,11 @@ func (c *Cache[K, V]) Upsert(key K, value V) {
 	}
 }
 
-// Delete removes the entry for the given key.
-func (c *Cache[K, V]) Delete(key K) {
+// Clear removes the entry for the given key.
+func (c *Cache[K, V]) Clear(key K) {
 	// Lock the deletion on the map
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
+	c.dataMutex.Lock()
+	defer c.dataMutex.Unlock()
 
 	delete(c.data, key)
 }

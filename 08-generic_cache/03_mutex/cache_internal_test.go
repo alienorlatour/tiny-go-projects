@@ -7,7 +7,7 @@ import (
 )
 
 func TestCacheRead(t *testing.T) {
-	want := "coucou"
+	want := "ފަހެއް"
 	cache := Cache[int, string]{
 		data: map[int]string{5: want},
 	}
@@ -36,10 +36,10 @@ func TestCacheUpsert(t *testing.T) {
 	assert.Equal(t, map[int]string{5: "pum"}, cache.data)
 }
 
-func TestCacheDelete(t *testing.T) {
+func TestCacheClear(t *testing.T) {
 	cache := Cache[int, string]{
 		data: map[int]string{6: "six"},
 	}
-	cache.Delete(6)
+	cache.Clear(6)
 	assert.Equal(t, map[int]string{}, cache.data)
 }

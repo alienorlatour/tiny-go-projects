@@ -28,7 +28,7 @@ func (c *Cache[K, V]) Upsert(key K, value V) {
 	c.data[key] = value
 }
 
-// Delete removes the entry for the given key.
-func (c *Cache[K, V]) Delete(key K) {
+// Clear removes the entry for the given key.
+func (c *Cache[K, V]) Clear(key K) {
 	delete(c.data, key)
 }
