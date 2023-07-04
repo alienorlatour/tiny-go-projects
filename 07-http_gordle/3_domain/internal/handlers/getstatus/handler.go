@@ -7,8 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/handlers/apiconversion"
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
@@ -22,7 +21,7 @@ func Handle(w http.ResponseWriter, req *http.Request) {
 
 	game := getGame(id)
 
-	apiGame := apiconversion.ToAPIResponse(game)
+	apiGame := api.ToGameResponse(game)
 
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(apiGame)

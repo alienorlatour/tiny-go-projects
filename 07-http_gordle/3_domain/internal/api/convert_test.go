@@ -1,15 +1,15 @@
-package apiconversion
+package api_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"learngo-pockets/httpgordle/api"
+	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
-func TestToAPIResponse(t *testing.T) {
+func TestToGameResponse(t *testing.T) {
 	id := "1682279480"
 	tt := map[string]struct {
 		game session.Game
@@ -40,7 +40,7 @@ func TestToAPIResponse(t *testing.T) {
 
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
-			got := ToAPIResponse(tc.game)
+			got := api.ToGameResponse(tc.game)
 			assert.Equal(t, tc.want, got)
 		})
 	}

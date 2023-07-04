@@ -1,16 +1,13 @@
-package apiconversion
+package api
 
-import (
-	"learngo-pockets/httpgordle/api"
-	"learngo-pockets/httpgordle/internal/session"
-)
+import "learngo-pockets/httpgordle/internal/session"
 
-// ToAPIResponse converts a domain.Game into an api.Response.
-func ToAPIResponse(g session.Game) api.GameResponse {
-	apiGame := api.GameResponse{
+// ToGameResponse converts a domain.Game into an api.Response.
+func ToGameResponse(g session.Game) GameResponse {
+	apiGame := GameResponse{
 		ID:           string(g.ID),
 		AttemptsLeft: g.AttemptsLeft,
-		Guesses:      make([]api.Guess, len(g.Guesses)),
+		Guesses:      make([]Guess, len(g.Guesses)),
 		Status:       string(g.Status),
 		// TODO WordLength
 	}
