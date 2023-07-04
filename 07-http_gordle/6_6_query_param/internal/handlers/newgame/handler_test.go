@@ -66,6 +66,8 @@ func TestHandler(t *testing.T) {
 
 			// validate the rest
 			assert.JSONEq(t, testCase.wantBody, body)
+
+			rr.Header().Get("content/type")
 		})
 	}
 }

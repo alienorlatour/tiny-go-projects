@@ -27,12 +27,10 @@ func Handler(db gameAdder) http.HandlerFunc {
 			return
 		}
 
-		apiGame := api.ToGameResponse(game)
-
-		// Header should be set before the writer.Write call.
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 
-		w.Header().Set("Content-Type", "application/json")
+		apiGame := api.ToGameResponse(game)
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
 			// The header has already been set. Nothing much we can do here.

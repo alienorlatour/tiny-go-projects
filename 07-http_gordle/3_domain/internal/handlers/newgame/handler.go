@@ -13,10 +13,10 @@ import (
 func Handle(w http.ResponseWriter, req *http.Request) {
 	game := createGame()
 
-	apiGame := api.ToGameResponse(game)
-
-	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+
+	apiGame := api.ToGameResponse(game)
 	err := json.NewEncoder(w).Encode(apiGame)
 	if err != nil {
 		// The header has already been set. Nothing much we can do here.
