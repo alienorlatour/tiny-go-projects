@@ -17,7 +17,7 @@ type gameGuesser interface {
 }
 
 // Handler returns the handler for the guess endpoint.
-func Handler(db gameGuesser) http.HandlerFunc {
+func Handler(guesser gameGuesser) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		id := chi.URLParam(req, api.GameID)
 		if id == "" {
@@ -33,7 +33,7 @@ func Handler(db gameGuesser) http.HandlerFunc {
 			return
 		}
 
-		game := guess(id, r, db)
+		game := guess(id, r, guesser)
 
 		apiGame := api.ToGameResponse(game)
 

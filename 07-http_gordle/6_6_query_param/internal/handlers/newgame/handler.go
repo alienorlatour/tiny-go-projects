@@ -18,7 +18,7 @@ type gameAdder interface {
 }
 
 // Handle returns the handler for the game creation endpoint.
-func Handle(db gameAdder) http.HandlerFunc {
+func Handle(adder gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		lang := r.URL.Query().Get(api.Lang)
 		if len(lang) > 0 {
@@ -26,7 +26,7 @@ func Handle(db gameAdder) http.HandlerFunc {
 			fmt.Println(lang)
 		}
 
-		game, err := createGame(db)
+		game, err := createGame(adder)
 		if err != nil {
 			log.Printf("unable to create a new game: %s", err)
 			http.Error(w, "failed to create a new game", http.StatusInternalServerError)

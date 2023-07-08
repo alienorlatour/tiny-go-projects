@@ -19,7 +19,7 @@ type gameFinder interface {
 }
 
 // Handler returns the handler for the status retrieval endpoint.
-func Handler(db gameFinder) http.HandlerFunc {
+func Handler(finder gameFinder) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		id := chi.URLParam(req, api.GameID)
 		if id == "" {
@@ -27,7 +27,7 @@ func Handler(db gameFinder) http.HandlerFunc {
 			return
 		}
 
-		game, err := db.Find(session.GameID(id))
+		game, err := finder.Find(session.GameID(id))
 		if err != nil {
 			if errors.Is(err, repository.ErrNotFound) {
 				http.Error(w, "this game does not exist yet", http.StatusNotFound)

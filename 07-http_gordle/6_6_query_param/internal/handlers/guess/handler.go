@@ -21,7 +21,7 @@ type gameGuesser interface {
 }
 
 // Handle returns the handler for the game creation endpoint.
-func Handle(db gameGuesser) http.HandlerFunc {
+func Handle(guesser gameGuesser) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Read the Game ID from the query parameters.
 		id := chi.URLParam(req, api.GameID)
@@ -38,7 +38,7 @@ func Handle(db gameGuesser) http.HandlerFunc {
 			return
 		}
 
-		game, err := guess(session.GameID(id), r.Guess, db)
+		game, err := guess(session.GameID(id), r.Guess, guesser)
 		if err != nil {
 			switch {
 			case errors.Is(err, repository.ErrNotFound):

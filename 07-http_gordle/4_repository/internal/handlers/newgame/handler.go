@@ -14,9 +14,9 @@ type gameAdder interface {
 }
 
 // Handler returns the handler for the game creation endpoint.
-func Handler(db gameAdder) http.HandlerFunc {
+func Handler(adder gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
-		game := createGame(db)
+		game := createGame(adder)
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
