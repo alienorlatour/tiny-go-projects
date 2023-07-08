@@ -4,7 +4,8 @@ projects := \
 	2_2_endpoints_chi \
 	3_domain \
 	4_repository \
-	5_play
+	5_play \
+	6_6_query_param
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done
