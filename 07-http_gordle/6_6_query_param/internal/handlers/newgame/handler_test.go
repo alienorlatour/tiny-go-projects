@@ -15,8 +15,6 @@ import (
 )
 
 func TestHandler(t *testing.T) {
-	corpusPath = "testdata/corpus.txt"
-
 	idFinderRegexp := regexp.MustCompile(`.+"id":"([0-9A-Z]+)".+`)
 
 	tt := map[string]struct {
@@ -72,9 +70,9 @@ func TestHandler(t *testing.T) {
 }
 
 func Test_createGame(t *testing.T) {
-	corpusPath = "testdata/corpus.txt"
+	corpusPath := "testdata/corpus.txt"
 
-	g, err := createGame(gameCreatorStub{nil})
+	g, err := createGame(gameCreatorStub{nil}, corpusPath)
 	require.NoError(t, err)
 
 	assert.Equal(t, uint8(5), g.AttemptsLeft)

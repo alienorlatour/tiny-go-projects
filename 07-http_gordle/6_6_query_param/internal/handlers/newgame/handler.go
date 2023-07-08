@@ -17,16 +17,24 @@ type gameAdder interface {
 	Add(game session.Game) error
 }
 
+// global variable that references each corpus
+var corpora = map[string]string{
+	"en": "corpus/english.txt",
+	"he": "corpus/greek.txt",
+	"cr": "corpus/cree.txt",
+}
+
 // Handle returns the handler for the game creation endpoint.
 func Handle(adder gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		lang := r.URL.Query().Get(api.Lang)
-		if len(lang) > 0 {
-			// TODO create a game in the chosen language
-			fmt.Println(lang)
+		corpusPath, ok := corpora[lang]
+		if !ok {
+			// default to English
+			corpusPath = corpora["en"]
 		}
 
-		game, err := createGame(adder)
+		game, err := createGame(adder, corpusPath)
 		if err != nil {
 			log.Printf("unable to create a new game: %s", err)
 			http.Error(w, "failed to create a new game", http.StatusInternalServerError)
@@ -46,9 +54,7 @@ func Handle(adder gameAdder) http.HandlerFunc {
 
 const maxAttempts = 5
 
-var corpusPath = "corpus/english.txt"
-
-func createGame(db gameAdder) (session.Game, error) {
+func createGame(adder gameAdder, corpusPath string) (session.Game, error) {
 	corpus, err := gordle.ReadCorpus(corpusPath)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("unable to read corpus: %w", err)
@@ -67,7 +73,7 @@ func createGame(db gameAdder) (session.Game, error) {
 		Status:       session.StatusPlaying,
 	}
 
-	err = db.Add(g)
+	err = adder.Add(g)
 	if err != nil {
 		return session.Game{}, fmt.Errorf("failed to save the new game")
 	}
