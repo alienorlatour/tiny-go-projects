@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"learngo-pockets/httpgordle/internal/api"
+	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/session"
 )
 
@@ -17,7 +18,11 @@ func TestToGameResponse(t *testing.T) {
 	}{
 		"nominal": {
 			game: session.Game{
-				ID:           session.GameID(id),
+				ID: session.GameID(id),
+				Gordle: func() gordle.Game {
+					g, _ := gordle.New([]string{"HELLO"})
+					return *g
+				}(),
 				AttemptsLeft: 4,
 				Guesses: []session.Guess{{
 					Word:     "FAUNE",
@@ -32,8 +37,9 @@ func TestToGameResponse(t *testing.T) {
 					Word:     "FAUNE",
 					Feedback: "⬜️🟡⬜️⬜️⬜️",
 				}},
-				Solution: "",
-				Status:   session.StatusPlaying,
+				WordLength: 5,
+				Solution:   "",
+				Status:     session.StatusPlaying,
 			},
 		},
 	}
