@@ -39,6 +39,7 @@ func TestHandle(t *testing.T) {
 	handle(recorder, req)
 
 	require.Equal(t, http.StatusOK, recorder.Code)
+	assert.Equal(t, "application/json", recorder.Header().Get("Content-Type"))
 	assert.JSONEq(t, `{"id":"123456","attempts_left":4,"guesses":[{"word":"pocket", "feedback":"++++++"}],"word_length":6,"status":"Won"}`, recorder.Body.String())
 }
 

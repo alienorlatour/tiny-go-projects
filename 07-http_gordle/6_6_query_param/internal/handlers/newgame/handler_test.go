@@ -65,9 +65,8 @@ func TestHandler(t *testing.T) {
 			body = strings.Replace(body, id[1], "123456", 1)
 
 			// validate the rest
+			assert.Equal(t, "application/json", rr.Header().Get("Content-Type"))
 			assert.JSONEq(t, testCase.wantBody, body)
-
-			rr.Header().Get("content/type")
 		})
 	}
 }
