@@ -1,8 +1,6 @@
 package session
 
-import (
-	"errors"
-)
+import "errors"
 
 // Game contains the information about a game.
 type Game struct {

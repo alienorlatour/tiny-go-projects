@@ -1,8 +1,6 @@
 package session
 
-import (
-	"learngo-pockets/httpgordle/internal/gordle"
-)
+import "learngo-pockets/httpgordle/internal/gordle"
 
 // A GameID represents the ID of a game
 type GameID string

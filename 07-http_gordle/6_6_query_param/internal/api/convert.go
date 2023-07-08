@@ -1,8 +1,6 @@
 package api
 
-import (
-	"learngo-pockets/httpgordle/internal/session"
-)
+import "learngo-pockets/httpgordle/internal/session"
 
 // ToGameResponse converts a session.Game into a GameResponse.
 func ToGameResponse(g session.Game) GameResponse {

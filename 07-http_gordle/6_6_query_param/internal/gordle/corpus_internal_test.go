@@ -1,8 +1,6 @@
 package gordle
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestPickRandomWord(t *testing.T) {
 	corpus := []string{"HELLO", "SALUT", "ПРИВЕТ", "ΧΑΙΡΕ"}
