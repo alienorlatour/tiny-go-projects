@@ -19,9 +19,9 @@ type gameAdder interface {
 
 // global variable that references each corpus
 var corpora = map[string]string{
-	"en": "corpus/english.txt",
-	"he": "corpus/greek.txt",
-	"cr": "corpus/cree.txt",
+	"en": "./../../../corpus/english.txt",
+	"he": "./../../../corpus/greek.txt",
+	"cr": "./../../../corpus/cree.txt",
 }
 
 // Handle returns the handler for the game creation endpoint.

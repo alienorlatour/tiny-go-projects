@@ -3,7 +3,8 @@ projects := \
 	2_1_endpoints_raw \
 	2_2_endpoints_chi \
 	3_domain \
-	4_repository \
+	4_1_repository \
+	4_3_mutex \
 	5_play \
 	6_6_query_param
 
