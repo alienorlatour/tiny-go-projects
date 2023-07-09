@@ -36,10 +36,10 @@ func TestCacheUpsert(t *testing.T) {
 	assert.Equal(t, map[int]string{5: "pum"}, cache.data)
 }
 
-func TestCacheClear(t *testing.T) {
+func TestCacheDelete(t *testing.T) {
 	cache := Cache[int, string]{
 		map[int]string{6: "six"},
 	}
-	cache.Clear(6)
+	cache.Delete(6)
 	assert.Equal(t, map[int]string{}, cache.data)
 }

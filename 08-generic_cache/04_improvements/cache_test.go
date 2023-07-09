@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -22,44 +23,45 @@ import (
 - Delete 5 and check that 3 still exists
 */
 func TestCache(t *testing.T) {
-	c := cache.New[int, string]()
+	c := cache.New[int, string](3, time.Second)
 
 	c.Upsert(5, "fünf")
 
-	v, ok := c.Read(5)
-	assert.True(t, ok)
+	v, err := c.Read(5)
+	assert.NoError(t, err)
 	assert.Equal(t, "fünf", v)
 
 	c.Upsert(5, "pum")
 
-	v, ok = c.Read(5)
-	assert.True(t, ok)
+	v, err = c.Read(5)
+	assert.NoError(t, err)
 	assert.Equal(t, "pum", v)
 
 	c.Upsert(3, "drei")
 
-	v, ok = c.Read(3)
-	assert.True(t, ok)
+	v, err = c.Read(3)
+	assert.NoError(t, err)
 	assert.Equal(t, "drei", v)
 
-	v, ok = c.Read(5)
-	assert.True(t, ok)
+	v, err = c.Read(5)
+	assert.NoError(t, err)
 	assert.Equal(t, "pum", v)
 
 	c.Delete(5)
 
-	_, ok = c.Read(5)
-	assert.False(t, ok)
+	v, err = c.Read(5)
+	assert.ErrorIs(t, err, cache.ErrNotFound)
+	assert.Equal(t, "", v)
 
-	v, ok = c.Read(3)
-	assert.True(t, ok)
+	v, err = c.Read(3)
+	assert.NoError(t, err)
 	assert.Equal(t, "drei", v)
 }
 
 // TestCache_Parallel_goroutines simulates a number of parallel tasks each operating on the cache.
 // It passes if we only use "go test .", but we see the error as soon as we use "go test -race ."
 func TestCache_Parallel_goroutines(t *testing.T) {
-	c := cache.New[int, string]()
+	c := cache.New[int, string](5, time.Second)
 
 	const parallelTasks = 10
 	wg := sync.WaitGroup{}
@@ -79,7 +81,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 
 // TestCache_Parallel runs two routines that have concurrent access to write to the cache.
 func TestCache_Parallel(t *testing.T) {
-	c := cache.New[int, string]()
+	c := cache.New[int, string](3, time.Second)
 
 	t.Run("write six", func(t *testing.T) {
 		t.Parallel()
@@ -90,4 +92,46 @@ func TestCache_Parallel(t *testing.T) {
 		t.Parallel()
 		c.Upsert(6, "kuus")
 	})
+}
+
+// TestCache_TTL inserts a value in a cache, and then makes sure we have reached its timeout.
+// We expect an error to be returned in this case.
+func TestCache_TTL(t *testing.T) {
+	t.Parallel()
+
+	c := cache.New[string, string](5, time.Millisecond*100)
+	c.Upsert("norwegian", "blue")
+	time.Sleep(time.Second)
+
+	// We've waited too long - the value's metabolic processes are now history.
+	got, err := c.Read("norwegian")
+
+	assert.ErrorIs(t, err, cache.ErrExpired)
+	assert.Equal(t, "", got)
+}
+
+func TestCache_MaxSize(t *testing.T) {
+	t.Parallel()
+
+	// Give it a TTL long enough to survive this test
+	c := cache.New[int, int](3, time.Minute)
+
+	c.Upsert(1, 1)
+	c.Upsert(2, 2)
+	c.Upsert(3, 3)
+
+	got, err := c.Read(1)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, got)
+
+	// Update 1, which will no longer make it the oldest
+	c.Upsert(1, 10)
+
+	// Adding a fourth element will discard the oldest - 2 in this case.
+	c.Upsert(4, 4)
+
+	// Trying to retrieve an element that should've been discarded by now.
+	got, err = c.Read(2)
+	assert.ErrorIs(t, err, cache.ErrNotFound)
+	assert.Equal(t, 0, got)
 }

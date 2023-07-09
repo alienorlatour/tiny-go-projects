@@ -19,7 +19,7 @@ import (
 - Upsert for the same entry with the new value
 - Read the new value
 - Upsert another key <3, drei> and check that is doesn't override
-- Clear 5 and check that 3 still exists
+- Delete 5 and check that 3 still exists
 */
 func TestCache(t *testing.T) {
 	c := cache.New[int, string]()
@@ -46,7 +46,7 @@ func TestCache(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "pum", v)
 
-	c.Clear(5)
+	c.Delete(5)
 
 	_, ok = c.Read(5)
 	assert.False(t, ok)
@@ -56,7 +56,7 @@ func TestCache(t *testing.T) {
 	assert.Equal(t, "drei", v)
 }
 
-// TestCache_Parallel simulates a number of parallel tasks each operating on the cache.
+// TestCache_Parallel_goroutines simulates a number of parallel tasks each operating on the cache.
 // It passes if we only use "go test .", but we see the error as soon as we use "go test -race ."
 func TestCache_Parallel_goroutines(t *testing.T) {
 	c := cache.New[int, string]()
@@ -77,6 +77,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 	wg.Wait()
 }
 
+// TestCache_Parallel runs two routines that have concurrent access to write to the cache.
 func TestCache_Parallel(t *testing.T) {
 	c := cache.New[int, string]()
 

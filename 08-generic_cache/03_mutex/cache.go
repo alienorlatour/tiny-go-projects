@@ -38,8 +38,8 @@ func (c *Cache[K, V]) Upsert(key K, value V) {
 	c.data[key] = value
 }
 
-// Clear removes the entry for the given key.
-func (c *Cache[K, V]) Clear(key K) {
+// Delete removes the entry for the given key.
+func (c *Cache[K, V]) Delete(key K) {
 	// Lock the deletion on the map
 	c.dataMutex.Lock()
 	defer c.dataMutex.Unlock()
