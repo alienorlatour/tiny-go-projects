@@ -9,8 +9,8 @@ import (
 type Cache[K comparable, V any] struct {
 	ttl time.Duration
 
-	dataMutex sync.RWMutex
-	data      map[K]*entryWithTimeout[V]
+	dataMutex sync.Mutex
+	data      map[K]entryWithTimeout[V]
 
 	maxSize    int
 	oldestKeys []K
@@ -25,7 +25,7 @@ type entryWithTimeout[V any] struct {
 func New[K comparable, V any](maxSize int, ttl time.Duration) Cache[K, V] {
 	return Cache[K, V]{
 		ttl:        ttl,
-		data:       make(map[K]*entryWithTimeout[V]),
+		data:       make(map[K]entryWithTimeout[V]),
 		maxSize:    maxSize,
 		oldestKeys: make([]K, 0, maxSize),
 	}
@@ -89,7 +89,7 @@ func (c *Cache[K, V]) Delete(key K) {
 }
 
 func (c *Cache[K, V]) addKeyValue(key K, value V) {
-	c.data[key] = &entryWithTimeout[V]{
+	c.data[key] = entryWithTimeout[V]{
 		value:   value,
 		expires: time.Now().Add(c.ttl),
 	}

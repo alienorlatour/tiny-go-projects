@@ -100,11 +100,11 @@ func TestCache_TTL(t *testing.T) {
 	t.Parallel()
 
 	c := cache.New[string, string](5, time.Millisecond*100)
-	c.Upsert("norwegian", "blue")
-	time.Sleep(time.Second)
+	c.Upsert("Norwegian", "Blue")
+	time.Sleep(time.Millisecond * 200)
 
 	// We've waited too long - the value's metabolic processes are now history.
-	got, err := c.Read("norwegian")
+	got, err := c.Read("Norwegian")
 
 	assert.ErrorIs(t, err, cache.ErrExpired)
 	assert.Equal(t, "", got)

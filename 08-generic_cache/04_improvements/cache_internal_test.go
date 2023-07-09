@@ -10,7 +10,7 @@ import (
 func TestCacheRead(t *testing.T) {
 	// Initialise the cache and prepare data.
 	cache := New[int, string](5, time.Second)
-	cache.data[5] = &entryWithTimeout[string]{value: "ފަހެއް", expires: time.Now().Add(time.Minute)}
+	cache.data[5] = entryWithTimeout[string]{value: "ފަހެއް", expires: time.Now().Add(time.Minute)}
 
 	// Testing key is present.
 	got, err := cache.Read(5)
@@ -39,5 +39,5 @@ func TestCacheDelete(t *testing.T) {
 	cache.Upsert(6, "six")
 
 	cache.Delete(6)
-	assert.Equal(t, map[int]*entryWithTimeout[string]{}, cache.data)
+	assert.Equal(t, map[int]entryWithTimeout[string]{}, cache.data)
 }
