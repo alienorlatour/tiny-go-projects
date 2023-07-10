@@ -71,7 +71,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 		go func(j int) {
 			defer wg.Done()
 			// Perform one operation that alters the content of the cache in each go routine.
-			// The dataMutex prevents any race condition from happening.
+			// The mutex prevents any race condition from happening.
 			c.Upsert(4, fmt.Sprint(j))
 		}(i)
 	}
@@ -116,6 +116,9 @@ func TestCache_TTL(t *testing.T) {
 	assert.Equal(t, "", got)
 }
 
+// TestCache_MaxSize tests the maximum capacity feature of a cache.
+// It checks that update items are properly requeued as "new" items,
+// and that we make room by removing the most ancient item for the new ones.
 func TestCache_MaxSize(t *testing.T) {
 	t.Parallel()
 

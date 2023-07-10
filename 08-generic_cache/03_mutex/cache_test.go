@@ -70,7 +70,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 		go func(j int) {
 			defer wg.Done()
 			// Perform one operation that alters the content of the cache in each go routine.
-			// The dataMutex prevents any race condition from happening.
+			// The mutex prevents any race condition from happening.
 			c.Upsert(4, fmt.Sprint(j))
 		}(i)
 	}

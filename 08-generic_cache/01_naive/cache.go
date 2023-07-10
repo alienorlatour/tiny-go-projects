@@ -1,6 +1,6 @@
 package cache
 
-// Cache is key, value storage.
+// Cache is key-value storage.
 type Cache[K comparable, V any] struct {
 	data map[K]V
 }

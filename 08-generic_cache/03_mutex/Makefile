@@ -5,9 +5,6 @@ build:
 	go build -o bin/cache .
 
 test:
-	go test ./...
-
-testrace:
 	go test -race ./...
 
 cover:
