@@ -49,7 +49,7 @@ func (c *Cache[K, V]) Read(key K) (V, error) {
 	case e.expires.Before(time.Now()):
 		// The value has expired.
 		c.deleteKeyValue(key)
-		return zeroV, ErrExpired
+		return e.value, ErrExpired
 	default:
 		return e.value, nil
 	}

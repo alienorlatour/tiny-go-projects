@@ -13,13 +13,13 @@ func TestCacheRead(t *testing.T) {
 	}
 
 	// Testing key is present.
-	got, ok := cache.Read(5)
-	assert.True(t, ok)
+	got, err := cache.Read(5)
+	assert.NoError(t, err)
 	assert.Equal(t, want, got)
 
 	// Testing key is absent.
-	got, ok = cache.Read(1)
-	assert.False(t, ok)
+	got, err = cache.Read(1)
+	assert.NoError(t, err)
 	assert.Equal(t, "", got)
 }
 
