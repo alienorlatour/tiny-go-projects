@@ -16,17 +16,14 @@ func New[K comparable, V any]() Cache[K, V] {
 }
 
 // Read returns the associated value for a key,
-// or ErrNotFound if the key is absent.
-func (c *Cache[K, V]) Read(key K) (V, error) {
+// and a boolean to true if the key is absent.
+func (c *Cache[K, V]) Read(key K) (V, bool) {
 	// Lock the reading and the possible writing on the map
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	v, ok := c.data[key]
-	if !ok {
-		return v, ErrNotFound
-	}
-	return v, nil
+	v, found := c.data[key]
+	return v, found
 }
 
 // Upsert overrides the value for a given key.

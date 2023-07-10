@@ -23,38 +23,38 @@ import (
 - Delete 5 and check that 3 still exists
 */
 func TestCache(t *testing.T) {
-	c := cache.New[int, string](3, time.Second)
+	c := cache.New[int, string](5, time.Minute)
 
 	c.Upsert(5, "fünf")
 
-	v, err := c.Read(5)
-	assert.NoError(t, err)
+	v, found := c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "fünf", v)
 
 	c.Upsert(5, "pum")
 
-	v, err = c.Read(5)
-	assert.NoError(t, err)
+	v, found = c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "pum", v)
 
 	c.Upsert(3, "drei")
 
-	v, err = c.Read(3)
-	assert.NoError(t, err)
+	v, found = c.Read(3)
+	assert.True(t, found)
 	assert.Equal(t, "drei", v)
 
-	v, err = c.Read(5)
-	assert.NoError(t, err)
+	v, found = c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "pum", v)
 
 	c.Delete(5)
 
-	v, err = c.Read(5)
-	assert.ErrorIs(t, err, cache.ErrNotFound)
+	v, found = c.Read(5)
+	assert.False(t, found)
 	assert.Equal(t, "", v)
 
-	v, err = c.Read(3)
-	assert.NoError(t, err)
+	v, found = c.Read(3)
+	assert.True(t, found)
 	assert.Equal(t, "drei", v)
 }
 
@@ -103,16 +103,16 @@ func TestCache_TTL(t *testing.T) {
 	c.Upsert("Norwegian", "Blue")
 
 	// Check the item is there.
-	got, err := c.Read("Norwegian")
-	assert.NoError(t, err)
+	got, found := c.Read("Norwegian")
+	assert.True(t, found)
 	assert.Equal(t, "Blue", got)
 
 	time.Sleep(time.Millisecond * 200)
 
 	// We've waited too long - the value's metabolic processes are now history.
-	got, err = c.Read("Norwegian")
+	got, found = c.Read("Norwegian")
 
-	assert.ErrorIs(t, err, cache.ErrExpired)
+	assert.False(t, found)
 	assert.Equal(t, "", got)
 }
 
@@ -129,8 +129,8 @@ func TestCache_MaxSize(t *testing.T) {
 	c.Upsert(2, 2)
 	c.Upsert(3, 3)
 
-	got, err := c.Read(1)
-	assert.NoError(t, err)
+	got, found := c.Read(1)
+	assert.True(t, found)
 	assert.Equal(t, 1, got)
 
 	// Update 1, which will no longer make it the oldest
@@ -140,7 +140,7 @@ func TestCache_MaxSize(t *testing.T) {
 	c.Upsert(4, 4)
 
 	// Trying to retrieve an element that should've been discarded by now.
-	got, err = c.Read(2)
-	assert.ErrorIs(t, err, cache.ErrNotFound)
+	got, found = c.Read(2)
+	assert.False(t, found)
 	assert.Equal(t, 0, got)
 }

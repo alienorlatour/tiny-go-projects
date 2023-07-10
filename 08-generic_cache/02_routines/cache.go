@@ -15,12 +15,8 @@ func New[K comparable, V any]() Cache[K, V] {
 // Read returns the associated value for a key,
 // and a boolean to true if the key is absent.
 func (c *Cache[K, V]) Read(key K) (V, bool) {
-	v, ok := c.data[key]
-	if !ok {
-		return v, false
-	}
-
-	return v, true
+	v, found := c.data[key]
+	return v, found
 }
 
 // Upsert overrides the value for a given key.

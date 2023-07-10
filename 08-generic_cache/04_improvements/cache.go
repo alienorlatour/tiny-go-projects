@@ -32,8 +32,8 @@ func New[K comparable, V any](maxSize int, ttl time.Duration) Cache[K, V] {
 }
 
 // Read returns the associated value for a key,
-// or ErrNotFound if the key is absent.
-func (c *Cache[K, V]) Read(key K) (V, error) {
+// and a boolean to true if the key is absent.
+func (c *Cache[K, V]) Read(key K) (V, bool) {
 	// Lock the reading and the possible writing on the cache.
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -44,13 +44,13 @@ func (c *Cache[K, V]) Read(key K) (V, error) {
 
 	switch {
 	case !ok:
-		return zeroV, ErrNotFound
+		return zeroV, false
 	case e.expires.Before(time.Now()):
 		// The value has expired.
 		c.deleteKeyValue(key)
-		return zeroV, ErrExpired
+		return zeroV, false
 	default:
-		return e.value, nil
+		return e.value, true
 	}
 }
 

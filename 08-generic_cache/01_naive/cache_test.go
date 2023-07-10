@@ -24,33 +24,33 @@ func TestCache(t *testing.T) {
 
 	c.Upsert(5, "fünf")
 
-	v, err := c.Read(5)
-	assert.NoError(t, err)
+	v, found := c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "fünf", v)
 
 	c.Upsert(5, "pum")
 
-	v, err = c.Read(5)
-	assert.NoError(t, err)
+	v, found = c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "pum", v)
 
 	c.Upsert(3, "drei")
 
-	v, err = c.Read(3)
-	assert.NoError(t, err)
+	v, found = c.Read(3)
+	assert.True(t, found)
 	assert.Equal(t, "drei", v)
 
-	v, err = c.Read(5)
-	assert.NoError(t, err)
+	v, found = c.Read(5)
+	assert.True(t, found)
 	assert.Equal(t, "pum", v)
 
 	c.Delete(5)
 
-	v, err = c.Read(5)
-	assert.ErrorIs(t, err, cache.ErrNotFound)
+	v, found = c.Read(5)
+	assert.False(t, found)
 	assert.Equal(t, "", v)
 
-	v, err = c.Read(3)
-	assert.NoError(t, err)
+	v, found = c.Read(3)
+	assert.True(t, found)
 	assert.Equal(t, "drei", v)
 }
