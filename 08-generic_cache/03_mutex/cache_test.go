@@ -69,7 +69,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 	for i := 0; i < parallelTasks; i++ {
 		go func(j int) {
 			defer wg.Done()
-			// Perform one operation that alters the content of the cache in each go routine.
+			// Perform one operation that alters the content of the cache in each goroutine.
 			// The mutex prevents any race condition from happening.
 			c.Upsert(4, fmt.Sprint(j))
 		}(i)
@@ -78,7 +78,7 @@ func TestCache_Parallel_goroutines(t *testing.T) {
 	wg.Wait()
 }
 
-// TestCache_Parallel runs two routines that have concurrent access to write to the cache.
+// TestCache_Parallel runs two goroutines that have concurrent access to write to the cache.
 func TestCache_Parallel(t *testing.T) {
 	c := cache.New[int, string]()
 
