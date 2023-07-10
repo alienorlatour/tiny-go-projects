@@ -5,10 +5,10 @@ build:
 	@go build -o bin/ .
 
 test:
-	@go test ./...
+	@go test -race ./...
 
 cover:
-	@go test ./... -cover
+	@go test -race ./... -cover
 
 benchmark:
 	@go test ./... -run=^$ bench=. --benchmem
