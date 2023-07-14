@@ -36,6 +36,7 @@ func (c *Cache[K, V]) Upsert(key K, value V) {
 }
 
 // Delete removes the entry for the given key.
+// If the key isn't present, Delete is a no-op.
 func (c *Cache[K, V]) Delete(key K) {
 	// Lock the deletion on the map
 	c.mu.Lock()
