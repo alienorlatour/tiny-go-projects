@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"slices"
 	"sync"
 	"time"
 )
@@ -96,14 +97,6 @@ func (c *Cache[K, V]) addKeyValue(key K, value V) {
 
 // deleteKeyValue removes a key and its associated value from the cache.
 func (c *Cache[K, V]) deleteKeyValue(key K) {
-	// Find the key in the list.
-	for i, k := range c.chronologicalKeys {
-		if k == key {
-			// We've found the correct index.
-			// Delete the element from the slice...
-			c.chronologicalKeys = append(c.chronologicalKeys[:i], c.chronologicalKeys[i+1:]...)
-			delete(c.data, key)
-			return
-		}
-	}
+	slices.DeleteFunc(c.chronologicalKeys, func(k K) bool { return k == key })
+	delete(c.data, key)
 }
