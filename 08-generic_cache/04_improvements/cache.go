@@ -98,6 +98,6 @@ func (c *Cache[K, V]) addKeyValue(key K, value V) {
 
 // deleteKeyValue removes a key and its associated value from the cache.
 func (c *Cache[K, V]) deleteKeyValue(key K) {
-	slices.DeleteFunc(c.chronologicalKeys, func(k K) bool { return k == key })
+	c.chronologicalKeys = slices.DeleteFunc(c.chronologicalKeys, func(k K) bool { return k == key })
 	delete(c.data, key)
 }

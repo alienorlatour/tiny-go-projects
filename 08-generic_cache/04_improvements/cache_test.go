@@ -59,7 +59,7 @@ func TestCache(t *testing.T) {
 }
 
 // TestCache_Parallel_goroutines simulates a number of parallel tasks each operating on the cache.
-// It passes even when we use "go test -race .".
+// It passes even when we use "go test -race .", but we see the error as soon as we use "go test -race ."
 func TestCache_Parallel_goroutines(t *testing.T) {
 	c := cache.New[int, string](5, time.Second)
 
