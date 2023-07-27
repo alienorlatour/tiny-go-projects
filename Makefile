@@ -3,6 +3,7 @@ chapters := 02-hello_world \
 			04-logger \
 			05-gordle \
 			06-money_converter \
+			07-generic_cache \
 			08-http_gordle
 
 %:
