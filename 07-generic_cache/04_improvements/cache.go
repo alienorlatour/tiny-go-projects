@@ -11,13 +11,13 @@ type Cache[K comparable, V any] struct {
 	ttl time.Duration
 
 	mu   sync.Mutex
-	data map[K]entryWithTimeout[V]
+	data map[K]entryWithExpiration[V]
 
 	maxSize           int
 	chronologicalKeys []K
 }
 
-type entryWithTimeout[V any] struct {
+type entryWithExpiration[V any] struct {
 	value   V
 	expires time.Time
 }
@@ -26,7 +26,7 @@ type entryWithTimeout[V any] struct {
 func New[K comparable, V any](maxSize int, ttl time.Duration) Cache[K, V] {
 	return Cache[K, V]{
 		ttl:               ttl,
-		data:              make(map[K]entryWithTimeout[V]),
+		data:              make(map[K]entryWithExpiration[V]),
 		maxSize:           maxSize,
 		chronologicalKeys: make([]K, 0, maxSize),
 	}
@@ -89,7 +89,7 @@ func (c *Cache[K, V]) Delete(key K) {
 
 // addKeyValue inserts a key and its value into the cache.
 func (c *Cache[K, V]) addKeyValue(key K, value V) {
-	c.data[key] = entryWithTimeout[V]{
+	c.data[key] = entryWithExpiration[V]{
 		value:   value,
 		expires: time.Now().Add(c.ttl),
 	}
