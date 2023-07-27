@@ -32,7 +32,7 @@ func ReadCorpus(path string) ([]string, error) {
 // pickWord returns a random word from the corpus
 func pickWord(corpus []string) string {
 	// rand.Seed is only necessary if your version of Go is before 1.20.
-	// It's best not to have it, if you're using go 1.21 or more recent.
+	// It's best not to have it, if you're using go 1.20 or more recent.
 	//nolint:staticcheck // Still present to explain how things used to be
 	rand.Seed(time.Now().UTC().UnixNano())
 	index := rand.Intn(len(corpus))
