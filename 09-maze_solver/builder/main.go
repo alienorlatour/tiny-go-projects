@@ -102,10 +102,10 @@ func (bldr *builder) isInside(p pos) bool {
 	if p.y <= 0 {
 		return false
 	}
-	if p.x >= bldr.width-1 {
+	if p.x >= bldr.width {
 		return false
 	}
-	if p.y >= bldr.height-1 {
+	if p.y >= bldr.height {
 		return false
 	}
 	return true
