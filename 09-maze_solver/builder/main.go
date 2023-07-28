@@ -23,9 +23,9 @@ func generateMaze(width int, height int) *image.RGBA {
 	img.Set(entry.x, entry.y, color.White)
 
 	// draw the path
-	p := entry
+	p := posWithCount{entry, 0}
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{allowEdge: true, ps: make(chan pos, 4096)}
+	b := &builder{ps: make(chan posWithCount, 10000), width: width - 1, height: height - 1, complexity: max(width, height)}
 
 	for {
 		// look for eligible places
@@ -39,19 +39,16 @@ func generateMaze(width int, height int) *image.RGBA {
 
 		if p.x == 0 || p.x == width-1 || p.y == 0 || p.y == height-1 {
 			// we've reached the border - this is the exit now
-			b.allowEdge = false
-			b.exit = p
+			b.exit = &p
 			break
 		}
 	}
 	saveToPNG(img, "tmp.png")
 	b.completeMaze(img)
 
-	if b.exit.x == 0 {
-		return generateMaze(width, height)
-	}
 	slog.Info(fmt.Sprintf("Start at %v\n", entry))
 	slog.Info(fmt.Sprintf("End at %v\n", b.exit))
+	slog.Info(fmt.Sprintf("total length: %d\n", b.exit.count))
 	return img
 }
 
@@ -70,13 +67,46 @@ type pos struct {
 	y int
 }
 
-type builder struct {
-	allowEdge bool
-	ps        chan pos
-	exit      pos
+type posWithCount struct {
+	pos
+	count int
 }
 
-func (b *builder) candidates(img image.Image, p pos) []pos {
+type builder struct {
+	ps            chan posWithCount
+	exit          *posWithCount
+	width, height int
+	complexity    int
+}
+
+func (bldr *builder) allowExit(p posWithCount) bool {
+	if bldr.exit != nil {
+		return false
+	}
+
+	if p.count < bldr.complexity {
+		return false
+	}
+	return true
+}
+
+func (bldr *builder) isInside(p pos) bool {
+	if p.x <= 0 {
+		return false
+	}
+	if p.y <= 0 {
+		return false
+	}
+	if p.x >= bldr.width-1 {
+		return false
+	}
+	if p.y >= bldr.height-1 {
+		return false
+	}
+	return true
+}
+
+func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCount {
 	// we are in the center of 5x5 grid. We can't go to a neighbour of a white pixel.
 	// Since we reached this position from a pixel, we only need to evaluate the exterior ring
 	/*
@@ -88,84 +118,104 @@ func (b *builder) candidates(img image.Image, p pos) []pos {
 	*/
 	// In order to go from X to h, we need:
 	// - h is black
-	// - b, c, d, g, i are black
-	eligible := make([]pos, 0)
-	width := img.Bounds().Dx() - 1
-	height := img.Bounds().Dy() - 1
+	// - b, c, d, g, and i are black
+	eligible := make([]posWithCount, 0)
+	width := bldr.width
+	height := bldr.height
 
-	if /* h */ p.y > 0 && img.At(p.x, p.y-1) == rgbaBlack {
-		if /* g */ (p.x > 0 && img.At(p.x-1, p.y-1) == rgbaBlack) &&
-			/* i */ (p.x < width && img.At(p.x+1, p.y-1) == rgbaBlack) &&
+	b := pos{pwc.x - 1, pwc.y - 2}
+	c := pos{pwc.x, pwc.y - 2}
+	d := pos{pwc.x + 1, pwc.y - 2}
+	f := pos{pwc.x - 2, pwc.y - 1}
+	g := pos{pwc.x - 1, pwc.y - 1}
+	h := pos{pwc.x, pwc.y - 1}
+	i := pos{pwc.x + 1, pwc.y - 1}
+	j := pos{pwc.x + 2, pwc.y - 1}
+	k := pos{pwc.x - 2, pwc.y}
+	l := pos{pwc.x - 1, pwc.y}
+	m := pos{pwc.x + 1, pwc.y}
+	n := pos{pwc.x + 2, pwc.y}
+	o := pos{pwc.x - 2, pwc.y + 1}
+	p := pos{pwc.x - 1, pwc.y + 1}
+	q := pos{pwc.x, pwc.y + 1}
+	r := pos{pwc.x + 1, pwc.y + 1}
+	s := pos{pwc.x + 2, pwc.y + 1}
+	u := pos{pwc.x - 1, pwc.y + 2}
+	v := pos{pwc.x, pwc.y + 2}
+	w := pos{pwc.x + 1, pwc.y + 2}
+
+	if /* h */ img.At(h.x, h.y) == rgbaBlack {
+		if /* g */ img.At(g.x, g.y) == rgbaBlack &&
+			/* i */ img.At(i.x, i.y) == rgbaBlack &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			(b.allowEdge && (p.y == 1) ||
-				/* c */ (p.y > 1 && (img.At(p.x, p.y-2) == rgbaBlack) &&
-					/* b */ (p.x > 0 && img.At(p.x-1, p.y-2) == rgbaBlack) &&
-					/* d */ (p.x < width && img.At(p.x+1, p.y-2) == rgbaBlack))) {
-			eligible = append(eligible, pos{p.x, p.y - 1})
+			((bldr.allowExit(pwc) && pwc.y == 1) || (bldr.isInside(h) &&
+				/* c */ img.At(c.x, c.y) == rgbaBlack &&
+				/* b */ img.At(b.x, b.y) == rgbaBlack &&
+				/* d */ img.At(d.x, d.y) == rgbaBlack)) {
+			eligible = append(eligible, posWithCount{h, pwc.count + 1})
 		}
 	}
 
-	if /* q */ p.y < height && img.At(p.x, p.y+1) == rgbaBlack {
-		if /* p */ (p.x > 0 && img.At(p.x-1, p.y+1) == rgbaBlack) &&
-			/* r */ (p.x < width && img.At(p.x+1, p.y+1) == rgbaBlack) &&
+	if /* q */ img.At(q.x, q.y) == rgbaBlack {
+		if /* p */ img.At(p.x, p.y) == rgbaBlack &&
+			/* r */ img.At(r.x, r.y) == rgbaBlack &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			(b.allowEdge && (p.y == height-1) ||
-				/* v */ (p.y < height-1 && (img.At(p.x, p.y+2) == rgbaBlack) &&
-					/* u */ (p.x > 0 && img.At(p.x-1, p.y+2) == rgbaBlack) &&
-					/* w */ (p.x < width && img.At(p.x+1, p.y+2) == rgbaBlack))) {
-			eligible = append(eligible, pos{p.x, p.y + 1})
+			((bldr.allowExit(pwc) && pwc.y == height-1) || (bldr.isInside(q) &&
+				/* v */ img.At(v.x, v.y) == rgbaBlack &&
+				/* u */ img.At(u.x, u.y) == rgbaBlack &&
+				/* w */ img.At(w.x, w.y) == rgbaBlack)) {
+			eligible = append(eligible, posWithCount{q, pwc.count + 1})
 		}
 	}
 
-	if /* l */ p.x > 0 && img.At(p.x-1, p.y) == rgbaBlack {
-		if /* g */ (p.y > 0 && img.At(p.x-1, p.y-1) == rgbaBlack) &&
-			/* p */ (p.y < height && img.At(p.x-1, p.y+1) == rgbaBlack) &&
+	if /* l */ img.At(l.x, l.y) == rgbaBlack {
+		if /* g */ img.At(g.x, g.y) == rgbaBlack &&
+			/* p */ img.At(p.x, p.y) == rgbaBlack &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			(b.allowEdge && (p.x == 1) ||
-				/* k */ (p.x > 1 && (img.At(p.x-2, p.y) == rgbaBlack) &&
-					/* f */ (p.y > 0 && img.At(p.x-2, p.y-1) == rgbaBlack) &&
-					/* o */ (p.y < height && img.At(p.x-2, p.y+1) == rgbaBlack))) {
-			eligible = append(eligible, pos{p.x - 1, p.y})
+			((bldr.allowExit(pwc) && pwc.x == 1) || (bldr.isInside(l) &&
+				/* k */ img.At(k.x, k.y) == rgbaBlack &&
+				/* f */ img.At(f.x, f.y) == rgbaBlack &&
+				/* o */ img.At(o.x, o.y) == rgbaBlack)) {
+			eligible = append(eligible, posWithCount{l, pwc.count + 1})
 		}
 	}
 
-	if /* m */ p.x < width && img.At(p.x+1, p.y) == rgbaBlack {
-		if /* i */ (p.y > 0 && img.At(p.x+1, p.y-1) == rgbaBlack) &&
-			/* r */ (p.y < height && img.At(p.x+1, p.y+1) == rgbaBlack) &&
+	if /* m */ img.At(m.x, m.y) == rgbaBlack {
+		if /* i */ img.At(i.x, i.y) == rgbaBlack &&
+			/* r */ img.At(r.x, r.y) == rgbaBlack &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			(b.allowEdge && (p.x == width-1) ||
-				/* n */ (p.x < width-1 && (img.At(p.x+2, p.y) == rgbaBlack) &&
-					/* j */ (p.y > 0 && img.At(p.x+2, p.y-1) == rgbaBlack) &&
-					/* s */ (p.y < height && img.At(p.x+2, p.y+1) == rgbaBlack))) {
-			eligible = append(eligible, pos{p.x + 1, p.y})
+			((bldr.allowExit(pwc) && pwc.x == width-1) || (bldr.isInside(m) &&
+				/* n */ img.At(n.x, n.y) == rgbaBlack &&
+				/* j */ img.At(j.x, j.y) == rgbaBlack &&
+				/* s */ img.At(s.x, s.y) == rgbaBlack)) {
+			eligible = append(eligible, posWithCount{m, pwc.count + 1})
 		}
 	}
 
 	return eligible
 }
 
-func (b *builder) completeMaze(img *image.RGBA) {
-	for p := range b.ps {
+func (bldr *builder) completeMaze(img *image.RGBA) {
+	for p := range bldr.ps {
 		newPos := p
 		for {
-			nextPositions := b.candidates(img, newPos)
+			nextPositions := bldr.candidates(img, newPos)
 			if len(nextPositions) == 0 {
 				break
 			}
 			newPos = nextPositions[rand.Intn(len(nextPositions))]
 			img.Set(newPos.x, newPos.y, color.White)
-			b.ps <- newPos
+			bldr.ps <- newPos
 
-			if newPos.x == 0 || newPos.x == img.Rect.Dx()-1 || newPos.y == 0 || newPos.y == img.Rect.Dy()-1 {
+			if newPos.x == 0 || newPos.x == bldr.width || newPos.y == 0 || newPos.y == bldr.height {
 				// we've reached the border - this is the exit now
-				b.allowEdge = false
-				b.exit = newPos
+				bldr.exit = &newPos
 				break
 			}
 		}
 
-		if len(b.ps) == 0 {
-			close(b.ps)
+		if len(bldr.ps) == 0 {
+			close(bldr.ps)
 		}
 	}
 }
