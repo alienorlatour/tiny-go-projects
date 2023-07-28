@@ -11,22 +11,22 @@ import (
 )
 
 func main() {
-	maze := generateMaze(60, 40)
+	maze := generateMaze(64, 64)
 	saveToPNG(maze, "maze.png")
 }
 
 func generateMaze(width int, height int) *image.RGBA {
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
 
-	entry := getRandomEdgeNotCorner(width, height)
+	//	entry := getRandomEdgeNotCorner(width, height)
+	entry := pos{0, width / 2}
 	img.Set(entry.x, entry.y, color.White)
 
 	// draw the path
 	p := entry
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{allowEdge: true, ps: make(chan pos, 2000)}
+	b := &builder{allowEdge: true, ps: make(chan pos, 4096)}
 
-	slog.Info(fmt.Sprintf("Start at %v\n", p))
 	for {
 		// look for eligible places
 		nextPositions := b.candidates(img, p)
@@ -44,13 +44,14 @@ func generateMaze(width int, height int) *image.RGBA {
 			break
 		}
 	}
-
+	saveToPNG(img, "tmp.png")
 	b.completeMaze(img)
 
-	if b.exit.x == entry.x || b.exit.y == entry.y {
+	if b.exit.x == 0 {
 		return generateMaze(width, height)
 	}
-
+	slog.Info(fmt.Sprintf("Start at %v\n", entry))
+	slog.Info(fmt.Sprintf("End at %v\n", b.exit))
 	return img
 }
 
@@ -62,26 +63,6 @@ func saveToPNG(img *image.RGBA, filename string) {
 	defer file.Close()
 
 	png.Encode(file, img)
-}
-
-func getRandomEdgeNotCorner(width, height int) pos {
-	side := rand.Intn(4)
-	switch side {
-	case 0:
-		// top
-		return pos{rand.Intn(width-2 /*ignore corners*/) + 1, 0}
-	case 1:
-		// right
-		return pos{width - 1, rand.Intn(height-2 /*ignore corners*/) + 1}
-	case 2:
-		// bottom
-		return pos{rand.Intn(width-2 /*ignore corners*/) + 1, height - 1}
-	case 3:
-		// left
-		return pos{0, rand.Intn(height-2 /*ignore corners*/) + 1}
-	default:
-		return pos{0, 0}
-	}
 }
 
 type pos struct {
