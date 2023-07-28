@@ -8,10 +8,15 @@ import (
 	"log/slog"
 	"math/rand"
 	"os"
+	"strconv"
 )
 
+// go run main.go WIDTH HEIGHT
 func main() {
-	maze := generateMaze(64, 64)
+	width, _ := strconv.Atoi(os.Args[1])
+	height, _ := strconv.Atoi(os.Args[2])
+
+	maze := generateMaze(width, height)
 	saveToPNG(maze, "maze.png")
 }
 
@@ -25,7 +30,7 @@ func generateMaze(width int, height int) *image.RGBA {
 	// draw the path
 	p := posWithCount{entry, 0}
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{ps: make(chan posWithCount, 10000), width: width - 1, height: height - 1, complexity: max(width, height)}
+	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: max(width, height)}
 
 	for {
 		// look for eligible places
