@@ -30,7 +30,7 @@ func generateMaze(width int, height int) *image.RGBA {
 	// draw the path
 	p := posWithCount{entry, 0}
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: max(width, height)}
+	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: width + height}
 
 	for {
 		// look for eligible places
@@ -51,6 +51,8 @@ func generateMaze(width int, height int) *image.RGBA {
 	saveToPNG(img, "tmp.png")
 	b.completeMaze(img)
 
+	img.Set(entry.x, entry.y, color.RGBA{0, 255, 0, 255})
+	img.Set(b.exit.x, b.exit.y, color.RGBA{255, 0, 0, 255})
 	slog.Info(fmt.Sprintf("Start at %v\n", entry))
 	slog.Info(fmt.Sprintf("End at %v\n", b.exit))
 	slog.Info(fmt.Sprintf("total length: %d\n", b.exit.count))
