@@ -10,8 +10,8 @@ import (
 
 // GameRepository holds all the current games.
 type GameRepository struct {
-	dataMutex sync.Mutex
-	storage   map[session.GameID]session.Game
+	mutex   sync.Mutex
+	storage map[session.GameID]session.Game
 }
 
 // New creates an empty game repository.
@@ -26,8 +26,8 @@ func (gr *GameRepository) Add(game session.Game) error {
 	log.Print("Adding a game...")
 
 	// Lock the reading and the writing of the game.
-	gr.dataMutex.Lock()
-	defer gr.dataMutex.Unlock()
+	gr.mutex.Lock()
+	defer gr.mutex.Unlock()
 
 	_, ok := gr.storage[game.ID]
 	if ok {
@@ -44,8 +44,8 @@ func (gr *GameRepository) Find(id session.GameID) (session.Game, error) {
 	log.Printf("Looking for game %s...", id)
 
 	// Lock the reading of the game.
-	gr.dataMutex.Lock()
-	defer gr.dataMutex.Unlock()
+	gr.mutex.Lock()
+	defer gr.mutex.Unlock()
 
 	game, found := gr.storage[id]
 	if !found {
@@ -58,8 +58,8 @@ func (gr *GameRepository) Find(id session.GameID) (session.Game, error) {
 // Update a game in the database, overwriting it.
 func (gr *GameRepository) Update(game session.Game) error {
 	// Lock the reading and the writing of the game.
-	gr.dataMutex.Lock()
-	defer gr.dataMutex.Unlock()
+	gr.mutex.Lock()
+	defer gr.mutex.Unlock()
 
 	_, found := gr.storage[game.ID]
 	if !found {
