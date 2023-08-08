@@ -42,8 +42,10 @@ func generateMaze(width int, height int) *image.RGBA {
 
 	// draw the path
 	p := posWithCount{entry, 0}
+
+	const complexity = 2 // change this for easier / creatable mazes, or harder ones.
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: width + height}
+	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: complexity * (width + height)}
 
 	for {
 		// look for eligible places
