@@ -5,16 +5,16 @@ import (
 	"log/slog"
 	"os"
 
-	"tiny-go-projects/09-maze_solver/final/internal/solver"
+	"09-maze_solver/final/internal/solver"
 )
 
 func main() {
-	if len(os.Args) != 2 {
+	if len(os.Args) != 3 {
 		usage()
 	}
 
-	inputFile := os.Args[0]
-	outputFile := os.Args[1]
+	inputFile := os.Args[1]
+	outputFile := os.Args[2]
 
 	slog.Info(fmt.Sprintf("Solving maze %s and saving it as %s", inputFile, outputFile))
 	s, err := solver.New(inputFile)

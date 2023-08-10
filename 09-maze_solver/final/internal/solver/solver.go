@@ -5,13 +5,17 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"log/slog"
 	"os"
+
+	"09-maze_solver/final/internal/config"
 )
 
 type Solver struct {
 	maze *image.RGBA
 
 	solution []point2d
+	config   config.Config
 }
 
 type point2d struct {
@@ -43,14 +47,80 @@ func New(inputPath string) (*Solver, error) {
 		return nil, fmt.Errorf("this isn't a RGBA image")
 	}
 
-	s := &Solver{maze: rgbaImage}
+	s := &Solver{
+		maze:   rgbaImage,
+		config: config.Get(),
+	}
 
 	return s, nil
 }
 
 // Solve finds the path from one end to the other.
 func (s *Solver) Solve() error {
+	start, end, err := s.findExtremities()
+	if err != nil {
+		return fmt.Errorf("unable to find extremities: %w", err)
+	}
+
+	slog.Info(fmt.Sprintf("starting at %v, ending at %v", start, end))
 	return nil
+}
+
+// findExtremities returns the position of the extremities on the image.
+func (s *Solver) findExtremities() (start, end point2d, err error) {
+	// We know the extremities are on the edge.
+
+	width, height := s.maze.Bounds().Dx()-1, s.maze.Bounds().Dy()-1
+
+	// Scan the vertical edges
+	for y := 1; y <= height-1; y++ {
+		// check the left edge
+		switch s.maze.RGBAAt(0, y) {
+		case s.config.StartColour:
+			start = point2d{0, y}
+		case s.config.EndColour:
+			end = point2d{0, y}
+		}
+
+		// check the right edge
+		switch s.maze.RGBAAt(width, y) {
+		case s.config.StartColour:
+			start = point2d{height, y}
+		case s.config.EndColour:
+			end = point2d{height, y}
+		}
+	}
+
+	// Scan the horizontal edges
+	for x := 1; x <= width-1; x++ {
+		// check the top edge
+		switch s.maze.RGBAAt(x, 0) {
+		case s.config.StartColour:
+			start = point2d{x, 0}
+		case s.config.EndColour:
+			end = point2d{x, 0}
+		}
+
+		// check the bottom edge
+		switch s.maze.RGBAAt(x, height) {
+		case s.config.StartColour:
+			start = point2d{x, height}
+		case s.config.EndColour:
+			end = point2d{x, height}
+		}
+	}
+
+	origin := point2d{}
+	switch {
+	case start == end:
+		return start, end, fmt.Errorf("start and end at same positions: %v", start)
+	case start == origin:
+		return start, end, fmt.Errorf("start position not found")
+	case end == origin:
+		return start, end, fmt.Errorf("end position not found")
+	}
+
+	return
 }
 
 // SaveSolution saves the image as a PNG file with the solution path in red.
