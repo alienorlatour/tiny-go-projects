@@ -3,7 +3,6 @@ package solver
 import (
 	"fmt"
 	"image"
-	"image/color"
 	"image/png"
 	"log/slog"
 	"os"
@@ -134,10 +133,8 @@ func (s *Solver) SaveSolution(outputPath string) error {
 		return fmt.Errorf("unable to check output file %s: %w", outputPath, err)
 	}
 
-	var pathColour = color.RGBA{255, 0, 255, 255}
-
 	for _, p := range s.solution {
-		s.maze.Set(p.x, p.y, pathColour)
+		s.maze.Set(p.x, p.y, s.config.SolutionColour)
 	}
 
 	fd, err := os.Create(outputPath)
