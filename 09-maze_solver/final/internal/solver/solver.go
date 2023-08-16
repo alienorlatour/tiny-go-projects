@@ -45,8 +45,9 @@ func New(inputPath string) (*Solver, error) {
 	}
 
 	s := &Solver{
-		maze:   rgbaImage,
-		config: config.Get(),
+		maze:           rgbaImage,
+		config:         config.Get(),
+		pathsToExplore: make(chan []point2d, 1000),
 	}
 
 	return s, nil
