@@ -13,3 +13,8 @@ func (p point2d) neighbours() []point2d {
 		{p.x - 1, p.y},
 	}
 }
+
+type pointsWithID struct {
+	points []point2d
+	id     string
+}

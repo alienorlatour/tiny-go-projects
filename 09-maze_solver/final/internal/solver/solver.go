@@ -16,7 +16,7 @@ type Solver struct {
 	solution []point2d
 	config   config.Config
 
-	pathsToExplore chan []point2d
+	pathsToExplore chan pointsWithID
 }
 
 // New returns a solver on a RGBA png image
@@ -47,7 +47,7 @@ func New(inputPath string) (*Solver, error) {
 	s := &Solver{
 		maze:           rgbaImage,
 		config:         config.Get(),
-		pathsToExplore: make(chan []point2d, 1000),
+		pathsToExplore: make(chan pointsWithID, 10),
 	}
 
 	return s, nil
@@ -63,7 +63,7 @@ func (s *Solver) Solve() error {
 	slog.Info(fmt.Sprintf("starting at %v, ending at %v", start, end))
 
 	// We know the first pixel is on the left edge.
-	s.pathsToExplore <- []point2d{start, {1, start.y}}
+	s.pathsToExplore <- pointsWithID{[]point2d{start, {1, start.y}}, "S"}
 
 	s.listenToBranches()
 
