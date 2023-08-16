@@ -15,13 +15,11 @@ type Solver struct {
 
 	solution []point2d
 	config   config.Config
+
+	pathsToExplore chan []point2d
 }
 
-type point2d struct {
-	x int
-	y int
-}
-
+// New returns a solver on a RGBA png image
 func New(inputPath string) (*Solver, error) {
 	// Check input file
 	_, err := os.Stat(inputPath)
@@ -62,6 +60,12 @@ func (s *Solver) Solve() error {
 	}
 
 	slog.Info(fmt.Sprintf("starting at %v, ending at %v", start, end))
+
+	// We know the first pixel is on the left edge.
+	s.pathsToExplore <- []point2d{start, {1, start.y}}
+
+	s.listenToBranches()
+
 	return nil
 }
 
