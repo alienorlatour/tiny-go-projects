@@ -3,9 +3,13 @@ package solver
 import (
 	"fmt"
 	"image"
+	"image/gif"
 	"image/png"
 	"log/slog"
 	"os"
+	"strings"
+	"sync"
+	"time"
 
 	"09-maze_solver/final/internal/config"
 )
@@ -17,6 +21,9 @@ type Solver struct {
 	config   config.Config
 
 	pathsToExplore chan pointsWithID
+	mutex          sync.Mutex
+
+	gif *gif.GIF
 }
 
 // New returns a solver on a RGBA png image
@@ -48,6 +55,7 @@ func New(inputPath string) (*Solver, error) {
 		maze:           rgbaImage,
 		config:         config.Get(),
 		pathsToExplore: make(chan pointsWithID, 10),
+		gif:            &gif.GIF{},
 	}
 
 	return s, nil
@@ -55,6 +63,7 @@ func New(inputPath string) (*Solver, error) {
 
 // Solve finds the path from one end to the other.
 func (s *Solver) Solve() error {
+	now := time.Now()
 	start, end, err := s.findExtremities()
 	if err != nil {
 		return fmt.Errorf("unable to find extremities: %w", err)
@@ -65,8 +74,11 @@ func (s *Solver) Solve() error {
 	// We know the first pixel is on the left edge.
 	s.pathsToExplore <- pointsWithID{[]point2d{start, {1, start.y}}, "S"}
 
+	go s.draw()
+
 	s.listenToBranches()
 
+	slog.Info(fmt.Sprintf("It took %d nanoseconds to solve the maze", time.Since(now).Nanoseconds()))
 	return nil
 }
 
@@ -150,6 +162,11 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	err = png.Encode(fd, s.maze)
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s", outputPath)
+	}
+
+	err = s.saveGif(strings.Replace(outputPath, "png", "gif", -1))
+	if err != nil {
+		return fmt.Errorf("can't save gif")
 	}
 
 	return nil

@@ -21,11 +21,10 @@ func (s *Solver) explore(pathToBranch pointsWithID) {
 	previous := pathToBranch.points[len(pathToBranch.points)-2]
 
 	for {
-		if s.solution != nil {
-			return
-		}
+		s.mutex.Lock()
 		// mark pos as seen
 		s.maze.Set(pos.x, pos.y, s.config.ExploredColour)
+		s.mutex.Unlock()
 
 		// Peek in each direction for path pixels
 		candidates := []point2d{}
@@ -38,8 +37,10 @@ func (s *Solver) explore(pathToBranch pointsWithID) {
 			// They can only be Wall, Path, Start, or End.
 			switch s.maze.RGBAAt(n.x, n.y) {
 			case s.config.EndColour:
+				s.mutex.Lock()
 				close(s.pathsToExplore)
 				s.solution = append(pathToBranch.points, n)
+				s.mutex.Unlock()
 				slog.Info("Solution found!")
 				return
 			case s.config.PathColour:
@@ -59,7 +60,13 @@ func (s *Solver) explore(pathToBranch pointsWithID) {
 			for i := 1; i < len(candidates); i++ {
 				branch := append(slices.Clone(pathToBranch.points), candidates[i])
 				slog.Info(fmt.Sprintf("%v (%s-%d) seems to be promising", candidates[i], pathToBranch.id, i))
+
+				s.mutex.Lock()
+				if s.solution != nil {
+					return
+				}
 				s.pathsToExplore <- pointsWithID{branch, fmt.Sprintf("%s-%d", pathToBranch.id, i)}
+				s.mutex.Unlock()
 			}
 			// Continue exploration on this branch.
 			pathToBranch.points = append(pathToBranch.points, candidates[0])
