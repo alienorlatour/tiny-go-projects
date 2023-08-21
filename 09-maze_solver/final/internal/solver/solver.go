@@ -20,8 +20,12 @@ type Solver struct {
 	solution []point2d
 	config   config.Config
 
-	pathsToExplore chan pointsWithID
-	mutex          sync.Mutex
+	pathsToExplore      chan []point2d
+	pathsToExploreMutex sync.Mutex
+
+	mutex         sync.Mutex
+	exploredCount int
+	explored      chan point2d
 
 	gif *gif.GIF
 }
@@ -54,7 +58,8 @@ func New(inputPath string) (*Solver, error) {
 	s := &Solver{
 		maze:           rgbaImage,
 		config:         config.Get(),
-		pathsToExplore: make(chan pointsWithID, 10),
+		pathsToExplore: make(chan []point2d, 10),
+		explored:       make(chan point2d),
 		gif:            &gif.GIF{},
 	}
 
@@ -72,10 +77,9 @@ func (s *Solver) Solve() error {
 	slog.Info(fmt.Sprintf("starting at %v, ending at %v", start, end))
 
 	// We know the first pixel is on the left edge.
-	s.pathsToExplore <- pointsWithID{[]point2d{start, {1, start.y}}, "S"}
+	s.pathsToExplore <- []point2d{start, {1, start.y}}
 
-	go s.draw()
-
+	go s.paint()
 	s.listenToBranches()
 
 	slog.Info(fmt.Sprintf("It took %d nanoseconds to solve the maze", time.Since(now).Nanoseconds()))

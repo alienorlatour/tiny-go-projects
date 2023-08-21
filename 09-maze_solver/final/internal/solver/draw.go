@@ -4,37 +4,40 @@ import (
 	"fmt"
 	"image"
 	"image/color/palette"
-	"image/draw"
 	"image/gif"
 	"log/slog"
 	"os"
-	"time"
+
+	"golang.org/x/image/draw"
 )
 
-func (s *Solver) draw() {
-	ticker := time.NewTicker(50 * time.Nanosecond)
-	for {
-		if s.solution != nil {
-			break
-		}
+func (s *Solver) paint() {
+	for pos := range s.explored {
+		s.paintAt(pos)
+	}
+}
 
-		// wait for a tick
-		select {
-		case <-ticker.C:
-		}
-		go s.drawCurrentFrameToGif()
+func (s *Solver) paintAt(pos point2d) {
+	slog.Info(fmt.Sprintf("painting at %v", pos))
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if s.maze.RGBAAt(pos.x, pos.y) == s.config.PathColour {
+		s.maze.SetRGBA(pos.x, pos.y, s.config.ExploredColour)
 	}
 
-	// add solution
-	s.drawCurrentFrameToGif()
+	s.exploredCount++
+
+	if s.exploredCount%20 == 0 {
+		s.drawCurrentFrameToGif()
+	}
 }
 
 func (s *Solver) drawCurrentFrameToGif() {
-	bounds := s.maze.Bounds()
-	frame := image.NewPaletted(image.Rect(0, 0, bounds.Dx(), bounds.Dy()), palette.Plan9)
+	frame := image.NewPaletted(image.Rect(0, 0, 500, 500), palette.Plan9)
 
 	// Convert RGBA to paletted
-	draw.FloydSteinberg.Draw(frame, s.maze.Bounds(), s.maze, image.Point{0, 0})
+	draw.NearestNeighbor.Scale(frame, frame.Rect, s.maze, s.maze.Bounds(), draw.Over, nil)
 
 	s.gif.Image = append(s.gif.Image, frame)
 }
@@ -47,12 +50,12 @@ func (s *Solver) saveGif(gifPath string) error {
 
 	defer outputImage.Close()
 
+	// add solution
+	s.drawCurrentFrameToGif()
 	s.gif.Delay = make([]int, len(s.gif.Image))
-	for i := 0; i < len(s.gif.Delay)-1; i++ {
-		s.gif.Delay[i] = 5
-	}
+
 	slog.Info(fmt.Sprintf("gif contains %d frames", len(s.gif.Image)))
-	s.gif.Delay[len(s.gif.Delay)-1] = 50
+	s.gif.Delay[len(s.gif.Delay)-1] = 500
 	err = gif.EncodeAll(outputImage, s.gif)
 	if err != nil {
 		return fmt.Errorf("unable to encode gif: %w", err)
