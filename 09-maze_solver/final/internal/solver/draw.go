@@ -18,7 +18,6 @@ func (s *Solver) paint() {
 }
 
 func (s *Solver) paintAt(pos point2d) {
-	slog.Info(fmt.Sprintf("painting at %v", pos))
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
@@ -28,7 +27,9 @@ func (s *Solver) paintAt(pos point2d) {
 
 	s.exploredCount++
 
-	if s.exploredCount%20 == 0 {
+	tick := (s.maze.Bounds().Dx() * s.maze.Bounds().Dy() / 200) + 1
+
+	if s.exploredCount%tick == 0 {
 		s.drawCurrentFrameToGif()
 	}
 }
@@ -55,7 +56,7 @@ func (s *Solver) saveGif(gifPath string) error {
 	s.gif.Delay = make([]int, len(s.gif.Image))
 
 	slog.Info(fmt.Sprintf("gif contains %d frames", len(s.gif.Image)))
-	s.gif.Delay[len(s.gif.Delay)-1] = 500
+	s.gif.Delay[len(s.gif.Delay)-1] = 300
 	err = gif.EncodeAll(outputImage, s.gif)
 	if err != nil {
 		return fmt.Errorf("unable to encode gif: %w", err)
