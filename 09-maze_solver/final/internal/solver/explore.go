@@ -26,8 +26,8 @@ func (s *Solver) listenToBranches() {
 					slog.Info(fmt.Sprintf("[%d] found a new pos (%d in chan): %v", workerID, len(s.pathsToExplore), path))
 					// read a job to perform
 					s.explore(path)
-
 				}
+				//	slog.Info(fmt.Sprintf("worker %d has finished its job and is eligible for new work", workerID))
 			}
 		}(i)
 	}
@@ -57,10 +57,7 @@ func (s *Solver) explore(pathToBranch []point2d) {
 			// They can only be Wall, Path, Start, or End.
 			switch s.maze.RGBAAt(n.x, n.y) {
 			case s.config.EndColour:
-				close(s.pathsToExplore)
 				s.solution = append(pathToBranch, n)
-
-				s.toPaint <- n
 				s.b.broadcast(struct{}{})
 				slog.Info("Solution found!")
 				return
@@ -84,6 +81,7 @@ func (s *Solver) explore(pathToBranch []point2d) {
 				if s.solution != nil {
 					return
 				}
+				slog.Info(fmt.Sprintf("queuing candidate"))
 				s.pathsToExplore <- branch
 			}
 			// Continue exploration on this branch.
