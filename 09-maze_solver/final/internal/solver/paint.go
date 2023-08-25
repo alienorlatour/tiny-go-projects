@@ -11,8 +11,8 @@ import (
 	"golang.org/x/image/draw"
 )
 
-func (s *Solver) paint() {
-	for pos := range s.explored {
+func (s *Solver) paintExplored() {
+	for pos := range s.toPaint {
 		s.paintAt(pos)
 	}
 }
