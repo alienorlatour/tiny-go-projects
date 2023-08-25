@@ -6,9 +6,23 @@ import (
 	"slices"
 )
 
+const poolSize = 3
+
 func (s *Solver) listenToBranches() {
-	for p := range s.pathsToExplore {
-		go s.explore(p)
+	// create pool of N workers
+	for i := 0; i < poolSize; i++ {
+		go func() {
+			for {
+				path, ok := <-s.pathsToExplore
+				if !ok {
+					// the solution has been found
+					return
+				}
+
+				// read a job to perform
+				s.explore(path)
+			}
+		}()
 	}
 }
 
