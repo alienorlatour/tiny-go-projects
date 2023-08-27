@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"09-maze_solver/final/internal/solver"
+	"learngo/09/maze/internal/solver"
 )
 
 func main() {

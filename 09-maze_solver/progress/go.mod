@@ -1,6 +1,6 @@
-module 09-maze_solver/final
+module learngo/09/maze
 
-go 1.21rc2
+go 1.21
 
 require github.com/stretchr/testify v1.8.4
 

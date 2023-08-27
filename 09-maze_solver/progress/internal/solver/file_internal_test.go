@@ -15,7 +15,7 @@ func TestOpenImage_errors(t *testing.T) {
 			err:   "unable to check input file",
 		},
 		"not a png": {
-			input: "image.go",
+			input: "file.go",
 			err:   "unable to load input image",
 		},
 	}
