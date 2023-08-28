@@ -46,7 +46,7 @@ func (s *Solver) drawCurrentFrameToGif() {
 func (s *Solver) saveGif(gifPath string) error {
 	outputImage, err := os.Create(gifPath)
 	if err != nil {
-		return fmt.Errorf("unable to create output gif at %s: %w", outputImage, err)
+		return fmt.Errorf("unable to create output gif at %s: %w", gifPath, err)
 	}
 
 	defer outputImage.Close()
