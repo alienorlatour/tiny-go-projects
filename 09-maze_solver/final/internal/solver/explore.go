@@ -77,11 +77,10 @@ func (s *Solver) explore(pathToBranch []point2d) {
 			// and we don't enter this loop in that case.
 			for i := 1; i < len(candidates); i++ {
 				branch := append(slices.Clone(pathToBranch), candidates[i])
-				slog.Info(fmt.Sprintf("%v seems to be promising", candidates[i]))
 				if s.solution != nil {
 					return
 				}
-				slog.Info(fmt.Sprintf("queuing candidate"))
+				slog.Info(fmt.Sprintf("queuing intersection at %v", candidates[i]))
 				s.pathsToExplore <- branch
 			}
 			// Continue exploration on this branch.
