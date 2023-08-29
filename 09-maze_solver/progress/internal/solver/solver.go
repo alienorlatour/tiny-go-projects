@@ -11,6 +11,8 @@ type Solver struct {
 	maze           *image.RGBA
 	config         config
 	pathsToExplore chan []point2d
+
+	solution []point2d
 }
 
 // New builds a Solver by taking the path to the PNG maze.

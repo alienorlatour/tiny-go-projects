@@ -7,6 +7,9 @@ import (
 
 func (s *Solver) listenToBranches() {
 	for p := range s.pathsToExplore {
+		if len(s.solution) != 0 {
+			return
+		}
 		go s.explore(p)
 	}
 }
@@ -30,6 +33,7 @@ func (s *Solver) explore(pathToBranch []point2d) {
 			switch s.maze.RGBAAt(n.x, n.y) {
 			case s.config.treasureColour:
 				slog.Info("Solution found!")
+				s.solution = append(pathToBranch, n)
 				return
 			case s.config.pathColour:
 				candidates = append(candidates, n)
