@@ -7,10 +7,10 @@ import (
 
 func (s *Solver) listenToBranches() {
 	for p := range s.pathsToExplore {
+		go s.explore(p)
 		if len(s.solution) != 0 {
 			return
 		}
-		go s.explore(p)
 	}
 }
 
