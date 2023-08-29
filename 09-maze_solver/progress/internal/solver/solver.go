@@ -9,7 +9,7 @@ import (
 // Solver is capable of finding the path through a maze.
 type Solver struct {
 	maze           *image.RGBA
-	config         Config
+	config         config
 	pathsToExplore chan []point2d
 }
 
@@ -52,7 +52,7 @@ func (s *Solver) findEntrance() (point2d, error) {
 	height := s.maze.Bounds().Dy() - 1
 
 	for y := 1; y <= height-1; y++ {
-		if s.maze.RGBAAt(0, y) == s.config.EntranceColour {
+		if s.maze.RGBAAt(0, y) == s.config.entranceColour {
 			return point2d{0, y}, nil
 		}
 	}

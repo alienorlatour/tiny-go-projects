@@ -28,10 +28,10 @@ func (s *Solver) explore(pathToBranch []point2d) {
 			}
 
 			switch s.maze.RGBAAt(n.x, n.y) {
-			case s.config.TreasureColour:
+			case s.config.treasureColour:
 				slog.Info("Solution found!")
 				return
-			case s.config.PathColour:
+			case s.config.pathColour:
 				candidates = append(candidates, n)
 			}
 		}
