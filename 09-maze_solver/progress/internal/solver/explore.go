@@ -23,7 +23,7 @@ func (s *Solver) explore(pathToBranch []point2d) {
 	pos := pathToBranch[len(pathToBranch)-1]
 	previous := pathToBranch[len(pathToBranch)-2]
 
-	for {
+	for s.solution == nil {
 		candidates := make([]point2d, 0, 3)
 		for _, n := range pos.neighbours() {
 			if n == previous {
