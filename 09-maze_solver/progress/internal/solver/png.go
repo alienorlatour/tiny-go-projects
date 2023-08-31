@@ -43,15 +43,15 @@ func (s *Solver) SaveSolution(outputPath string) error {
 		return fmt.Errorf("unable to check output file %s: %w", outputPath, err)
 	}
 
-	for _, p := range s.solution {
-		s.maze.Set(p.x, p.y, s.config.solutionColour)
-	}
-
 	fd, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create output image file at %s", outputPath)
 	}
 	defer fd.Close()
+
+	for _, p := range s.solution {
+		s.maze.Set(p.x, p.y, s.config.solutionColour)
+	}
 
 	err = png.Encode(fd, s.maze)
 	if err != nil {

@@ -25,7 +25,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []point2d, 1),
+		pathsToExplore: make(chan []point2d, 100000),
 	}, nil
 }
 
