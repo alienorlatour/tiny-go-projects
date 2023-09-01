@@ -44,10 +44,10 @@ func TestSolver_explore(t *testing.T) {
 			s := &Solver{
 				maze:           maze,
 				config:         defaultColours(),
-				pathsToExplore: make(chan []point2d, 3),
+				pathsToExplore: make(chan []image.Point, 3),
 			}
 
-			s.explore([]point2d{{0, 2}, {1, 2}})
+			s.explore([]image.Point{{0, 2}, {1, 2}})
 
 			assert.Equal(t, tt.wantSize, len(s.pathsToExplore))
 		})

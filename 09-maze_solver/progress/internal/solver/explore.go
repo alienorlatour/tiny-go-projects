@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"image"
 	"log/slog"
 	"slices"
 	"sync"
@@ -18,7 +19,7 @@ func (s *Solver) listenToBranches() {
 			return
 		case p := <-s.pathsToExplore:
 			wg.Add(1)
-			go func(p []point2d) {
+			go func(p []image.Point) {
 				defer wg.Done()
 
 				s.explore(p)
@@ -28,7 +29,7 @@ func (s *Solver) listenToBranches() {
 }
 
 // explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
-func (s *Solver) explore(pathToBranch []point2d) {
+func (s *Solver) explore(pathToBranch []image.Point) {
 	if len(pathToBranch) < 2 {
 		return
 	}
@@ -37,13 +38,13 @@ func (s *Solver) explore(pathToBranch []point2d) {
 	previous := pathToBranch[len(pathToBranch)-2]
 
 	for s.solution == nil {
-		candidates := make([]point2d, 0, 3)
-		for _, n := range pos.neighbours() {
+		candidates := make([]image.Point, 0, 3)
+		for _, n := range neighbours(pos) {
 			if n == previous {
 				continue
 			}
 
-			switch s.maze.RGBAAt(n.x, n.y) {
+			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				slog.Info("Solution found!")
 				s.quit <- struct{}{}

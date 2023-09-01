@@ -9,19 +9,19 @@ import (
 func TestSolver_findEntrance_success(t *testing.T) {
 	tests := map[string]struct {
 		inputPath string
-		want      point2d
+		want      image.Point
 	}{
 		"middle": {
 			inputPath: "testdata/maze10_10.png",
-			want:      point2d{0, 5},
+			want:      image.Point{0, 5},
 		},
 		"400 px": {
 			inputPath: "testdata/maze400_400.png",
-			want:      point2d{0, 200},
+			want:      image.Point{0, 200},
 		},
 		"treasure near entrance": {
 			inputPath: "testdata/maze10_exit.png",
-			want:      point2d{0, 5},
+			want:      image.Point{0, 5},
 		},
 	}
 	for name, tt := range tests {

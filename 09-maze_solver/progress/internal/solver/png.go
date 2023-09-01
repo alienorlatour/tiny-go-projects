@@ -50,7 +50,7 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	defer fd.Close()
 
 	for _, p := range s.solution {
-		s.maze.Set(p.x, p.y, s.config.solutionColour)
+		s.maze.Set(p.X, p.Y, s.config.solutionColour)
 	}
 
 	err = png.Encode(fd, s.maze)

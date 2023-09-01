@@ -1,18 +1,14 @@
 package solver
 
-// point2d represents the position of one pixel.
-type point2d struct {
-	x int
-	y int
-}
+import "image"
 
 // neighbours returns an array of the 4 neighbours of a pixel.
-// Some of the returned positions may be outside the image.
-func (p point2d) neighbours() []point2d {
-	return []point2d{
-		{p.x, p.y + 1},
-		{p.x, p.y - 1},
-		{p.x + 1, p.y},
-		{p.x - 1, p.y},
+// Some returned positions may be outside the image.
+func neighbours(p image.Point) []image.Point {
+	return []image.Point{
+		{p.X, p.Y + 1},
+		{p.X, p.Y - 1},
+		{p.X + 1, p.Y},
+		{p.X - 1, p.Y},
 	}
 }

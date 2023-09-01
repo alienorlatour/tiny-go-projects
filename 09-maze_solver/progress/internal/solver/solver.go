@@ -10,10 +10,10 @@ import (
 type Solver struct {
 	maze           *image.RGBA
 	config         config
-	pathsToExplore chan []point2d
+	pathsToExplore chan []image.Point
 	quit           chan struct{}
 
-	solution []point2d
+	solution []image.Point
 }
 
 // New builds a Solver by taking the path to the PNG maze.
@@ -26,7 +26,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []point2d, 1000000),
+		pathsToExplore: make(chan []image.Point, 1000000),
 		quit:           make(chan struct{}, 1),
 	}, nil
 }
@@ -40,21 +40,21 @@ func (s *Solver) Solve() error {
 
 	slog.Info(fmt.Sprintf("starting at %v", entrance))
 
-	s.pathsToExplore <- []point2d{entrance, {1, entrance.y}}
+	s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}}
 	s.listenToBranches()
 
 	return nil
 }
 
 // findEntrance returns the position of the maze entrance on the image.
-func (s *Solver) findEntrance() (point2d, error) {
+func (s *Solver) findEntrance() (image.Point, error) {
 	height := s.maze.Bounds().Dy() - 1
 
 	for y := 1; y <= height-1; y++ {
 		if s.maze.RGBAAt(0, y) == s.config.entranceColour {
-			return point2d{0, y}, nil
+			return image.Point{0, y}, nil
 		}
 	}
 
-	return point2d{}, fmt.Errorf("entrance position not found")
+	return image.Point{}, fmt.Errorf("entrance position not found")
 }
