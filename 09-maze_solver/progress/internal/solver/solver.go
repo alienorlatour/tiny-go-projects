@@ -11,6 +11,7 @@ type Solver struct {
 	maze           *image.RGBA
 	config         config
 	pathsToExplore chan []point2d
+	quit           chan struct{}
 
 	solution []point2d
 }
@@ -25,7 +26,8 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []point2d, 100000),
+		pathsToExplore: make(chan []point2d, 1),
+		quit:           make(chan struct{}, 1),
 	}, nil
 }
 

@@ -1,15 +1,28 @@
 package solver
 
 import (
+	"fmt"
 	"log/slog"
 	"slices"
+	"sync"
 )
 
 func (s *Solver) listenToBranches() {
-	for p := range s.pathsToExplore {
-		go s.explore(p)
-		if len(s.solution) != 0 {
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+
+	for {
+		select {
+		case <-s.quit:
+			slog.Info(fmt.Sprint("the solution has been found, worker going to sleep"))
 			return
+		case p := <-s.pathsToExplore:
+			wg.Add(1)
+			go func(p []point2d) {
+				defer wg.Done()
+
+				s.explore(p)
+			}(p)
 		}
 	}
 }
@@ -33,6 +46,7 @@ func (s *Solver) explore(pathToBranch []point2d) {
 			switch s.maze.RGBAAt(n.x, n.y) {
 			case s.config.treasureColour:
 				slog.Info("Solution found!")
+				s.quit <- struct{}{}
 				s.solution = append(pathToBranch, n)
 				return
 			case s.config.pathColour:
