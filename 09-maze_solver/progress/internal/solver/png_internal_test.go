@@ -1,8 +1,9 @@
 package solver
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestOpenImage_errors(t *testing.T) {
@@ -15,8 +16,12 @@ func TestOpenImage_errors(t *testing.T) {
 			err:   "unable to check input file",
 		},
 		"not a png": {
-			input: "file.go",
+			input: "png.go",
 			err:   "unable to load input image",
+		},
+		"not a rgba png": {
+			input: "testdata/rgb.png",
+			err:   "this isn't a RGBA image",
 		},
 	}
 
