@@ -30,6 +30,8 @@ func (s *Solver) listenToBranches() {
 
 // explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
 func (s *Solver) explore(pathToBranch []image.Point) {
+	// A path starts at the entrance and has stepped into the maze
+	// for at least 1 pixel, for a total of 2 pixels.
 	if len(pathToBranch) < 2 {
 		return
 	}
@@ -38,6 +40,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 	previous := pathToBranch[len(pathToBranch)-2]
 
 	for s.solution == nil {
+		// We know we'll have between up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
 		for _, n := range neighbours(pos) {
 			if n == previous {
