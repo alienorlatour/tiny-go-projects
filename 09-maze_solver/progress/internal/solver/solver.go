@@ -30,7 +30,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []image.Point, 1),
+		pathsToExplore: make(chan []image.Point),
 		quit:           make(chan struct{}, 1),
 	}, nil
 }
@@ -44,7 +44,7 @@ func (s *Solver) Solve() error {
 
 	slog.Info(fmt.Sprintf("starting at %v", entrance))
 
-	s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}}
+	go func() { s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}} }()
 	s.listenToBranches()
 
 	return nil

@@ -62,7 +62,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 
 		switch len(candidates) {
 		case 0:
-			//	slog.Info("I must have taken the wrong turn :(")
+			slog.Info(fmt.Sprintf("I must have taken the wrong turn at %v.", pos))
 			return
 		case 1, 2, 3:
 			for i := 1; i < len(candidates); i++ {
