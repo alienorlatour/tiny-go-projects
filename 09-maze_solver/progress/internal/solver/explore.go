@@ -40,6 +40,8 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 	previous := pathToBranch[len(pathToBranch)-2]
 
 	for s.solution == nil {
+		s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
+
 		// We know we'll have between up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
 		for _, n := range neighbours(pos) {
@@ -62,7 +64,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 
 		switch len(candidates) {
 		case 0:
-			slog.Info(fmt.Sprintf("I must have taken the wrong turn at %v.", pos))
+			// slog.Info(fmt.Sprintf("I must have taken the wrong turn at %v.", pos))
 			return
 		case 1, 2, 3:
 			for i := 1; i < len(candidates); i++ {
