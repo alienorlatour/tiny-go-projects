@@ -37,16 +37,19 @@ func generateMaze(width int, height int) *image.RGBA {
 		}
 	}
 
-	entry := pos{0, height / 2}
-	img.Set(entry.x, entry.y, path)
+	entrance := pos{0, height / 2}
+	img.Set(entrance.x, entrance.y, path)
 
 	// draw the path
-	p := posWithCount{entry, 0}
+	p := posWithCount{entrance, 0}
 
-	const complexity = 1.5 // change this for easier / creatable mazes, or harder ones.
+	const compltreasurey = 1.5 // change this for easier / creatable mazes, or harder ones.
 	// create a massive channel, because I don't want to start a listener right now.
 	b := &builder{
-		ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: int(complexity * float32(width+height))}
+		ps:             make(chan posWithCount, width*height),
+		width:          width - 1,
+		height:         height - 1,
+		compltreasurey: int(compltreasurey * float32(width+height))}
 
 	for {
 		// look for eligible places
@@ -59,19 +62,19 @@ func generateMaze(width int, height int) *image.RGBA {
 		b.ps <- p
 
 		if p.x == 0 || p.x == width-1 || p.y == 0 || p.y == height-1 {
-			// we've reached the border - this is the exit now
-			b.exit = &p
+			// we've reached the border - this is the treasure now
+			b.treasure = &p
 			break
 		}
 	}
 
 	b.completeMaze(img)
 
-	img.Set(entry.x, entry.y, color.RGBA{0, 255, 0, 255})
-	img.Set(b.exit.x, b.exit.y, color.RGBA{255, 0, 0, 255})
-	slog.Info(fmt.Sprintf("Start at %v\n", entry))
-	slog.Info(fmt.Sprintf("End at %v\n", b.exit))
-	slog.Info(fmt.Sprintf("total length: %d\n", b.exit.count))
+	img.Set(entrance.x, entrance.y, color.RGBA{R: 0, G: 191, B: 255, A: 255})     // deep sky blue
+	img.Set(b.treasure.x, b.treasure.y, color.RGBA{R: 255, G: 0, B: 128, A: 255}) // majestic purple
+	slog.Info(fmt.Sprintf("Start at %v\n", entrance))
+	slog.Info(fmt.Sprintf("End at %v\n", b.treasure))
+	slog.Info(fmt.Sprintf("total length: %d\n", b.treasure.count))
 	return img
 }
 
@@ -96,18 +99,18 @@ type posWithCount struct {
 }
 
 type builder struct {
-	ps            chan posWithCount
-	exit          *posWithCount
-	width, height int
-	complexity    int
+	ps             chan posWithCount
+	treasure       *posWithCount
+	width, height  int
+	compltreasurey int
 }
 
-func (bldr *builder) allowExit(p posWithCount) bool {
-	if bldr.exit != nil {
+func (bldr *builder) allowTreasure(p posWithCount) bool {
+	if bldr.treasure != nil {
 		return false
 	}
 
-	if p.count < bldr.complexity {
+	if p.count < bldr.compltreasurey {
 		return false
 	}
 	return true
@@ -171,7 +174,7 @@ func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCoun
 		if /* g */ img.At(g.x, g.y) == wall &&
 			/* i */ img.At(i.x, i.y) == wall &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			((bldr.allowExit(pwc) && pwc.y == 1) || (bldr.isInside(h) &&
+			((bldr.allowTreasure(pwc) && pwc.y == 1) || (bldr.isInside(h) &&
 				/* c */ img.At(c.x, c.y) == wall &&
 				/* b */ img.At(b.x, b.y) == wall &&
 				/* d */ img.At(d.x, d.y) == wall)) {
@@ -183,7 +186,7 @@ func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCoun
 		if /* p */ img.At(p.x, p.y) == wall &&
 			/* r */ img.At(r.x, r.y) == wall &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			((bldr.allowExit(pwc) && pwc.y == height-1) || (bldr.isInside(q) &&
+			((bldr.allowTreasure(pwc) && pwc.y == height-1) || (bldr.isInside(q) &&
 				/* v */ img.At(v.x, v.y) == wall &&
 				/* u */ img.At(u.x, u.y) == wall &&
 				/* w */ img.At(w.x, w.y) == wall)) {
@@ -195,7 +198,7 @@ func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCoun
 		if /* g */ img.At(g.x, g.y) == wall &&
 			/* p */ img.At(p.x, p.y) == wall &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			((bldr.allowExit(pwc) && pwc.x == 1) || (bldr.isInside(l) &&
+			((bldr.allowTreasure(pwc) && pwc.x == 1) || (bldr.isInside(l) &&
 				/* k */ img.At(k.x, k.y) == wall &&
 				/* f */ img.At(f.x, f.y) == wall &&
 				/* o */ img.At(o.x, o.y) == wall)) {
@@ -207,7 +210,7 @@ func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCoun
 		if /* i */ img.At(i.x, i.y) == wall &&
 			/* r */ img.At(r.x, r.y) == wall &&
 			// if we still allow edge, then we can venture in there. otherwise, it's OK to ignore it
-			((bldr.allowExit(pwc) && pwc.x == width-1) || (bldr.isInside(m) &&
+			((bldr.allowTreasure(pwc) && pwc.x == width-1) || (bldr.isInside(m) &&
 				/* n */ img.At(n.x, n.y) == wall &&
 				/* j */ img.At(j.x, j.y) == wall &&
 				/* s */ img.At(s.x, s.y) == wall)) {
@@ -231,8 +234,8 @@ func (bldr *builder) completeMaze(img *image.RGBA) {
 			bldr.ps <- newPos
 
 			if newPos.x == 0 || newPos.x == bldr.width || newPos.y == 0 || newPos.y == bldr.height {
-				// we've reached the border - this is the exit now
-				bldr.exit = &newPos
+				// we've reached the border - this is the treasure now
+				bldr.treasure = &newPos
 				break
 			}
 		}

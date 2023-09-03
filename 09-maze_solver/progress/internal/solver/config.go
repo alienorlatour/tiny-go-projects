@@ -15,11 +15,11 @@ type config struct {
 // Get returns the configuration of our maze
 func defaultColours() config {
 	return config{
-		wallColour:     color.RGBA{R: 0, G: 0, B: 0, A: 255},
-		pathColour:     color.RGBA{R: 255, G: 255, B: 255, A: 255},
-		entranceColour: color.RGBA{R: 0, G: 255, B: 0, A: 255},
-		treasureColour: color.RGBA{R: 255, G: 0, B: 0, A: 255},
-		solutionColour: color.RGBA{R: 255, G: 128, B: 0, A: 255},
-		exploredColour: color.RGBA{R: 0, G: 128, B: 255, A: 255},
+		wallColour:     color.RGBA{R: 0, G: 0, B: 0, A: 255},       // black
+		pathColour:     color.RGBA{R: 255, G: 255, B: 255, A: 255}, // white
+		entranceColour: color.RGBA{R: 0, G: 191, B: 255, A: 255},   // deep sky blue
+		treasureColour: color.RGBA{R: 255, G: 0, B: 128, A: 255},   // Pink
+		solutionColour: color.RGBA{R: 225, G: 140, B: 0, A: 255},   // Orange
+		exploredColour: color.RGBA{R: 0, G: 128, B: 255, A: 255},   // Bright Blue
 	}
 }

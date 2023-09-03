@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"log/slog"
+	"sync"
 )
 
 // Solver is capable of finding the path through a maze.
@@ -12,6 +13,9 @@ type Solver struct {
 	config         config
 	pathsToExplore chan []image.Point
 	quit           chan struct{}
+
+	// mutex protecting the channels, ensuring we don't send a new path when we should quit
+	mutex sync.Mutex
 
 	solution []image.Point
 }
