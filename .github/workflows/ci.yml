@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: setup go environment
         uses: actions/setup-go@v4
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: setup go environment
         uses: actions/setup-go@v4
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version: 1.21.0
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: golangci-lint
         #        uses: golangci/golangci-lint-action@v3
         #        with:
