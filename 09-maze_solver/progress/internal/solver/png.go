@@ -3,8 +3,11 @@ package solver
 import (
 	"fmt"
 	"image"
+	"image/gif"
 	"image/png"
+	"log/slog"
 	"os"
+	"strings"
 )
 
 // openImage returns a RGBA png image.
@@ -56,6 +59,28 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	err = png.Encode(fd, s.maze)
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s", outputPath)
+	}
+
+	err = s.saveAnimation(strings.Replace(outputPath, "png", "gif", -1))
+	return nil
+}
+
+func (s *Solver) saveAnimation(gifPath string) error {
+	outputImage, err := os.Create(gifPath)
+	if err != nil {
+		return fmt.Errorf("unable to create output gif at %s: %w", outputImage, err)
+	}
+
+	defer outputImage.Close()
+
+	// make sure the solution frame is present in the GIF
+	s.drawCurrentFrameToGif()
+
+	slog.Info(fmt.Sprintf("animation contains %d frames", len(s.animation.Image)))
+	s.animation.Delay[len(s.animation.Delay)-1] = 300
+	err = gif.EncodeAll(outputImage, s.animation)
+	if err != nil {
+		return fmt.Errorf("unable to encode gif: %w", err)
 	}
 
 	return nil

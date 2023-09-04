@@ -3,19 +3,24 @@ package solver
 import (
 	"fmt"
 	"image"
+	"image/gif"
 	"log/slog"
 	"sync"
+	"sync/atomic"
 )
 
 // Solver is capable of finding the path through a maze.
 type Solver struct {
-	maze           *image.RGBA
-	config         config
+	maze   *image.RGBA
+	config config
+
 	pathsToExplore chan []image.Point
 	quit           chan struct{}
-
 	// mutex protecting the channels, ensuring we don't send a new path when we should quit
 	mutex sync.Mutex
+
+	exploredCount atomic.Int32
+	animation     *gif.GIF
 
 	solution []image.Point
 }
@@ -32,6 +37,7 @@ func New(imagePath string) (*Solver, error) {
 		config:         defaultColours(),
 		pathsToExplore: make(chan []image.Point),
 		quit:           make(chan struct{}, 1),
+		animation:      &gif.GIF{},
 	}, nil
 }
 

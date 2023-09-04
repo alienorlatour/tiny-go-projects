@@ -40,7 +40,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 	previous := pathToBranch[len(pathToBranch)-2]
 
 	for s.solution == nil {
-		s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
+		s.markPixelExplored(pos)
 
 		// We know we'll have between up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
@@ -88,5 +88,15 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 			previous = pos
 			pos = candidates[0]
 		}
+	}
+}
+
+// markPixelExplored registers a position as explored on the image,
+// and, if we reach a threshold, adds the frame to the output GIF.
+func (s *Solver) markPixelExplored(pos image.Point) {
+	s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
+	currentCount := s.exploredCount.Add(1)
+	if int(currentCount)%(s.maze.Bounds().Dx()*s.maze.Bounds().Dy())/200 == 0 {
+		s.drawCurrentFrameToGif()
 	}
 }
