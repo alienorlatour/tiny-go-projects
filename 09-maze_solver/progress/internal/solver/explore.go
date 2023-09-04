@@ -96,7 +96,10 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 func (s *Solver) markPixelExplored(pos image.Point) {
 	s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
 	currentCount := s.exploredCount.Add(1)
-	if int(currentCount)%(s.maze.Bounds().Dx()*s.maze.Bounds().Dy())/200 == 0 {
+	totalPathPixels := int(float32(s.maze.Bounds().Dx()*s.maze.Bounds().Dy()) * 0.5)
+	if int(currentCount)%(totalPathPixels/30) == 0 {
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
 		s.drawCurrentFrameToGif()
 	}
 }
