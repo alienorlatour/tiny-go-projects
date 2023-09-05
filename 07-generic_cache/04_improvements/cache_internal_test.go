@@ -1,10 +1,11 @@
 package cache
 
 import (
-	"maps"
 	"slices"
 	"testing"
 	"time"
+
+	"golang.org/x/exp/maps"
 )
 
 // TestCache is an internal test that ensures our cache updates synchronously its internal data
