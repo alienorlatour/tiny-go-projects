@@ -58,7 +58,7 @@ func (s *Solver) Solve() error {
 
 // findEntrance returns the position of the maze entrance on the image.
 func (s *Solver) findEntrance() (image.Point, error) {
-	height := s.maze.Bounds().Dy() - 1
+	height := s.maze.Bounds().Dy()
 
 	for y := 1; y <= height-1; y++ {
 		if s.maze.RGBAAt(0, y) == s.config.entranceColour {
