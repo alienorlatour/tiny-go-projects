@@ -51,11 +51,11 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
-				slog.Info("Solution found!")
+				s.solution = append(pathToBranch, n)
+				slog.Info(fmt.Sprintf("Solution found: %v!", s.solution))
 				s.mutex.Lock()
 				close(s.quit)
 				s.mutex.Unlock()
-				s.solution = append(pathToBranch, n)
 				return
 			case s.config.pathColour:
 				candidates = append(candidates, n)
