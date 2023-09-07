@@ -10,12 +10,12 @@ type config struct {
 	treasureColour color.RGBA
 }
 
-// Get returns the configuration of our maze
+// defaultColours returns the configuration of our maze
 func defaultColours() config {
 	return config{
 		wallColour:     color.RGBA{R: 0, G: 0, B: 0, A: 255},       // black
 		pathColour:     color.RGBA{R: 255, G: 255, B: 255, A: 255}, // white
 		entranceColour: color.RGBA{R: 0, G: 191, B: 255, A: 255},   // deep sky blue
-		treasureColour: color.RGBA{R: 255, G: 0, B: 128, A: 255},   // Pink
+		treasureColour: color.RGBA{R: 255, G: 0, B: 128, A: 255},   // pink
 	}
 }

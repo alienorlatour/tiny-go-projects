@@ -36,7 +36,7 @@ func openImage(inputPath string) (*image.RGBA, error) {
 	return rgbaImage, nil
 }
 
-// SaveSolution saves the image as a PNG file with the solution path in red.
+// SaveSolution saves the image as a PNG file with the solution path highlighted.
 func (s *Solver) SaveSolution(outputPath string) error {
 	_, err := os.Stat(outputPath)
 	switch {
