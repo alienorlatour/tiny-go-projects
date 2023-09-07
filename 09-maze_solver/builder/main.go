@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/color"
 	"image/png"
 	"log/slog"
 	"math/rand"
@@ -24,7 +23,7 @@ func main() {
 	height, _ := strconv.Atoi(os.Args[2])
 
 	maze := generateMaze(width, height)
-	saveToPNG(maze, "maze.png")
+	saveToPNG(maze, fmt.Sprintf("maze%d_%d.png", width, height))
 }
 
 func generateMaze(width int, height int) *image.RGBA {
@@ -33,19 +32,22 @@ func generateMaze(width int, height int) *image.RGBA {
 	// I see a red door...
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			img.Set(x, y, wall)
+			img.Set(x, y, defaultColours().wallColour)
 		}
 	}
 
 	entry := pos{0, height / 2}
-	img.Set(entry.x, entry.y, path)
+	img.Set(entry.x, entry.y, defaultColours().pathColour)
 
 	// draw the path
 	p := posWithCount{entry, 0}
 
 	const complexity = 2 // change this for easier / creatable mazes, or harder ones.
 	// create a massive channel, because I don't want to start a listener right now.
-	b := &builder{ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: complexity * (width + height)}
+	b := &builder{
+		ps: make(chan posWithCount, width*height), width: width - 1, height: height - 1, complexity: complexity * (width + height),
+		conf: defaultColours(),
+	}
 
 	for {
 		// look for eligible places
@@ -54,7 +56,7 @@ func generateMaze(width int, height int) *image.RGBA {
 			break
 		}
 		p = nextPositions[rand.Intn(len(nextPositions))]
-		img.Set(p.x, p.y, path)
+		img.Set(p.x, p.y, b.conf.pathColour)
 		b.ps <- p
 
 		if p.x == 0 || p.x == width-1 || p.y == 0 || p.y == height-1 {
@@ -66,11 +68,13 @@ func generateMaze(width int, height int) *image.RGBA {
 
 	b.completeMaze(img)
 
-	img.Set(entry.x, entry.y, color.RGBA{0, 255, 0, 255})
-	img.Set(b.exit.x, b.exit.y, color.RGBA{255, 0, 0, 255})
 	slog.Info(fmt.Sprintf("Start at %v\n", entry))
 	slog.Info(fmt.Sprintf("End at %v\n", b.exit))
 	slog.Info(fmt.Sprintf("total length: %d\n", b.exit.count))
+
+	img.Set(entry.x, entry.y, b.conf.entranceColour)
+	img.Set(b.exit.x, b.exit.y, b.conf.treasureColour)
+
 	return img
 }
 
@@ -102,6 +106,7 @@ type builder struct {
 	exit          *posWithCount
 	width, height int
 	complexity    int
+	conf          config
 }
 
 func (bldr *builder) allowExit(p posWithCount) bool {
@@ -169,6 +174,8 @@ func (bldr *builder) candidates(img image.Image, pwc posWithCount) []posWithCoun
 	v := pos{pwc.x, pwc.y + 2}
 	w := pos{pwc.x + 1, pwc.y + 2}
 
+	wall := bldr.conf.wallColour
+
 	if /* h */ img.At(h.x, h.y) == wall {
 		if /* g */ img.At(g.x, g.y) == wall &&
 			/* i */ img.At(i.x, i.y) == wall &&
@@ -229,7 +236,7 @@ func (bldr *builder) completeMaze(img *image.RGBA) {
 				break
 			}
 			newPos = nextPositions[rand.Intn(len(nextPositions))]
-			img.Set(newPos.x, newPos.y, path)
+			img.Set(newPos.x, newPos.y, bldr.conf.pathColour)
 			bldr.ps <- newPos
 
 			if newPos.x == 0 || newPos.x == bldr.width || newPos.y == 0 || newPos.y == bldr.height {
@@ -242,10 +249,6 @@ func (bldr *builder) completeMaze(img *image.RGBA) {
 		if len(bldr.ps) == 0 {
 			close(bldr.ps)
 		}
+
 	}
 }
-
-var (
-	wall = color.RGBA{0, 0, 0, 255}
-	path = color.RGBA{255, 255, 255, 255}
-)
