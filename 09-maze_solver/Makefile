@@ -1,4 +1,6 @@
 projects := \
+	2_solver \
+	3_explore \
 	progress \
 	builder
 
