@@ -64,7 +64,7 @@ func TestRecommendOtherBooks(t *testing.T) {
 	for name, tc := range tt {
 		t.Run(name, func(t *testing.T) {
 			got := recommendOtherBooks(tc.bookworms)
-			if !equals(got, tc.want) {
+			if !equals(t, got, tc.want) {
 				t.Errorf("recommendOtherBooks() = %v, want %v", got, tc.want)
 			}
 		})
@@ -72,7 +72,9 @@ func TestRecommendOtherBooks(t *testing.T) {
 }
 
 // equals compares two list of Bookworms.
-func equals(bookwormA, bookwormB []Bookworm) bool {
+func equals(t *testing.T, bookwormA, bookwormB []Bookworm) bool {
+	t.Helper()
+
 	for i := range bookwormA {
 		if !reflect.DeepEqual(bookwormA[i], bookwormB[i]) {
 			return false
