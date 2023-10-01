@@ -1,6 +1,7 @@
 package solver
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/gif"
@@ -21,7 +22,12 @@ func openMaze(inputPath string) (*image.RGBA, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to open input image at %s: %w", inputPath, err)
 	}
-	defer fd.Close()
+
+	defer func() {
+		if closeErr := fd.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
+		}
+	}()
 
 	img, err := png.Decode(fd)
 	if err != nil {
@@ -38,8 +44,8 @@ func openMaze(inputPath string) (*image.RGBA, error) {
 }
 
 // SaveSolution saves the image as a PNG file with the solution path highlighted.
-func (s *Solver) SaveSolution(outputPath string) error {
-	_, err := os.Stat(outputPath)
+func (s *Solver) SaveSolution(outputPath string) (err error) {
+	_, err = os.Stat(outputPath)
 	switch {
 	case err == nil:
 		return fmt.Errorf("output file %s already exists", outputPath)
@@ -51,12 +57,12 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to create output image file at %s", outputPath)
 	}
-	defer fd.Close()
 
-	// Paint the path from entrance to the treasure.
-	for _, p := range s.solution {
-		s.maze.Set(p.X, p.Y, s.config.solutionColour)
-	}
+	defer func() {
+		if closeErr := fd.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
+		}
+	}()
 
 	err = png.Encode(fd, s.maze)
 	if err != nil {
@@ -72,20 +78,20 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	return nil
 }
 
-func (s *Solver) saveAnimation(gifPath string) error {
+func (s *Solver) saveAnimation(gifPath string) (err error) {
 	outputImage, err := os.Create(gifPath)
 	if err != nil {
 		return fmt.Errorf("unable to create output gif at %s: %w", gifPath, err)
 	}
 
-	defer outputImage.Close()
-
-	// Make sure the solution frame is present in the GIF.
-	s.drawCurrentFrameToGIF()
+	defer func() {
+		if closeErr := outputImage.Close(); closeErr != nil {
+			// Return err and closeErr, in worst case scenario.
+			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
+		}
+	}()
 
 	slog.Info(fmt.Sprintf("animation contains %d frames", len(s.animation.Image)))
-	// Have the final frame containing the solution displayed for 3 seconds
-	s.animation.Delay[len(s.animation.Delay)-1] = 300 /* hundredth of a second */
 	err = gif.EncodeAll(outputImage, s.animation)
 	if err != nil {
 		return fmt.Errorf("unable to encode gif: %w", err)

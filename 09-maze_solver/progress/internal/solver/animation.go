@@ -8,9 +8,6 @@ import (
 )
 
 const (
-	// pathRatio is the proportion of path pixels in the total image, which consists of path + wall + treasure + entrance.
-	// This value is very approximate, it would be between 0.25 and 0.5, depending on the maze.
-	pathRatio = 0.4
 	// totalExpectedFrames is the number of frames we want in the output gif.
 	// We won't get exactly 30, because pathRatio is approximate. But we'll get something around 30.
 	totalExpectedFrames = 30
@@ -20,8 +17,7 @@ const (
 
 func (s *Solver) drawFrames() {
 	pixelsExplored := 0
-	totalPixels := s.maze.Bounds().Dx() * s.maze.Bounds().Dy()
-	explorablePixels := int(float32(totalPixels) * pathRatio)
+	explorablePixels := s.countExplorablePixels()
 
 	for {
 		select {
@@ -32,14 +28,32 @@ func (s *Solver) drawFrames() {
 				s.drawCurrentFrameToGIF()
 			}
 		case <-s.quit:
+			// Make sure the solution frame is present in the GIF.
+			s.drawCurrentFrameToGIF()
+			// Have the final frame containing the solution displayed for 3 seconds
+			s.animation.Delay[len(s.animation.Delay)-1] = 300 /* hundredth of a second */
 			return
 		}
 	}
 }
 
+// countExplorablePixels scans the maze and counts the number of pixels that are not walls.
+func (s *Solver) countExplorablePixels() int {
+	explorablePixels := 0
+	for row := 0; row < s.maze.Bounds().Dy(); row++ {
+		for col := 0; col < s.maze.Bounds().Dx(); col++ {
+			if s.maze.RGBAAt(col, row) != s.config.wallColour {
+				explorablePixels++
+			}
+		}
+	}
+	return explorablePixels
+}
+
 // drawCurrentFrameToGIF adds the current state of the maze as a frame of the animation.
 func (s *Solver) drawCurrentFrameToGIF() {
-	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize), palette.Plan9)
+	// Create a paletted frame that has the same ratio as the input image
+	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize*s.maze.Bounds().Dy()/s.maze.Bounds().Dx()), palette.Plan9)
 
 	// Convert RGBA to paletted
 	draw.NearestNeighbor.Scale(frame, frame.Rect, s.maze, s.maze.Bounds(), draw.Over, nil)

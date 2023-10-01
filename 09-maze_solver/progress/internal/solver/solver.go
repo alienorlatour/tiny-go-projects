@@ -19,6 +19,7 @@ type Solver struct {
 	exploredPixels chan image.Point
 	animation      *gif.GIF
 
+	// TODO: No longer necessary.
 	solution []image.Point
 }
 

@@ -59,6 +59,12 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				s.solution = append(pathToBranch, n)
+
+				// Paint the path from entrance to the treasure.
+				for _, p := range s.solution {
+					s.maze.Set(p.X, p.Y, s.config.solutionColour)
+				}
+
 				slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution))
 				close(s.quit)
 				return
@@ -67,27 +73,26 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 			}
 		}
 
-		switch len(candidates) {
-		case 0:
-			slog.Info(fmt.Sprintf("I must have taken the wrong turn at %v.", pos))
+		if len(candidates) == 0 {
+			slog.Debug("I must have taken the wrong turn.", "position", pos)
 			return
-		case 1, 2, 3:
-			for i := 1; i < len(candidates); i++ {
-				branch := append(slices.Clone(pathToBranch), candidates[i])
-				// We are sure we send to pathsToExplore only when the quit channel isn't closed.
-				// A goroutine might have found the treasure since the check at the start of the loop.
-				select {
-				// s.quit returns a zero value only when the channel was closed, here -- when the exploration should end.
-				case <-s.quit:
-					slog.Info("I'm an unlucky branch, someone else found the treasure, I give up.")
-					return
-				case s.pathsToExplore <- branch:
-				}
-			}
-
-			pathToBranch = append(pathToBranch, candidates[0])
-			previous = pos
-			pos = candidates[0]
 		}
+
+		for _, candidate := range candidates[1:] {
+			branch := append(slices.Clone(pathToBranch), candidate)
+			// We are sure we send to pathsToExplore only when the quit channel isn't closed.
+			// A goroutine might have found the treasure since the check at the start of the loop.
+			select {
+			// s.quit returns a zero value only when the channel was closed, here -- when the exploration should end.
+			case <-s.quit:
+				slog.Debug("I'm an unlucky branch, someone else found the treasure, I give up.", "position", pos)
+				return
+			case s.pathsToExplore <- branch:
+			}
+		}
+
+		pathToBranch = append(pathToBranch, candidates[0])
+		previous = pos
+		pos = candidates[0]
 	}
 }

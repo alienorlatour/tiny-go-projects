@@ -1,5 +1,5 @@
 run:
-	@go run .
+	@go run -race .
 
 build:
 	@go build -o bin/ .
