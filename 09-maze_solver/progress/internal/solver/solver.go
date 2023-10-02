@@ -14,14 +14,14 @@ type Solver struct {
 	maze   *image.RGBA
 	config config
 
-	pathsToExplore chan []image.Point
+	pathsToExplore chan *Path
 	quit           chan struct{}
 
 	exploredPixels chan image.Point
 	animation      *gif.GIF
 
-	// TODO: No longer necessary.
-	solution []image.Point
+	solution *Path
+	mutex    sync.Mutex
 }
 
 // New builds a Solver by taking the path to the PNG maze, encoded in RGBA.
@@ -34,7 +34,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []image.Point),
+		pathsToExplore: make(chan *Path),
 		quit:           make(chan struct{}),
 		exploredPixels: make(chan image.Point),
 		animation:      &gif.GIF{},
@@ -52,7 +52,7 @@ func (s *Solver) Solve() error {
 
 	go func() {
 		// The first pixel is on the edge, the second pixel is inwards.
-		s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}}
+		s.pathsToExplore <- &Path{PreviousSteps: nil, At: entrance}
 	}()
 
 	wg := sync.WaitGroup{}
@@ -72,6 +72,8 @@ func (s *Solver) Solve() error {
 
 	wg.Wait()
 
+	s.finalise()
+
 	return nil
 }
 
@@ -87,4 +89,18 @@ func (s *Solver) findEntrance() (image.Point, error) {
 	}
 
 	return image.Point{}, fmt.Errorf("entrance position not found")
+}
+
+func (s *Solver) finalise() {
+	stepsFromTreasure := s.solution
+	// Paint the path from entrance to the treasure.
+	for stepsFromTreasure != nil {
+		s.maze.Set(stepsFromTreasure.At.X, stepsFromTreasure.At.Y, s.config.solutionColour)
+		stepsFromTreasure = stepsFromTreasure.PreviousSteps
+	}
+
+	// Add the solution frame, with the coloured path, to the output gif.
+	s.drawCurrentFrameToGIF()
+	// Have the final frame containing the solution displayed for 3 seconds
+	s.animation.Delay[len(s.animation.Delay)-1] = 300 /* hundredth of a second */
 }

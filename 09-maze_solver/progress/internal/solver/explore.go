@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"log/slog"
-	"slices"
 	"sync"
 )
 
@@ -21,7 +20,7 @@ func (s *Solver) listenToBranches() {
 			return
 		case p := <-s.pathsToExplore:
 			wg.Add(1)
-			go func(p []image.Point) {
+			go func(p *Path) {
 				defer wg.Done()
 
 				s.explore(p)
@@ -31,15 +30,8 @@ func (s *Solver) listenToBranches() {
 }
 
 // explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
-func (s *Solver) explore(pathToBranch []image.Point) {
-	// A path starts at the entrance and has stepped into the maze
-	// for at least 1 pixel, for a total of 2 pixels minimum.
-	if len(pathToBranch) < 2 {
-		return
-	}
-
-	pos := pathToBranch[len(pathToBranch)-1]
-	previous := pathToBranch[len(pathToBranch)-2]
+func (s *Solver) explore(pathToBranch *Path) {
+	pos := pathToBranch.At
 
 	for {
 		// Let's first check whether we should quit.
@@ -52,22 +44,17 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 		// We know we'll have up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
 		for _, n := range neighbours(pos) {
-			if n == previous {
-				continue
-			}
-
+			// Look at the colour of this pixel.
+			// RGBAAt returns a color.RGBA{} zero value if the pixel is outside the bounds of the image.
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
-				s.solution = append(pathToBranch, n)
-
-				// Paint the path from entrance to the treasure.
-				for _, p := range s.solution {
-					// TODO: Data race here. The final pixel is sent to explore (l.48) and we paint it here (before closing).
-					s.maze.Set(p.X, p.Y, s.config.solutionColour)
+				s.mutex.Lock()
+				if s.solution == nil {
+					s.solution = &Path{PreviousSteps: pathToBranch, At: n}
+					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.At))
+					close(s.quit)
 				}
-
-				slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution))
-				close(s.quit)
+				s.mutex.Unlock()
 				return
 			case s.config.pathColour:
 				candidates = append(candidates, n)
@@ -80,7 +67,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := append(slices.Clone(pathToBranch), candidate)
+			branch := &Path{PreviousSteps: pathToBranch, At: candidate}
 			// We are sure we send to pathsToExplore only when the quit channel isn't closed.
 			// A goroutine might have found the treasure since the check at the start of the loop.
 			select {
@@ -92,8 +79,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 			}
 		}
 
-		pathToBranch = append(pathToBranch, candidates[0])
-		previous = pos
+		pathToBranch = &Path{PreviousSteps: pathToBranch, At: candidates[0]}
 		pos = candidates[0]
 	}
 }

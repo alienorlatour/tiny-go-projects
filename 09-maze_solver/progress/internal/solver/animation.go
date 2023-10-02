@@ -9,7 +9,7 @@ import (
 
 const (
 	// totalExpectedFrames is the number of frames we want in the output gif.
-	// We won't get exactly 30, because pathRatio is approximate. But we'll get something around 30.
+	// We won't get exactly 30, because we won't be exploring every pixel.
 	totalExpectedFrames = 30
 	// gifSize is the length and width of the generated GIF.
 	gifSize = 500
@@ -28,10 +28,6 @@ func (s *Solver) drawFrames() {
 				s.drawCurrentFrameToGIF()
 			}
 		case <-s.quit:
-			// Make sure the solution frame is present in the GIF.
-			s.drawCurrentFrameToGIF()
-			// Have the final frame containing the solution displayed for 3 seconds
-			s.animation.Delay[len(s.animation.Delay)-1] = 300 /* hundredth of a second */
 			return
 		}
 	}
