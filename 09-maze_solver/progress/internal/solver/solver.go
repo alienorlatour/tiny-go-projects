@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/gif"
 	"log/slog"
+	"sync"
 )
 
 // Solver is capable of finding the path from the entrance to the treasure.
@@ -54,11 +55,22 @@ func (s *Solver) Solve() error {
 		s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}}
 	}()
 
-	// Launch the goroutine in charge of drawing the GIF image.
-	go s.drawFrames()
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 
-	// Listen for new paths to explore. This only returns when the maze is solved.
-	s.listenToBranches()
+	go func() {
+		defer wg.Done()
+		// Launch the goroutine in charge of drawing the GIF image.
+		s.drawFrames()
+	}()
+
+	go func() {
+		defer wg.Done()
+		// Listen for new paths to explore. This only returns when the maze is solved.
+		s.listenToBranches()
+	}()
+
+	wg.Wait()
 
 	return nil
 }

@@ -62,6 +62,7 @@ func (s *Solver) explore(pathToBranch []image.Point) {
 
 				// Paint the path from entrance to the treasure.
 				for _, p := range s.solution {
+					// TODO: Data race here. The final pixel is sent to explore (l.48) and we paint it here (before closing).
 					s.maze.Set(p.X, p.Y, s.config.solutionColour)
 				}
 
