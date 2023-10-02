@@ -20,7 +20,7 @@ func (s *Solver) listenToBranches() {
 			return
 		case p := <-s.pathsToExplore:
 			wg.Add(1)
-			go func(p *Path) {
+			go func(p *path) {
 				defer wg.Done()
 
 				s.explore(p)
@@ -30,8 +30,8 @@ func (s *Solver) listenToBranches() {
 }
 
 // explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
-func (s *Solver) explore(pathToBranch *Path) {
-	pos := pathToBranch.At
+func (s *Solver) explore(pathToBranch *path) {
+	pos := pathToBranch.at
 
 	for {
 		// Let's first check whether we should quit.
@@ -50,8 +50,8 @@ func (s *Solver) explore(pathToBranch *Path) {
 			case s.config.treasureColour:
 				s.mutex.Lock()
 				if s.solution == nil {
-					s.solution = &Path{PreviousSteps: pathToBranch, At: n}
-					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.At))
+					s.solution = &path{previousSteps: pathToBranch, at: n}
+					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
 					close(s.quit)
 				}
 				s.mutex.Unlock()
@@ -67,7 +67,7 @@ func (s *Solver) explore(pathToBranch *Path) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := &Path{PreviousSteps: pathToBranch, At: candidate}
+			branch := &path{previousSteps: pathToBranch, at: candidate}
 			// We are sure we send to pathsToExplore only when the quit channel isn't closed.
 			// A goroutine might have found the treasure since the check at the start of the loop.
 			select {
@@ -79,7 +79,7 @@ func (s *Solver) explore(pathToBranch *Path) {
 			}
 		}
 
-		pathToBranch = &Path{PreviousSteps: pathToBranch, At: candidates[0]}
+		pathToBranch = &path{previousSteps: pathToBranch, at: candidates[0]}
 		pos = candidates[0]
 	}
 }

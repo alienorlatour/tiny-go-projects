@@ -15,15 +15,15 @@ func TestSolver_findEntrance_success(t *testing.T) {
 	}{
 		"middle": {
 			inputPath: "testdata/maze10_10.png",
-			want:      image.Point{0, 5},
+			want:      image.Point{X: 0, Y: 5},
 		},
 		"400 px": {
 			inputPath: "testdata/maze400_400.png",
-			want:      image.Point{0, 200},
+			want:      image.Point{X: 0, Y: 200},
 		},
 		"treasure near entrance": {
 			inputPath: "testdata/maze10_exit.png",
-			want:      image.Point{0, 5},
+			want:      image.Point{X: 0, Y: 5},
 		},
 	}
 	for name, tt := range tests {

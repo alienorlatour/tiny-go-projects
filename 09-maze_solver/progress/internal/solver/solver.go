@@ -14,13 +14,13 @@ type Solver struct {
 	maze   *image.RGBA
 	config config
 
-	pathsToExplore chan *Path
+	pathsToExplore chan *path
 	quit           chan struct{}
 
 	exploredPixels chan image.Point
 	animation      *gif.GIF
 
-	solution *Path
+	solution *path
 	mutex    sync.Mutex
 }
 
@@ -34,7 +34,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan *Path),
+		pathsToExplore: make(chan *path),
 		quit:           make(chan struct{}),
 		exploredPixels: make(chan image.Point),
 		animation:      &gif.GIF{},
@@ -52,7 +52,7 @@ func (s *Solver) Solve() error {
 
 	go func() {
 		// The first pixel is on the edge, the second pixel is inwards.
-		s.pathsToExplore <- &Path{PreviousSteps: nil, At: entrance}
+		s.pathsToExplore <- &path{previousSteps: nil, at: entrance}
 	}()
 
 	wg := sync.WaitGroup{}
@@ -79,12 +79,11 @@ func (s *Solver) Solve() error {
 
 // findEntrance returns the position of the maze entrance on the image.
 func (s *Solver) findEntrance() (image.Point, error) {
-	height := s.maze.Bounds().Dy()
-
-	// We built the maze with the entrance on the left border, and not in a corner
-	for y := 1; y < height-1; y++ {
-		if s.maze.RGBAAt(0, y) == s.config.entranceColour {
-			return image.Point{0, y}, nil
+	for row := 0; row < s.maze.Bounds().Dy(); row++ {
+		for col := 0; col < s.maze.Bounds().Dy(); col++ {
+			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
+				return image.Point{X: col, Y: row}, nil
+			}
 		}
 	}
 
@@ -95,8 +94,8 @@ func (s *Solver) finalise() {
 	stepsFromTreasure := s.solution
 	// Paint the path from entrance to the treasure.
 	for stepsFromTreasure != nil {
-		s.maze.Set(stepsFromTreasure.At.X, stepsFromTreasure.At.Y, s.config.solutionColour)
-		stepsFromTreasure = stepsFromTreasure.PreviousSteps
+		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
+		stepsFromTreasure = stepsFromTreasure.previousSteps
 	}
 
 	// Add the solution frame, with the coloured path, to the output gif.

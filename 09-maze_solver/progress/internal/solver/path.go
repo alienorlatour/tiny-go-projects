@@ -2,7 +2,7 @@ package solver
 
 import "image"
 
-type Path struct {
-	PreviousSteps *Path
-	At            image.Point
+type path struct {
+	previousSteps *path
+	at            image.Point
 }
