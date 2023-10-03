@@ -52,7 +52,7 @@ func TestLoadBookworms_Success(t *testing.T) {
 			if err != nil {
 				t.Fatalf("expected no error, got %v", err)
 			}
-			if !equalBookworms(got, tc.want) {
+			if !equalBookworms(t, got, tc.want) {
 				t.Fatalf("different result: got %v, expected %v", got, tc.want)
 			}
 		})
@@ -60,7 +60,9 @@ func TestLoadBookworms_Success(t *testing.T) {
 }
 
 // equalBookworms is a helper to test the equality of two lists of Bookworms.
-func equalBookworms(bookworms, target []Bookworm) bool {
+func equalBookworms(t *testing.T, bookworms, target []Bookworm) bool {
+	t.Helper()
+
 	if len(bookworms) != len(target) {
 		// Early exit!
 		return false
@@ -72,7 +74,7 @@ func equalBookworms(bookworms, target []Bookworm) bool {
 			return false
 		}
 		// Verify the content of the collections of Books for each Bookworm.
-		if !equalBooks(bookworms[i].Books, target[i].Books) {
+		if !equalBooks(t, bookworms[i].Books, target[i].Books) {
 			return false
 		}
 	}
@@ -82,7 +84,9 @@ func equalBookworms(bookworms, target []Bookworm) bool {
 }
 
 // equalBooks is a helper to test the equality of two lists of Books.
-func equalBooks(books, target []Book) bool {
+func equalBooks(t *testing.T, books, target []Book) bool {
+	t.Helper()
+
 	if len(books) != len(target) {
 		// Early exit!
 		return false
