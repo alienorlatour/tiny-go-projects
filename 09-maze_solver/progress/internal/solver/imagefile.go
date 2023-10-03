@@ -49,6 +49,7 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s: %w", outputPath, err)
 	}
+	
 	gifPath := strings.Replace(outputPath, "png", "gif", -1)
 	err = s.saveAnimation(gifPath)
 	if err != nil {
