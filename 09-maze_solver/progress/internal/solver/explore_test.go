@@ -46,13 +46,13 @@ func TestSolver_explore(t *testing.T) {
 			s := &Solver{
 				maze:           maze,
 				config:         defaultColours(),
-				pathsToExplore: make(chan []image.Point, 3),
+				pathsToExplore: make(chan *path, 3),
 				quit:           make(chan struct{}),
 				exploredPixels: make(chan image.Point, 3),
 			}
 
 			// All our tests have the entrance at the same position.
-			s.explore([]image.Point{{0, 2}, {1, 2}})
+			s.explore(&path{previousSteps: nil, at: image.Point{X: 0, Y: 1}})
 
 			assert.Equal(t, tt.wantSize, len(s.pathsToExplore))
 		})
@@ -62,6 +62,6 @@ func TestSolver_explore(t *testing.T) {
 func TestSolver_explore_errors(t *testing.T) {
 	{
 		s := Solver{}
-		s.explore([]image.Point{{0, 0}})
+		s.explore(&path{previousSteps: nil, at: image.Point{X: 0, Y: 0}})
 	}
 }

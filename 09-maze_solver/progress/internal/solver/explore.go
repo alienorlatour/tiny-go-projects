@@ -16,7 +16,7 @@ func (s *Solver) listenToBranches() {
 		// s.quit will never return a value, unless something writes in it (which we don't do)
 		// or it has been closed, which we do when we find the treasure.
 		case <-s.quit:
-			slog.Info(fmt.Sprint("the treasure has been found, worker going to sleep"))
+			slog.Info("the treasure has been found, worker going to sleep")
 			return
 		case p := <-s.pathsToExplore:
 			wg.Add(1)

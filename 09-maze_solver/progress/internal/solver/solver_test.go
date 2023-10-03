@@ -41,6 +41,7 @@ func TestSolver_findEntrance_success(t *testing.T) {
 			}
 
 			got, err := s.findEntrance()
+			require.NoError(t, err)
 
 			assert.Equalf(t, tt.want, got, "findEntrance()")
 		})
