@@ -52,7 +52,7 @@ func TestSolver_explore(t *testing.T) {
 			}
 
 			// All our tests have the entrance at the same position.
-			s.explore(&path{previousSteps: nil, at: image.Point{X: 0, Y: 2}})
+			s.explore(&path{previousStep: nil, at: image.Point{X: 0, Y: 2}})
 
 			assert.Equal(t, tt.wantSize, len(s.pathsToExplore))
 		})
@@ -62,6 +62,6 @@ func TestSolver_explore(t *testing.T) {
 func TestSolver_explore_errors(t *testing.T) {
 	{
 		s := Solver{}
-		s.explore(&path{previousSteps: nil, at: image.Point{X: 0, Y: 0}})
+		s.explore(&path{previousStep: nil, at: image.Point{X: 0, Y: 0}})
 	}
 }

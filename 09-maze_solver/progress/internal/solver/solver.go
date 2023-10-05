@@ -52,7 +52,7 @@ func (s *Solver) Solve() error {
 
 	go func() {
 		// The first pixel is on the edge, the second pixel is inwards.
-		s.pathsToExplore <- &path{previousSteps: nil, at: entrance}
+		s.pathsToExplore <- &path{previousStep: nil, at: entrance}
 	}()
 
 	wg := sync.WaitGroup{}
@@ -95,7 +95,7 @@ func (s *Solver) finalise() {
 	// Paint the path from entrance to the treasure.
 	for stepsFromTreasure != nil {
 		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
-		stepsFromTreasure = stepsFromTreasure.previousSteps
+		stepsFromTreasure = stepsFromTreasure.previousStep
 	}
 
 	// Add the solution frame, with the coloured path, to the output gif.

@@ -52,6 +52,7 @@ func TestSolver_findEntrance_error(t *testing.T) {
 	tests := map[string]struct {
 		inputPath string
 	}{
+		// TODO: Scenario is "no entrance".
 		"entrance in a corner": {
 			inputPath: "testdata/maze10_corner.png",
 		},

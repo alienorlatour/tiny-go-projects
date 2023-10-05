@@ -12,15 +12,15 @@ import (
 )
 
 // openMaze returns a RGBA png image.
-func openMaze(inputPath string) (*image.RGBA, error) {
-	_, err := os.Stat(inputPath)
+func openMaze(imagePath string) (*image.RGBA, error) {
+	_, err := os.Stat(imagePath)
 	if err != nil {
-		return nil, fmt.Errorf("unable to check input file %s: %w", inputPath, err)
+		return nil, fmt.Errorf("unable to check input file %s: %w", imagePath, err)
 	}
 
-	fd, err := os.Open(inputPath)
+	fd, err := os.Open(imagePath)
 	if err != nil {
-		return nil, fmt.Errorf("unable to open input image at %s: %w", inputPath, err)
+		return nil, fmt.Errorf("unable to open input image at %s: %w", imagePath, err)
 	}
 
 	defer func() {
@@ -31,7 +31,7 @@ func openMaze(inputPath string) (*image.RGBA, error) {
 
 	img, err := png.Decode(fd)
 	if err != nil {
-		return nil, fmt.Errorf("unable to load input image from %s: %w", inputPath, err)
+		return nil, fmt.Errorf("unable to load input image from %s: %w", imagePath, err)
 	}
 
 	// Using RGBAAt() instead of At() saves a lot of time, but it requires a *image.RGBA
@@ -49,7 +49,7 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s: %w", outputPath, err)
 	}
-	
+
 	gifPath := strings.Replace(outputPath, "png", "gif", -1)
 	err = s.saveAnimation(gifPath)
 	if err != nil {
@@ -59,7 +59,7 @@ func (s *Solver) SaveSolution(outputPath string) error {
 	return nil
 }
 
-func (s *Solver) saveSolution(outputPath string) error {
+func (s *Solver) saveSolution(outputPath string) (err error) {
 	fd, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create output image file at %s", outputPath)
@@ -73,7 +73,7 @@ func (s *Solver) saveSolution(outputPath string) error {
 
 	err = png.Encode(fd, s.maze)
 	if err != nil {
-		return fmt.Errorf("unable to write output image at %s", outputPath)
+		return fmt.Errorf("unable to write output image at %s: %w", outputPath, err)
 	}
 
 	return nil

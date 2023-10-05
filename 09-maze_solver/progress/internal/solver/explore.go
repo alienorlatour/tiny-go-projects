@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+// listenToBranches creates a new routine for each branch published in s.pathsToExplore.
 func (s *Solver) listenToBranches() {
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
@@ -44,13 +45,18 @@ func (s *Solver) explore(pathToBranch *path) {
 		// We know we'll have up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
 		for _, n := range neighbours(pos) {
+			if pathToBranch.previousStep != nil && pathToBranch.previousStep.at == n {
+				// Let's not return to the previous position
+				continue
+			}
+
 			// Look at the colour of this pixel.
 			// RGBAAt returns a color.RGBA{} zero value if the pixel is outside the bounds of the image.
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				s.mutex.Lock()
 				if s.solution == nil {
-					s.solution = &path{previousSteps: pathToBranch, at: n}
+					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
 					close(s.quit)
 				}
@@ -67,7 +73,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := &path{previousSteps: pathToBranch, at: candidate}
+			branch := &path{previousStep: pathToBranch, at: candidate}
 			// We are sure we send to pathsToExplore only when the quit channel isn't closed.
 			// A goroutine might have found the treasure since the check at the start of the loop.
 			select {
@@ -79,7 +85,7 @@ func (s *Solver) explore(pathToBranch *path) {
 			}
 		}
 
-		pathToBranch = &path{previousSteps: pathToBranch, at: candidates[0]}
+		pathToBranch = &path{previousStep: pathToBranch, at: candidates[0]}
 		pos = candidates[0]
 	}
 }
