@@ -61,7 +61,7 @@ func (s *Solver) Solve() error {
 	go func() {
 		defer wg.Done()
 		// Launch the goroutine in charge of drawing the GIF image.
-		s.drawFrames()
+		s.registerExploredPixels()
 	}()
 
 	go func() {

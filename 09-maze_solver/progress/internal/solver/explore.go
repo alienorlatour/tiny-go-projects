@@ -40,6 +40,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		case <-s.quit:
 			return
 		case s.exploredPixels <- pos:
+			// Continue the exploration.
 		}
 
 		// We know we'll have up to 3 new neighbours to explore.

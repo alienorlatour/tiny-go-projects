@@ -7,28 +7,24 @@ import (
 	"golang.org/x/image/draw"
 )
 
-const (
+func (s *Solver) registerExploredPixels() {
 	// totalExpectedFrames is the number of frames we want in the output gif.
 	// We won't get exactly 30, because we won't be exploring every pixel.
-	totalExpectedFrames = 30
-	// gifSize is the length and width of the generated GIF.
-	gifSize = 500
-)
+	const totalExpectedFrames = 30
 
-func (s *Solver) drawFrames() {
-	pixelsExplored := 0
 	explorablePixels := s.countExplorablePixels()
+	pixelsExplored := 0
 
 	for {
 		select {
+		case <-s.quit:
+			return
 		case pos := <-s.exploredPixels:
 			s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
 			pixelsExplored++
 			if pixelsExplored%(explorablePixels/totalExpectedFrames) == 0 {
 				s.drawCurrentFrameToGIF()
 			}
-		case <-s.quit:
-			return
 		}
 	}
 }
@@ -48,6 +44,14 @@ func (s *Solver) countExplorablePixels() int {
 
 // drawCurrentFrameToGIF adds the current state of the maze as a frame of the animation.
 func (s *Solver) drawCurrentFrameToGIF() {
+	const (
+		// gifSize is the length and width of the generated GIF.
+		gifSize = 500
+		// frameDuration is the duration in hundredth of a second of each frame.
+		// 20 hundredths of a second per frame means 5 frames per second.
+		frameDuration = 20
+	)
+
 	// Create a paletted frame that has the same ratio as the input image
 	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize*s.maze.Bounds().Dy()/s.maze.Bounds().Dx()), palette.Plan9)
 
@@ -55,5 +59,5 @@ func (s *Solver) drawCurrentFrameToGIF() {
 	draw.NearestNeighbor.Scale(frame, frame.Rect, s.maze, s.maze.Bounds(), draw.Over, nil)
 
 	s.animation.Image = append(s.animation.Image, frame)
-	s.animation.Delay = append(s.animation.Delay, 1 /* hundredth of a second */)
+	s.animation.Delay = append(s.animation.Delay, frameDuration)
 }
