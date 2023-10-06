@@ -32,6 +32,11 @@ func (s *Solver) listenToBranches() {
 
 // explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
 func (s *Solver) explore(pathToBranch *path) {
+	if pathToBranch == nil {
+		// This is a safety net. It should be used, but when it's needed, at least it's there.
+		return
+	}
+
 	pos := pathToBranch.at
 
 	for {
@@ -45,8 +50,9 @@ func (s *Solver) explore(pathToBranch *path) {
 
 		// We know we'll have up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
+
 		for _, n := range neighbours(pos) {
-			if pathToBranch.previousStep != nil && pathToBranch.previousStep.at == n {
+			if pathToBranch.isPreviousStep(n) {
 				// Let's not return to the previous position
 				continue
 			}
@@ -56,12 +62,15 @@ func (s *Solver) explore(pathToBranch *path) {
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				s.mutex.Lock()
+				// Even though we're inside a loop, we are returning from the function here,
+				// which makes it safe to defer the call to Unlock.
+				defer s.mutex.Unlock()
+
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
 					close(s.quit)
 				}
-				s.mutex.Unlock()
 				return
 			case s.config.pathColour:
 				candidates = append(candidates, n)

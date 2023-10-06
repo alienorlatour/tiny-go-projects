@@ -52,7 +52,7 @@ func (s *Solver) drawCurrentFrameToGIF() {
 		frameDuration = 20
 	)
 
-	// Create a paletted frame that has the same ratio as the input image
+	// Create a paletted frame that has the same ratio as the input image.
 	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize*s.maze.Bounds().Dy()/s.maze.Bounds().Dx()), palette.Plan9)
 
 	// Convert RGBA to paletted
