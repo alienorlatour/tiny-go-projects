@@ -7,43 +7,57 @@ import (
 	"golang.org/x/image/draw"
 )
 
-const (
-	// pathRatio is the proportion of path pixels in the total image, which consists of path + wall + treasure + entrance.
-	// This value is very approximate, it would be between 0.25 and 0.5, depending on the maze.
-	pathRatio = 0.4
+func (s *Solver) registerExploredPixels() {
 	// totalExpectedFrames is the number of frames we want in the output gif.
-	// We won't get exactly 30, because pathRatio is approximate. But we'll get something around 30.
-	totalExpectedFrames = 30
-	// gifSize is the length and width of the generated GIF.
-	gifSize = 500
-)
+	// We won't get exactly 30, because we won't be exploring every pixel.
+	const totalExpectedFrames = 30
 
-func (s *Solver) drawFrames() {
+	explorablePixels := s.countExplorablePixels()
 	pixelsExplored := 0
-	totalPixels := s.maze.Bounds().Dx() * s.maze.Bounds().Dy()
-	explorablePixels := int(float32(totalPixels) * pathRatio)
 
 	for {
 		select {
+		case <-s.quit:
+			return
 		case pos := <-s.exploredPixels:
 			s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
 			pixelsExplored++
 			if pixelsExplored%(explorablePixels/totalExpectedFrames) == 0 {
 				s.drawCurrentFrameToGIF()
 			}
-		case <-s.quit:
-			return
 		}
 	}
 }
 
+// countExplorablePixels scans the maze and counts the number of pixels that are not walls.
+func (s *Solver) countExplorablePixels() int {
+	explorablePixels := 0
+	for row := 0; row < s.maze.Bounds().Dy(); row++ {
+		for col := 0; col < s.maze.Bounds().Dx(); col++ {
+			if s.maze.RGBAAt(col, row) != s.config.wallColour {
+				explorablePixels++
+			}
+		}
+	}
+	return explorablePixels
+}
+
 // drawCurrentFrameToGIF adds the current state of the maze as a frame of the animation.
 func (s *Solver) drawCurrentFrameToGIF() {
-	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize), palette.Plan9)
+	const (
+		// gifSize is the length and width of the generated GIF.
+		gifSize = 500
+		// frameDuration is the duration in hundredth of a second of each frame.
+		// 20 hundredths of a second per frame means 5 frames per second.
+		frameDuration = 20
+	)
+
+	// Create a paletted frame that has the same ratio as the input image.
+	frame := image.NewPaletted(image.Rect(0, 0, gifSize, gifSize*s.maze.Bounds().Dy()/s.maze.Bounds().Dx()), palette.Plan9)
 
 	// Convert RGBA to paletted
 	draw.NearestNeighbor.Scale(frame, frame.Rect, s.maze, s.maze.Bounds(), draw.Over, nil)
 
 	s.animation.Image = append(s.animation.Image, frame)
-	s.animation.Delay = append(s.animation.Delay, 1 /* hundredth of a second */)
+	s.animation.Delay = append(s.animation.Delay, frameDuration)
 }

@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/gif"
 	"log/slog"
+	"sync"
 )
 
 // Solver is capable of finding the path from the entrance to the treasure.
@@ -13,13 +14,14 @@ type Solver struct {
 	maze   *image.RGBA
 	config config
 
-	pathsToExplore chan []image.Point
+	pathsToExplore chan *path
 	quit           chan struct{}
 
 	exploredPixels chan image.Point
 	animation      *gif.GIF
 
-	solution []image.Point
+	solution *path
+	mutex    sync.Mutex
 }
 
 // New builds a Solver by taking the path to the PNG maze, encoded in RGBA.
@@ -32,7 +34,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan []image.Point),
+		pathsToExplore: make(chan *path),
 		quit:           make(chan struct{}),
 		exploredPixels: make(chan image.Point),
 		animation:      &gif.GIF{},
@@ -50,28 +52,54 @@ func (s *Solver) Solve() error {
 
 	go func() {
 		// The first pixel is on the edge, the second pixel is inwards.
-		s.pathsToExplore <- []image.Point{entrance, {1, entrance.Y}}
+		s.pathsToExplore <- &path{previousStep: nil, at: entrance}
 	}()
 
-	// Launch the goroutine in charge of drawing the GIF image.
-	go s.drawFrames()
+	wg := sync.WaitGroup{}
+	wg.Add(2)
 
-	// Listen for new paths to explore. This only returns when the maze is solved.
-	s.listenToBranches()
+	go func() {
+		defer wg.Done()
+		// Launch the goroutine in charge of drawing the GIF image.
+		s.registerExploredPixels()
+	}()
+
+	go func() {
+		defer wg.Done()
+		// Listen for new paths to explore. This only returns when the maze is solved.
+		s.listenToBranches()
+	}()
+
+	wg.Wait()
+
+	s.finalise()
 
 	return nil
 }
 
 // findEntrance returns the position of the maze entrance on the image.
 func (s *Solver) findEntrance() (image.Point, error) {
-	height := s.maze.Bounds().Dy()
-
-	// We built the maze with the entrance on the left border, and not in a corner
-	for y := 1; y < height-1; y++ {
-		if s.maze.RGBAAt(0, y) == s.config.entranceColour {
-			return image.Point{0, y}, nil
+	for row := 0; row < s.maze.Bounds().Dy(); row++ {
+		for col := 0; col < s.maze.Bounds().Dy(); col++ {
+			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
+				return image.Point{X: col, Y: row}, nil
+			}
 		}
 	}
 
 	return image.Point{}, fmt.Errorf("entrance position not found")
+}
+
+func (s *Solver) finalise() {
+	stepsFromTreasure := s.solution
+	// Paint the path from entrance to the treasure.
+	for stepsFromTreasure != nil {
+		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
+		stepsFromTreasure = stepsFromTreasure.previousStep
+	}
+
+	// Add the solution frame, with the coloured path, to the output gif.
+	s.drawCurrentFrameToGIF()
+	// Have the final frame containing the solution displayed for 3 seconds
+	s.animation.Delay[len(s.animation.Delay)-1] = 300 /* hundredth of a second */
 }
