@@ -15,15 +15,15 @@ func TestSolver_findEntrance_success(t *testing.T) {
 	}{
 		"middle": {
 			inputPath: "testdata/maze10_10.png",
-			want:      image.Point{0, 5},
+			want:      image.Point{X: 0, Y: 5},
 		},
 		"400 px": {
 			inputPath: "testdata/maze400_400.png",
-			want:      image.Point{0, 200},
+			want:      image.Point{X: 0, Y: 200},
 		},
 		"treasure near entrance": {
 			inputPath: "testdata/maze10_exit.png",
-			want:      image.Point{0, 5},
+			want:      image.Point{X: 0, Y: 5},
 		},
 	}
 	for name, tt := range tests {
@@ -41,6 +41,7 @@ func TestSolver_findEntrance_success(t *testing.T) {
 			}
 
 			got, err := s.findEntrance()
+			require.NoError(t, err)
 
 			assert.Equalf(t, tt.want, got, "findEntrance()")
 		})
@@ -51,6 +52,7 @@ func TestSolver_findEntrance_error(t *testing.T) {
 	tests := map[string]struct {
 		inputPath string
 	}{
+		// TODO: Scenario is "no entrance".
 		"entrance in a corner": {
 			inputPath: "testdata/maze10_corner.png",
 		},

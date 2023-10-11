@@ -13,7 +13,7 @@ import (
 //
 //	The colours of walls, path, treasure, etc. can be configured in internal/solver/config.go.
 //
-// secong, the path where it should write the solution in a similar PNG image.
+// second, the path where it should write the solution in a similar PNG image.
 func main() {
 	if len(os.Args) != 3 {
 		usage()
@@ -42,7 +42,7 @@ func main() {
 
 // usage displays the usage of the binary and exits the program.
 func usage() {
-	_, _ = fmt.Fprintln(os.Stderr, "Usage: maze_solver path/to/input.png path/to/output.png")
+	_, _ = fmt.Fprintln(os.Stderr, "Usage: maze_solver input.png output.png")
 	os.Exit(1)
 }
 
