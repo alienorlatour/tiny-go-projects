@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package habits;
+option go_package = "learngo-pockets/habits/api";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// Habits is a service for registering and tracking habits.
+service Habits {
+  // CreateHabit is the endpoint that registers a habit.
+  rpc CreateHabit(CreateHabitRequest) returns (Habit);
+
+
+}
+
+// CreateHabitRequest is the message sent to create a habit.
+message CreateHabitRequest {
+  // Habit to track.
+  Habit habit = 1;
+}
+
+// Habit represents an objective one wants to complete a given amount of times per week.
+message Habit {
+  // Name of the habit.
+  string name = 1;
+  // Frequency, expressed in times per week. Defaults to 1.
+  optional int32 frequency = 2;
+}
