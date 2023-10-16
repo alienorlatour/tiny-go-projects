@@ -3,9 +3,6 @@ syntax = "proto3";
 package habits;
 option go_package = "learngo-pockets/habits/api";
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-
 // Habits is a service for registering and tracking habits.
 service Habits {
   // CreateHabit is the endpoint that registers a habit.
