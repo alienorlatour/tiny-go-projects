@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"learngo-pockets/habits/api"
 )
@@ -15,7 +16,7 @@ func main() {
 	ctx := context.Background()
 
 	serverAddress := ":38804"
-	conn, err := grpc.Dial(serverAddress)
+	conn, err := grpc.Dial(serverAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		slog.Error(fmt.Sprintf("error while creating the client: %s", err.Error()))
 		os.Exit(1)
