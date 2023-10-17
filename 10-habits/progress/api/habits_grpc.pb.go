@@ -48,22 +48,20 @@ func (c *habitsClient) CreateHabit(ctx context.Context, in *CreateHabitRequest, 
 }
 
 // HabitsServer is the server API for Habits service.
-// All implementations must embed UnimplementedHabitsServer
+// All implementations should embed UnimplementedHabitsServer
 // for forward compatibility
 type HabitsServer interface {
 	// CreateHabit is the endpoint that registers a habit.
 	CreateHabit(context.Context, *CreateHabitRequest) (*Habit, error)
-	mustEmbedUnimplementedHabitsServer()
 }
 
-// UnimplementedHabitsServer must be embedded to have forward compatible implementations.
+// UnimplementedHabitsServer should be embedded to have forward compatible implementations.
 type UnimplementedHabitsServer struct {
 }
 
 func (UnimplementedHabitsServer) CreateHabit(context.Context, *CreateHabitRequest) (*Habit, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateHabit not implemented")
 }
-func (UnimplementedHabitsServer) mustEmbedUnimplementedHabitsServer() {}
 
 // UnsafeHabitsServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to HabitsServer will

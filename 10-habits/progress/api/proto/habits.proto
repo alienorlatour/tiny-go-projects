@@ -7,8 +7,6 @@ option go_package = "learngo-pockets/habits/api";
 service Habits {
   // CreateHabit is the endpoint that registers a habit.
   rpc CreateHabit(CreateHabitRequest) returns (Habit);
-
-
 }
 
 // CreateHabitRequest is the message sent to create a habit.
