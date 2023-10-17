@@ -46,8 +46,8 @@ func (s *Server) Listen(_ context.Context, port int) error {
 
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.Habit, error) {
 	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
-	// TODO implement me
-	panic("implement me")
+
+	return request.Habit, nil
 }
 
 // Check at compilation time that we implement the grpc API.
