@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net"
 
 	"google.golang.org/grpc"
@@ -21,7 +22,7 @@ func New() *Server {
 }
 
 // Listen starts the listening to the port
-func (s *Server) Listen(ctx context.Context, port int) error {
+func (s *Server) Listen(_ context.Context, port int) error {
 	addr := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -30,6 +31,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
+	slog.Info(fmt.Sprintf("gRPC server started and listening to port %d", port))
 
 	// Listen to the port. This will only return when something kills or stops the server.
 	// TODO: Run this in a goroutine that writes to an errChan so we can select {case <- ctx.Done: ... case <- errChan: ... }
@@ -43,6 +45,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 }
 
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.Habit, error) {
+	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
 	// TODO implement me
 	panic("implement me")
 }

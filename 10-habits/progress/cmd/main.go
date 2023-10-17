@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"learngo-pockets/habits/internal/server"
@@ -16,7 +17,7 @@ func main() {
 
 	err := srv.Listen(ctx, 38804)
 	if err != nil {
-		fmt.Printf("Error while running the server: %s", err.Error())
+		slog.Error(fmt.Sprintf("Error while running the server: %s", err.Error()))
 		os.Exit(1)
 	}
 }
