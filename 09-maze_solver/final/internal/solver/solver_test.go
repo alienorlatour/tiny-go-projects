@@ -53,8 +53,8 @@ func TestSolver_findEntrance_error(t *testing.T) {
 		inputPath string
 	}{
 		// TODO: Scenario is "no entrance".
-		"entrance in a corner": {
-			inputPath: "testdata/maze10_corner.png",
+		"no entrance": {
+			inputPath: "testdata/maze.png",
 		},
 	}
 	for name, tt := range tests {

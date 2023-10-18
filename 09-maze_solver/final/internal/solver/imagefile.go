@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// openMaze returns a RGBA png image.
+// openMaze opens a RGBA png image from a path.
 func openMaze(imagePath string) (*image.RGBA, error) {
 	_, err := os.Stat(imagePath)
 	if err != nil {

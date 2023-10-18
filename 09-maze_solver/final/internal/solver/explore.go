@@ -30,7 +30,8 @@ func (s *Solver) listenToBranches() {
 	}
 }
 
-// explore one path and publish to the s.pathsToExplore channel any branch we discover that we don't take.
+// explore one path and publish to the s.pathsToExplore channel
+// any branch we discover that we don't take.
 func (s *Solver) explore(pathToBranch *path) {
 	if pathToBranch == nil {
 		// This is a safety net. It should be used, but when it's needed, at least it's there.
