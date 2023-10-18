@@ -28,7 +28,7 @@ func New(imagePath string) (*Solver, error) {
 	return &Solver{
 		maze:           img,
 		config:         defaultColours(),
-		pathsToExplore: make(chan *path),
+		pathsToExplore: make(chan *path, 1),
 	}, nil
 }
 
@@ -41,7 +41,9 @@ func (s *Solver) Solve() error {
 
 	slog.Info(fmt.Sprintf("starting at %v", entrance))
 
+	// Write once in pathsToExplore before starting listening on the channel.
 	s.pathsToExplore <- &path{previousSteps: nil, at: entrance}
+	s.listenToBranches()
 
 	return nil
 }
