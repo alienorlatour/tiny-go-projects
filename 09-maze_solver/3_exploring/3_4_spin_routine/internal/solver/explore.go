@@ -47,11 +47,11 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := &path{previousSteps: pathToBranch, at: candidate}
+			branch := &path{previousStep: pathToBranch, at: candidate}
 			s.pathsToExplore <- branch
 		}
 
-		pathToBranch = &path{previousSteps: pathToBranch, at: candidates[0]}
+		pathToBranch = &path{previousStep: pathToBranch, at: candidates[0]}
 		pos = candidates[0]
 	}
 }

@@ -52,7 +52,7 @@ func (s *Solver) explore(pathToBranch *path) {
 				defer s.mutex.Unlock()
 
 				if s.solution == nil {
-					s.solution = &path{previousSteps: pathToBranch, at: n}
+					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
 				}
 				return
@@ -68,11 +68,11 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := &path{previousSteps: pathToBranch, at: candidate}
+			branch := &path{previousStep: pathToBranch, at: candidate}
 			s.pathsToExplore <- branch
 		}
 
-		pathToBranch = &path{previousSteps: pathToBranch, at: candidates[0]}
+		pathToBranch = &path{previousStep: pathToBranch, at: candidates[0]}
 		pos = candidates[0]
 	}
 }

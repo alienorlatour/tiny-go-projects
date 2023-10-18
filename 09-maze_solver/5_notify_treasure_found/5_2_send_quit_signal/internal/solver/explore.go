@@ -67,7 +67,7 @@ func (s *Solver) explore(pathToBranch *path) {
 				defer s.mutex.Unlock()
 
 				if s.solution == nil {
-					s.solution = &path{previousSteps: pathToBranch, at: n}
+					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
 					// s.quit <- struct{}{}
 					close(s.quit)
@@ -85,7 +85,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		for _, candidate := range candidates[1:] {
-			branch := &path{previousSteps: pathToBranch, at: candidate}
+			branch := &path{previousStep: pathToBranch, at: candidate}
 			// We are sure we send to pathsToExplore only when the quit channel isn't closed.
 			// A goroutine might have found the treasure since the check at the start of the loop.
 			select {
@@ -98,7 +98,7 @@ func (s *Solver) explore(pathToBranch *path) {
 			}
 		}
 
-		pathToBranch = &path{previousSteps: pathToBranch, at: candidates[0]}
+		pathToBranch = &path{previousStep: pathToBranch, at: candidates[0]}
 		pos = candidates[0]
 	}
 }

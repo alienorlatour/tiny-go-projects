@@ -50,7 +50,7 @@ func (s *Solver) Solve() error {
 
 	slog.Info(fmt.Sprintf("starting at %v", entrance))
 
-	s.pathsToExplore <- &path{previousSteps: nil, at: entrance}
+	s.pathsToExplore <- &path{previousStep: nil, at: entrance}
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -93,7 +93,7 @@ func (s *Solver) finalise() {
 	// Paint the path from entrance to the treasure.
 	for stepsFromTreasure != nil {
 		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
-		stepsFromTreasure = stepsFromTreasure.previousSteps
+		stepsFromTreasure = stepsFromTreasure.previousStep
 	}
 
 	const solutionFrameDuration = 300 // 3 seconds
