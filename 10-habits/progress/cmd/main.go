@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"learngo-pockets/habits/internal/repository"
 	"log/slog"
 	"os"
 
@@ -11,7 +12,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	srv := server.New()
+	srv := server.New(repository.New())
 
 	// TODO: Catch Ctrl-C + defer graceful shutdown
 

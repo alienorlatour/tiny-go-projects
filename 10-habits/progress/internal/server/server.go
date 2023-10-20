@@ -6,19 +6,28 @@ import (
 	"log/slog"
 	"net"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 
 	"learngo-pockets/habits/api"
+	"learngo-pockets/habits/internal/habit"
 )
 
 // Server is the implementation of the grpc server.
-type Server struct{}
+type Server struct {
+	db repository
+}
 
-// New returns a Server that can Listen()
-// TODO: A discuter: New peut etre appele sans Listen(). Je trouve qu'on devrait tout mettre dans un bloc.
-// Genre StartAndListen(ctx, port) error. S'il faut se connecter a une DB, on met ca ou ?
-func New() *Server {
-	return &Server{}
+type repository interface {
+	Add(habit habit.Habit) error
+	FindAll() ([]habit.Habit, error)
+}
+
+// New returns a Server that can Listen.
+func New(repo repository) *Server {
+	return &Server{
+		db: repo,
+	}
 }
 
 // Listen starts the listening to the port
@@ -44,11 +53,25 @@ func (s *Server) Listen(_ context.Context, port int) error {
 	return nil
 }
 
+// CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.Habit, error) {
 	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
 
+	if request.Habit.Frequency == nil || uint(*request.Habit.Frequency) == 0 {
+		return nil, fmt.Errorf("invalid frequency")
+	}
+	freq := *request.Habit.Frequency
+
+	habit := habit.Habit{
+		ID:        habit.ID(uuid.NewString()),
+		Name:      request.Habit.Name,
+		Frequency: uint(freq),
+	}
+
+	err := s.db.Add(habit)
+	if err != nil {
+		return nil, fmt.Errorf("cannot save habit %v: %w", habit, err)
+	}
+
 	return request.Habit, nil
 }
-
-// Check at compilation time that we implement the grpc API.
-var _ api.HabitsServer = (*Server)(nil)
