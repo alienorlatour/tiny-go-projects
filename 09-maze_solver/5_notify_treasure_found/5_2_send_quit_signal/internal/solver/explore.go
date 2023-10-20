@@ -62,16 +62,11 @@ func (s *Solver) explore(pathToBranch *path) {
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				s.mutex.Lock()
-				// Even though we're inside a loop, we are returning from the function here,
-				// which makes it safe to defer the call to Unlock.
-				defer s.mutex.Unlock()
-
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
-					// s.quit <- struct{}{}
-					close(s.quit)
 				}
+				s.mutex.Unlock()
 				return
 
 			case s.config.pathColour:

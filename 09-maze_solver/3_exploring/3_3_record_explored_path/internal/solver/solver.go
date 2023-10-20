@@ -22,8 +22,9 @@ func New(imagePath string) (*Solver, error) {
 	}
 
 	return &Solver{
-		maze:   img,
-		config: defaultColours(),
+		maze:           img,
+		config:         defaultColours(),
+		pathsToExplore: make(chan *path, 1),
 	}, nil
 }
 
