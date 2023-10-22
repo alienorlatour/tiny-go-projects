@@ -65,6 +65,7 @@ func (s *Solver) explore(pathToBranch *path) {
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
 					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
+					close(s.quit)
 				}
 				s.mutex.Unlock()
 				return
