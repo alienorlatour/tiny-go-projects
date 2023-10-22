@@ -11,7 +11,7 @@ import (
 type Solver struct {
 	maze           *image.RGBA
 	config         config
-	pathsToExplore chan *path
+	pathsToExplore chan *path // nolint:unused
 }
 
 // New builds a Solver by taking the path to the PNG maze, encoded in RGBA.
