@@ -47,6 +47,7 @@ func TestSolver_explore(t *testing.T) {
 				maze:           maze,
 				config:         defaultColours(),
 				pathsToExplore: make(chan *path, 3),
+				quit:           make(chan struct{}),
 			}
 
 			// All our tests have the entrance at the same position.
