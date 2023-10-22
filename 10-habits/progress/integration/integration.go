@@ -31,6 +31,20 @@ func main() {
 		slog.Error(fmt.Sprintf("unexpected error while creating a habit: %s", err.Error()))
 		os.Exit(1)
 	}
+	slog.Info(fmt.Sprintf("Created: %s", resp))
 
-	slog.Info(fmt.Sprintf("Response received: %s", resp))
+	walkFrequency = 3
+	resp, err = habitsCli.CreateHabit(ctx, &api.CreateHabitRequest{Habit: &api.Habit{Name: "read a few pages", Frequency: &walkFrequency}})
+	if err != nil {
+		slog.Error(fmt.Sprintf("unexpected error while creating a habit: %s", err.Error()))
+		os.Exit(1)
+	}
+	slog.Info(fmt.Sprintf("Created: %s", resp))
+
+	list, err := habitsCli.ListHabits(ctx, &api.ListHabitsRequest{})
+	if err != nil {
+		slog.Error(fmt.Sprintf("unexpected error while creating a habit: %s", err.Error()))
+		os.Exit(1)
+	}
+	slog.Info(fmt.Sprintf("Response received: %s", list))
 }

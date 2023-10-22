@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/google/uuid"
 	"google.golang.org/grpc"
 
 	"learngo-pockets/habits/api"
@@ -51,27 +50,4 @@ func (s *Server) Listen(_ context.Context, port int) error {
 
 	// Stop or GracefulStop was called, no reason to be alarmed.
 	return nil
-}
-
-// CreateHabit is the endpoint that registers a habit.
-func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.Habit, error) {
-	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
-
-	if request.Habit.Frequency == nil || uint(*request.Habit.Frequency) == 0 {
-		return nil, fmt.Errorf("invalid frequency")
-	}
-	freq := *request.Habit.Frequency
-
-	habit := habit.Habit{
-		ID:        habit.ID(uuid.NewString()),
-		Name:      request.Habit.Name,
-		Frequency: uint(freq),
-	}
-
-	err := s.db.Add(habit)
-	if err != nil {
-		return nil, fmt.Errorf("cannot save habit %v: %w", habit, err)
-	}
-
-	return request.Habit, nil
 }
