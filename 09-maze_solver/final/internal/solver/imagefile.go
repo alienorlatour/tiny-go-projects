@@ -79,6 +79,7 @@ func (s *Solver) saveSolution(outputPath string) (err error) {
 	return nil
 }
 
+// saveAnimation writes the gif file.
 func (s *Solver) saveAnimation(gifPath string) (err error) {
 	outputImage, err := os.Create(gifPath)
 	if err != nil {

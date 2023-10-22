@@ -88,6 +88,7 @@ func (s *Solver) findEntrance() (image.Point, error) {
 	return image.Point{}, fmt.Errorf("entrance position not found")
 }
 
+// finalise writes the last frame of the gif, with the solution highlighted.
 func (s *Solver) finalise() {
 	stepsFromTreasure := s.solution
 	// Paint the path from entrance to the treasure.
