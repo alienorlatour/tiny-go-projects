@@ -17,7 +17,7 @@ func main() {
 
 	// TODO: Catch Ctrl-C + defer graceful shutdown
 
-	_, err := srv.Listen(ctx, 38804)
+	err := srv.Listen(ctx, 38804)
 	if err != nil {
 		slog.Error(fmt.Sprintf("Error while running the server: %s", err.Error()))
 		os.Exit(1)
