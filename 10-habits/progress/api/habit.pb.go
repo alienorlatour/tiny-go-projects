@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.28.1
 // 	protoc        v3.21.12
-// source: entities.proto
+// source: habit.proto
 
 package api
 
@@ -35,7 +35,7 @@ type Habit struct {
 func (x *Habit) Reset() {
 	*x = Habit{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_entities_proto_msgTypes[0]
+		mi := &file_habit_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -48,7 +48,7 @@ func (x *Habit) String() string {
 func (*Habit) ProtoMessage() {}
 
 func (x *Habit) ProtoReflect() protoreflect.Message {
-	mi := &file_entities_proto_msgTypes[0]
+	mi := &file_habit_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +61,7 @@ func (x *Habit) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Habit.ProtoReflect.Descriptor instead.
 func (*Habit) Descriptor() ([]byte, []int) {
-	return file_entities_proto_rawDescGZIP(), []int{0}
+	return file_habit_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Habit) GetName() string {
@@ -78,37 +78,37 @@ func (x *Habit) GetFrequency() int32 {
 	return 0
 }
 
-var File_entities_proto protoreflect.FileDescriptor
+var File_habit_proto protoreflect.FileDescriptor
 
-var file_entities_proto_rawDesc = []byte{
-	0x0a, 0x0e, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x69, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x12, 0x06, 0x68, 0x61, 0x62, 0x69, 0x74, 0x73, 0x22, 0x4c, 0x0a, 0x05, 0x48, 0x61, 0x62, 0x69,
-	0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x21, 0x0a, 0x09, 0x66, 0x72, 0x65, 0x71, 0x75, 0x65, 0x6e,
-	0x63, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x09, 0x66, 0x72, 0x65, 0x71,
-	0x75, 0x65, 0x6e, 0x63, 0x79, 0x88, 0x01, 0x01, 0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x66, 0x72, 0x65,
-	0x71, 0x75, 0x65, 0x6e, 0x63, 0x79, 0x42, 0x1c, 0x5a, 0x1a, 0x6c, 0x65, 0x61, 0x72, 0x6e, 0x67,
-	0x6f, 0x2d, 0x70, 0x6f, 0x63, 0x6b, 0x65, 0x74, 0x73, 0x2f, 0x68, 0x61, 0x62, 0x69, 0x74, 0x73,
-	0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+var file_habit_proto_rawDesc = []byte{
+	0x0a, 0x0b, 0x68, 0x61, 0x62, 0x69, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x68,
+	0x61, 0x62, 0x69, 0x74, 0x73, 0x22, 0x4c, 0x0a, 0x05, 0x48, 0x61, 0x62, 0x69, 0x74, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x21, 0x0a, 0x09, 0x66, 0x72, 0x65, 0x71, 0x75, 0x65, 0x6e, 0x63, 0x79, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x09, 0x66, 0x72, 0x65, 0x71, 0x75, 0x65, 0x6e,
+	0x63, 0x79, 0x88, 0x01, 0x01, 0x42, 0x0c, 0x0a, 0x0a, 0x5f, 0x66, 0x72, 0x65, 0x71, 0x75, 0x65,
+	0x6e, 0x63, 0x79, 0x42, 0x1c, 0x5a, 0x1a, 0x6c, 0x65, 0x61, 0x72, 0x6e, 0x67, 0x6f, 0x2d, 0x70,
+	0x6f, 0x63, 0x6b, 0x65, 0x74, 0x73, 0x2f, 0x68, 0x61, 0x62, 0x69, 0x74, 0x73, 0x2f, 0x61, 0x70,
+	0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_entities_proto_rawDescOnce sync.Once
-	file_entities_proto_rawDescData = file_entities_proto_rawDesc
+	file_habit_proto_rawDescOnce sync.Once
+	file_habit_proto_rawDescData = file_habit_proto_rawDesc
 )
 
-func file_entities_proto_rawDescGZIP() []byte {
-	file_entities_proto_rawDescOnce.Do(func() {
-		file_entities_proto_rawDescData = protoimpl.X.CompressGZIP(file_entities_proto_rawDescData)
+func file_habit_proto_rawDescGZIP() []byte {
+	file_habit_proto_rawDescOnce.Do(func() {
+		file_habit_proto_rawDescData = protoimpl.X.CompressGZIP(file_habit_proto_rawDescData)
 	})
-	return file_entities_proto_rawDescData
+	return file_habit_proto_rawDescData
 }
 
-var file_entities_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
-var file_entities_proto_goTypes = []interface{}{
+var file_habit_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_habit_proto_goTypes = []interface{}{
 	(*Habit)(nil), // 0: habits.Habit
 }
-var file_entities_proto_depIdxs = []int32{
+var file_habit_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -116,13 +116,13 @@ var file_entities_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_entities_proto_init() }
-func file_entities_proto_init() {
-	if File_entities_proto != nil {
+func init() { file_habit_proto_init() }
+func file_habit_proto_init() {
+	if File_habit_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_entities_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_habit_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Habit); i {
 			case 0:
 				return &v.state
@@ -135,23 +135,23 @@ func file_entities_proto_init() {
 			}
 		}
 	}
-	file_entities_proto_msgTypes[0].OneofWrappers = []interface{}{}
+	file_habit_proto_msgTypes[0].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_entities_proto_rawDesc,
+			RawDescriptor: file_habit_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_entities_proto_goTypes,
-		DependencyIndexes: file_entities_proto_depIdxs,
-		MessageInfos:      file_entities_proto_msgTypes,
+		GoTypes:           file_habit_proto_goTypes,
+		DependencyIndexes: file_habit_proto_depIdxs,
+		MessageInfos:      file_habit_proto_msgTypes,
 	}.Build()
-	File_entities_proto = out.File
-	file_entities_proto_rawDesc = nil
-	file_entities_proto_goTypes = nil
-	file_entities_proto_depIdxs = nil
+	File_habit_proto = out.File
+	file_habit_proto_rawDesc = nil
+	file_habit_proto_goTypes = nil
+	file_habit_proto_depIdxs = nil
 }

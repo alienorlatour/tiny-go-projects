@@ -3,7 +3,7 @@ syntax = "proto3";
 package habits;
 option go_package = "learngo-pockets/habits/api";
 
-import "entities.proto";
+import "habit.proto";
 
 // Habits is a service for registering and tracking habits.
 service Habits {
