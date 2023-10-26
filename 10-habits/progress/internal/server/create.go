@@ -7,28 +7,27 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-
-	"github.com/google/uuid"
 )
 
 // CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
 	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
 
-	if request.Habit.Frequency == nil || uint(*request.Habit.Frequency) == 0 {
-		return nil, fmt.Errorf("invalid frequency")
+	var freq uint
+	if request.Habit.Frequency != nil && uint(*request.Habit.Frequency) > 0 {
+		freq = uint(*request.Habit.Frequency)
+	} else {
+		freq = 1
 	}
-	freq := *request.Habit.Frequency
 
-	habit := habit.Habit{
-		ID:        habit.ID(uuid.NewString()),
+	h := habit.Habit{
 		Name:      request.Habit.Name,
-		Frequency: uint(freq),
+		Frequency: freq,
 	}
 
-	err := s.db.Add(habit)
+	err := habit.CreateHabit(ctx, s.db, h)
 	if err != nil {
-		return nil, fmt.Errorf("cannot save habit %v: %w", habit, err)
+		return nil, fmt.Errorf("cannot save habit %v: %w", h, err)
 	}
 
 	return &api.CreateHabitResponse{

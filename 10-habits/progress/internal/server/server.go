@@ -18,8 +18,8 @@ type Server struct {
 }
 
 type repository interface {
-	Add(habit habit.Habit) error
-	FindAll() ([]habit.Habit, error)
+	Add(ctx context.Context, habit habit.Habit) error
+	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
 // New returns a Server that can Listen.
@@ -30,7 +30,7 @@ func New(repo repository) *Server {
 }
 
 // Listen starts the listening to the port
-func (s *Server) Listen(_ context.Context, port int) error {
+func (s *Server) Listen(port int) error {
 	addr := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {

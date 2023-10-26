@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"log"
 	"sync"
 
@@ -21,7 +22,7 @@ func New() *HabitRepository {
 }
 
 // Add inserts for the first time a habit in memory.
-func (gr *HabitRepository) Add(habit habit.Habit) error {
+func (gr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 	log.Print("Adding a habit...")
 	gr.storage[habit.ID] = habit
 
@@ -29,7 +30,7 @@ func (gr *HabitRepository) Add(habit habit.Habit) error {
 }
 
 // FindAll returns all habits.
-func (gr *HabitRepository) FindAll() ([]habit.Habit, error) {
+func (gr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	log.Printf("Listing habits...")
 
 	habits := make([]habit.Habit, 0)

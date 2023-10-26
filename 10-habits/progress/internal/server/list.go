@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Server) ListHabits(ctx context.Context, request *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
-	habits, err := s.db.FindAll()
+	habits, err := s.db.FindAll(ctx)
 	if err != nil {
 		return nil, err // todo wrap
 	}
