@@ -20,23 +20,22 @@ import (
 const port = 28710
 
 func TestIntegration(t *testing.T) {
-	ctx := context.Background()
-
+	// run server
 	grpcServ := newServer()
 	go startServer(t, grpcServ)
 	defer grpcServ.Stop()
 
+	// create client
 	habitsCli, err := newClient()
 	require.NoError(t, err)
 
-	_, err = addHabit(habitsCli, ctx, 5, "walk in the forest")
-	require.NoError(t, err)
+	// add 2 habits
+	addHabit(t, habitsCli, 5, "walk in the forest")
 
-	_, err = addHabit(habitsCli, ctx, 3, "read a few pages")
-	require.NoError(t, err)
+	addHabit(t, habitsCli, 3, "read a few pages")
 
-	list, err := habitsCli.ListHabits(ctx, &api.ListHabitsRequest{})
-	assert.NoError(t, err)
+	// check that the 2 habits are present
+	list := listHabits(t, habitsCli)
 	assert.ElementsMatch(t, list.Habits, []*api.Habit{
 		{
 			Name:      "walk in the forest",
@@ -47,6 +46,12 @@ func TestIntegration(t *testing.T) {
 			Frequency: ptr(3),
 		},
 	})
+}
+
+func listHabits(t *testing.T, habitsCli api.HabitsClient) *api.ListHabitsResponse {
+	list, err := habitsCli.ListHabits(context.Background(), &api.ListHabitsRequest{})
+	assert.NoError(t, err)
+	return list
 }
 
 func startServer(t *testing.T, grpcServ *grpc.Server) {
@@ -71,8 +76,11 @@ func ptr(i int32) *int32 {
 	return &i
 }
 
-func addHabit(habitsCli api.HabitsClient, ctx context.Context, walkFrequency int32, name string) (*api.CreateHabitResponse, error) {
-	return habitsCli.CreateHabit(ctx, &api.CreateHabitRequest{Habit: &api.Habit{Name: name, Frequency: &walkFrequency}})
+func addHabit(t *testing.T, habitsCli api.HabitsClient, walkFrequency int32, name string) {
+	t.Helper()
+
+	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{Habit: &api.Habit{Name: name, Frequency: &walkFrequency}})
+	assert.NoError(t, err)
 }
 
 func newClient() (api.HabitsClient, error) {
