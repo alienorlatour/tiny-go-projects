@@ -1,3 +1,3 @@
 module learngo-pockets/bookworms
 
-go 1.20
+go 1.21
