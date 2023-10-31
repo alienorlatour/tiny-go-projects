@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Server) ListHabits(ctx context.Context, request *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
-	habits, err := s.db.FindAll(ctx)
+	habits, err := habit.ListHabits(ctx, s.db)
 	if err != nil {
 		return nil, err // todo wrap
 	}
@@ -22,7 +22,7 @@ func response(habits []habit.Habit) *api.ListHabitsResponse {
 	for i := range habits {
 		frequency := int32(habits[i].Frequency)
 		hts[i] = &api.Habit{
-			Name:      habits[i].Name,
+			Name:      string(habits[i].Name),
 			Frequency: &frequency,
 		}
 	}

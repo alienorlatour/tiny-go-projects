@@ -3,6 +3,7 @@ module learngo-pockets/habits
 go 1.21.0
 
 require (
+	github.com/gojuno/minimock/v3 v3.1.3
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.58.3
@@ -12,6 +13,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect

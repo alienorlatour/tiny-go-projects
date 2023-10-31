@@ -21,8 +21,8 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 	}
 
 	h := habit.Habit{
-		Name:      request.Habit.Name,
-		Frequency: freq,
+		Name:      habit.Name(request.Habit.Name),
+		Frequency: habit.WeeklyFrequency(freq),
 	}
 
 	err := habit.CreateHabit(ctx, s.db, h)
