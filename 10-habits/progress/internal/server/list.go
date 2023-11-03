@@ -20,10 +20,10 @@ func response(habits []habit.Habit) *api.ListHabitsResponse {
 	hts := make([]*api.Habit, len(habits))
 
 	for i := range habits {
-		frequency := int32(habits[i].Frequency)
+		frequency := int32(habits[i].WeeklyFrequency)
 		hts[i] = &api.Habit{
-			Name:      string(habits[i].Name),
-			Frequency: &frequency,
+			Name:            string(habits[i].Name),
+			WeeklyFrequency: &frequency,
 		}
 	}
 

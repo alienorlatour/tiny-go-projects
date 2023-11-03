@@ -14,15 +14,15 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
 
 	var freq uint
-	if request.Habit.Frequency != nil && uint(*request.Habit.Frequency) > 0 {
-		freq = uint(*request.Habit.Frequency)
+	if request.Habit.WeeklyFrequency != nil && uint(*request.Habit.WeeklyFrequency) > 0 {
+		freq = uint(*request.Habit.WeeklyFrequency)
 	} else {
 		freq = 1
 	}
 
 	h := habit.Habit{
-		Name:      habit.Name(request.Habit.Name),
-		Frequency: habit.WeeklyFrequency(freq),
+		Name:            habit.Name(request.Habit.Name),
+		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
 	err := habit.CreateHabit(ctx, s.db, h)

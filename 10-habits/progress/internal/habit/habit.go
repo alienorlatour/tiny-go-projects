@@ -15,8 +15,8 @@ type WeeklyFrequency uint
 
 // Habit to track.
 type Habit struct {
-	ID           ID
-	Name         Name
-	Frequency    WeeklyFrequency
-	CreationTime time.Time
+	ID              ID
+	Name            Name
+	WeeklyFrequency WeeklyFrequency
+	CreationTime    time.Time
 }

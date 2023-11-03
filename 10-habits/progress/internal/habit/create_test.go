@@ -15,10 +15,10 @@ import (
 
 func TestCreateHabit(t *testing.T) {
 	h := habit.Habit{
-		Name:         "swim",
-		Frequency:    2,
-		CreationTime: time.Now(),
-		ID:           "123",
+		Name:            "swim",
+		WeeklyFrequency: 2,
+		CreationTime:    time.Now(),
+		ID:              "123",
 	}
 	ctx := context.Background()
 

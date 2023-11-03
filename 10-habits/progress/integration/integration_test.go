@@ -38,12 +38,12 @@ func TestIntegration(t *testing.T) {
 	list := listHabits(t, habitsCli)
 	assert.ElementsMatch(t, list.Habits, []*api.Habit{
 		{
-			Name:      "walk in the forest",
-			Frequency: ptr(5),
+			Name:            "walk in the forest",
+			WeeklyFrequency: ptr(5),
 		},
 		{
-			Name:      "read a few pages",
-			Frequency: ptr(3),
+			Name:            "read a few pages",
+			WeeklyFrequency: ptr(3),
 		},
 	})
 }
@@ -79,7 +79,12 @@ func ptr(i int32) *int32 {
 func addHabit(t *testing.T, habitsCli api.HabitsClient, walkFrequency int32, name string) {
 	t.Helper()
 
-	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{Habit: &api.Habit{Name: name, Frequency: &walkFrequency}})
+	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
+		Habit: &api.Habit{
+			Name:            name,
+			WeeklyFrequency: &walkFrequency,
+		},
+	})
 	assert.NoError(t, err)
 }
 

@@ -18,10 +18,10 @@ func testCompleteHabitFull(t *testing.T) {
 	t.Parallel()
 
 	h := Habit{
-		ID:           "987",
-		Name:         "laugh",
-		Frequency:    256,
-		CreationTime: time.Date(2023, 10, 27, 1, 5, 0, 0, time.UTC),
+		ID:              "987",
+		Name:            "laugh",
+		WeeklyFrequency: 256,
+		CreationTime:    time.Date(2023, 10, 27, 1, 5, 0, 0, time.UTC),
 	}
 
 	got := completeHabit(h)
@@ -32,13 +32,13 @@ func testCompleteHabitPartial(t *testing.T) {
 	t.Parallel()
 
 	h := Habit{
-		Name:      "laugh",
-		Frequency: 256,
+		Name:            "laugh",
+		WeeklyFrequency: 256,
 	}
 
 	got := completeHabit(h)
 	assert.Equal(t, h.Name, got.Name)
-	assert.Equal(t, h.Frequency, got.Frequency)
+	assert.Equal(t, h.WeeklyFrequency, got.WeeklyFrequency)
 	assert.NotEmpty(t, got.ID)
 	assert.NotEmpty(t, got.CreationTime)
 }

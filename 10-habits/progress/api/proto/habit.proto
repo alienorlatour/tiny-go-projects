@@ -8,5 +8,5 @@ message Habit {
   // Name of the habit, cannot be empty.
   string name = 1;
   // Frequency, expressed in times per week. Defaults to 1.
-  optional int32 frequency = 2;
+  optional int32 weekly_frequency = 2;
 }
