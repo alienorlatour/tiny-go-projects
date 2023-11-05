@@ -41,8 +41,8 @@ func TestSolver_findEntrance_success(t *testing.T) {
 			require.NoError(t, err)
 
 			s := &Solver{
-				maze:   img,
-				config: defaultColours(),
+				maze:    img,
+				palette: defaultPalette(),
 			}
 
 			got, err := s.findEntrance()
@@ -71,8 +71,8 @@ func TestSolver_findEntrance_error(t *testing.T) {
 			require.NoError(t, err)
 
 			s := &Solver{
-				maze:   img,
-				config: defaultColours(),
+				maze:    img,
+				palette: defaultPalette(),
 			}
 
 			_, err = s.findEntrance()

@@ -27,10 +27,10 @@ func (s *Solver) explore(pathToBranch *path) {
 			// Look at the colour of this pixel.
 			// RGBAAt returns a color.RGBA{} zero value if the pixel is outside the bounds of the image.
 			switch s.maze.RGBAAt(n.X, n.Y) {
-			case s.config.treasureColour:
+			case s.palette.treasure:
 				log.Printf("Treasure found at %v!", n)
 				return
-			case s.config.pathColour:
+			case s.palette.path:
 				candidates = append(candidates, n)
 			}
 		}

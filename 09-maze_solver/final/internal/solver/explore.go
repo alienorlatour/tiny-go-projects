@@ -3,7 +3,6 @@ package solver
 import (
 	"image"
 	"log"
-	"log/slog"
 	"sync"
 )
 
@@ -17,7 +16,7 @@ func (s *Solver) listenToBranches() {
 		// s.quit will never return a value, unless something writes in it (which we don't do)
 		// or it has been closed, which we do when we find the treasure.
 		case <-s.quit:
-			slog.Info("the treasure has been found, worker going to sleep")
+			log.Println("the treasure has been found, stopping worker")
 			return
 		case p := <-s.pathsToExplore:
 			wg.Add(1)
@@ -61,7 +60,7 @@ func (s *Solver) explore(pathToBranch *path) {
 			// Look at the colour of this pixel.
 			// RGBAAt returns a color.RGBA{} zero value if the pixel is outside the bounds of the image.
 			switch s.maze.RGBAAt(n.X, n.Y) {
-			case s.config.treasureColour:
+			case s.palette.treasure:
 				s.mutex.Lock()
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
@@ -69,7 +68,7 @@ func (s *Solver) explore(pathToBranch *path) {
 				}
 				s.mutex.Unlock()
 				return
-			case s.config.pathColour:
+			case s.palette.path:
 				candidates = append(candidates, n)
 			}
 		}
@@ -86,7 +85,8 @@ func (s *Solver) explore(pathToBranch *path) {
 			select {
 			// s.quit returns a zero value only when the channel was closed, here -- when the exploration should end.
 			case <-s.quit:
-				slog.Debug("I'm an unlucky branch, someone else found the treasure, I give up.", "position", pos)
+				log.Printf("I'm an unlucky branch, someone else found the treasure, I give up at position %v."
+				pos)
 				return
 			case s.pathsToExplore <- branch:
 			}

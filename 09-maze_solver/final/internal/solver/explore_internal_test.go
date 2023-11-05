@@ -45,7 +45,7 @@ func TestSolver_explore(t *testing.T) {
 
 			s := &Solver{
 				maze:           maze,
-				config:         defaultColours(),
+				palette:        defaultPalette(),
 				pathsToExplore: make(chan *path, 3),
 				quit:           make(chan struct{}),
 				exploredPixels: make(chan image.Point, 3),

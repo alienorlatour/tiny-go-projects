@@ -45,7 +45,7 @@ func (s *Solver) SaveSolution(outputPath string) (err error) {
 	stepsFromTreasure := s.solution
 	// Paint the path from last position (treasure) back to first position (entrance).
 	for stepsFromTreasure != nil {
-		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
+		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.palette.solution)
 		stepsFromTreasure = stepsFromTreasure.previousStep
 	}
 

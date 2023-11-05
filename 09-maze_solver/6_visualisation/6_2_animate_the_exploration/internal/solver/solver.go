@@ -11,8 +11,8 @@ import (
 // Solver is capable of finding the path from the entrance to the treasure.
 // The maze has to be a RGBA image.
 type Solver struct {
-	maze   *image.RGBA
-	config config
+	maze    *image.RGBA
+	palette palette
 
 	pathsToExplore chan *path
 	quit           chan struct{}
@@ -33,7 +33,7 @@ func New(imagePath string) (*Solver, error) {
 
 	return &Solver{
 		maze:           img,
-		config:         defaultColours(),
+		palette:        defaultPalette(),
 		pathsToExplore: make(chan *path, 1),
 		quit:           make(chan struct{}),
 		exploredPixels: make(chan image.Point),
@@ -70,7 +70,7 @@ func (s *Solver) Solve() error {
 	// Synchronisation step waiting for both goroutines to end
 	wg.Wait()
 
-	s.finalise()
+	s.writeLastFrame()
 
 	return nil
 }
@@ -79,26 +79,11 @@ func (s *Solver) Solve() error {
 func (s *Solver) findEntrance() (image.Point, error) {
 	for row := s.maze.Bounds().Min.Y; row < s.maze.Bounds().Max.Y; row++ {
 		for col := s.maze.Bounds().Min.X; col < s.maze.Bounds().Max.X; col++ {
-			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
+			if s.maze.RGBAAt(col, row) == s.palette.entrance {
 				return image.Point{X: col, Y: row}, nil
 			}
 		}
 	}
 
 	return image.Point{}, fmt.Errorf("entrance position not found")
-}
-
-// finalise writes the last frame of the gif, with the solution highlighted.
-func (s *Solver) finalise() {
-	stepsFromTreasure := s.solution
-	// Paint the path from entrance to the treasure.
-	for stepsFromTreasure != nil {
-		s.maze.Set(stepsFromTreasure.at.X, stepsFromTreasure.at.Y, s.config.solutionColour)
-		stepsFromTreasure = stepsFromTreasure.previousStep
-	}
-
-	const solutionFrameDuration = 300 // 3 seconds
-	// Add the solution frame, with the coloured path, to the output gif.
-	s.drawCurrentFrameToGIF()
-	s.animation.Delay[len(s.animation.Delay)-1] = solutionFrameDuration
 }

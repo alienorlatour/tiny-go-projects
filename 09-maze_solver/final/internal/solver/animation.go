@@ -20,7 +20,7 @@ func (s *Solver) registerExploredPixels() {
 		case <-s.quit:
 			return
 		case pos := <-s.exploredPixels:
-			s.maze.Set(pos.X, pos.Y, s.config.exploredColour)
+			s.maze.Set(pos.X, pos.Y, s.palette.explored)
 			pixelsExplored++
 			if pixelsExplored%(explorablePixels/totalExpectedFrames) == 0 {
 				s.drawCurrentFrameToGIF()
@@ -34,7 +34,7 @@ func (s *Solver) countExplorablePixels() int {
 	explorablePixels := 0
 	for row := s.maze.Bounds().Min.Y; row < s.maze.Bounds().Max.Y; row++ {
 		for col := s.maze.Bounds().Min.X; col < s.maze.Bounds().Max.X; col++ {
-			if s.maze.RGBAAt(col, row) != s.config.wallColour {
+			if s.maze.RGBAAt(col, row) != s.palette.wall {
 				explorablePixels++
 			}
 		}
