@@ -13,11 +13,11 @@ func TestOpenImage_errors(t *testing.T) {
 	}{
 		"no such file": {
 			input: "nosuchfile.png",
-			err:   "unable to check input file",
+			err:   "no such file or directory",
 		},
 		"not a rgba png": {
 			input: "testdata/rgb.png",
-			err:   "this isn't a RGBA image",
+			err:   "expected RGBA image, got *image.Paletted",
 		},
 	}
 

@@ -9,8 +9,8 @@ import (
 // Solver is capable of finding the path from the entrance to the treasure.
 // The maze has to be a RGBA image.
 type Solver struct {
-	maze   *image.RGBA
-	config config
+	maze    *image.RGBA
+	palette palette
 }
 
 // New builds a Solver by taking the path to the PNG maze, encoded in RGBA.
@@ -21,8 +21,8 @@ func New(imagePath string) (*Solver, error) {
 	}
 
 	return &Solver{
-		maze:   img,
-		config: defaultColours(),
+		maze:    img,
+		palette: defaultPalette(),
 	}, nil
 }
 
@@ -42,7 +42,7 @@ func (s *Solver) Solve() error {
 func (s *Solver) findEntrance() (image.Point, error) {
 	for row := 0; row < s.maze.Bounds().Dy(); row++ {
 		for col := 0; col < s.maze.Bounds().Dy(); col++ {
-			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
+			if s.maze.RGBAAt(col, row) == s.palette.entrance {
 				return image.Point{X: col, Y: row}, nil
 			}
 		}

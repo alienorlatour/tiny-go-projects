@@ -10,7 +10,7 @@ import (
 // The maze has to be a RGBA image.
 type Solver struct {
 	maze           *image.RGBA
-	config         config
+	palette        palette
 	pathsToExplore chan *path // nolint:unused
 }
 
@@ -22,8 +22,8 @@ func New(imagePath string) (*Solver, error) {
 	}
 
 	return &Solver{
-		maze:   img,
-		config: defaultColours(),
+		maze:    img,
+		palette: defaultPalette(),
 	}, nil
 }
 
@@ -43,7 +43,7 @@ func (s *Solver) Solve() error {
 func (s *Solver) findEntrance() (image.Point, error) {
 	for row := 0; row < s.maze.Bounds().Dy(); row++ {
 		for col := 0; col < s.maze.Bounds().Dy(); col++ {
-			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
+			if s.maze.RGBAAt(col, row) == s.palette.entrance {
 				return image.Point{X: col, Y: row}, nil
 			}
 		}

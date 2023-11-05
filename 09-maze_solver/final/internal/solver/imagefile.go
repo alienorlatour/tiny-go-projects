@@ -13,23 +13,18 @@ import (
 
 // openMaze opens a RGBA png image from a path.
 func openMaze(imagePath string) (*image.RGBA, error) {
-	_, err := os.Stat(imagePath)
+	f, err := os.Open(imagePath)
 	if err != nil {
-		return nil, fmt.Errorf("unable to check input file %s: %w", imagePath, err)
-	}
-
-	fd, err := os.Open(imagePath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to open input image at %s: %w", imagePath, err)
+		return nil, fmt.Errorf("unable to open image %s: %w", imagePath, err)
 	}
 
 	defer func() {
-		if closeErr := fd.Close(); closeErr != nil {
+		if closeErr := f.Close(); closeErr != nil {
 			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
 		}
 	}()
 
-	img, err := png.Decode(fd)
+	img, err := png.Decode(f)
 	if err != nil {
 		return nil, fmt.Errorf("unable to load input image from %s: %w", imagePath, err)
 	}
@@ -37,7 +32,7 @@ func openMaze(imagePath string) (*image.RGBA, error) {
 	// Using RGBAAt() instead of At() saves a lot of time, but it requires a *image.RGBA
 	rgbaImage, ok := img.(*image.RGBA)
 	if !ok {
-		return nil, fmt.Errorf("this isn't a RGBA image")
+		return nil, fmt.Errorf("expected RGBA image, got %T", img)
 	}
 
 	return rgbaImage, nil
