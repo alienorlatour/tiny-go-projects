@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log/slog"
+	"log"
 	"os"
 
 	"learngo/09/maze/internal/solver"
@@ -16,7 +16,7 @@ func main() {
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
 
-	slog.Info(fmt.Sprintf("Solving maze %q and saving it as %q", inputFile, outputFile))
+	log.Printf("Solving maze %q and saving it as %q", inputFile, outputFile)
 
 	s, err := solver.New(inputFile)
 	if err != nil {

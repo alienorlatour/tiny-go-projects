@@ -6,7 +6,7 @@ import (
 	"image"
 	"image/gif"
 	"image/png"
-	"log/slog"
+	"log"
 	"os"
 	"strings"
 )
@@ -55,18 +55,18 @@ func (s *Solver) SaveSolution(outputPath string) error {
 }
 
 func (s *Solver) saveSolution(outputPath string) (err error) {
-	fd, err := os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create output image file at %s", outputPath)
 	}
 
 	defer func() {
-		if closeErr := fd.Close(); closeErr != nil {
+		if closeErr := f.Close(); closeErr != nil {
 			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
 		}
 	}()
 
-	err = png.Encode(fd, s.maze)
+	err = png.Encode(f, s.maze)
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s: %w", outputPath, err)
 	}
@@ -88,7 +88,7 @@ func (s *Solver) saveAnimation(gifPath string) (err error) {
 		}
 	}()
 
-	slog.Info(fmt.Sprintf("animation contains %d frames", len(s.animation.Image)))
+	log.Printf("animation contains %d frames\n", len(s.animation.Image))
 	err = gif.EncodeAll(outputImage, s.animation)
 	if err != nil {
 		return fmt.Errorf("unable to encode gif: %w", err)

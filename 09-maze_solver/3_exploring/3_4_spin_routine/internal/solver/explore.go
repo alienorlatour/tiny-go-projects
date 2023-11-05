@@ -2,10 +2,10 @@ package solver
 
 import (
 	"image"
-	"log/slog"
+	"log"
 )
 
-// listenToBranches creates a new routine for each branch published in s.pathsToExplore.
+// listenToBranches creates a new goroutine for each branch published in s.pathsToExplore.
 func (s *Solver) listenToBranches() {
 	for p := range s.pathsToExplore {
 		go s.explore(p)
@@ -34,7 +34,7 @@ func (s *Solver) explore(pathToBranch *path) {
 			// RGBAAt returns a color.RGBA{} zero value if the pixel is outside the bounds of the image.
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
-				slog.Info("Treasure found!")
+				log.Printf("Treasure found at %v!", n)
 				return
 			case s.config.pathColour:
 				candidates = append(candidates, n)
@@ -42,7 +42,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		if len(candidates) == 0 {
-			slog.Debug("I must have taken the wrong turn.", "position", pos)
+			log.Printf("I must have taken the wrong turn at position %v.", pos)
 			return
 		}
 

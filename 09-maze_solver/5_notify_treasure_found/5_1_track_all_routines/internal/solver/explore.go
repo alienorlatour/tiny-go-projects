@@ -1,13 +1,12 @@
 package solver
 
 import (
-	"fmt"
 	"image"
-	"log/slog"
+	"log"
 	"sync"
 )
 
-// listenToBranches creates a new routine for each branch published in s.pathsToExplore.
+// listenToBranches creates a new goroutine for each branch published in s.pathsToExplore.
 func (s *Solver) listenToBranches() {
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
@@ -18,10 +17,17 @@ func (s *Solver) listenToBranches() {
 			defer wg.Done()
 			s.explore(path)
 		}(p)
-		if s.solution != nil {
+		if s.solutionFound() {
 			return
 		}
 	}
+}
+
+// solutionFound returns whether the solution was found.
+func (s *Solver) solutionFound() bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return s.solution == nil
 }
 
 // explore one path and publish to the s.pathsToExplore channel
@@ -34,7 +40,7 @@ func (s *Solver) explore(pathToBranch *path) {
 
 	pos := pathToBranch.at
 
-	for s.solution == nil {
+	for !s.solutionFound() {
 		// We know we'll have up to 3 new neighbours to explore.
 		candidates := make([]image.Point, 0, 3)
 		for _, n := range neighbours(pos) {
@@ -47,11 +53,12 @@ func (s *Solver) explore(pathToBranch *path) {
 			switch s.maze.RGBAAt(n.X, n.Y) {
 			case s.config.treasureColour:
 				s.mutex.Lock()
+				defer s.mutex.Unlock()
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
-					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
+					log.Printf("Treasure found: %v!", s.solution.at)
 				}
-				s.mutex.Unlock()
+
 				return
 
 			case s.config.pathColour:
@@ -60,7 +67,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		if len(candidates) == 0 {
-			slog.Debug("I must have taken the wrong turn.", "position", pos)
+			log.Printf("I must have taken the wrong turn at position %v.", pos)
 			return
 		}
 

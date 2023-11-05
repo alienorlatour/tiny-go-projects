@@ -11,7 +11,7 @@ type palette struct {
 	solution color.RGBA
 }
 
-// defaultPalette returns the colour configuration of our maze.
+// defaultPalette returns the colour palette of our maze.
 func defaultPalette() palette {
 	return palette{
 		wall:     color.RGBA{R: 0, G: 0, B: 0, A: 255},       // Black

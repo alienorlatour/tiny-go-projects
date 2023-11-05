@@ -1,13 +1,13 @@
 package solver
 
 import (
-	"fmt"
 	"image"
+	"log"
 	"log/slog"
 	"sync"
 )
 
-// listenToBranches creates a new routine for each branch published in s.pathsToExplore.
+// listenToBranches creates a new goroutine for each branch published in s.pathsToExplore.
 func (s *Solver) listenToBranches() {
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
@@ -65,7 +65,7 @@ func (s *Solver) explore(pathToBranch *path) {
 				s.mutex.Lock()
 				if s.solution == nil {
 					s.solution = &path{previousStep: pathToBranch, at: n}
-					slog.Info(fmt.Sprintf("Treasure found: %v!", s.solution.at))
+					log.Printf("Treasure found: %v!", s.solution.at)
 				}
 				s.mutex.Unlock()
 				return
@@ -75,7 +75,7 @@ func (s *Solver) explore(pathToBranch *path) {
 		}
 
 		if len(candidates) == 0 {
-			slog.Debug("I must have taken the wrong turn.", "position", pos)
+			log.Printf("I must have taken the wrong turn at position %v.", pos)
 			return
 		}
 

@@ -3,7 +3,7 @@ package solver
 import (
 	"fmt"
 	"image"
-	"log/slog"
+	"log"
 	"sync"
 )
 
@@ -42,7 +42,7 @@ func (s *Solver) Solve() error {
 		return fmt.Errorf("unable to find entrance: %w", err)
 	}
 
-	slog.Info(fmt.Sprintf("starting at %v", entrance))
+	log.Printf("starting at %v", entrance)
 
 	// Write once in pathsToExplore before starting listening on the channel.
 	s.pathsToExplore <- &path{previousStep: nil, at: entrance}
@@ -53,8 +53,8 @@ func (s *Solver) Solve() error {
 
 // findEntrance returns the position of the maze entrance on the image.
 func (s *Solver) findEntrance() (image.Point, error) {
-	for row := 0; row < s.maze.Bounds().Dy(); row++ {
-		for col := 0; col < s.maze.Bounds().Dy(); col++ {
+	for row := s.maze.Bounds().Min.Y; row < s.maze.Bounds().Max.Y; row++ {
+		for col := s.maze.Bounds().Min.X; col < s.maze.Bounds().Max.X; col++ {
 			if s.maze.RGBAAt(col, row) == s.config.entranceColour {
 				return image.Point{X: col, Y: row}, nil
 			}

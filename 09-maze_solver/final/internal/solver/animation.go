@@ -32,8 +32,8 @@ func (s *Solver) registerExploredPixels() {
 // countExplorablePixels scans the maze and counts the number of pixels that are not walls.
 func (s *Solver) countExplorablePixels() int {
 	explorablePixels := 0
-	for row := 0; row < s.maze.Bounds().Dy(); row++ {
-		for col := 0; col < s.maze.Bounds().Dx(); col++ {
+	for row := s.maze.Bounds().Min.Y; row < s.maze.Bounds().Max.Y; row++ {
+		for col := s.maze.Bounds().Min.X; col < s.maze.Bounds().Max.X; col++ {
 			if s.maze.RGBAAt(col, row) != s.config.wallColour {
 				explorablePixels++
 			}

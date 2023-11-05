@@ -6,7 +6,7 @@ import (
 	"image"
 	"image/gif"
 	"image/png"
-	"log/slog"
+	"log"
 	"os"
 	"strings"
 )
@@ -35,13 +35,13 @@ func openMaze(imagePath string) (*image.RGBA, error) {
 
 // SaveSolution saves the image as a PNG file with the solution path highlighted.
 func (s *Solver) SaveSolution(outputPath string) (err error) {
-	fd, err := os.Create(outputPath)
+	f, err := os.Create(outputPath)
 	if err != nil {
 		return fmt.Errorf("unable to create output image file at %s", outputPath)
 	}
 
 	defer func() {
-		if closeErr := fd.Close(); closeErr != nil {
+		if closeErr := f.Close(); closeErr != nil {
 			err = errors.Join(err, fmt.Errorf("unable to close file: %w", closeErr))
 		}
 	}()
@@ -53,7 +53,7 @@ func (s *Solver) SaveSolution(outputPath string) (err error) {
 		stepsFromTreasure = stepsFromTreasure.previousStep
 	}
 
-	err = png.Encode(fd, s.maze)
+	err = png.Encode(f, s.maze)
 	if err != nil {
 		return fmt.Errorf("unable to write output image at %s: %w", outputPath, err)
 	}
@@ -81,7 +81,7 @@ func (s *Solver) saveAnimation(gifPath string) error {
 		}
 	}()
 
-	slog.Info(fmt.Sprintf("animation contains %d frames", len(s.animation.Image)))
+	log.Printf("animation contains %d frames\n", len(s.animation.Image))
 	err = gif.EncodeAll(outputImage, s.animation)
 	if err != nil {
 		return fmt.Errorf("unable to encode gif: %w", err)
