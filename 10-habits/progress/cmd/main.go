@@ -9,7 +9,7 @@ import (
 	"learngo-pockets/habits/internal/server"
 )
 
-const port = 38804
+const port = 28710
 
 func main() {
 	srv := server.New(repository.New())

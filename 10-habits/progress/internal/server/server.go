@@ -37,7 +37,7 @@ func (s *Server) Listen(port int) error {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerIntercept))
 	api.RegisterHabitsServer(grpcServer, s)
 	slog.Info(fmt.Sprintf("gRPC server started and listening to port %d", port))
 

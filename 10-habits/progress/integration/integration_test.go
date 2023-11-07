@@ -20,10 +20,10 @@ import (
 const port = 28710
 
 func TestIntegration(t *testing.T) {
-	// run server
-	grpcServ := newServer()
-	go startServer(t, grpcServ)
-	defer grpcServ.Stop()
+	// // run server
+	// grpcServ := newServer()
+	// go startServer(t, grpcServ)
+	// defer grpcServ.Stop()
 
 	// create client
 	habitsCli, err := newClient()
