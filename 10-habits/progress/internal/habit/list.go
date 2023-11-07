@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+//go:generate minimock -i habitLister -s "_mock.go" -o "mocks"
 type habitLister interface {
 	FindAll(ctx context.Context) ([]Habit, error)
 }
