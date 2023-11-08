@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 
@@ -37,7 +38,7 @@ func (s *Server) Listen(port int) error {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerIntercept))
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(os.Stdout)))
 	api.RegisterHabitsServer(grpcServer, s)
 	slog.Info(fmt.Sprintf("gRPC server started and listening to port %d", port))
 
