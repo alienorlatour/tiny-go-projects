@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log/slog"
+	"log"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -11,7 +11,7 @@ import (
 
 // CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
-	slog.Info(fmt.Sprintf("CreateHabit request received: %s", request))
+	log.Printf("CreateHabit request received: %s", request)
 
 	var freq uint
 	if request.Habit.WeeklyFrequency != nil && uint(*request.Habit.WeeklyFrequency) > 0 {

@@ -2,12 +2,14 @@ package server
 
 import (
 	"context"
+	"log"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
 )
 
 func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
+	log.Println("ListHabits request received")
 	habits, err := habit.ListHabits(ctx, s.db)
 	if err != nil {
 		return nil, err // todo wrap
@@ -27,6 +29,7 @@ func response(habits []habit.Habit) *api.ListHabitsResponse {
 		}
 	}
 
+	// TODO: Do we want to redo a sort here? Deterministicity matters.
 	return &api.ListHabitsResponse{
 		Habits: hts,
 	}

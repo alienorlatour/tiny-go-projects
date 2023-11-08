@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log/slog"
+	"log"
 	"net"
 	"os"
 
@@ -31,7 +31,7 @@ func New(repo repository) *Server {
 }
 
 // Listen starts the listening to the port
-func (s *Server) Listen(port int) error {
+func (s *Server) Listen(ctx context.Context, port int) error {
 	addr := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -40,15 +40,24 @@ func (s *Server) Listen(port int) error {
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(os.Stdout)))
 	api.RegisterHabitsServer(grpcServer, s)
-	slog.Info(fmt.Sprintf("gRPC server started and listening to port %d", port))
+	log.Printf("gRPC server started and listening to port %d", port)
 
+	errChan := make(chan error)
 	// Listen to the port. This will only return when something kills or stops the server.
-	// TODO: Run this in a goroutine that writes to an errChan so we can select {case <- ctx.Done: ... case <- errChan: ... }
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		return fmt.Errorf("error while listening: %w", err)
-	}
+	go func() {
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			errChan <- fmt.Errorf("error while listening: %w", err)
+		}
+	}()
 
-	// Stop or GracefulStop was called, no reason to be alarmed.
-	return nil
+	select {
+	case <-ctx.Done():
+		// Stop or GracefulStop was called, no reason to be alarmed.
+		log.Printf("Shutting down grpc server: %s", ctx.Err())
+		grpcServer.GracefulStop()
+		return nil
+	case err = <-errChan:
+		return fmt.Errorf("unable to serve: %w", err)
+	}
 }

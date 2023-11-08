@@ -25,6 +25,7 @@ func CreateHabit(ctx context.Context, db habitCreator, h Habit) error {
 	return nil
 }
 
+// completeHabit fills the habit with values that we want in our database.
 func completeHabit(h Habit) Habit {
 	if h.ID == "" {
 		h.ID = ID(uuid.NewString())
