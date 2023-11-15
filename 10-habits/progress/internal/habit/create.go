@@ -3,6 +3,7 @@ package habit
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,9 +16,12 @@ type habitCreator interface {
 
 // CreateHabit adds a habit into the DB.
 func CreateHabit(ctx context.Context, db habitCreator, h Habit) error {
-	h = completeHabit(h)
+	h, err := completeHabit(h)
+	if err != nil {
+		return err
+	}
 
-	err := db.Add(ctx, h)
+	err = db.Add(ctx, h)
 	if err != nil {
 		return fmt.Errorf("cannot save habit: %w", err)
 	}
@@ -26,7 +30,19 @@ func CreateHabit(ctx context.Context, db habitCreator, h Habit) error {
 }
 
 // completeHabit fills the habit with values that we want in our database.
-func completeHabit(h Habit) Habit {
+// Returns InvalidInputError.
+func completeHabit(h Habit) (Habit, error) {
+	// name cannot be empty
+	h.Name = Name(strings.TrimSpace(string(h.Name)))
+	if h.Name == "" {
+		return h, InvalidInputError{field: "name", reason: "cannot be empty"}
+	}
+
+	// default to 1
+	if h.WeeklyFrequency == 0 {
+		h.WeeklyFrequency = 1
+	}
+
 	if h.ID == "" {
 		h.ID = ID(uuid.NewString())
 	}
@@ -35,5 +51,5 @@ func completeHabit(h Habit) Habit {
 		h.CreationTime = time.Now()
 	}
 
-	return h
+	return h, nil
 }

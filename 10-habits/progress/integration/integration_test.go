@@ -12,7 +12,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
 
 	"learngo-pockets/habits/api"
 )
@@ -20,32 +22,48 @@ import (
 const port = 28710
 
 func TestIntegration(t *testing.T) {
-	// // run server
-	// grpcServ := newServer()
-	// go startServer(t, grpcServ)
-	// defer grpcServ.Stop()
+	// run server
+	grpcServ := newServer()
+	go startServer(t, grpcServ)
+	defer grpcServ.Stop()
 
 	// create client
 	habitsCli, err := newClient()
 	require.NoError(t, err)
 
 	// add 2 habits
-	addHabit(t, habitsCli, 5, "walk in the forest")
+	addHabit(t, habitsCli, 0, "walk in the forest")
 
 	addHabit(t, habitsCli, 3, "read a few pages")
+
+	addHabitWithError(t, habitsCli, 5, "  	  ", codes.InvalidArgument)
 
 	// check that the 2 habits are present
 	list := listHabits(t, habitsCli)
 	assert.ElementsMatch(t, list.Habits, []*api.Habit{
 		{
 			Name:            "walk in the forest",
-			WeeklyFrequency: ptr(5),
+			WeeklyFrequency: ptr(1),
 		},
 		{
 			Name:            "read a few pages",
 			WeeklyFrequency: ptr(3),
 		},
 	})
+}
+
+func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, name string, statusCode codes.Code) {
+	t.Helper()
+
+	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
+		Habit: &api.Habit{
+			Name:            name,
+			WeeklyFrequency: &freq,
+		},
+	})
+	statusErr, ok := status.FromError(err)
+	require.True(t, ok)
+	assert.Equal(t, statusCode, statusErr.Code())
 }
 
 func listHabits(t *testing.T, habitsCli api.HabitsClient) *api.ListHabitsResponse {
@@ -76,13 +94,13 @@ func ptr(i int32) *int32 {
 	return &i
 }
 
-func addHabit(t *testing.T, habitsCli api.HabitsClient, walkFrequency int32, name string) {
+func addHabit(t *testing.T, habitsCli api.HabitsClient, freq int32, name string) {
 	t.Helper()
 
 	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
 		Habit: &api.Habit{
 			Name:            name,
-			WeeklyFrequency: &walkFrequency,
+			WeeklyFrequency: &freq,
 		},
 	})
 	assert.NoError(t, err)

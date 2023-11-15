@@ -2,11 +2,15 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // CreateHabit is the endpoint that registers a habit.
@@ -16,8 +20,6 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 	var freq uint
 	if request.Habit.WeeklyFrequency != nil && uint(*request.Habit.WeeklyFrequency) > 0 {
 		freq = uint(*request.Habit.WeeklyFrequency)
-	} else {
-		freq = 1
 	}
 
 	h := habit.Habit{
@@ -27,6 +29,11 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 
 	err := habit.CreateHabit(ctx, s.db, h)
 	if err != nil {
+		invalidErr := habit.InvalidInputError{}
+		if errors.As(err, &invalidErr) {
+			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
+		}
+		// other error
 		return nil, fmt.Errorf("cannot save habit %v: %w", h, err)
 	}
 

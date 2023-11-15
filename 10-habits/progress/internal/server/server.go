@@ -10,6 +10,7 @@ import (
 	"os"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -34,14 +35,14 @@ func New(repo repository) *Server {
 
 // Listen starts the listening to the port
 func (s *Server) Listen(ctx context.Context, port int) error {
-	addr := fmt.Sprintf(":%d", port)
-	listener, err := net.Listen("tcp", addr)
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(os.Stdout)))
 	api.RegisterHabitsServer(grpcServer, s)
+	reflection.Register(grpcServer) // if env == dev
 	log.Printf("gRPC server started and listening to port %d", port)
 
 	errChan := make(chan error)

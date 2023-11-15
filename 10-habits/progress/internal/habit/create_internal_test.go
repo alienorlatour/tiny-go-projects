@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_completeHabit(t *testing.T) {
@@ -12,6 +13,7 @@ func Test_completeHabit(t *testing.T) {
 
 	t.Run("Full", testCompleteHabitFull)
 	t.Run("Partial", testCompleteHabitPartial)
+	t.Run("SpaceName", testCompleteHabitSpaceName)
 }
 
 func testCompleteHabitFull(t *testing.T) {
@@ -24,7 +26,8 @@ func testCompleteHabitFull(t *testing.T) {
 		CreationTime:    time.Date(2023, 10, 27, 1, 5, 0, 0, time.UTC),
 	}
 
-	got := completeHabit(h)
+	got, err := completeHabit(h)
+	require.NoError(t, err)
 	assert.Equal(t, h, got)
 }
 
@@ -36,9 +39,22 @@ func testCompleteHabitPartial(t *testing.T) {
 		WeeklyFrequency: 256,
 	}
 
-	got := completeHabit(h)
+	got, err := completeHabit(h)
+	require.NoError(t, err)
 	assert.Equal(t, h.Name, got.Name)
 	assert.Equal(t, h.WeeklyFrequency, got.WeeklyFrequency)
 	assert.NotEmpty(t, got.ID)
 	assert.NotEmpty(t, got.CreationTime)
+}
+
+func testCompleteHabitSpaceName(t *testing.T) {
+	t.Parallel()
+
+	h := Habit{
+		Name:            "    ",
+		WeeklyFrequency: 256,
+	}
+
+	_, err := completeHabit(h)
+	assert.ErrorAs(t, err, &InvalidInputError{})
 }
