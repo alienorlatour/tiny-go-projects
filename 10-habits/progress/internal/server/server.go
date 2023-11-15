@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 
 	"google.golang.org/grpc"
@@ -45,10 +47,17 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 	errChan := make(chan error)
 	// Listen to the port. This will only return when something kills or stops the server.
 	go func() {
-		err = grpcServer.Serve(listener)
+		err := grpcServer.Serve(listener)
 		if err != nil {
 			errChan <- fmt.Errorf("error while listening: %w", err)
 		}
+	}()
+
+	go func() {
+		const pprofPort = 6060
+		log.Printf("Starting pprof listener on port %d\n", pprofPort)
+		err := http.ListenAndServe(fmt.Sprintf(":%d", pprofPort), nil)
+		log.Printf("error while serving pprof: %s", err)
 	}()
 
 	select {
