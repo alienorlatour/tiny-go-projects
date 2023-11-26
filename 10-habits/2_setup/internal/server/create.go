@@ -12,6 +12,6 @@ func (s *Server) CreateHabit(_ context.Context, request *api.CreateHabitRequest)
 	log.Printf("CreateHabit request received: %s", request)
 
 	return &api.CreateHabitResponse{
-		Habit: request.Habit,
+		Habit: &api.Habit{},
 	}, nil
 }

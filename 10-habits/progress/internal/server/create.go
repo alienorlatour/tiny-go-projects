@@ -18,16 +18,16 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 	log.Printf("CreateHabit request received: %s", request)
 
 	var freq uint
-	if request.Habit.WeeklyFrequency != nil && uint(*request.Habit.WeeklyFrequency) > 0 {
-		freq = uint(*request.Habit.WeeklyFrequency)
+	if request.WeeklyFrequency != nil && uint(*request.WeeklyFrequency) > 0 {
+		freq = uint(*request.WeeklyFrequency)
 	}
 
 	h := habit.Habit{
-		Name:            habit.Name(request.Habit.Name),
+		Name:            habit.Name(request.Name),
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	err := habit.CreateHabit(ctx, s.db, h)
+	createdHabit, err := habit.CreateHabit(ctx, s.db, h)
 	if err != nil {
 		invalidErr := habit.InvalidInputError{}
 		if errors.As(err, &invalidErr) {
@@ -38,6 +38,10 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 	}
 
 	return &api.CreateHabitResponse{
-		Habit: request.Habit,
+		Habit: &api.Habit{
+			Id:              string(createdHabit.ID),
+			Name:            string(createdHabit.Name),
+			WeeklyFrequency: int32(createdHabit.WeeklyFrequency),
+		},
 	}, nil
 }

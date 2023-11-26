@@ -57,7 +57,8 @@ func TestCreateHabit(t *testing.T) {
 
 			db := tt.db(ctrl)
 
-			err := habit.CreateHabit(context.Background(), db, h)
+			// TODO: Check the created habit?
+			_, err := habit.CreateHabit(context.Background(), db, h)
 			assert.ErrorIs(t, err, tt.expectedErr)
 		})
 	}

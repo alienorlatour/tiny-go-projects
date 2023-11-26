@@ -10,16 +10,16 @@ import (
 )
 
 // CreateHabit adds a habit into the DB.
-func CreateHabit(_ context.Context, h Habit) error {
+func CreateHabit(_ context.Context, h Habit) (Habit, error) {
 	h, err := completeHabit(h)
 	if err != nil {
-		return err
+		return h, err
 	}
 
 	// log h
 	fmt.Println(h)
 
-	return nil
+	return h, nil
 }
 
 // completeHabit fills the habit with values that we want in our database.
