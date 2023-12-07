@@ -32,9 +32,9 @@ func TestIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	// add 2 habits
-	addHabit(t, habitsCli, 0, "walk in the forest")
+	addHabit(t, habitsCli, nil, "walk in the forest")
 
-	addHabit(t, habitsCli, 3, "read a few pages")
+	addHabit(t, habitsCli, ptr(3), "read a few pages")
 
 	addHabitWithError(t, habitsCli, 5, "  	  ", codes.InvalidArgument)
 
@@ -43,11 +43,11 @@ func TestIntegration(t *testing.T) {
 	assert.ElementsMatch(t, list.Habits, []*api.Habit{
 		{
 			Name:            "walk in the forest",
-			WeeklyFrequency: ptr(1),
+			WeeklyFrequency: 1,
 		},
 		{
 			Name:            "read a few pages",
-			WeeklyFrequency: ptr(3),
+			WeeklyFrequency: 3,
 		},
 	})
 }
@@ -56,10 +56,8 @@ func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, nam
 	t.Helper()
 
 	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
-		Habit: &api.Habit{
-			Name:            name,
-			WeeklyFrequency: &freq,
-		},
+		Name:            name,
+		WeeklyFrequency: &freq,
 	})
 	statusErr, ok := status.FromError(err)
 	require.True(t, ok)
@@ -94,14 +92,12 @@ func ptr(i int32) *int32 {
 	return &i
 }
 
-func addHabit(t *testing.T, habitsCli api.HabitsClient, freq int32, name string) {
+func addHabit(t *testing.T, habitsCli api.HabitsClient, freq *int32, name string) {
 	t.Helper()
 
 	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
-		Habit: &api.Habit{
-			Name:            name,
-			WeeklyFrequency: &freq,
-		},
+		Name:            name,
+		WeeklyFrequency: freq,
 	})
 	assert.NoError(t, err)
 }
