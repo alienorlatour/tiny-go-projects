@@ -9,15 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-// CreateHabit adds a habit into the DB.
+// CreateHabit validates the Habit, saves it and returns it.
 func CreateHabit(_ context.Context, h Habit) (Habit, error) {
 	h, err := completeHabit(h)
 	if err != nil {
-		return h, err
+		return Habit{}, err
 	}
 
-	// log h
-	fmt.Println(h)
+	fmt.Println("Habit created:", h)
 
 	return h, nil
 }

@@ -7,7 +7,6 @@ import (
 	"learngo-pockets/habits/api"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 // Server is the implementation of the grpc server.
@@ -29,7 +28,6 @@ func (s *Server) Listen(port int) error {
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
-	reflection.Register(grpcServer) // if env == dev
 
 	fmt.Printf("starting server on port %d\n", port)
 
