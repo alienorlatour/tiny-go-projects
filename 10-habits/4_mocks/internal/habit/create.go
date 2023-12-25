@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
+//go:generate minimock -i habitCreator -s "_mock.go" -o "mocks"
 type habitCreator interface {
 	Add(ctx context.Context, habit Habit) error
 }
