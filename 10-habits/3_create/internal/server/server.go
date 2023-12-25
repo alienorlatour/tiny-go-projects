@@ -1,21 +1,31 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net"
 
 	"learngo-pockets/habits/api"
+	"learngo-pockets/habits/internal/habit"
 
 	"google.golang.org/grpc"
 )
 
 // Server is the implementation of the grpc server.
 type Server struct {
+	db repository
+}
+
+type repository interface {
+	Add(ctx context.Context, habit habit.Habit) error
+	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
 // New returns a Server that can Listen.
-func New() *Server {
-	return &Server{}
+func New(repo repository) *Server {
+	return &Server{
+		db: repo,
+	}
 }
 
 // Listen starts the listening to the port
