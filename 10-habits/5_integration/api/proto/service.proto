@@ -9,6 +9,9 @@ import "habit.proto";
 service Habits {
   // CreateHabit is the endpoint that registers a habit.
   rpc CreateHabit(CreateHabitRequest) returns (CreateHabitResponse);
+
+  // ListHabits is the endpoint that returns all habits.
+  rpc ListHabits(ListHabitsRequest) returns (ListHabitsResponse);
 }
 
 // CreateHabitRequest is the message sent to create a habit.
@@ -26,6 +29,7 @@ message CreateHabitResponse {
 
 // ListHabitsRequest is the request to list all the habits saved.
 message ListHabitsRequest {
+
 }
 
 // ListHabitsResponse is the response with all the saved habits.

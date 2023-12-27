@@ -1,6 +1,6 @@
 module learngo-pockets/habits
 
-go 1.21.0
+go 1.21
 
 require (
 	github.com/gojuno/minimock/v3 v3.1.3
