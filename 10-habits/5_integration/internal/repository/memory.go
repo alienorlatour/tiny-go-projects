@@ -3,14 +3,12 @@ package repository
 import (
 	"context"
 	"log"
-	"sync"
 
 	"learngo-pockets/habits/internal/habit"
 )
 
 // HabitRepository holds all the current habits.
 type HabitRepository struct {
-	mutex   sync.Mutex
 	storage map[habit.ID]habit.Habit
 }
 
