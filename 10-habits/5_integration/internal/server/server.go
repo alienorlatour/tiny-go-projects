@@ -16,7 +16,7 @@ import (
 	"learngo-pockets/habits/internal/habit"
 )
 
-// Server is the implementation of the grpc server.
+// Server is the implementation of the gRPC server.
 type Server struct {
 	db repository
 }
@@ -33,7 +33,7 @@ func New(repo repository) *Server {
 	}
 }
 
-// Listen starts the listening to the port
+// Listen starts the listening to the port.
 func (s *Server) Listen(ctx context.Context, port int) error {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {

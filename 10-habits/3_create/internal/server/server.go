@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Server is the implementation of the grpc server.
+// Server is the implementation of the gRPC server.
 type Server struct {
 	db repository
 }
@@ -28,7 +28,7 @@ func New(repo repository) *Server {
 	}
 }
 
-// Listen starts the listening to the port
+// Listen starts the listening to the port.
 func (s *Server) Listen(port int) error {
 	addr := fmt.Sprintf(":%d", port)
 	listener, err := net.Listen("tcp", addr)

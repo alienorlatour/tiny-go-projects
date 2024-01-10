@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Server is the implementation of the grpc server.
+// Server is the implementation of the gRPC server.
 type Server struct {
 }
 
