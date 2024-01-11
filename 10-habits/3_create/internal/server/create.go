@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -24,14 +23,14 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	got, err := habit.CreateHabit(ctx, s.db, h)
+	got, err := habit.Create(ctx, s.db, h)
 	if err != nil {
 		invalidErr := habit.InvalidInputError{}
 		if errors.As(err, &invalidErr) {
 			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
 		}
 		// other error
-		return nil, fmt.Errorf("cannot save habit %v: %w", h, err)
+		return nil, status.Errorf(codes.Internal, "cannot save habit %v: %w", h, err)
 	}
 
 	return &api.CreateHabitResponse{

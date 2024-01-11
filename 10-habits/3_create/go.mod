@@ -5,6 +5,7 @@ go 1.21.0
 require (
 	github.com/google/uuid v1.3.1
 	github.com/stretchr/testify v1.8.4
+	golang.org/x/exp v0.0.0-20240110193028-0dcbfd608b1e
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
 )

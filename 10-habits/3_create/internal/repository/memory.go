@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	"golang.org/x/exp/maps"
+
 	"learngo-pockets/habits/internal/habit"
 )
 
@@ -30,7 +32,7 @@ func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 // FindAll returns all habits.
 func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	log.Printf("Listing habits...")
-
+	return maps.Values(hr.storage), nil
 	habits := make([]habit.Habit, 0)
 	for _, h := range hr.storage {
 		habits = append(habits, h)
