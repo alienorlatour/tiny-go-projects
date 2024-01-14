@@ -15,7 +15,7 @@ import (
 
 // CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
-	log.Printf("CreateHabit request received: %s", request)
+	log.Printf("Create request received: %s", request)
 
 	err := validateCreateHabitRequest(request)
 	if err != nil {
@@ -32,14 +32,14 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	createdHabit, err := habit.CreateHabit(ctx, s.db, h)
+	createdHabit, err := habit.Create(ctx, s.db, h)
 	if err != nil {
 		invalidErr := habit.InvalidInputError{}
 		if errors.As(err, &invalidErr) {
 			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
 		}
 		// other error
-		return nil, fmt.Errorf("cannot save habit %v: %w", h, err)
+		return nil, status.Errorf(codes.Internal, "cannot save habit %v: %w", h, err)
 	}
 
 	return &api.CreateHabitResponse{

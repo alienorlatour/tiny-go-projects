@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_completeHabit(t *testing.T) {
+func Test_validateAndCompleteHabit(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Full", testValidateAndCompleteHabitFull)

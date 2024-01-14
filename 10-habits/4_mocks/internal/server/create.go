@@ -23,7 +23,7 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 		WeeklyFrequency: habit.WeeklyFrequency(freq),
 	}
 
-	got, err := habit.CreateHabit(ctx, s.db, h)
+	got, err := habit.Create(ctx, s.db, h)
 	if err != nil {
 		invalidErr := habit.InvalidInputError{}
 		if errors.As(err, &invalidErr) {

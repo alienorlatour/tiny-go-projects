@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateHabit(t *testing.T) {
+func TestCreate(t *testing.T) {
 	h := habit.Habit{
 		Name:            "swim",
 		WeeklyFrequency: 2,
@@ -57,7 +57,7 @@ func TestCreateHabit(t *testing.T) {
 
 			db := tt.db(ctrl)
 
-			got, err := habit.CreateHabit(context.Background(), db, h)
+			got, err := habit.Create(context.Background(), db, h)
 			assert.ErrorIs(t, err, tt.expectedErr)
 			if tt.expectedErr == nil {
 				assert.Equal(t, h.Name, got.Name)

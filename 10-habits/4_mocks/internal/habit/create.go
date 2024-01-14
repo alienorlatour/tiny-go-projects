@@ -14,8 +14,8 @@ type habitCreator interface {
 	Add(ctx context.Context, habit Habit) error
 }
 
-// CreateHabit adds a habit into the DB.
-func CreateHabit(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
+// Create adds a habit into the DB.
+func Create(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
 	h, err := validateAndCompleteHabit(h)
 	if err != nil {
 		return Habit{}, err
