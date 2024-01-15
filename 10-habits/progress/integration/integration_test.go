@@ -20,7 +20,7 @@ import (
 
 func TestIntegration(t *testing.T) {
 	// run server
-	grpcServ := newServer()
+	grpcServ := newServer(t)
 	listener, err := net.Listen("tcp", "")
 	require.NoError(t, err)
 
@@ -77,7 +77,8 @@ func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api
 	assert.ElementsMatch(t, list.Habits, expected)
 }
 
-func newServer() *grpc.Server {
+func newServer(t *testing.T) *grpc.Server {
+	t.Helper()
 	s := server.New(repository.New())
 
 	grpcServer := grpc.NewServer()

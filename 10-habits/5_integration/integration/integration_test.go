@@ -20,7 +20,7 @@ import (
 
 func TestIntegration(t *testing.T) {
 	// run server
-	grpcServ := newServer()
+	grpcServ := newServer(t)
 	listener, err := net.Listen("tcp", "")
 	require.NoError(t, err)
 
@@ -31,7 +31,7 @@ func TestIntegration(t *testing.T) {
 	defer grpcServ.Stop()
 
 	// create client
-	habitsCli, err := newClient(listener.Addr().String())
+	habitsCli, err := newClient(t, listener.Addr().String())
 	require.NoError(t, err)
 
 	// add 2 habits
@@ -77,7 +77,8 @@ func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api
 	assert.ElementsMatch(t, list.Habits, expected)
 }
 
-func newServer() *grpc.Server {
+func newServer(t *testing.T) *grpc.Server {
+	t.Helper()
 	s := server.New(repository.New())
 
 	grpcServer := grpc.NewServer()
@@ -100,7 +101,8 @@ func addHabit(t *testing.T, habitsCli api.HabitsClient, freq *int32, name string
 	assert.NoError(t, err)
 }
 
-func newClient(serverAddress string) (api.HabitsClient, error) {
+func newClient(t *testing.T, serverAddress string) (api.HabitsClient, error) {
+	t.Helper()
 	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
 	conn, err := grpc.Dial(serverAddress, creds)
 	if err != nil {
