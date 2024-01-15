@@ -39,7 +39,7 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
 		}
 		// other error
-		return nil, status.Errorf(codes.Internal, "cannot save habit %v: %w", h, err)
+		return nil, status.Errorf(codes.Internal, "cannot save habit %v: %s", h, err.Error())
 	}
 
 	return &api.CreateHabitResponse{
