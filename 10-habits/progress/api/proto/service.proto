@@ -12,6 +12,9 @@ service Habits {
 
   // ListHabits is the endpoint that returns all habits.
   rpc ListHabits(ListHabitsRequest) returns (ListHabitsResponse);
+
+  // TickHabit is the endpoint to tick a habit.
+  rpc TickHabit(TickHabitRequest) returns (TickHabitResponse);
 }
 
 // CreateHabitRequest is the message sent to create a habit.
@@ -35,4 +38,12 @@ message ListHabitsRequest {
 // ListHabitsResponse is the response with all the saved habits.
 message ListHabitsResponse {
   repeated Habit habits = 1;
+}
+
+message TickHabitRequest {
+  string name = 1;
+}
+
+message TickHabitResponse {
+
 }
