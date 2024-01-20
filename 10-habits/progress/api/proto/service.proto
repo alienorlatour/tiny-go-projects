@@ -15,6 +15,9 @@ service Habits {
 
   // TickHabit is the endpoint to tick a habit.
   rpc TickHabit(TickHabitRequest) returns (TickHabitResponse);
+
+  // GetHabitStatus is the endpoint to retrieve the status of ticks of a habit.
+  rpc GetHabitStatus(GetHabitStatusRequest) returns (GetHabitStatusResponse);
 }
 
 // CreateHabitRequest is the message sent to create a habit.
@@ -41,9 +44,18 @@ message ListHabitsResponse {
 }
 
 message TickHabitRequest {
-  string name = 1;
+  string id = 1;
 }
 
 message TickHabitResponse {
 
+}
+
+message GetHabitStatusRequest {
+  string id = 1;
+}
+
+message GetHabitStatusResponse {
+  Habit habit = 1;
+  int32 ticks_count = 2;
 }

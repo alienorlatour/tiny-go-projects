@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"learngo-pockets/habits/internal/tick"
 	"log"
 	"net"
 	"net/http"
@@ -18,18 +19,26 @@ import (
 
 // Server is the implementation of the gRPC server.
 type Server struct {
-	db repository
+	db     repository
+	tickDB tickRepository
 }
 
 type repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
+	Find(_ context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
+type tickRepository interface {
+	Add(ctx context.Context, id habit.ID, t tick.Tick) error
+	FindAll(ctx context.Context, id habit.ID) ([]tick.Tick, error)
+}
+
 // New returns a Server that can Listen.
-func New(repo repository) *Server {
+func New(repo repository, tickRepo tickRepository) *Server {
 	return &Server{
-		db: repo,
+		db:     repo,
+		tickDB: tickRepo,
 	}
 }
 

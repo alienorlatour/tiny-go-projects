@@ -27,6 +27,12 @@ func (gr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 	return nil
 }
 
+func (gr *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, error) {
+	log.Print("Finding a habit...")
+
+	return gr.storage[id], nil
+}
+
 // FindAll returns all habits.
 func (gr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	log.Printf("Listing habits...")
