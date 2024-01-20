@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"learngo-pockets/habits/internal/tick"
 	"log"
 	"net"
 	"net/http"
@@ -15,6 +14,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/internal/tick"
 )
 
 // Server is the implementation of the gRPC server.
@@ -30,8 +30,9 @@ type repository interface {
 }
 
 type tickRepository interface {
-	Add(ctx context.Context, id habit.ID, t tick.Tick) error
+	Add(ctx context.Context, id habit.ID, t tick.Tick, w tick.ISOWeek) error
 	FindAll(ctx context.Context, id habit.ID) ([]tick.Tick, error)
+	FindWeeklyTicks(ctx context.Context, id habit.ID, w tick.ISOWeek) ([]tick.Tick, error)
 }
 
 // New returns a Server that can Listen.
