@@ -25,7 +25,7 @@ type Server struct {
 
 type repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
-	Find(_ context.Context, id habit.ID) (habit.Habit, error)
+	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 

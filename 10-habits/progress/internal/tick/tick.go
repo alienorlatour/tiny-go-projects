@@ -15,12 +15,10 @@ type ISOWeek struct {
 	Year int
 }
 
-// GetISOWeek returns the ISOWeek of the current date.
+// GetISOWeek returns the ISOWeek corresponding to the current time.
 func GetISOWeek() ISOWeek {
 	t := time.Now()
 	w, y := t.ISOWeek()
-	return ISOWeek{
-		Week: w,
-		Year: y,
-	}
+
+	return ISOWeek{Week: w, Year: y}
 }

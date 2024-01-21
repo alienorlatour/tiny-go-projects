@@ -8,16 +8,19 @@ import (
 	"learngo-pockets/habits/internal/tick"
 )
 
+// ticksPerWeek stores all the ticks per number of weeks.
+type ticksPerWeek map[tick.ISOWeek][]tick.Tick
+
 // TickRepository holds all the current habits with their associated events.
 type TickRepository struct {
-	storage map[habit.ID]map[tick.ISOWeek][]tick.Tick
+	storage map[habit.ID]ticksPerWeek
 }
 
 // NewTickRepository creates an empty tick repository.
 func NewTickRepository() *TickRepository {
 
 	return &TickRepository{
-		storage: make(map[habit.ID]map[tick.ISOWeek][]tick.Tick),
+		storage: make(map[habit.ID]ticksPerWeek),
 	}
 }
 
@@ -26,7 +29,7 @@ func (tr *TickRepository) Add(_ context.Context, id habit.ID, t tick.Tick, w tic
 	log.Print("Adding a tick...")
 	_, ok := tr.storage[id]
 	if !ok {
-		tr.storage[id] = make(map[tick.ISOWeek][]tick.Tick)
+		tr.storage[id] = make(ticksPerWeek)
 	}
 
 	ticks, ok := tr.storage[id][w]

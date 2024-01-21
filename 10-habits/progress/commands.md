@@ -29,7 +29,7 @@ habits.Habits/CreateHabit
 grpcurl \
 -import-path api/proto/ \
 -proto service.proto \
--plaintext -d '{"id":"df990e0b-5825-460d-86d2-18dcec19adeb"}' \
+-plaintext -d '{"id":"98ab1bbe-41d5-4ed3-8f33-e4f7bec448c8"}' \
 localhost:28710 \
 habits.Habits/TickHabit
 ```
@@ -44,7 +44,7 @@ habits.Habits/TickHabit
 grpcurl \
 -import-path api/proto/ \
 -proto service.proto \
--plaintext -d '{"id":"df990e0b-5825-460d-86d2-18dcec19adeb"}' \
+-plaintext -d '{"id":"98ab1bbe-41d5-4ed3-8f33-e4f7bec448c8"}' \
 localhost:28710 \
 habits.Habits/GetHabitStatus
 ```
