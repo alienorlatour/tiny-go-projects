@@ -79,7 +79,7 @@ func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := server.New(repository.New())
+	s := server.New(repository.New(), repository.NewTickRepository())
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)

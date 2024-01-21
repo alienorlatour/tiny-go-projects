@@ -11,14 +11,14 @@ type Tick struct {
 
 // ISOWeek holds the number of the week and the year.
 type ISOWeek struct {
-	Week int
 	Year int
+	Week int
 }
 
 // GetISOWeek returns the ISOWeek corresponding to the current time.
 func GetISOWeek() ISOWeek {
 	t := time.Now()
-	w, y := t.ISOWeek()
+	y, w := t.ISOWeek()
 
-	return ISOWeek{Week: w, Year: y}
+	return ISOWeek{Year: y, Week: w}
 }

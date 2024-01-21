@@ -7,13 +7,13 @@ import (
 	"learngo-pockets/habits/internal/tick"
 )
 
-//go:generate minimock -i tickAdder -s "_mock.go" -o "mocks"
+//go:generate minimock -i tickFinder -s "_mock.go" -o "mocks"
 type tickFinder interface {
 	FindWeeklyTicks(ctx context.Context, id ID, w tick.ISOWeek) ([]tick.Tick, error)
 }
 
-func GetHabitStatus(ctx context.Context, db habitFinder, tickDB tickFinder, id ID) (Habit, int, error) {
-	h, err := db.Find(ctx, id)
+func GetHabitStatus(ctx context.Context, habitDB habitFinder, tickDB tickFinder, id ID) (Habit, int, error) {
+	h, err := habitDB.Find(ctx, id)
 	if err != nil {
 		return Habit{}, 0, err
 	}

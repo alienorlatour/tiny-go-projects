@@ -18,9 +18,9 @@ type tickAdder interface {
 	Add(ctx context.Context, id ID, t tick.Tick, w tick.ISOWeek) error
 }
 
-func TickHabit(ctx context.Context, db habitFinder, tickDB tickAdder, id ID) error {
+func TickHabit(ctx context.Context, habitDB habitFinder, tickDB tickAdder, id ID) error {
 	// Check if the habit exists.
-	h, err := db.Find(ctx, id)
+	h, err := habitDB.Find(ctx, id)
 	if err != nil {
 		return err
 	}
