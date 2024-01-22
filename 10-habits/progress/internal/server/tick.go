@@ -11,7 +11,7 @@ import (
 // TickHabit inserts a new tick for a given habit.
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
 	log.Printf("TickHabit request received: %s", request)
-	err := habit.TickHabit(ctx, s.db, s.tickDB, habit.ID(request.Id))
+	err := habit.TickHabit(ctx, s.db, s.tickDB, habit.ID(request.HabitId))
 	if err != nil {
 		return nil, err
 	}

@@ -44,7 +44,7 @@ message ListHabitsResponse {
 }
 
 message TickHabitRequest {
-  string id = 1;
+  string habit_id = 1;
 }
 
 message TickHabitResponse {
@@ -52,7 +52,7 @@ message TickHabitResponse {
 }
 
 message GetHabitStatusRequest {
-  string id = 1;
+  string habit_id = 1;
 }
 
 message GetHabitStatusResponse {
