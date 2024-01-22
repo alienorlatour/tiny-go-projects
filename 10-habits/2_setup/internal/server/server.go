@@ -11,6 +11,7 @@ import (
 
 // Server is the implementation of the gRPC server.
 type Server struct {
+	api.UnimplementedHabitsServer
 }
 
 // New returns a Server that can Listen.

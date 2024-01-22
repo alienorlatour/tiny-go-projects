@@ -18,6 +18,7 @@ import (
 
 // Server is the implementation of the gRPC server.
 type Server struct {
+	api.UnimplementedHabitsServer
 	db repository
 }
 
