@@ -3,43 +3,39 @@ package server
 import (
 	"context"
 	"fmt"
+	"learngo-pockets/habits/internal/isoweek"
 	"log"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/tick"
 )
 
 // Server is the implementation of the gRPC server.
 type Server struct {
-	db     repository
-	tickDB tickRepository
+	db repository
 }
 
 type repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
-}
-
-type tickRepository interface {
-	Add(ctx context.Context, id habit.ID, t tick.Tick, w tick.ISOWeek) error
-	FindAll(ctx context.Context, id habit.ID) ([]tick.Tick, error)
-	FindWeeklyTicks(ctx context.Context, id habit.ID, w tick.ISOWeek) ([]tick.Tick, error)
+	AddTick(ctx context.Context, id habit.ID, t time.Time, w isoweek.ISO8601) error
+	FindAllTicks(ctx context.Context, id habit.ID) ([]time.Time, error)
+	FindWeeklyTicks(ctx context.Context, id habit.ID, w isoweek.ISO8601) ([]time.Time, error)
 }
 
 // New returns a Server that can Listen.
-func New(repo repository, tickRepo tickRepository) *Server {
+func New(repo repository) *Server {
 	return &Server{
-		db:     repo,
-		tickDB: tickRepo,
+		db: repo,
 	}
 }
 

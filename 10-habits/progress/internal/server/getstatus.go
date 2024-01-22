@@ -2,7 +2,11 @@ package server
 
 import (
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"learngo-pockets/habits/internal/isoweek"
 	"log"
+	"time"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -10,10 +14,10 @@ import (
 
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
-	log.Printf("GetHabitStatus request received: %s", request)
-	h, ticksCount, err := habit.GetHabitStatus(ctx, s.db, s.tickDB, habit.ID(request.HabitId))
+	log.Printf("GetStatus request received: %s", request)
+	h, ticksCount, err := habit.GetStatus(ctx, s.db, s.db, habit.ID(request.HabitId), isoweek.At(time.Now()))
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "cannot get status %q: %s", h.ID, err.Error())
 	}
 
 	return &api.GetHabitStatusResponse{

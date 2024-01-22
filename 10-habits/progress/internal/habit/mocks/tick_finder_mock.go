@@ -7,9 +7,10 @@ package mocks
 import (
 	"context"
 	mm_habit "learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/tick"
+	"learngo-pockets/habits/internal/isoweek"
 	"sync"
 	mm_atomic "sync/atomic"
+	"time"
 	mm_time "time"
 
 	"github.com/gojuno/minimock/v3"
@@ -20,8 +21,8 @@ type TickFinderMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
 
-	funcFindWeeklyTicks          func(ctx context.Context, id mm_habit.ID, w tick.ISOWeek) (ta1 []tick.Tick, err error)
-	inspectFuncFindWeeklyTicks   func(ctx context.Context, id mm_habit.ID, w tick.ISOWeek)
+	funcFindWeeklyTicks          func(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601) (ta1 []time.Time, err error)
+	inspectFuncFindWeeklyTicks   func(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601)
 	afterFindWeeklyTicksCounter  uint64
 	beforeFindWeeklyTicksCounter uint64
 	FindWeeklyTicksMock          mTickFinderMockFindWeeklyTicks
@@ -62,17 +63,17 @@ type TickFinderMockFindWeeklyTicksExpectation struct {
 type TickFinderMockFindWeeklyTicksParams struct {
 	ctx context.Context
 	id  mm_habit.ID
-	w   tick.ISOWeek
+	w   isoweek.ISO8601
 }
 
 // TickFinderMockFindWeeklyTicksResults contains results of the tickFinder.FindWeeklyTicks
 type TickFinderMockFindWeeklyTicksResults struct {
-	ta1 []tick.Tick
+	ta1 []time.Time
 	err error
 }
 
 // Expect sets up expected params for tickFinder.FindWeeklyTicks
-func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Expect(ctx context.Context, id mm_habit.ID, w tick.ISOWeek) *mTickFinderMockFindWeeklyTicks {
+func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Expect(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601) *mTickFinderMockFindWeeklyTicks {
 	if mmFindWeeklyTicks.mock.funcFindWeeklyTicks != nil {
 		mmFindWeeklyTicks.mock.t.Fatalf("TickFinderMock.FindWeeklyTicks mock is already set by Set")
 	}
@@ -92,7 +93,7 @@ func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Expect(ctx context.Cont
 }
 
 // Inspect accepts an inspector function that has same arguments as the tickFinder.FindWeeklyTicks
-func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Inspect(f func(ctx context.Context, id mm_habit.ID, w tick.ISOWeek)) *mTickFinderMockFindWeeklyTicks {
+func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Inspect(f func(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601)) *mTickFinderMockFindWeeklyTicks {
 	if mmFindWeeklyTicks.mock.inspectFuncFindWeeklyTicks != nil {
 		mmFindWeeklyTicks.mock.t.Fatalf("Inspect function is already set for TickFinderMock.FindWeeklyTicks")
 	}
@@ -103,7 +104,7 @@ func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Inspect(f func(ctx cont
 }
 
 // Return sets up results that will be returned by tickFinder.FindWeeklyTicks
-func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Return(ta1 []tick.Tick, err error) *TickFinderMock {
+func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Return(ta1 []time.Time, err error) *TickFinderMock {
 	if mmFindWeeklyTicks.mock.funcFindWeeklyTicks != nil {
 		mmFindWeeklyTicks.mock.t.Fatalf("TickFinderMock.FindWeeklyTicks mock is already set by Set")
 	}
@@ -116,7 +117,7 @@ func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Return(ta1 []tick.Tick,
 }
 
 // Set uses given function f to mock the tickFinder.FindWeeklyTicks method
-func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Set(f func(ctx context.Context, id mm_habit.ID, w tick.ISOWeek) (ta1 []tick.Tick, err error)) *TickFinderMock {
+func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Set(f func(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601) (ta1 []time.Time, err error)) *TickFinderMock {
 	if mmFindWeeklyTicks.defaultExpectation != nil {
 		mmFindWeeklyTicks.mock.t.Fatalf("Default expectation is already set for the tickFinder.FindWeeklyTicks method")
 	}
@@ -131,7 +132,7 @@ func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) Set(f func(ctx context.
 
 // When sets expectation for the tickFinder.FindWeeklyTicks which will trigger the result defined by the following
 // Then helper
-func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) When(ctx context.Context, id mm_habit.ID, w tick.ISOWeek) *TickFinderMockFindWeeklyTicksExpectation {
+func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) When(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601) *TickFinderMockFindWeeklyTicksExpectation {
 	if mmFindWeeklyTicks.mock.funcFindWeeklyTicks != nil {
 		mmFindWeeklyTicks.mock.t.Fatalf("TickFinderMock.FindWeeklyTicks mock is already set by Set")
 	}
@@ -145,13 +146,13 @@ func (mmFindWeeklyTicks *mTickFinderMockFindWeeklyTicks) When(ctx context.Contex
 }
 
 // Then sets up tickFinder.FindWeeklyTicks return parameters for the expectation previously defined by the When method
-func (e *TickFinderMockFindWeeklyTicksExpectation) Then(ta1 []tick.Tick, err error) *TickFinderMock {
+func (e *TickFinderMockFindWeeklyTicksExpectation) Then(ta1 []time.Time, err error) *TickFinderMock {
 	e.results = &TickFinderMockFindWeeklyTicksResults{ta1, err}
 	return e.mock
 }
 
 // FindWeeklyTicks implements habit.tickFinder
-func (mmFindWeeklyTicks *TickFinderMock) FindWeeklyTicks(ctx context.Context, id mm_habit.ID, w tick.ISOWeek) (ta1 []tick.Tick, err error) {
+func (mmFindWeeklyTicks *TickFinderMock) FindWeeklyTicks(ctx context.Context, id mm_habit.ID, w isoweek.ISO8601) (ta1 []time.Time, err error) {
 	mm_atomic.AddUint64(&mmFindWeeklyTicks.beforeFindWeeklyTicksCounter, 1)
 	defer mm_atomic.AddUint64(&mmFindWeeklyTicks.afterFindWeeklyTicksCounter, 1)
 

@@ -3,9 +3,8 @@ package habit
 import (
 	"context"
 	"fmt"
+	"learngo-pockets/habits/internal/isoweek"
 	"time"
-
-	"learngo-pockets/habits/internal/tick"
 )
 
 //go:generate minimock -i habitFinder -s "_mock.go" -o "mocks"
@@ -15,24 +14,25 @@ type habitFinder interface {
 
 //go:generate minimock -i tickAdder -s "_mock.go" -o "mocks"
 type tickAdder interface {
-	Add(ctx context.Context, id ID, t tick.Tick, w tick.ISOWeek) error
+	AddTick(ctx context.Context, id ID, t time.Time, w isoweek.ISO8601) error
 }
 
-func TickHabit(ctx context.Context, habitDB habitFinder, tickDB tickAdder, id ID) error {
+// Tick inserts a new tick for a habit.
+func Tick(ctx context.Context, habitDB habitFinder, tickDB tickAdder, id ID, t time.Time) error {
 	// Check if the habit exists.
 	h, err := habitDB.Find(ctx, id)
 	if err != nil {
-		return err
+		return fmt.Errorf("cannot find habit %q: %w", id, err)
 	}
 
 	if len(h.ID) == 0 {
-		return fmt.Errorf("habit ID \"%s\" not found", id)
+		return fmt.Errorf("habit ID %q not found", id)
 	}
 
-	// Add a new tick for the habit.
-	err = tickDB.Add(ctx, id, tick.Tick{Timestamp: time.Now()}, tick.GetISOWeek())
+	// AddTick adds a new tick for the habit.
+	err = tickDB.AddTick(ctx, id, t, isoweek.At(t))
 	if err != nil {
-		return err
+		return fmt.Errorf("cannot insert tick for habit %q: %w", id, err)
 	}
 
 	return nil

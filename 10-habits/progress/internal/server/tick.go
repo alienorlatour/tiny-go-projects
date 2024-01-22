@@ -2,7 +2,10 @@ package server
 
 import (
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
+	"time"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -10,10 +13,10 @@ import (
 
 // TickHabit inserts a new tick for a given habit.
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
-	log.Printf("TickHabit request received: %s", request)
-	err := habit.TickHabit(ctx, s.db, s.tickDB, habit.ID(request.HabitId))
+	log.Printf("Tick request received: %s", request)
+	err := habit.Tick(ctx, s.db, s.db, habit.ID(request.HabitId), time.Now())
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.NotFound, "cannot tick habit %q: %s", request.HabitId, err.Error())
 	}
 
 	return &api.TickHabitResponse{}, nil

@@ -105,13 +105,13 @@ func tickHabit(t *testing.T, habitsCli api.HabitsClient, id string) {
 	t.Helper()
 
 	_, err := habitsCli.TickHabit(context.Background(), &api.TickHabitRequest{
-		Id: id,
+		HabitId: id,
 	})
 	assert.NoError(t, err)
 }
 
 func getHabitStatusMatches(t *testing.T, habitsCli api.HabitsClient, id string, expected *api.GetHabitStatusResponse) {
-	h, err := habitsCli.GetHabitStatus(context.Background(), &api.GetHabitStatusRequest{Id: id})
+	h, err := habitsCli.GetHabitStatus(context.Background(), &api.GetHabitStatusRequest{HabitId: id})
 	require.NoError(t, err)
 
 	assert.Equal(t, expected.Habit, h.Habit)
@@ -120,7 +120,7 @@ func getHabitStatusMatches(t *testing.T, habitsCli api.HabitsClient, id string, 
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := server.New(repository.New(), repository.NewTickRepository())
+	s := server.New(repository.New())
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)

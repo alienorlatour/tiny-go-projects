@@ -37,7 +37,6 @@ func NewHabitCreatorMock(t minimock.Tester) *HabitCreatorMock {
 	m.AddMock = mHabitCreatorMockAdd{mock: m}
 	m.AddMock.callArgs = []*HabitCreatorMockAddParams{}
 
-
 	return m
 }
 

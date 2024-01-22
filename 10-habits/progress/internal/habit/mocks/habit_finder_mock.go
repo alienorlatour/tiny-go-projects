@@ -37,6 +37,7 @@ func NewHabitFinderMock(t minimock.Tester) *HabitFinderMock {
 	m.FindMock = mHabitFinderMockFind{mock: m}
 	m.FindMock.callArgs = []*HabitFinderMockFindParams{}
 
+
 	return m
 }
 
