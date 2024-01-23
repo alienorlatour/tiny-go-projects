@@ -2,8 +2,6 @@ package integration
 
 import (
 	"context"
-	"learngo-pockets/habits/internal/repository"
-	"learngo-pockets/habits/internal/server"
 	"net"
 	"testing"
 
@@ -15,6 +13,8 @@ import (
 	"google.golang.org/grpc/status"
 
 	"learngo-pockets/habits/api"
+	"learngo-pockets/habits/internal/repository"
+	"learngo-pockets/habits/internal/server"
 )
 
 func TestIntegration(t *testing.T) {
@@ -59,6 +59,7 @@ func TestIntegration(t *testing.T) {
 	// add 1 tick for Read habit
 	tickHabit(t, habitsCli, idRead)
 
+	// check that the right number of ticks are present
 	getHabitStatusMatches(t, habitsCli, idWalk, &api.GetHabitStatusResponse{
 		Habit: &api.Habit{
 			Id:              idWalk,

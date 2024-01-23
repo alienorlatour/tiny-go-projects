@@ -7,7 +7,6 @@ package mocks
 import (
 	"context"
 	mm_habit "learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/isoweek"
 	"sync"
 	mm_atomic "sync/atomic"
 	"time"
@@ -21,8 +20,8 @@ type TickAdderMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
 
-	funcAddTick          func(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601) (err error)
-	inspectFuncAddTick   func(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601)
+	funcAddTick          func(ctx context.Context, id mm_habit.ID, t time.Time) (err error)
+	inspectFuncAddTick   func(ctx context.Context, id mm_habit.ID, t time.Time)
 	afterAddTickCounter  uint64
 	beforeAddTickCounter uint64
 	AddTickMock          mTickAdderMockAddTick
@@ -64,7 +63,6 @@ type TickAdderMockAddTickParams struct {
 	ctx context.Context
 	id  mm_habit.ID
 	t   time.Time
-	w   isoweek.ISO8601
 }
 
 // TickAdderMockAddTickResults contains results of the tickAdder.AddTick
@@ -73,7 +71,7 @@ type TickAdderMockAddTickResults struct {
 }
 
 // Expect sets up expected params for tickAdder.AddTick
-func (mmAddTick *mTickAdderMockAddTick) Expect(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601) *mTickAdderMockAddTick {
+func (mmAddTick *mTickAdderMockAddTick) Expect(ctx context.Context, id mm_habit.ID, t time.Time) *mTickAdderMockAddTick {
 	if mmAddTick.mock.funcAddTick != nil {
 		mmAddTick.mock.t.Fatalf("TickAdderMock.AddTick mock is already set by Set")
 	}
@@ -82,7 +80,7 @@ func (mmAddTick *mTickAdderMockAddTick) Expect(ctx context.Context, id mm_habit.
 		mmAddTick.defaultExpectation = &TickAdderMockAddTickExpectation{}
 	}
 
-	mmAddTick.defaultExpectation.params = &TickAdderMockAddTickParams{ctx, id, t, w}
+	mmAddTick.defaultExpectation.params = &TickAdderMockAddTickParams{ctx, id, t}
 	for _, e := range mmAddTick.expectations {
 		if minimock.Equal(e.params, mmAddTick.defaultExpectation.params) {
 			mmAddTick.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmAddTick.defaultExpectation.params)
@@ -93,7 +91,7 @@ func (mmAddTick *mTickAdderMockAddTick) Expect(ctx context.Context, id mm_habit.
 }
 
 // Inspect accepts an inspector function that has same arguments as the tickAdder.AddTick
-func (mmAddTick *mTickAdderMockAddTick) Inspect(f func(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601)) *mTickAdderMockAddTick {
+func (mmAddTick *mTickAdderMockAddTick) Inspect(f func(ctx context.Context, id mm_habit.ID, t time.Time)) *mTickAdderMockAddTick {
 	if mmAddTick.mock.inspectFuncAddTick != nil {
 		mmAddTick.mock.t.Fatalf("Inspect function is already set for TickAdderMock.AddTick")
 	}
@@ -117,7 +115,7 @@ func (mmAddTick *mTickAdderMockAddTick) Return(err error) *TickAdderMock {
 }
 
 // Set uses given function f to mock the tickAdder.AddTick method
-func (mmAddTick *mTickAdderMockAddTick) Set(f func(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601) (err error)) *TickAdderMock {
+func (mmAddTick *mTickAdderMockAddTick) Set(f func(ctx context.Context, id mm_habit.ID, t time.Time) (err error)) *TickAdderMock {
 	if mmAddTick.defaultExpectation != nil {
 		mmAddTick.mock.t.Fatalf("Default expectation is already set for the tickAdder.AddTick method")
 	}
@@ -132,14 +130,14 @@ func (mmAddTick *mTickAdderMockAddTick) Set(f func(ctx context.Context, id mm_ha
 
 // When sets expectation for the tickAdder.AddTick which will trigger the result defined by the following
 // Then helper
-func (mmAddTick *mTickAdderMockAddTick) When(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601) *TickAdderMockAddTickExpectation {
+func (mmAddTick *mTickAdderMockAddTick) When(ctx context.Context, id mm_habit.ID, t time.Time) *TickAdderMockAddTickExpectation {
 	if mmAddTick.mock.funcAddTick != nil {
 		mmAddTick.mock.t.Fatalf("TickAdderMock.AddTick mock is already set by Set")
 	}
 
 	expectation := &TickAdderMockAddTickExpectation{
 		mock:   mmAddTick.mock,
-		params: &TickAdderMockAddTickParams{ctx, id, t, w},
+		params: &TickAdderMockAddTickParams{ctx, id, t},
 	}
 	mmAddTick.expectations = append(mmAddTick.expectations, expectation)
 	return expectation
@@ -152,15 +150,15 @@ func (e *TickAdderMockAddTickExpectation) Then(err error) *TickAdderMock {
 }
 
 // AddTick implements habit.tickAdder
-func (mmAddTick *TickAdderMock) AddTick(ctx context.Context, id mm_habit.ID, t time.Time, w isoweek.ISO8601) (err error) {
+func (mmAddTick *TickAdderMock) AddTick(ctx context.Context, id mm_habit.ID, t time.Time) (err error) {
 	mm_atomic.AddUint64(&mmAddTick.beforeAddTickCounter, 1)
 	defer mm_atomic.AddUint64(&mmAddTick.afterAddTickCounter, 1)
 
 	if mmAddTick.inspectFuncAddTick != nil {
-		mmAddTick.inspectFuncAddTick(ctx, id, t, w)
+		mmAddTick.inspectFuncAddTick(ctx, id, t)
 	}
 
-	mm_params := TickAdderMockAddTickParams{ctx, id, t, w}
+	mm_params := TickAdderMockAddTickParams{ctx, id, t}
 
 	// Record call args
 	mmAddTick.AddTickMock.mutex.Lock()
@@ -177,7 +175,7 @@ func (mmAddTick *TickAdderMock) AddTick(ctx context.Context, id mm_habit.ID, t t
 	if mmAddTick.AddTickMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmAddTick.AddTickMock.defaultExpectation.Counter, 1)
 		mm_want := mmAddTick.AddTickMock.defaultExpectation.params
-		mm_got := TickAdderMockAddTickParams{ctx, id, t, w}
+		mm_got := TickAdderMockAddTickParams{ctx, id, t}
 		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
 			mmAddTick.t.Errorf("TickAdderMock.AddTick got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
@@ -189,9 +187,9 @@ func (mmAddTick *TickAdderMock) AddTick(ctx context.Context, id mm_habit.ID, t t
 		return (*mm_results).err
 	}
 	if mmAddTick.funcAddTick != nil {
-		return mmAddTick.funcAddTick(ctx, id, t, w)
+		return mmAddTick.funcAddTick(ctx, id, t)
 	}
-	mmAddTick.t.Fatalf("Unexpected call to TickAdderMock.AddTick. %v %v %v %v", ctx, id, t, w)
+	mmAddTick.t.Fatalf("Unexpected call to TickAdderMock.AddTick. %v %v %v", ctx, id, t)
 	return
 }
 

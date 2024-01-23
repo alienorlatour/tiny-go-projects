@@ -11,10 +11,8 @@ import (
 
 	"learngo-pockets/habits/internal/habit"
 	"learngo-pockets/habits/internal/habit/mocks"
-	"learngo-pockets/habits/internal/isoweek"
 )
 
-// TODO FIX ME
 func TestTickHabit(t *testing.T) {
 	ctx := context.Background()
 
@@ -27,8 +25,6 @@ func TestTickHabit(t *testing.T) {
 		CreationTime:    timestamp,
 	}
 
-	ticks := []time.Time{timestamp, timestamp.Add(5 * time.Minute)}
-
 	dbErr := fmt.Errorf("db unavailable")
 
 	tests := map[string]struct {
@@ -39,12 +35,12 @@ func TestTickHabit(t *testing.T) {
 		"add tick": {
 			habitDB: func(ctl *minimock.Controller) *mocks.HabitFinderMock {
 				db := mocks.NewHabitFinderMock(ctl)
-				db.FindMock.Expect(ctx, "123").Return(h, nil)
+				db.FindMock.Expect(ctx, h.ID).Return(h, nil)
 				return db
 			},
 			tickDB: func(ctl *minimock.Controller) *mocks.TickAdderMock {
 				db := mocks.NewTickAdderMock(ctl)
-				db.AddTickMock.Expect(ctx, "123", ticks[0], isoweek.At(timestamp)).Return(nil)
+				db.AddTickMock.Expect(ctx, h.ID, timestamp).Return(nil)
 				return db
 			},
 			expectedErr: nil,
@@ -57,7 +53,7 @@ func TestTickHabit(t *testing.T) {
 			},
 			tickDB: func(ctl *minimock.Controller) *mocks.TickAdderMock {
 				db := mocks.NewTickAdderMock(ctl)
-				db.AddTickMock.Expect(ctx, "123", timestamp, isoweek.At(timestamp)).Return(dbErr)
+				db.AddTickMock.Expect(ctx, h.ID, timestamp).Return(dbErr)
 				return db
 			},
 			expectedErr: dbErr,

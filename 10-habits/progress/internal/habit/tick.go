@@ -3,7 +3,6 @@ package habit
 import (
 	"context"
 	"fmt"
-	"learngo-pockets/habits/internal/isoweek"
 	"time"
 )
 
@@ -14,7 +13,7 @@ type habitFinder interface {
 
 //go:generate minimock -i tickAdder -s "_mock.go" -o "mocks"
 type tickAdder interface {
-	AddTick(ctx context.Context, id ID, t time.Time, w isoweek.ISO8601) error
+	AddTick(ctx context.Context, id ID, t time.Time) error
 }
 
 // Tick inserts a new tick for a habit.
@@ -30,7 +29,7 @@ func Tick(ctx context.Context, habitDB habitFinder, tickDB tickAdder, id ID, t t
 	}
 
 	// AddTick adds a new tick for the habit.
-	err = tickDB.AddTick(ctx, id, t, isoweek.At(t))
+	err = tickDB.AddTick(ctx, id, t)
 	if err != nil {
 		return fmt.Errorf("cannot insert tick for habit %q: %w", id, err)
 	}

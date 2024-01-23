@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"learngo-pockets/habits/internal/isoweek"
 	"log"
 	"net"
 	"net/http"
@@ -27,9 +26,9 @@ type repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
-	AddTick(ctx context.Context, id habit.ID, t time.Time, w isoweek.ISO8601) error
+	AddTick(ctx context.Context, id habit.ID, t time.Time) error
 	FindAllTicks(ctx context.Context, id habit.ID) ([]time.Time, error)
-	FindWeeklyTicks(ctx context.Context, id habit.ID, w isoweek.ISO8601) ([]time.Time, error)
+	FindWeeklyTicks(ctx context.Context, id habit.ID, t time.Time) ([]time.Time, error)
 }
 
 // New returns a Server that can Listen.

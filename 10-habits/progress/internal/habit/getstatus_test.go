@@ -3,12 +3,13 @@ package habit_test
 import (
 	"context"
 	"fmt"
-	"learngo-pockets/habits/internal/isoweek"
 	"testing"
 	"time"
 
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"learngo-pockets/habits/internal/habit"
 	"learngo-pockets/habits/internal/habit/mocks"
 )
@@ -25,7 +26,6 @@ func TestGetStatus(t *testing.T) {
 
 	timestamp := time.Date(2024, time.Month(2), 21, 3, 2, 2, 2, time.UTC)
 	ticks := []time.Time{timestamp, timestamp.Add(5 * time.Minute)}
-	isoWeek := isoweek.ISO8601{Week: 3, Year: 2024}
 
 	dbErr := fmt.Errorf("db unavailable")
 
@@ -39,12 +39,12 @@ func TestGetStatus(t *testing.T) {
 		"2 ticks": {
 			habitDB: func(ctl *minimock.Controller) *mocks.HabitFinderMock {
 				db := mocks.NewHabitFinderMock(ctl)
-				db.FindMock.Expect(ctx, "123").Return(h, nil)
+				db.FindMock.Expect(ctx, h.ID).Return(h, nil)
 				return db
 			},
 			tickDB: func(ctl *minimock.Controller) *mocks.TickFinderMock {
 				db := mocks.NewTickFinderMock(ctl)
-				db.FindWeeklyTicksMock.Expect(ctx, "123", isoWeek).Return(ticks, nil)
+				db.FindWeeklyTicksMock.Expect(ctx, h.ID, timestamp).Return(ticks, nil)
 				return db
 			},
 			expectedHabit:      h,
@@ -59,7 +59,7 @@ func TestGetStatus(t *testing.T) {
 			},
 			tickDB: func(ctl *minimock.Controller) *mocks.TickFinderMock {
 				db := mocks.NewTickFinderMock(ctl)
-				db.FindWeeklyTicksMock.Expect(ctx, "123", isoWeek).Return(nil, dbErr)
+				db.FindWeeklyTicksMock.Expect(ctx, h.ID, timestamp).Return(nil, dbErr)
 				return db
 			},
 			expectedErr:   dbErr,
@@ -79,8 +79,8 @@ func TestGetStatus(t *testing.T) {
 			habitDB := tc.habitDB(ctrl)
 			tickDB := tc.tickDB(ctrl)
 
-			h, c, err := habit.GetStatus(context.Background(), habitDB, tickDB, h.ID, isoWeek)
-			assert.ErrorIs(t, err, tc.expectedErr)
+			h, c, err := habit.GetStatus(context.Background(), habitDB, tickDB, h.ID, timestamp)
+			require.ErrorIs(t, err, tc.expectedErr)
 			assert.Equal(t, tc.expectedHabit, h)
 			assert.Equal(t, tc.expectedTicksCount, c)
 		})
