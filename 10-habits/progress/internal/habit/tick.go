@@ -19,13 +19,9 @@ type tickAdder interface {
 // Tick inserts a new tick for a habit.
 func Tick(ctx context.Context, habitDB habitFinder, tickDB tickAdder, id ID, t time.Time) error {
 	// Check if the habit exists.
-	h, err := habitDB.Find(ctx, id)
+	_, err := habitDB.Find(ctx, id)
 	if err != nil {
 		return fmt.Errorf("cannot find habit %q: %w", id, err)
-	}
-
-	if len(h.ID) == 0 {
-		return fmt.Errorf("habit ID %q not found", id)
 	}
 
 	// AddTick adds a new tick for the habit.

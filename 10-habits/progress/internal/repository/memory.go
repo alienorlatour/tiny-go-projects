@@ -58,7 +58,7 @@ func (r *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 }
 
 // AddTick inserts a new event for a habit in memory.
-func (r *HabitRepository) AddTick(ctx context.Context, id habit.ID, t time.Time) error {
+func (r *HabitRepository) AddTick(_ context.Context, id habit.ID, t time.Time) error {
 	log.Print("Adding a tick...")
 	_, found := r.ticks[id]
 	if !found {
@@ -89,7 +89,7 @@ func (r *HabitRepository) FindAllTicks(_ context.Context, id habit.ID) ([]time.T
 }
 
 // FindWeeklyTicks returns all the ticks in a week.
-func (r *HabitRepository) FindWeeklyTicks(ctx context.Context, id habit.ID, t time.Time) ([]time.Time, error) {
+func (r *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t time.Time) ([]time.Time, error) {
 	log.Printf("Listing weekly ticks for a habit...")
 
 	loggedWeeks, found := r.ticks[id]
