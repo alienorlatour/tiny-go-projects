@@ -44,7 +44,7 @@ habits.Habits/TickHabit
 grpcurl \
 -import-path api/proto/ \
 -proto service.proto \
--plaintext -d '{"habit_id":"98ab1bbe-41d5-4ed3-8f33-e4f7bec448c8"}' \
+-plaintext -d '{"habit_id":"98ab1bbe-41d5-4ed3-8f33-e4f7bec448c8", "time": "2024-01-24T20:24:06+00:00"}' \
 localhost:28710 \
 habits.Habits/GetHabitStatus
 ```

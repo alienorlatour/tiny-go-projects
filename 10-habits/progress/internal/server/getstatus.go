@@ -16,8 +16,15 @@ import (
 
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
-	log.Printf("GetStatus request received: %s", request)
-	h, ticksCount, err := habit.GetStatus(ctx, s.db, s.db, habit.ID(request.HabitId), time.Now())
+	log.Printf("GetHabitStatus request received: %s", request)
+
+	// setup the default value to the current one if empty
+	var t time.Time
+	if request.Time == nil {
+		t = time.Now()
+	}
+
+	h, ticksCount, err := habit.GetStatus(ctx, s.db, s.db, habit.ID(request.HabitId), t)
 	if err != nil {
 		switch {
 		case errors.Is(err, r.ErrNotFound):

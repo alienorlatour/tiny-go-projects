@@ -4,6 +4,7 @@ package habits;
 option go_package = "learngo-pockets/habits/api";
 
 import "habit.proto";
+import "google/protobuf/timestamp.proto";
 
 // Habits is a service for registering and tracking habits.
 service Habits {
@@ -53,6 +54,7 @@ message TickHabitResponse {
 
 message GetHabitStatusRequest {
   string habit_id = 1;
+  optional google.protobuf.Timestamp time = 2;
 }
 
 message GetHabitStatusResponse {
