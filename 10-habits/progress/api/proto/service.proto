@@ -25,6 +25,7 @@ service Habits {
 message CreateHabitRequest {
   // Name of the new habit. Cannot be empty.
   string name = 1;
+
   // Frequency of the new habit. Defaults to once per week.
   optional int32 weekly_frequency = 2;
 }
@@ -41,23 +42,38 @@ message ListHabitsRequest {
 
 // ListHabitsResponse is the response with all the saved habits.
 message ListHabitsResponse {
+  // habits holds all the stored habits with their specificities (id, name, weekly frequency).
   repeated Habit habits = 1;
 }
 
+// TickHabitRequest holds the identifier of a habit to tick it.
 message TickHabitRequest {
+  // The identifier of the habit we want to tick.
   string habit_id = 1;
+
+  // The time for which we want to tick a habit.
+  optional google.protobuf.Timestamp timestamp = 2;
 }
 
+// TickHabitRequest is the response to TickHabit endpoint.
+// Currently empty but open to grow.
 message TickHabitResponse {
 
 }
 
+// GetHabitStatusRequest is the request to GetHabitStatus endpoint.
 message GetHabitStatusRequest {
+  // The identifier of the habit we want to retrieve.
   string habit_id = 1;
-  optional google.protobuf.Timestamp time = 2;
+
+  // The time for which we want to retrieve the status of a habit.
+  optional google.protobuf.Timestamp timestamp = 2;
 }
 
+// GetHabitStatusResponse is the response to retrieving the status of a habit.
 message GetHabitStatusResponse {
+  // All the information of a habit.
   Habit habit = 1;
+  // The number of times the habit has been ticked for a given week.
   int32 ticks_count = 2;
 }

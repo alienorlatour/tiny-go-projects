@@ -18,9 +18,9 @@ import (
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
 	log.Printf("GetHabitStatus request received: %s", request)
 
-	// setup the default value to the current one if empty
+	// if empty, the timestamp is set to the current time
 	var t time.Time
-	if request.Time == nil {
+	if request.Timestamp == nil {
 		t = time.Now()
 	}
 
