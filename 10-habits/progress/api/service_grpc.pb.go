@@ -84,7 +84,7 @@ func (c *habitsClient) GetHabitStatus(ctx context.Context, in *GetHabitStatusReq
 }
 
 // HabitsServer is the server API for Habits service.
-// All implementations should embed UnimplementedHabitsServer
+// All implementations must embed UnimplementedHabitsServer
 // for forward compatibility
 type HabitsServer interface {
 	// CreateHabit is the endpoint that registers a habit.
@@ -95,9 +95,10 @@ type HabitsServer interface {
 	TickHabit(context.Context, *TickHabitRequest) (*TickHabitResponse, error)
 	// GetHabitStatus is the endpoint to retrieve the status of ticks of a habit.
 	GetHabitStatus(context.Context, *GetHabitStatusRequest) (*GetHabitStatusResponse, error)
+	mustEmbedUnimplementedHabitsServer()
 }
 
-// UnimplementedHabitsServer should be embedded to have forward compatible implementations.
+// UnimplementedHabitsServer must be embedded to have forward compatible implementations.
 type UnimplementedHabitsServer struct {
 }
 
@@ -113,6 +114,7 @@ func (UnimplementedHabitsServer) TickHabit(context.Context, *TickHabitRequest) (
 func (UnimplementedHabitsServer) GetHabitStatus(context.Context, *GetHabitStatusRequest) (*GetHabitStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHabitStatus not implemented")
 }
+func (UnimplementedHabitsServer) mustEmbedUnimplementedHabitsServer() {}
 
 // UnsafeHabitsServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to HabitsServer will
