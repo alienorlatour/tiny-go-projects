@@ -8,6 +8,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -24,7 +25,11 @@ type Server struct {
 
 type repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
+	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
+	AddTick(ctx context.Context, id habit.ID, t time.Time) error
+	FindAllTicks(ctx context.Context, id habit.ID) ([]time.Time, error)
+	FindWeeklyTicks(ctx context.Context, id habit.ID, t time.Time) ([]time.Time, error)
 }
 
 // New returns a Server that can Listen.
