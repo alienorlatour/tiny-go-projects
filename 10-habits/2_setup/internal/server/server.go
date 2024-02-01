@@ -3,26 +3,31 @@ package server
 import (
 	"fmt"
 	"net"
-
-	"learngo-pockets/habits/api"
+	"strconv"
 
 	"google.golang.org/grpc"
+
+	"learngo-pockets/habits/api"
 )
 
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
+	lgr Logger
 }
 
-// New returns a Server that can Listen.
-func New() *Server {
-	return &Server{}
+// New returns a Server that can ListenAndServe.
+func New(lgr Logger) *Server {
+	return &Server{
+		lgr: lgr,
+	}
 }
 
-// Listen starts the listening to the port
-func (s *Server) Listen(port int) error {
-	addr := fmt.Sprintf(":%d", port)
-	listener, err := net.Listen("tcp", addr)
+// ListenAndServe starts listening to the port and serving requests.
+func (s *Server) ListenAndServe(port int) error {
+	const addr = "127.0.0.1"
+
+	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
@@ -30,7 +35,7 @@ func (s *Server) Listen(port int) error {
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
 
-	fmt.Printf("starting server on port %d\n", port)
+	s.lgr.Logf("starting server on port %d\n", port)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
@@ -39,4 +44,9 @@ func (s *Server) Listen(port int) error {
 
 	// Stop or GracefulStop was called, no reason to be alarmed.
 	return nil
+}
+
+// Logger used by the server
+type Logger interface {
+	Logf(format string, args ...any)
 }
