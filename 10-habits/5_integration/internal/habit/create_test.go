@@ -20,7 +20,6 @@ func TestCreate(t *testing.T) {
 		CreationTime:    time.Now(),
 		ID:              "123",
 	}
-	ctx := context.Background()
 
 	dbErr := fmt.Errorf("db unavailable")
 
@@ -31,7 +30,7 @@ func TestCreate(t *testing.T) {
 		"nominal": {
 			db: func(ctl *minimock.Controller) *mocks.HabitCreatorMock {
 				db := mocks.NewHabitCreatorMock(ctl)
-				db.AddMock.Expect(ctx, h).Return(nil)
+				db.AddMock.Expect(minimock.AnyContext, h).Return(nil)
 				return db
 			},
 			expectedErr: nil,
@@ -39,10 +38,27 @@ func TestCreate(t *testing.T) {
 		"error case": {
 			db: func(ctl *minimock.Controller) *mocks.HabitCreatorMock {
 				db := mocks.NewHabitCreatorMock(ctl)
-				db.AddMock.Expect(ctx, h).Return(dbErr)
+				db.AddMock.Expect(minimock.AnyContext, h).Return(dbErr)
 				return db
 			},
 			expectedErr: dbErr,
+		},
+		"db timeout": {
+			db: func(ctl *minimock.Controller) *mocks.HabitCreatorMock {
+				db := mocks.NewHabitCreatorMock(ctl)
+				db.AddMock.Set(
+					func(ctx context.Context, habit habit.Habit) error {
+						select {
+						// This tick is longer than a database call
+						case <-time.Tick(200 * time.Millisecond):
+							return nil
+						case <-ctx.Done():
+							return ctx.Err()
+						}
+					})
+				return db
+			},
+			expectedErr: context.DeadlineExceeded,
 		},
 	}
 
@@ -53,7 +69,6 @@ func TestCreate(t *testing.T) {
 			t.Parallel()
 
 			ctrl := minimock.NewController(t)
-			defer ctrl.Finish()
 
 			db := tt.db(ctrl)
 
