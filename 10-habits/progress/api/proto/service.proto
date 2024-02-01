@@ -48,11 +48,12 @@ message ListHabitsResponse {
 
 // TickHabitRequest holds the identifier of a habit to tick it.
 message TickHabitRequest {
-  // The identifier of the habit we want to tick.
+  // The identifier of the habit we want to tick. This field is required.
   string habit_id = 1;
 
   // The time for which we want to tick a habit.
-  optional google.protobuf.Timestamp timestamp = 2;
+  // This field is optional, if empty the default value is set to the current time.
+  google.protobuf.Timestamp timestamp = 2;
 }
 
 // TickHabitRequest is the response to TickHabit endpoint.
@@ -63,10 +64,11 @@ message TickHabitResponse {
 
 // GetHabitStatusRequest is the request to GetHabitStatus endpoint.
 message GetHabitStatusRequest {
-  // The identifier of the habit we want to retrieve.
+  // The identifier of the habit we want to retrieve. This field is required.
   string habit_id = 1;
 
   // The time for which we want to retrieve the status of a habit.
+  // This field is optional, if empty the default value is set to the current time.
   optional google.protobuf.Timestamp timestamp = 2;
 }
 
