@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -17,6 +18,11 @@ import (
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
 	log.Printf("GetHabitStatus request received: %s", request)
+
+	err := validateGetHabitRequest(request)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request: "+err.Error())
+	}
 
 	// if empty, the timestamp is set to the current time
 	var t time.Time
@@ -42,4 +48,14 @@ func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatus
 		},
 		TicksCount: int32(ticksCount),
 	}, nil
+}
+
+func validateGetHabitRequest(request *api.GetHabitStatusRequest) error {
+	switch {
+	case request == nil:
+		return fmt.Errorf("empty request")
+	case request.HabitId == "":
+		return fmt.Errorf("missing habit id")
+	}
+	return nil
 }

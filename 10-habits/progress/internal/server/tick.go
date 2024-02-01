@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -18,13 +19,18 @@ import (
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
 	log.Printf("Tick request received: %s", request)
 
+	err := validateTickHabitRequest(request)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request: "+err.Error())
+	}
+
 	// if empty, the timestamp is set to the current time
 	var t time.Time
 	if request.Timestamp == nil {
 		t = time.Now()
 	}
 
-	err := habit.Tick(ctx, s.db, s.db, habit.ID(request.HabitId), t)
+	err = habit.Tick(ctx, s.db, s.db, habit.ID(request.HabitId), t)
 	if err != nil {
 		switch {
 		case errors.Is(err, r.ErrNotFound):
@@ -35,4 +41,14 @@ func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (
 	}
 
 	return &api.TickHabitResponse{}, nil
+}
+
+func validateTickHabitRequest(request *api.TickHabitRequest) error {
+	switch {
+	case request == nil:
+		return fmt.Errorf("empty request")
+	case request.HabitId == "":
+		return fmt.Errorf("missing habit id")
+	}
+	return nil
 }
