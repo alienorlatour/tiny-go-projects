@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h2>Slice Viewer</h2>
+<p>Here is a slice</p>
+<div>
+    <table>
+        <tr>
+            <th>Index</th>
+            <th>Value</th>
+        </tr>
+        {{range $index, $value := .}}
+        <tr>
+            <td>{{$index}}</td>
+            <td>{{$value}}</td>
+        </tr>
+        {{end}}
+    </table>
+</div>
+</body>
+</html>
