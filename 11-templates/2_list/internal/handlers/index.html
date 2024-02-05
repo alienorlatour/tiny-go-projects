@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<p>Here are your registered habits</p>
+<div>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Objective</th>
+            <th></th>
+        </tr>
+        {{range .}}
+        <tr>
+            <td>{{.Name}}</td>
+            <td>{{.WeeklyFrequency}}</td>
+        </tr>
+        {{end}}
+    </table>
+</div>
+</body>
+</html>

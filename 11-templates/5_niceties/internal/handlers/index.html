@@ -1,0 +1,67 @@
+<html lang="en">
+<script>
+    function tick(id) {
+        const url = "/habits/" + encodeURIComponent(id);
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            }
+        });
+        location.reload();
+    }
+
+    function createHabit() {
+        const habitName = document.getElementById("habitName").value;
+        const habitFrequency = document.getElementById("habitFrequency").value;
+
+        const url = "/habits";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({name: habitName, weekly_frequency: parseInt(habitFrequency, 10)}),
+        });
+        location.reload();
+    }
+</script>
+
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<div>
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" style="width: 50px;" id="habitFrequency" name="habitFrequency">
+    <button onclick="createHabit()">Create</button>
+</div>
+<div>
+    <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
+    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
+    {{ if .Habits }}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Objective</th>
+            <th></th>
+        </tr>
+        {{range .Habits }}
+        <tr>
+            <td>{{.Name}}</td>
+            <td {{ if lt .WeeklyFrequency 3 }} style="background-color:#9B4433" {{ else }}
+                style="background-color:#488286" {{ end }}>{{.WeeklyFrequency}}
+            </td>
+            <td>
+                <button onclick="tick('{{.Id}}')">Tick!</button>
+            </td>
+        </tr>
+        {{end}}
+    </table>
+    {{ end }}
+</div>
+</body>
+</html>
