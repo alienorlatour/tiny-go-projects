@@ -1,0 +1,84 @@
+<html lang="en">
+<script>
+    function tick(id) {
+        const url = "/habits/" + encodeURIComponent(id);
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            }
+        });
+        location.reload();
+    }
+
+    function createHabit() {
+        const habitName = document.getElementById("habitName").value;
+        const habitFrequency = document.getElementById("habitFrequency").value;
+
+        const url = "/habits";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({name: habitName, weekly_frequency: parseInt(habitFrequency, 10)}),
+        });
+        location.reload();
+    }
+</script>
+<style>
+    .completed,
+    .good_progress,
+    .started,
+    .not_started {
+        width: 30em;
+        border: 1px solid #333;
+        box-shadow: 8px 8px 5px #444;
+        margin: 8px 12px;
+        padding: 8px 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 5px;
+    }
+
+    .completed {
+        background-image: linear-gradient(180deg, #fff, #cfc 40%, #afa);
+    }
+
+    .good_progress {
+        background-image: linear-gradient(180deg, #fff, #ffc 40%, #ffa);
+    }
+
+    .started {
+        background-image: linear-gradient(180deg, #fff, #fdc 40%, #fca);
+    }
+
+    .not_started {
+        background-image: linear-gradient(180deg, #fff, #fcc 40%, #faa);
+    }
+</style>
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<div>
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" style="width: 50px;" id="habitFrequency" name="habitFrequency">
+    <button onclick="createHabit()">Create</button>
+</div>
+<div>
+    <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
+    <p>Here are your registered habits, you have <b>{{ len .Habits }}</b>.</p>
+    {{range .Habits }}
+    <div class="{{ scoreStatus . }}">
+        <div>I want to <b>{{ .Name }}</b> a minimum of <b>{{ .WeeklyFrequency }} times</b> per week.</div>
+        <button style="height: 20px; vertical-align: middle;" onclick="tick('{{.Id}}')">Tick!</button>
+    </div>
+    {{end}}
+</div>
+</body>
+</html>
