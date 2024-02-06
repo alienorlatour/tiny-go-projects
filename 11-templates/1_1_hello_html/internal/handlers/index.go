@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-func (Server) index(w http.ResponseWriter, r *http.Request) {
+// index serves the root page of the app.
+func (*Server) index(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("got / request\n")
 
 	_, err := io.WriteString(w, `
