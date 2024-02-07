@@ -6,18 +6,11 @@
 <h2>Slice Viewer</h2>
 <p>Here is a slice</p>
 <div>
-    <table>
-        <tr>
-            <th>Index</th>
-            <th>Value</th>
-        </tr>
+    <ul>
         {{range $index, $value := .}}
-        <tr>
-            <td>{{$index}}</td>
-            <td>{{$value}}</td>
-        </tr>
+        <li>{{$index}} : {{$value}}</li>
         {{end}}
-    </table>
+    </ul>
 </div>
 </body>
 </html>

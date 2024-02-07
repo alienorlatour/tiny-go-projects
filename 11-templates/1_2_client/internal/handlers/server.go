@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"time"
 
 	habit "learngo-pockets/templates/internal/habits"
 
@@ -13,7 +14,7 @@ import (
 //
 //go:generate minimock -i habitsClient -s "_mock.go" -o "mocks"
 type habitsClient interface {
-	ListHabits(ctx context.Context) ([]habit.Habit, error)
+	ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error)
 }
 
 // Server serves all the HTML routes on this service.
