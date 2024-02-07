@@ -16,6 +16,7 @@ func (hc HabitsClient) ListHabits(ctx context.Context) ([]habit.Habit, error) {
 
 	list := make([]habit.Habit, len(resp.Habits))
 	for i, h := range resp.Habits {
+
 		list[i] = habit.Habit{
 			ID:              habit.ID(h.Id),
 			Name:            habit.Name(h.Name),
