@@ -12,8 +12,6 @@ import (
 var indexPage string
 
 func (Server) index(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("got / request\n")
-
 	tpl, err := template.New("index").Parse(indexPage)
 	if err != nil {
 		fmt.Println("can't parse index: ", err)
