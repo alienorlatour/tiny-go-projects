@@ -6,21 +6,20 @@ package mocks
 
 import (
 	"context"
-	"learngo-pockets/habits/api"
+	habit "learngo-pockets/templates/internal/habits"
 	"sync"
 	mm_atomic "sync/atomic"
 	mm_time "time"
 
 	"github.com/gojuno/minimock/v3"
-	"google.golang.org/grpc"
 )
 
 // HabitsClientMock implements handlers.habitsClient
 type HabitsClientMock struct {
 	t minimock.Tester
 
-	funcListHabits          func(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption) (lp1 *api.ListHabitsResponse, err error)
-	inspectFuncListHabits   func(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption)
+	funcListHabits          func(ctx context.Context) (ha1 []habit.Habit, err error)
+	inspectFuncListHabits   func(ctx context.Context)
 	afterListHabitsCounter  uint64
 	beforeListHabitsCounter uint64
 	ListHabitsMock          mHabitsClientMockListHabits
@@ -58,19 +57,17 @@ type HabitsClientMockListHabitsExpectation struct {
 
 // HabitsClientMockListHabitsParams contains parameters of the habitsClient.ListHabits
 type HabitsClientMockListHabitsParams struct {
-	ctx  context.Context
-	in   *api.ListHabitsRequest
-	opts []grpc.CallOption
+	ctx context.Context
 }
 
 // HabitsClientMockListHabitsResults contains results of the habitsClient.ListHabits
 type HabitsClientMockListHabitsResults struct {
-	lp1 *api.ListHabitsResponse
+	ha1 []habit.Habit
 	err error
 }
 
 // Expect sets up expected params for habitsClient.ListHabits
-func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption) *mHabitsClientMockListHabits {
+func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
 	}
@@ -79,7 +76,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, in 
 		mmListHabits.defaultExpectation = &HabitsClientMockListHabitsExpectation{}
 	}
 
-	mmListHabits.defaultExpectation.params = &HabitsClientMockListHabitsParams{ctx, in, opts}
+	mmListHabits.defaultExpectation.params = &HabitsClientMockListHabitsParams{ctx}
 	for _, e := range mmListHabits.expectations {
 		if minimock.Equal(e.params, mmListHabits.defaultExpectation.params) {
 			mmListHabits.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmListHabits.defaultExpectation.params)
@@ -90,7 +87,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, in 
 }
 
 // Inspect accepts an inspector function that has same arguments as the habitsClient.ListHabits
-func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption)) *mHabitsClientMockListHabits {
+func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Context)) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.inspectFuncListHabits != nil {
 		mmListHabits.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.ListHabits")
 	}
@@ -101,7 +98,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Cont
 }
 
 // Return sets up results that will be returned by habitsClient.ListHabits
-func (mmListHabits *mHabitsClientMockListHabits) Return(lp1 *api.ListHabitsResponse, err error) *HabitsClientMock {
+func (mmListHabits *mHabitsClientMockListHabits) Return(ha1 []habit.Habit, err error) *HabitsClientMock {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
 	}
@@ -109,12 +106,12 @@ func (mmListHabits *mHabitsClientMockListHabits) Return(lp1 *api.ListHabitsRespo
 	if mmListHabits.defaultExpectation == nil {
 		mmListHabits.defaultExpectation = &HabitsClientMockListHabitsExpectation{mock: mmListHabits.mock}
 	}
-	mmListHabits.defaultExpectation.results = &HabitsClientMockListHabitsResults{lp1, err}
+	mmListHabits.defaultExpectation.results = &HabitsClientMockListHabitsResults{ha1, err}
 	return mmListHabits.mock
 }
 
 // Set uses given function f to mock the habitsClient.ListHabits method
-func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption) (lp1 *api.ListHabitsResponse, err error)) *HabitsClientMock {
+func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context) (ha1 []habit.Habit, err error)) *HabitsClientMock {
 	if mmListHabits.defaultExpectation != nil {
 		mmListHabits.mock.t.Fatalf("Default expectation is already set for the habitsClient.ListHabits method")
 	}
@@ -129,35 +126,35 @@ func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context,
 
 // When sets expectation for the habitsClient.ListHabits which will trigger the result defined by the following
 // Then helper
-func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption) *HabitsClientMockListHabitsExpectation {
+func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context) *HabitsClientMockListHabitsExpectation {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
 	}
 
 	expectation := &HabitsClientMockListHabitsExpectation{
 		mock:   mmListHabits.mock,
-		params: &HabitsClientMockListHabitsParams{ctx, in, opts},
+		params: &HabitsClientMockListHabitsParams{ctx},
 	}
 	mmListHabits.expectations = append(mmListHabits.expectations, expectation)
 	return expectation
 }
 
 // Then sets up habitsClient.ListHabits return parameters for the expectation previously defined by the When method
-func (e *HabitsClientMockListHabitsExpectation) Then(lp1 *api.ListHabitsResponse, err error) *HabitsClientMock {
-	e.results = &HabitsClientMockListHabitsResults{lp1, err}
+func (e *HabitsClientMockListHabitsExpectation) Then(ha1 []habit.Habit, err error) *HabitsClientMock {
+	e.results = &HabitsClientMockListHabitsResults{ha1, err}
 	return e.mock
 }
 
 // ListHabits implements handlers.habitsClient
-func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context, in *api.ListHabitsRequest, opts ...grpc.CallOption) (lp1 *api.ListHabitsResponse, err error) {
+func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context) (ha1 []habit.Habit, err error) {
 	mm_atomic.AddUint64(&mmListHabits.beforeListHabitsCounter, 1)
 	defer mm_atomic.AddUint64(&mmListHabits.afterListHabitsCounter, 1)
 
 	if mmListHabits.inspectFuncListHabits != nil {
-		mmListHabits.inspectFuncListHabits(ctx, in, opts...)
+		mmListHabits.inspectFuncListHabits(ctx)
 	}
 
-	mm_params := &HabitsClientMockListHabitsParams{ctx, in, opts}
+	mm_params := &HabitsClientMockListHabitsParams{ctx}
 
 	// Record call args
 	mmListHabits.ListHabitsMock.mutex.Lock()
@@ -167,14 +164,14 @@ func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context, in *api.Li
 	for _, e := range mmListHabits.ListHabitsMock.expectations {
 		if minimock.Equal(e.params, mm_params) {
 			mm_atomic.AddUint64(&e.Counter, 1)
-			return e.results.lp1, e.results.err
+			return e.results.ha1, e.results.err
 		}
 	}
 
 	if mmListHabits.ListHabitsMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmListHabits.ListHabitsMock.defaultExpectation.Counter, 1)
 		mm_want := mmListHabits.ListHabitsMock.defaultExpectation.params
-		mm_got := HabitsClientMockListHabitsParams{ctx, in, opts}
+		mm_got := HabitsClientMockListHabitsParams{ctx}
 		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
 			mmListHabits.t.Errorf("HabitsClientMock.ListHabits got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
@@ -183,12 +180,12 @@ func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context, in *api.Li
 		if mm_results == nil {
 			mmListHabits.t.Fatal("No results are set for the HabitsClientMock.ListHabits")
 		}
-		return (*mm_results).lp1, (*mm_results).err
+		return (*mm_results).ha1, (*mm_results).err
 	}
 	if mmListHabits.funcListHabits != nil {
-		return mmListHabits.funcListHabits(ctx, in, opts...)
+		return mmListHabits.funcListHabits(ctx)
 	}
-	mmListHabits.t.Fatalf("Unexpected call to HabitsClientMock.ListHabits. %v %v %v", ctx, in, opts)
+	mmListHabits.t.Fatalf("Unexpected call to HabitsClientMock.ListHabits. %v", ctx)
 	return
 }
 

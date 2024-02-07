@@ -25,11 +25,23 @@ type HabitsClientMock struct {
 	beforeCreateHabitCounter uint64
 	CreateHabitMock          mHabitsClientMockCreateHabit
 
+	funcGetHabitStatus          func(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption) (gp1 *mm_api.GetHabitStatusResponse, err error)
+	inspectFuncGetHabitStatus   func(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption)
+	afterGetHabitStatusCounter  uint64
+	beforeGetHabitStatusCounter uint64
+	GetHabitStatusMock          mHabitsClientMockGetHabitStatus
+
 	funcListHabits          func(ctx context.Context, in *mm_api.ListHabitsRequest, opts ...grpc.CallOption) (lp1 *mm_api.ListHabitsResponse, err error)
 	inspectFuncListHabits   func(ctx context.Context, in *mm_api.ListHabitsRequest, opts ...grpc.CallOption)
 	afterListHabitsCounter  uint64
 	beforeListHabitsCounter uint64
 	ListHabitsMock          mHabitsClientMockListHabits
+
+	funcTickHabit          func(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption) (tp1 *mm_api.TickHabitResponse, err error)
+	inspectFuncTickHabit   func(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption)
+	afterTickHabitCounter  uint64
+	beforeTickHabitCounter uint64
+	TickHabitMock          mHabitsClientMockTickHabit
 }
 
 // NewHabitsClientMock returns a mock for api.HabitsClient
@@ -42,8 +54,14 @@ func NewHabitsClientMock(t minimock.Tester) *HabitsClientMock {
 	m.CreateHabitMock = mHabitsClientMockCreateHabit{mock: m}
 	m.CreateHabitMock.callArgs = []*HabitsClientMockCreateHabitParams{}
 
+	m.GetHabitStatusMock = mHabitsClientMockGetHabitStatus{mock: m}
+	m.GetHabitStatusMock.callArgs = []*HabitsClientMockGetHabitStatusParams{}
+
 	m.ListHabitsMock = mHabitsClientMockListHabits{mock: m}
 	m.ListHabitsMock.callArgs = []*HabitsClientMockListHabitsParams{}
+
+	m.TickHabitMock = mHabitsClientMockTickHabit{mock: m}
+	m.TickHabitMock.callArgs = []*HabitsClientMockTickHabitParams{}
 
 	return m
 }
@@ -266,6 +284,224 @@ func (m *HabitsClientMock) MinimockCreateHabitInspect() {
 	}
 }
 
+type mHabitsClientMockGetHabitStatus struct {
+	mock               *HabitsClientMock
+	defaultExpectation *HabitsClientMockGetHabitStatusExpectation
+	expectations       []*HabitsClientMockGetHabitStatusExpectation
+
+	callArgs []*HabitsClientMockGetHabitStatusParams
+	mutex    sync.RWMutex
+}
+
+// HabitsClientMockGetHabitStatusExpectation specifies expectation struct of the HabitsClient.GetHabitStatus
+type HabitsClientMockGetHabitStatusExpectation struct {
+	mock    *HabitsClientMock
+	params  *HabitsClientMockGetHabitStatusParams
+	results *HabitsClientMockGetHabitStatusResults
+	Counter uint64
+}
+
+// HabitsClientMockGetHabitStatusParams contains parameters of the HabitsClient.GetHabitStatus
+type HabitsClientMockGetHabitStatusParams struct {
+	ctx  context.Context
+	in   *mm_api.GetHabitStatusRequest
+	opts []grpc.CallOption
+}
+
+// HabitsClientMockGetHabitStatusResults contains results of the HabitsClient.GetHabitStatus
+type HabitsClientMockGetHabitStatusResults struct {
+	gp1 *mm_api.GetHabitStatusResponse
+	err error
+}
+
+// Expect sets up expected params for HabitsClient.GetHabitStatus
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) Expect(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption) *mHabitsClientMockGetHabitStatus {
+	if mmGetHabitStatus.mock.funcGetHabitStatus != nil {
+		mmGetHabitStatus.mock.t.Fatalf("HabitsClientMock.GetHabitStatus mock is already set by Set")
+	}
+
+	if mmGetHabitStatus.defaultExpectation == nil {
+		mmGetHabitStatus.defaultExpectation = &HabitsClientMockGetHabitStatusExpectation{}
+	}
+
+	mmGetHabitStatus.defaultExpectation.params = &HabitsClientMockGetHabitStatusParams{ctx, in, opts}
+	for _, e := range mmGetHabitStatus.expectations {
+		if minimock.Equal(e.params, mmGetHabitStatus.defaultExpectation.params) {
+			mmGetHabitStatus.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmGetHabitStatus.defaultExpectation.params)
+		}
+	}
+
+	return mmGetHabitStatus
+}
+
+// Inspect accepts an inspector function that has same arguments as the HabitsClient.GetHabitStatus
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) Inspect(f func(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption)) *mHabitsClientMockGetHabitStatus {
+	if mmGetHabitStatus.mock.inspectFuncGetHabitStatus != nil {
+		mmGetHabitStatus.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.GetHabitStatus")
+	}
+
+	mmGetHabitStatus.mock.inspectFuncGetHabitStatus = f
+
+	return mmGetHabitStatus
+}
+
+// Return sets up results that will be returned by HabitsClient.GetHabitStatus
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) Return(gp1 *mm_api.GetHabitStatusResponse, err error) *HabitsClientMock {
+	if mmGetHabitStatus.mock.funcGetHabitStatus != nil {
+		mmGetHabitStatus.mock.t.Fatalf("HabitsClientMock.GetHabitStatus mock is already set by Set")
+	}
+
+	if mmGetHabitStatus.defaultExpectation == nil {
+		mmGetHabitStatus.defaultExpectation = &HabitsClientMockGetHabitStatusExpectation{mock: mmGetHabitStatus.mock}
+	}
+	mmGetHabitStatus.defaultExpectation.results = &HabitsClientMockGetHabitStatusResults{gp1, err}
+	return mmGetHabitStatus.mock
+}
+
+// Set uses given function f to mock the HabitsClient.GetHabitStatus method
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) Set(f func(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption) (gp1 *mm_api.GetHabitStatusResponse, err error)) *HabitsClientMock {
+	if mmGetHabitStatus.defaultExpectation != nil {
+		mmGetHabitStatus.mock.t.Fatalf("Default expectation is already set for the HabitsClient.GetHabitStatus method")
+	}
+
+	if len(mmGetHabitStatus.expectations) > 0 {
+		mmGetHabitStatus.mock.t.Fatalf("Some expectations are already set for the HabitsClient.GetHabitStatus method")
+	}
+
+	mmGetHabitStatus.mock.funcGetHabitStatus = f
+	return mmGetHabitStatus.mock
+}
+
+// When sets expectation for the HabitsClient.GetHabitStatus which will trigger the result defined by the following
+// Then helper
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) When(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption) *HabitsClientMockGetHabitStatusExpectation {
+	if mmGetHabitStatus.mock.funcGetHabitStatus != nil {
+		mmGetHabitStatus.mock.t.Fatalf("HabitsClientMock.GetHabitStatus mock is already set by Set")
+	}
+
+	expectation := &HabitsClientMockGetHabitStatusExpectation{
+		mock:   mmGetHabitStatus.mock,
+		params: &HabitsClientMockGetHabitStatusParams{ctx, in, opts},
+	}
+	mmGetHabitStatus.expectations = append(mmGetHabitStatus.expectations, expectation)
+	return expectation
+}
+
+// Then sets up HabitsClient.GetHabitStatus return parameters for the expectation previously defined by the When method
+func (e *HabitsClientMockGetHabitStatusExpectation) Then(gp1 *mm_api.GetHabitStatusResponse, err error) *HabitsClientMock {
+	e.results = &HabitsClientMockGetHabitStatusResults{gp1, err}
+	return e.mock
+}
+
+// GetHabitStatus implements api.HabitsClient
+func (mmGetHabitStatus *HabitsClientMock) GetHabitStatus(ctx context.Context, in *mm_api.GetHabitStatusRequest, opts ...grpc.CallOption) (gp1 *mm_api.GetHabitStatusResponse, err error) {
+	mm_atomic.AddUint64(&mmGetHabitStatus.beforeGetHabitStatusCounter, 1)
+	defer mm_atomic.AddUint64(&mmGetHabitStatus.afterGetHabitStatusCounter, 1)
+
+	if mmGetHabitStatus.inspectFuncGetHabitStatus != nil {
+		mmGetHabitStatus.inspectFuncGetHabitStatus(ctx, in, opts...)
+	}
+
+	mm_params := &HabitsClientMockGetHabitStatusParams{ctx, in, opts}
+
+	// Record call args
+	mmGetHabitStatus.GetHabitStatusMock.mutex.Lock()
+	mmGetHabitStatus.GetHabitStatusMock.callArgs = append(mmGetHabitStatus.GetHabitStatusMock.callArgs, mm_params)
+	mmGetHabitStatus.GetHabitStatusMock.mutex.Unlock()
+
+	for _, e := range mmGetHabitStatus.GetHabitStatusMock.expectations {
+		if minimock.Equal(e.params, mm_params) {
+			mm_atomic.AddUint64(&e.Counter, 1)
+			return e.results.gp1, e.results.err
+		}
+	}
+
+	if mmGetHabitStatus.GetHabitStatusMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmGetHabitStatus.GetHabitStatusMock.defaultExpectation.Counter, 1)
+		mm_want := mmGetHabitStatus.GetHabitStatusMock.defaultExpectation.params
+		mm_got := HabitsClientMockGetHabitStatusParams{ctx, in, opts}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmGetHabitStatus.t.Errorf("HabitsClientMock.GetHabitStatus got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
+		}
+
+		mm_results := mmGetHabitStatus.GetHabitStatusMock.defaultExpectation.results
+		if mm_results == nil {
+			mmGetHabitStatus.t.Fatal("No results are set for the HabitsClientMock.GetHabitStatus")
+		}
+		return (*mm_results).gp1, (*mm_results).err
+	}
+	if mmGetHabitStatus.funcGetHabitStatus != nil {
+		return mmGetHabitStatus.funcGetHabitStatus(ctx, in, opts...)
+	}
+	mmGetHabitStatus.t.Fatalf("Unexpected call to HabitsClientMock.GetHabitStatus. %v %v %v", ctx, in, opts)
+	return
+}
+
+// GetHabitStatusAfterCounter returns a count of finished HabitsClientMock.GetHabitStatus invocations
+func (mmGetHabitStatus *HabitsClientMock) GetHabitStatusAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmGetHabitStatus.afterGetHabitStatusCounter)
+}
+
+// GetHabitStatusBeforeCounter returns a count of HabitsClientMock.GetHabitStatus invocations
+func (mmGetHabitStatus *HabitsClientMock) GetHabitStatusBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmGetHabitStatus.beforeGetHabitStatusCounter)
+}
+
+// Calls returns a list of arguments used in each call to HabitsClientMock.GetHabitStatus.
+// The list is in the same order as the calls were made (i.e. recent calls have a higher index)
+func (mmGetHabitStatus *mHabitsClientMockGetHabitStatus) Calls() []*HabitsClientMockGetHabitStatusParams {
+	mmGetHabitStatus.mutex.RLock()
+
+	argCopy := make([]*HabitsClientMockGetHabitStatusParams, len(mmGetHabitStatus.callArgs))
+	copy(argCopy, mmGetHabitStatus.callArgs)
+
+	mmGetHabitStatus.mutex.RUnlock()
+
+	return argCopy
+}
+
+// MinimockGetHabitStatusDone returns true if the count of the GetHabitStatus invocations corresponds
+// the number of defined expectations
+func (m *HabitsClientMock) MinimockGetHabitStatusDone() bool {
+	for _, e := range m.GetHabitStatusMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.GetHabitStatusMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterGetHabitStatusCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcGetHabitStatus != nil && mm_atomic.LoadUint64(&m.afterGetHabitStatusCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockGetHabitStatusInspect logs each unmet expectation
+func (m *HabitsClientMock) MinimockGetHabitStatusInspect() {
+	for _, e := range m.GetHabitStatusMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Errorf("Expected call to HabitsClientMock.GetHabitStatus with params: %#v", *e.params)
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.GetHabitStatusMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterGetHabitStatusCounter) < 1 {
+		if m.GetHabitStatusMock.defaultExpectation.params == nil {
+			m.t.Error("Expected call to HabitsClientMock.GetHabitStatus")
+		} else {
+			m.t.Errorf("Expected call to HabitsClientMock.GetHabitStatus with params: %#v", *m.GetHabitStatusMock.defaultExpectation.params)
+		}
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcGetHabitStatus != nil && mm_atomic.LoadUint64(&m.afterGetHabitStatusCounter) < 1 {
+		m.t.Error("Expected call to HabitsClientMock.GetHabitStatus")
+	}
+}
+
 type mHabitsClientMockListHabits struct {
 	mock               *HabitsClientMock
 	defaultExpectation *HabitsClientMockListHabitsExpectation
@@ -484,12 +720,234 @@ func (m *HabitsClientMock) MinimockListHabitsInspect() {
 	}
 }
 
+type mHabitsClientMockTickHabit struct {
+	mock               *HabitsClientMock
+	defaultExpectation *HabitsClientMockTickHabitExpectation
+	expectations       []*HabitsClientMockTickHabitExpectation
+
+	callArgs []*HabitsClientMockTickHabitParams
+	mutex    sync.RWMutex
+}
+
+// HabitsClientMockTickHabitExpectation specifies expectation struct of the HabitsClient.TickHabit
+type HabitsClientMockTickHabitExpectation struct {
+	mock    *HabitsClientMock
+	params  *HabitsClientMockTickHabitParams
+	results *HabitsClientMockTickHabitResults
+	Counter uint64
+}
+
+// HabitsClientMockTickHabitParams contains parameters of the HabitsClient.TickHabit
+type HabitsClientMockTickHabitParams struct {
+	ctx  context.Context
+	in   *mm_api.TickHabitRequest
+	opts []grpc.CallOption
+}
+
+// HabitsClientMockTickHabitResults contains results of the HabitsClient.TickHabit
+type HabitsClientMockTickHabitResults struct {
+	tp1 *mm_api.TickHabitResponse
+	err error
+}
+
+// Expect sets up expected params for HabitsClient.TickHabit
+func (mmTickHabit *mHabitsClientMockTickHabit) Expect(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption) *mHabitsClientMockTickHabit {
+	if mmTickHabit.mock.funcTickHabit != nil {
+		mmTickHabit.mock.t.Fatalf("HabitsClientMock.TickHabit mock is already set by Set")
+	}
+
+	if mmTickHabit.defaultExpectation == nil {
+		mmTickHabit.defaultExpectation = &HabitsClientMockTickHabitExpectation{}
+	}
+
+	mmTickHabit.defaultExpectation.params = &HabitsClientMockTickHabitParams{ctx, in, opts}
+	for _, e := range mmTickHabit.expectations {
+		if minimock.Equal(e.params, mmTickHabit.defaultExpectation.params) {
+			mmTickHabit.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmTickHabit.defaultExpectation.params)
+		}
+	}
+
+	return mmTickHabit
+}
+
+// Inspect accepts an inspector function that has same arguments as the HabitsClient.TickHabit
+func (mmTickHabit *mHabitsClientMockTickHabit) Inspect(f func(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption)) *mHabitsClientMockTickHabit {
+	if mmTickHabit.mock.inspectFuncTickHabit != nil {
+		mmTickHabit.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.TickHabit")
+	}
+
+	mmTickHabit.mock.inspectFuncTickHabit = f
+
+	return mmTickHabit
+}
+
+// Return sets up results that will be returned by HabitsClient.TickHabit
+func (mmTickHabit *mHabitsClientMockTickHabit) Return(tp1 *mm_api.TickHabitResponse, err error) *HabitsClientMock {
+	if mmTickHabit.mock.funcTickHabit != nil {
+		mmTickHabit.mock.t.Fatalf("HabitsClientMock.TickHabit mock is already set by Set")
+	}
+
+	if mmTickHabit.defaultExpectation == nil {
+		mmTickHabit.defaultExpectation = &HabitsClientMockTickHabitExpectation{mock: mmTickHabit.mock}
+	}
+	mmTickHabit.defaultExpectation.results = &HabitsClientMockTickHabitResults{tp1, err}
+	return mmTickHabit.mock
+}
+
+// Set uses given function f to mock the HabitsClient.TickHabit method
+func (mmTickHabit *mHabitsClientMockTickHabit) Set(f func(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption) (tp1 *mm_api.TickHabitResponse, err error)) *HabitsClientMock {
+	if mmTickHabit.defaultExpectation != nil {
+		mmTickHabit.mock.t.Fatalf("Default expectation is already set for the HabitsClient.TickHabit method")
+	}
+
+	if len(mmTickHabit.expectations) > 0 {
+		mmTickHabit.mock.t.Fatalf("Some expectations are already set for the HabitsClient.TickHabit method")
+	}
+
+	mmTickHabit.mock.funcTickHabit = f
+	return mmTickHabit.mock
+}
+
+// When sets expectation for the HabitsClient.TickHabit which will trigger the result defined by the following
+// Then helper
+func (mmTickHabit *mHabitsClientMockTickHabit) When(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption) *HabitsClientMockTickHabitExpectation {
+	if mmTickHabit.mock.funcTickHabit != nil {
+		mmTickHabit.mock.t.Fatalf("HabitsClientMock.TickHabit mock is already set by Set")
+	}
+
+	expectation := &HabitsClientMockTickHabitExpectation{
+		mock:   mmTickHabit.mock,
+		params: &HabitsClientMockTickHabitParams{ctx, in, opts},
+	}
+	mmTickHabit.expectations = append(mmTickHabit.expectations, expectation)
+	return expectation
+}
+
+// Then sets up HabitsClient.TickHabit return parameters for the expectation previously defined by the When method
+func (e *HabitsClientMockTickHabitExpectation) Then(tp1 *mm_api.TickHabitResponse, err error) *HabitsClientMock {
+	e.results = &HabitsClientMockTickHabitResults{tp1, err}
+	return e.mock
+}
+
+// TickHabit implements api.HabitsClient
+func (mmTickHabit *HabitsClientMock) TickHabit(ctx context.Context, in *mm_api.TickHabitRequest, opts ...grpc.CallOption) (tp1 *mm_api.TickHabitResponse, err error) {
+	mm_atomic.AddUint64(&mmTickHabit.beforeTickHabitCounter, 1)
+	defer mm_atomic.AddUint64(&mmTickHabit.afterTickHabitCounter, 1)
+
+	if mmTickHabit.inspectFuncTickHabit != nil {
+		mmTickHabit.inspectFuncTickHabit(ctx, in, opts...)
+	}
+
+	mm_params := &HabitsClientMockTickHabitParams{ctx, in, opts}
+
+	// Record call args
+	mmTickHabit.TickHabitMock.mutex.Lock()
+	mmTickHabit.TickHabitMock.callArgs = append(mmTickHabit.TickHabitMock.callArgs, mm_params)
+	mmTickHabit.TickHabitMock.mutex.Unlock()
+
+	for _, e := range mmTickHabit.TickHabitMock.expectations {
+		if minimock.Equal(e.params, mm_params) {
+			mm_atomic.AddUint64(&e.Counter, 1)
+			return e.results.tp1, e.results.err
+		}
+	}
+
+	if mmTickHabit.TickHabitMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmTickHabit.TickHabitMock.defaultExpectation.Counter, 1)
+		mm_want := mmTickHabit.TickHabitMock.defaultExpectation.params
+		mm_got := HabitsClientMockTickHabitParams{ctx, in, opts}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmTickHabit.t.Errorf("HabitsClientMock.TickHabit got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
+		}
+
+		mm_results := mmTickHabit.TickHabitMock.defaultExpectation.results
+		if mm_results == nil {
+			mmTickHabit.t.Fatal("No results are set for the HabitsClientMock.TickHabit")
+		}
+		return (*mm_results).tp1, (*mm_results).err
+	}
+	if mmTickHabit.funcTickHabit != nil {
+		return mmTickHabit.funcTickHabit(ctx, in, opts...)
+	}
+	mmTickHabit.t.Fatalf("Unexpected call to HabitsClientMock.TickHabit. %v %v %v", ctx, in, opts)
+	return
+}
+
+// TickHabitAfterCounter returns a count of finished HabitsClientMock.TickHabit invocations
+func (mmTickHabit *HabitsClientMock) TickHabitAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmTickHabit.afterTickHabitCounter)
+}
+
+// TickHabitBeforeCounter returns a count of HabitsClientMock.TickHabit invocations
+func (mmTickHabit *HabitsClientMock) TickHabitBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmTickHabit.beforeTickHabitCounter)
+}
+
+// Calls returns a list of arguments used in each call to HabitsClientMock.TickHabit.
+// The list is in the same order as the calls were made (i.e. recent calls have a higher index)
+func (mmTickHabit *mHabitsClientMockTickHabit) Calls() []*HabitsClientMockTickHabitParams {
+	mmTickHabit.mutex.RLock()
+
+	argCopy := make([]*HabitsClientMockTickHabitParams, len(mmTickHabit.callArgs))
+	copy(argCopy, mmTickHabit.callArgs)
+
+	mmTickHabit.mutex.RUnlock()
+
+	return argCopy
+}
+
+// MinimockTickHabitDone returns true if the count of the TickHabit invocations corresponds
+// the number of defined expectations
+func (m *HabitsClientMock) MinimockTickHabitDone() bool {
+	for _, e := range m.TickHabitMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.TickHabitMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterTickHabitCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcTickHabit != nil && mm_atomic.LoadUint64(&m.afterTickHabitCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockTickHabitInspect logs each unmet expectation
+func (m *HabitsClientMock) MinimockTickHabitInspect() {
+	for _, e := range m.TickHabitMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Errorf("Expected call to HabitsClientMock.TickHabit with params: %#v", *e.params)
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.TickHabitMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterTickHabitCounter) < 1 {
+		if m.TickHabitMock.defaultExpectation.params == nil {
+			m.t.Error("Expected call to HabitsClientMock.TickHabit")
+		} else {
+			m.t.Errorf("Expected call to HabitsClientMock.TickHabit with params: %#v", *m.TickHabitMock.defaultExpectation.params)
+		}
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcTickHabit != nil && mm_atomic.LoadUint64(&m.afterTickHabitCounter) < 1 {
+		m.t.Error("Expected call to HabitsClientMock.TickHabit")
+	}
+}
+
 // MinimockFinish checks that all mocked methods have been called the expected number of times
 func (m *HabitsClientMock) MinimockFinish() {
 	if !m.minimockDone() {
 		m.MinimockCreateHabitInspect()
 
+		m.MinimockGetHabitStatusInspect()
+
 		m.MinimockListHabitsInspect()
+
+		m.MinimockTickHabitInspect()
 		m.t.FailNow()
 	}
 }
@@ -514,5 +972,7 @@ func (m *HabitsClientMock) minimockDone() bool {
 	done := true
 	return done &&
 		m.MinimockCreateHabitDone() &&
-		m.MinimockListHabitsDone()
+		m.MinimockGetHabitStatusDone() &&
+		m.MinimockListHabitsDone() &&
+		m.MinimockTickHabitDone()
 }
