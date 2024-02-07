@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// tick adds a tick to the given habit and redirected to index.
 func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	fmt.Printf("Ticking habit id %s\n", id)
