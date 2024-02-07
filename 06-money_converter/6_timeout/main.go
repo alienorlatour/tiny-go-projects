@@ -65,7 +65,7 @@ func parseAmount(from *string) money.Amount {
 	// transform value into an amount with its currency
 	amount, err := money.NewAmount(quantity, fromCurrency)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, err.Error())
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 
