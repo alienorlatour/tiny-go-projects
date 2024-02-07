@@ -2,7 +2,7 @@ module learngo-pockets/templates
 
 go 1.21.1
 
-replace learngo-pockets/habits => ../../10-habits/5_integration
+replace learngo-pockets/habits => ../../10-habits/progress
 
 require (
 	github.com/go-chi/chi/v5 v5.0.11
