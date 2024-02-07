@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"learngo-pockets/habits/api"
-	habit "learngo-pockets/templates/internal/habits"
+	"learngo-pockets/templates/internal/habit"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

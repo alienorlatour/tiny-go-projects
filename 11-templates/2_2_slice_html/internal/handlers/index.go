@@ -24,6 +24,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("can't parse index: ", err)
 		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
+		return
 	}
 
 	values := []int{47, 52, 88, 18}
