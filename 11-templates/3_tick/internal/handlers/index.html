@@ -1,0 +1,33 @@
+<html lang="en">
+<script>
+    function tick(id) {
+        const url = "/habits/" + encodeURIComponent(id);
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            }
+        });
+    }
+</script>
+
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<p>Here are your registered habits</p>
+<div>
+    <ul>
+        {{range .}}
+        <li>
+            <b>{{.Name}}</b>
+            <span {{ if lt .Ticks 3 }} style="background-color:#9B4433" {{ else }}
+                  style="background-color:#488286" {{ end }}>{{.Ticks}}/{{.WeeklyFrequency}}</span>
+            <a href="/habits/{{.ID}}">Tick!</a>
+        </li>
+        {{end}}
+    </ul>
+</div>
+</body>
+</html>

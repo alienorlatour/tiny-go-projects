@@ -8,7 +8,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/templates/internal/client/mocks"
-	habit "learngo-pockets/templates/internal/habits"
+	"learngo-pockets/templates/internal/habit"
 
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/assert"

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	habit "learngo-pockets/templates/internal/habits"
+	"learngo-pockets/templates/internal/habit"
 
 	chi "github.com/go-chi/chi/v5"
 )

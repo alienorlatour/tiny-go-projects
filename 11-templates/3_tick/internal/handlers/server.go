@@ -15,6 +15,7 @@ import (
 //go:generate minimock -i habitsClient -s "_mock.go" -o "mocks"
 type habitsClient interface {
 	ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error)
+	TickHabit(ctx context.Context, id habit.ID) error
 }
 
 // Server serves all the HTML routes on this service.
@@ -35,6 +36,7 @@ func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
 
 	r.Get("/", s.index)
+	r.Get("/habits/{id}", s.tick)
 
 	return r
 }

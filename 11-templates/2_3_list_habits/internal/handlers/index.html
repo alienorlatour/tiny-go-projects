@@ -6,19 +6,13 @@
 <h2>Habits Viewer</h2>
 <p>Here are your registered habits</p>
 <div>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Objective</th>
-            <th></th>
-        </tr>
+    <ul>
         {{range .}}
-        <tr>
-            <td>{{.Name}}</td>
-            <td>{{.WeeklyFrequency}}</td>
-        </tr>
+        <li>
+            <b>{{.Name}}</b> - {{.WeeklyFrequency}}
+        </li>
         {{end}}
-    </table>
+    </ul>
 </div>
 </body>
 </html>
