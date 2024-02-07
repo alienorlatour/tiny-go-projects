@@ -9,7 +9,7 @@
     <ul>
         {{range .}}
         <li>
-            <b>{{.Name}}</b> - {{.WeeklyFrequency}}
+            <b>{{.Name}}</b> - {{.WeeklyFrequency}} time{{ if gt .WeeklyFrequency 1 }}s{{end}} a week
         </li>
         {{end}}
     </ul>
