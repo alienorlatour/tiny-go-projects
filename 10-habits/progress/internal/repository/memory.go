@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"sort"
 	"sync"
 	"time"
 
@@ -65,6 +66,9 @@ func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	for _, h := range hr.habits {
 		habits = append(habits, h)
 	}
+	sort.Slice(habits, func(i, j int) bool {
+		return habits[i].Name < habits[j].Name
+	})
 
 	return habits, nil
 }
@@ -120,6 +124,9 @@ func (hr *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t tim
 
 	loggedWeeks, found := hr.ticks[id]
 	if !found {
+		if _, ok := hr.habits[id]; ok {
+			return []time.Time{}, nil
+		}
 		return nil, fmt.Errorf("id %q not registered: %w", id, ErrNotFound)
 	}
 
