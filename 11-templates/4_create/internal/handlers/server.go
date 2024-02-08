@@ -16,6 +16,7 @@ import (
 type habitsClient interface {
 	ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error)
 	TickHabit(ctx context.Context, id habit.ID) error
+	CreateHabit(ctx context.Context, h habit.Habit) error
 }
 
 // Server serves all the HTML routes on this service.
@@ -37,6 +38,7 @@ func (s *Server) Router() http.Handler {
 
 	r.Get("/", s.index)
 	r.Get("/tick/{habitID}", s.tick)
+	r.Post("/create", s.create)
 
 	return r
 }

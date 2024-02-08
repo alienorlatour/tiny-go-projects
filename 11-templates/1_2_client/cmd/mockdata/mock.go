@@ -23,12 +23,12 @@ func main() {
 
 func mock(cli api.HabitsClient) {
 	cli.CreateHabit(context.Background(), &api.CreateHabitRequest{
-		Name:            "Read",
-		WeeklyFrequency: ptr(7),
+		Name:            "Call your mom",
+		WeeklyFrequency: ptr(1),
 	})
 	cli.CreateHabit(context.Background(), &api.CreateHabitRequest{
-		Name:            "Feed the sourdough",
-		WeeklyFrequency: ptr(14),
+		Name:            "Sleep",
+		WeeklyFrequency: ptr(7),
 	})
 }
 
