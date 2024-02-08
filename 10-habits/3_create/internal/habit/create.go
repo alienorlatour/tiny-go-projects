@@ -46,7 +46,7 @@ func validateAndCompleteHabit(h Habit) (Habit, error) {
 		h.ID = ID(uuid.NewString())
 	}
 
-	if h.CreationTime.Equal(time.Time{}) {
+	if h.CreationTime.IsZero() {
 		h.CreationTime = time.Now()
 	}
 

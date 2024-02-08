@@ -16,8 +16,6 @@ func timerInterceptor(writer io.Writer) grpc.UnaryServerInterceptor {
 			_, _ = fmt.Fprintf(writer, "Time in %s: %s\n", info.FullMethod, time.Since(start))
 		}()
 
-		resp, err := handler(ctx, req)
-
-		return resp, err
+		return handler(ctx, req)
 	}
 }

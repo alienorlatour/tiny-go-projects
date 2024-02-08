@@ -34,7 +34,9 @@ func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitReques
 
 	createdHabit, err := habit.Create(ctx, s.db, h)
 	if err != nil {
-		invalidErr := habit.InvalidInputError{}
+		var invalidErr habit.InvalidInputError
+		{
+		}
 		if errors.As(err, &invalidErr) {
 			return nil, status.Error(codes.InvalidArgument, invalidErr.Error())
 		}
