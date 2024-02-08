@@ -3,6 +3,7 @@ package integration
 import (
 	"context"
 	"net"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -121,7 +122,7 @@ func getHabitStatusMatches(t *testing.T, habitsCli api.HabitsClient, id string, 
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := server.New(repository.New())
+	s := server.New(os.Stdout, repository.New())
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)

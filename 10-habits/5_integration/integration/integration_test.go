@@ -3,10 +3,8 @@ package integration
 import (
 	"context"
 	"net"
+	"os"
 	"testing"
-
-	"learngo-pockets/habits/internal/repository"
-	"learngo-pockets/habits/internal/server"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,6 +14,8 @@ import (
 	"google.golang.org/grpc/status"
 
 	"learngo-pockets/habits/api"
+	"learngo-pockets/habits/internal/repository"
+	"learngo-pockets/habits/internal/server"
 )
 
 func TestIntegration(t *testing.T) {
@@ -79,7 +79,7 @@ func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := server.New(repository.New())
+	s := server.New(os.Stdout, repository.New())
 
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)

@@ -3,11 +3,11 @@ package server
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
 	"strconv"
 
 	"google.golang.org/grpc"
@@ -20,31 +20,34 @@ import (
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	db repository
+	interceptorOutput io.Writer
+
+	db Repository
 }
 
-type repository interface {
+type Repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
 // New returns a Server that can Listen.
-func New(repo repository) *Server {
+func New(interceptorOutput io.Writer, repo Repository) *Server {
 	return &Server{
-		db: repo,
+		interceptorOutput: interceptorOutput,
+		db:                repo,
 	}
 }
 
 // Listen starts the listening to the port.
 func (s *Server) Listen(ctx context.Context, port int) error {
-	const addr = "127.0.0.1:0"
+	const addr = "127.0.0.1"
 
 	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(os.Stdout)))
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
 	api.RegisterHabitsServer(grpcServer, s)
 	reflection.Register(grpcServer) // if env == dev
 	log.Printf("gRPC server started and listening to port %d", port)

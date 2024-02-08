@@ -3,18 +3,21 @@ package server
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"strconv"
 
+	"google.golang.org/grpc"
+
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-
-	"google.golang.org/grpc"
 )
 
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
+	interceptorOutput io.Writer
+
 	db Repository
 }
 
@@ -24,9 +27,10 @@ type Repository interface {
 }
 
 // New returns a Server that can Listen.
-func New(repo Repository) *Server {
+func New(interceptorOutput io.Writer, repo Repository) *Server {
 	return &Server{
-		db: repo,
+		interceptorOutput: interceptorOutput,
+		db:                repo,
 	}
 }
 

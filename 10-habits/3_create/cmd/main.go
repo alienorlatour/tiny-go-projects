@@ -1,10 +1,9 @@
 package main
 
 import (
-	"log"
-
 	"learngo-pockets/habits/internal/repository"
 	"learngo-pockets/habits/internal/server"
+	"log"
 )
 
 const port = 28710

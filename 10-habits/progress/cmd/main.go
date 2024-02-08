@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -19,7 +20,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	srv := server.New(repository.New())
+	srv := server.New(repository.New(), os.Stdout)
 
 	err := srv.Listen(ctx, port)
 	if err != nil {

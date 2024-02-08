@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net"
+	"strconv"
 
 	"learngo-pockets/habits/api"
 
@@ -21,8 +22,9 @@ func New() *Server {
 
 // Listen starts the listening to the port
 func (s *Server) Listen(port int) error {
-	addr := fmt.Sprintf(":%d", port)
-	listener, err := net.Listen("tcp", addr)
+	const addr = "127.0.0.1:0"
+
+	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
