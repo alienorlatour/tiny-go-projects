@@ -17,6 +17,8 @@ type ticksPerWeek map[isoweek.ISO8601][]time.Time
 // HabitRepository holds all the current habits.
 type HabitRepository struct {
 	mutex  sync.Mutex
+	logger log.Logger
+
 	habits map[habit.ID]habit.Habit
 	ticks  map[habit.ID]ticksPerWeek
 }
@@ -25,6 +27,7 @@ type HabitRepository struct {
 func New() *HabitRepository {
 	return &HabitRepository{
 		habits: make(map[habit.ID]habit.Habit),
+		ticks:  make(map[habit.ID]ticksPerWeek),
 	}
 }
 
