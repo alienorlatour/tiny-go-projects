@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"learngo-pockets/habits/internal/habit"
@@ -15,6 +16,7 @@ type ticksPerWeek map[isoweek.ISO8601][]time.Time
 
 // HabitRepository holds all the current habits.
 type HabitRepository struct {
+	mutex  sync.Mutex
 	habits map[habit.ID]habit.Habit
 	ticks  map[habit.ID]ticksPerWeek
 }
@@ -23,21 +25,25 @@ type HabitRepository struct {
 func New() *HabitRepository {
 	return &HabitRepository{
 		habits: make(map[habit.ID]habit.Habit),
-		ticks:  make(map[habit.ID]ticksPerWeek),
 	}
 }
 
 // Add inserts for the first time a habit in memory.
-func (r *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
+func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 	log.Print("Adding a habit...")
-	r.habits[habit.ID] = habit
+
+	// Lock the writing of the habit.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
+	hr.habits[habit.ID] = habit
 
 	return nil
 }
 
-func (r *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, error) {
+func (hr *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, error) {
 	log.Print("Finding a habit...")
-	h, found := r.habits[id]
+	h, found := hr.habits[id]
 	if !found {
 		return habit.Habit{}, fmt.Errorf("habit %q not registered: %w", id, ErrNotFound)
 	}
@@ -46,11 +52,15 @@ func (r *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, err
 }
 
 // FindAll returns all habits.
-func (r *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
+func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	log.Printf("Listing habits...")
 
+	// Lock the reading and the writing of the habits.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
 	habits := make([]habit.Habit, 0)
-	for _, h := range r.habits {
+	for _, h := range hr.habits {
 		habits = append(habits, h)
 	}
 
@@ -58,41 +68,55 @@ func (r *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 }
 
 // AddTick inserts a new event for a habit in memory.
-func (r *HabitRepository) AddTick(_ context.Context, id habit.ID, t time.Time) error {
+func (hr *HabitRepository) AddTick(_ context.Context, id habit.ID, t time.Time) error {
 	log.Print("Adding a tick...")
-	_, found := r.ticks[id]
+
+	// Lock the reading and the writing of the habits.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
+	_, found := hr.ticks[id]
 	if !found {
-		r.ticks[id] = make(ticksPerWeek)
+		hr.ticks[id] = make(ticksPerWeek)
 	}
 
 	w := isoweek.At(t)
 
-	ticks, found := r.ticks[id][w]
+	ticks, found := hr.ticks[id][w]
 	if !found {
 		// Capacity is set to 1 since we will add only one tick here.
 		ticks = make([]time.Time, 0, 1)
 	}
 
-	r.ticks[id][w] = append(ticks, t)
+	hr.ticks[id][w] = append(ticks, t)
 
 	return nil
 }
 
 // FindAllTicks returns all the ticks for a habit.
-func (r *HabitRepository) FindAllTicks(_ context.Context, id habit.ID) ([]time.Time, error) {
+func (hr *HabitRepository) FindAllTicks(_ context.Context, id habit.ID) ([]time.Time, error) {
 	log.Printf("Listing ticks for a habit...")
+
+	// Lock the reading and the writing of the habits.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
 	ticks := make([]time.Time, 0)
-	for _, weeklyTicks := range r.ticks[id] {
+	for _, weeklyTicks := range hr.ticks[id] {
 		ticks = append(ticks, weeklyTicks...)
 	}
 	return ticks, nil
 }
 
 // FindWeeklyTicks returns all the ticks in a week.
-func (r *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t time.Time) ([]time.Time, error) {
+func (hr *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t time.Time) ([]time.Time, error) {
 	log.Printf("Listing weekly ticks for a habit...")
 
-	loggedWeeks, found := r.ticks[id]
+	// Lock the reading and the writing of the habits.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
+	loggedWeeks, found := hr.ticks[id]
 	if !found {
 		return nil, fmt.Errorf("id %q not registered: %w", id, ErrNotFound)
 	}

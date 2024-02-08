@@ -3,12 +3,14 @@ package repository
 import (
 	"context"
 	"log"
+	"sync"
 
 	"learngo-pockets/habits/internal/habit"
 )
 
 // HabitRepository holds all the current habits.
 type HabitRepository struct {
+	mutex   sync.Mutex
 	storage map[habit.ID]habit.Habit
 }
 
@@ -20,19 +22,28 @@ func New() *HabitRepository {
 }
 
 // Add inserts for the first time a habit in memory.
-func (gr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
+func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 	log.Print("Adding a habit...")
-	gr.storage[habit.ID] = habit
+
+	// Lock the writing of the habit.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
+	hr.storage[habit.ID] = habit
 
 	return nil
 }
 
 // FindAll returns all habits.
-func (gr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
+func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 	log.Printf("Listing habits...")
 
+	// Lock the reading and the writing of the habits.
+	hr.mutex.Lock()
+	defer hr.mutex.Unlock()
+
 	habits := make([]habit.Habit, 0)
-	for _, h := range gr.storage {
+	for _, h := range hr.storage {
 		habits = append(habits, h)
 	}
 
