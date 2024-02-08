@@ -15,10 +15,10 @@ func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api
 		return nil, err // todo wrap
 	}
 
-	return response(habits), nil
+	return convertHabitsToAPI(habits), nil
 }
 
-func response(habits []habit.Habit) *api.ListHabitsResponse {
+func convertHabitsToAPI(habits []habit.Habit) *api.ListHabitsResponse {
 	hts := make([]*api.Habit, len(habits))
 
 	for i := range habits {
@@ -30,7 +30,6 @@ func response(habits []habit.Habit) *api.ListHabitsResponse {
 		}
 	}
 
-	// TODO: Do we want to redo a sort here? Deterministicity matters.
 	return &api.ListHabitsResponse{
 		Habits: hts,
 	}

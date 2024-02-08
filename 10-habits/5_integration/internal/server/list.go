@@ -15,10 +15,10 @@ func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api
 		return nil, err // todo wrap
 	}
 
-	return response(habits), nil
+	return convertHabitsToAPI(habits), nil
 }
 
-func response(habits []habit.Habit) *api.ListHabitsResponse {
+func convertHabitsToAPI(habits []habit.Habit) *api.ListHabitsResponse {
 	hts := make([]*api.Habit, len(habits))
 
 	for i := range habits {
