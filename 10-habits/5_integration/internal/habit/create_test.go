@@ -49,8 +49,8 @@ func TestCreate(t *testing.T) {
 				db.AddMock.Set(
 					func(ctx context.Context, habit habit.Habit) error {
 						select {
-						// This tick is longer than a database call
-						case <-time.Tick(200 * time.Millisecond):
+						// This duration is longer than a database call
+						case <-time.After(200 * time.Millisecond):
 							return nil
 						case <-ctx.Done():
 							return ctx.Err()

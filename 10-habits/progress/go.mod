@@ -3,7 +3,7 @@ module learngo-pockets/habits
 go 1.21
 
 require (
-	github.com/gojuno/minimock/v3 v3.1.3
+	github.com/gojuno/minimock/v3 v3.3.6
 	github.com/google/uuid v1.4.0
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.59.0
