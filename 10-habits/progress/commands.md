@@ -22,6 +22,15 @@ habits.Habits/CreateHabit
 }
 ```
 
+## List habits
+```shell
+grpcurl \
+-import-path api/proto/ \
+-proto service.proto \
+-plaintext -d '{}' \
+localhost:28710 \
+habits.Habits/ListHabits
+```
 
 ## Tick a habit
 
