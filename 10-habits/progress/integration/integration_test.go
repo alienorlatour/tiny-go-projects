@@ -20,7 +20,7 @@ import (
 func TestIntegration(t *testing.T) {
 	// run server
 	grpcServ := newServer(t)
-	listener, err := net.Listen("tcp", "")
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 
 	go func() {

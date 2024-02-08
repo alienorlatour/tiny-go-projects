@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"strconv"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
@@ -14,16 +15,16 @@ import (
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	db repository
+	db Repository
 }
 
-type repository interface {
+type Repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
 // New returns a Server that can Listen.
-func New(repo repository) *Server {
+func New(repo Repository) *Server {
 	return &Server{
 		db: repo,
 	}
@@ -31,8 +32,9 @@ func New(repo repository) *Server {
 
 // Listen starts the listening to the port.
 func (s *Server) Listen(port int) error {
-	addr := fmt.Sprintf(":%d", port)
-	listener, err := net.Listen("tcp", addr)
+	const addr = "127.0.0.1:0"
+
+	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}

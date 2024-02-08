@@ -8,6 +8,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"strconv"
 	"time"
 
 	"google.golang.org/grpc"
@@ -20,10 +21,10 @@ import (
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	db repository
+	db Repository
 }
 
-type repository interface {
+type Repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	Find(ctx context.Context, id habit.ID) (habit.Habit, error)
 	FindAll(ctx context.Context) ([]habit.Habit, error)
@@ -33,7 +34,7 @@ type repository interface {
 }
 
 // New returns a Server that can Listen.
-func New(repo repository) *Server {
+func New(repo Repository) *Server {
 	return &Server{
 		db: repo,
 	}
@@ -41,7 +42,9 @@ func New(repo repository) *Server {
 
 // Listen starts the listening to the port.
 func (s *Server) Listen(ctx context.Context, port int) error {
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	const addr = "127.0.0.1"
+
+	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
@@ -63,7 +66,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 	go func() {
 		const pprofPort = 6060
 		log.Printf("Starting pprof listener on port %d\n", pprofPort)
-		err := http.ListenAndServe(fmt.Sprintf(":%d", pprofPort), nil)
+		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
 		log.Printf("error while serving pprof: %s", err)
 	}()
 
