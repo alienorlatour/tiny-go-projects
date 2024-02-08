@@ -20,7 +20,7 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	srv := server.New(repository.New(), os.Stdout)
+	srv := server.New(os.Stdout, repository.New())
 
 	err := srv.Listen(ctx, port)
 	if err != nil {
