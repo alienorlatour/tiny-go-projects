@@ -31,7 +31,7 @@ func TestIntegration(t *testing.T) {
 	defer grpcServ.Stop()
 
 	// create client
-	habitsCli, err := newClient(listener.Addr().String())
+	habitsCli, err := newClient(t, listener.Addr().String())
 	require.NoError(t, err)
 
 	// add 2 habits
@@ -80,6 +80,40 @@ func TestIntegration(t *testing.T) {
 	})
 }
 
+func newServer(t *testing.T) *grpc.Server {
+	t.Helper()
+	s := server.New(os.Stdout, repository.New())
+
+	grpcServer := grpc.NewServer()
+	api.RegisterHabitsServer(grpcServer, s)
+
+	return grpcServer
+}
+
+func newClient(t *testing.T, serverAddress string) (api.HabitsClient, error) {
+	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+	conn, err := grpc.Dial(serverAddress, creds)
+	require.NoError(t, err)
+
+	return api.NewHabitsClient(conn), nil
+}
+
+func addHabit(t *testing.T, habitsCli api.HabitsClient, freq *int32, name string) string {
+	t.Helper()
+
+	resp, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
+		Name:            name,
+		WeeklyFrequency: freq,
+	})
+	require.NoError(t, err)
+
+	return resp.Habit.Id
+}
+
+func ptr(i int32) *int32 {
+	return &i
+}
+
 func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, name string, statusCode codes.Code) {
 	t.Helper()
 
@@ -93,6 +127,8 @@ func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, nam
 }
 
 func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api.Habit) {
+	t.Helper()
+
 	list, err := habitsCli.ListHabits(context.Background(), &api.ListHabitsRequest{})
 	require.NoError(t, err)
 
@@ -109,49 +145,15 @@ func tickHabit(t *testing.T, habitsCli api.HabitsClient, id string) {
 	_, err := habitsCli.TickHabit(context.Background(), &api.TickHabitRequest{
 		HabitId: id,
 	})
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func getHabitStatusMatches(t *testing.T, habitsCli api.HabitsClient, id string, expected *api.GetHabitStatusResponse) {
+	t.Helper()
+	
 	h, err := habitsCli.GetHabitStatus(context.Background(), &api.GetHabitStatusRequest{HabitId: id})
 	require.NoError(t, err)
 
 	assert.Equal(t, expected.Habit, h.Habit)
 	assert.Equal(t, expected.TicksCount, h.TicksCount)
-}
-
-func newServer(t *testing.T) *grpc.Server {
-	t.Helper()
-	s := server.New(os.Stdout, repository.New())
-
-	grpcServer := grpc.NewServer()
-	api.RegisterHabitsServer(grpcServer, s)
-
-	return grpcServer
-}
-
-func ptr(i int32) *int32 {
-	return &i
-}
-
-func addHabit(t *testing.T, habitsCli api.HabitsClient, freq *int32, name string) string {
-	t.Helper()
-
-	resp, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
-		Name:            name,
-		WeeklyFrequency: freq,
-	})
-	assert.NoError(t, err)
-
-	return resp.Habit.Id
-}
-
-func newClient(serverAddress string) (api.HabitsClient, error) {
-	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-	conn, err := grpc.Dial(serverAddress, creds)
-	if err != nil {
-		return nil, err
-	}
-
-	return api.NewHabitsClient(conn), nil
 }
