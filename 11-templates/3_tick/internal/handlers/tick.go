@@ -18,6 +18,6 @@ func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// cheap redirect
-	s.index(w, r)
+	// redirect to index
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

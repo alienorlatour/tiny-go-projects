@@ -10,7 +10,7 @@ import (
 )
 
 // TickHabit adds a tick now.
-func (hc HabitsClient) TickHabit(ctx context.Context, id habit.ID) error {
+func (hc *HabitsClient) TickHabit(ctx context.Context, id habit.ID) error {
 	_, err := hc.cli.TickHabit(ctx, &api.TickHabitRequest{
 		HabitId:   string(id),
 		Timestamp: timestamppb.Now(),
