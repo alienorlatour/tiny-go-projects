@@ -33,6 +33,7 @@ func main() {
 	}
 }
 
+// newClient creates a client that can call the grpc habits service.
 func newClient(serverAddress string) (*client.HabitsClient, error) {
 	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
 	conn, err := grpc.Dial(serverAddress, creds)

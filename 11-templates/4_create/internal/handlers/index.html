@@ -1,18 +1,15 @@
 <html lang="en">
-<script>
-    function tick(id) {
-        const url = "/habits/" + encodeURIComponent(id);
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "content-type": "application/json"
-            }
-        });
-    }
-</script>
-
 <head>
     <title>Learn Go</title>
+    <style>
+        span.done {
+            color: white;
+            background-color: darkgreen;
+        }
+        input {
+            width: 50px;
+        }
+    </style>
 </head>
 <body>
 <h2>Habits Viewer</h2>
@@ -30,8 +27,7 @@
         {{range .}}
         <li>
             <b>{{.Name}}</b>
-            <span {{ if lt .Ticks 3 }} style="background-color:#9B4433" {{ else }}
-                  style="background-color:#488286" {{ end }}>{{.Ticks}}/{{.WeeklyFrequency}}</span>
+            <span class="{{ if eq .Ticks .WeeklyFrequency }}done{{end}}">{{.Ticks}} out of {{.WeeklyFrequency}}</span>
             <a href="/tick/{{.ID}}">Tick!</a>
         </li>
         {{end}}

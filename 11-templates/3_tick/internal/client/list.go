@@ -11,7 +11,7 @@ import (
 )
 
 // ListHabits lists the habits available.
-func (hc HabitsClient) ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error) {
+func (hc *HabitsClient) ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error) {
 	resp, err := hc.cli.ListHabits(ctx, &api.ListHabitsRequest{})
 	if err != nil {
 		return nil, err
