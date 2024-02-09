@@ -67,7 +67,7 @@ func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 		habits = append(habits, h)
 	}
 	sort.Slice(habits, func(i, j int) bool {
-		return habits[i].Name < habits[j].Name
+		return habits[i].CreationTime.Before(habits[j].CreationTime)
 	})
 
 	return habits, nil
