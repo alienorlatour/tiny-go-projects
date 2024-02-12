@@ -18,14 +18,16 @@
     <label for="habitName">Objective:</label>
     <input type="text" id="habitName" name="habitName">
     <label for="habitFrequency">Weekly frequency:</label>
-    <input type="number" style="width: 50px;" id="habitFrequency" name="habitFrequency">
+    <input type="number" id="habitFrequency" name="habitFrequency">
     <button>Create</button>
 </form>
 <hr/>
-<p>Here are your registered habits</p>
 <div>
+    <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
+    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
+    {{ if .Habits }}
     <ul>
-        {{range .}}
+        {{range .Habits}}
         <li>
             <b>{{.Name}}</b>
             <span class="{{ if eq .Ticks .WeeklyFrequency }}done{{end}}">{{.Ticks}} out of {{.WeeklyFrequency}}</span>
@@ -33,6 +35,7 @@
         </li>
         {{end}}
     </ul>
+    {{ end }}
 </div>
 </body>
 </html>
