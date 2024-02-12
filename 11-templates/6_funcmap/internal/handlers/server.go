@@ -2,42 +2,43 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/go-chi/chi/v5"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"learngo-pockets/templates/internal/habit"
 
-	"learngo-pockets/habits/api"
+	chi "github.com/go-chi/chi/v5"
 )
 
+// Client is the dependency towards the Habits service.
+//
+//go:generate minimock -i habitsClient -s "_mock.go" -o "mocks"
+type habitsClient interface {
+	ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error)
+	TickHabit(ctx context.Context, id habit.ID) error
+	CreateHabit(ctx context.Context, h habit.Habit) error
+}
+
+// Server serves all the HTML routes on this service.
 type Server struct {
+	client habitsClient
 	router chi.Router
-
-	habitClient api.HabitsClient
 }
 
-func New(ctx context.Context, url string) *Server {
-	s := &Server{}
-
-	client, err := grpc.DialContext(ctx, url, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		panic(fmt.Sprintf("unable to connect to backend: %s", err.Error()))
-		return nil
+// New builds a new server.
+func New(cli habitsClient) *Server {
+	return &Server{
+		client: cli,
 	}
-
-	s.habitClient = api.NewHabitsClient(client)
-
-	return s
 }
 
+// Router returns an http handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
 
 	r.Get("/", s.index)
-	r.Post("/habits/{id}", s.tick)
-	r.Post("/habits", s.create)
+	r.Get("/tick/{habitID}", s.tick)
+	r.Post("/create", s.create)
 
 	return r
 }

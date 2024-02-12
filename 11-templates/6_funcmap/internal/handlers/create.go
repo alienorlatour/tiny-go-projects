@@ -1,35 +1,32 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 
-	"learngo-pockets/habits/api"
+	"learngo-pockets/templates/internal/habit"
 )
 
-type createRequest struct {
-	Name            string `json:"name"`
-	WeeklyFrequency int32  `json:"weekly_frequency"`
-}
-
+// create takes a JSON request and creates a Habit from it,
+// then redirects to index.
 func (s *Server) create(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("received request to create a habit")
 
-	cr := createRequest{}
-
-	dec := json.NewDecoder(r.Body)
-	err := dec.Decode(&cr)
+	habitName := r.FormValue("habitName")
+	weeklyFreq, err := strconv.ParseInt(r.FormValue("habitFrequency"), 0, 8)
 	if err != nil {
-		fmt.Println("can't decode request: ", err)
+		logAndHideError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fmt.Printf("creating habit %v\n", cr)
-
-	_, err = s.habitClient.CreateHabit(r.Context(), &api.CreateHabitRequest{Name: cr.Name, WeeklyFrequency: &cr.WeeklyFrequency})
+	err = s.client.CreateHabit(r.Context(), habit.Habit{
+		Name:            habit.Name(habitName),
+		WeeklyFrequency: habit.WeeklyFrequency(weeklyFreq),
+	})
 	if err != nil {
-		fmt.Println("can't create habit: ", err)
+		logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
+
+	// redirect to index
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
