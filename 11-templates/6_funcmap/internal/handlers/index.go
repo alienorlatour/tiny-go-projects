@@ -7,14 +7,47 @@ import (
 	"net/http"
 	"time"
 
-	"learngo-pockets/habits/api"
+	"learngo-pockets/templates/internal/habit"
 )
 
 //go:embed index.html
-var index string
+var indexPage string
 
-func scoreStatus(habit *api.Habit) string {
-	res := float32(habit.WeeklyFrequency) / 5.0
+// index serves the root page of the app.
+func (s *Server) index(w http.ResponseWriter, r *http.Request) {
+	habits, err := s.client.ListHabits(r.Context(), time.Now())
+	if err != nil {
+		logAndHideError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	tpl, err := template.New("index").
+		Funcs(template.FuncMap{"scoreStatus": scoreStatus}).
+		Parse(indexPage)
+	if err != nil {
+		logAndHideError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	week := habit.NewWeek(time.Now(), "02 January 2006")
+
+	err = tpl.Execute(w, map[string]interface{}{
+		"Habits": habits,
+		"Date":   week,
+	})
+	if err != nil {
+		logAndHideError(w, err, http.StatusInternalServerError)
+		return
+	}
+}
+
+func logAndHideError(w http.ResponseWriter, err error, httpStatus int) {
+	fmt.Println("Error in index:", err)
+	http.Error(w, "Error while rendering - please retry.", httpStatus)
+}
+
+func scoreStatus(habit *habit.Habit) string {
+	res := float32(habit.Ticks) / float32(habit.WeeklyFrequency)
 	switch {
 	case res == 0:
 		return "not_started"
@@ -25,49 +58,4 @@ func scoreStatus(habit *api.Habit) string {
 	default:
 		return "completed"
 	}
-}
-
-func (s *Server) index(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("got / request\n")
-
-	tpl, err := template.New("index").Funcs(template.FuncMap{"scoreStatus": scoreStatus}).Parse(index)
-	if err != nil {
-		fmt.Println("can't parse index: ", err)
-		return
-	}
-
-	resp, err := s.habitClient.ListHabits(r.Context(), &api.ListHabitsRequest{})
-	if err != nil {
-		fmt.Println("can't call habits service: ", err)
-		return
-	}
-
-	var iw isoWeek
-	iw.year, iw.weekNumber = time.Now().ISOWeek()
-
-	err = tpl.Execute(w, map[string]interface{}{
-		"Habits": resp.Habits,
-		"Date":   iw,
-	})
-
-	if err != nil {
-		fmt.Println("Error in index:", err)
-	}
-}
-
-type isoWeek struct {
-	weekNumber int
-	year       int
-}
-
-func (iw isoWeek) Start() string {
-	return time.Date(iw.year, 1, 1, 0, 0, 0, 0, time.UTC).
-		AddDate(0, 0, (iw.weekNumber-1)*7).
-		Format("02 January 2006")
-}
-
-func (iw isoWeek) End() string {
-	return time.Date(iw.year, 1, 1, 0, 0, 0, 0, time.UTC).
-		AddDate(0, 0, iw.weekNumber*7-1).
-		Format("02 January 2006")
 }

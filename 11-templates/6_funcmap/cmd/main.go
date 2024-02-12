@@ -5,7 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	"learngo-pockets/templates/internal/client"
 	"learngo-pockets/templates/internal/handlers"
+
+	"learngo-pockets/habits/api"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 const port = 8083
