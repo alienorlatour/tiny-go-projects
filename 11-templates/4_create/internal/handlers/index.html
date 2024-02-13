@@ -28,10 +28,10 @@
         {{range .}}
         <li>
             <b>{{.Name}}</b>
-            <span class="{{ if eq .Ticks .WeeklyFrequency }}done{{end}}">{{.Ticks}} out of {{.WeeklyFrequency}}</span>
-            <a href="/tick/{{.ID}}">Tick!</a>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
         </li>
-        {{end}}
+        {{ end }}
     </ul>
 </div>
 </body>

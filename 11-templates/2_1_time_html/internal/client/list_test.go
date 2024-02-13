@@ -6,9 +6,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"learngo-pockets/habits/api"
 	"learngo-pockets/templates/internal/client/mocks"
-	habit "learngo-pockets/templates/internal/habits"
+	"learngo-pockets/templates/internal/habit"
 
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/assert"
@@ -49,7 +53,7 @@ func TestListHabits(t *testing.T) {
 	habits, err := habitsClient.ListHabits(context.Background(), now)
 
 	// Assert that there are no errors
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// Assert that the returned habits match the expected values
 	expectedHabits := []habit.Habit{
@@ -71,6 +75,35 @@ func TestListHabits_error(t *testing.T) {
 	// Call the function being tested
 	habits, err := habitsClient.ListHabits(context.Background(), time.Now())
 
-	assert.ErrorIs(t, err, sentinelErr)
-	assert.IsNonDecreasing(t, habits)
+	require.ErrorIs(t, err, sentinelErr)
+	assert.Nil(t, habits)
+}
+
+func TestListHabits_statuserror(t *testing.T) {
+	now := time.Now()
+
+	// Create a mock for the API client
+	mockClient := mocks.NewHabitsClientMock(t)
+
+	// Create a HabitsClient with the mock client
+	habitsClient := New(mockClient)
+
+	// Define sample data for the mock response
+	mockResponse := &api.ListHabitsResponse{
+		Habits: []*api.Habit{
+			{Id: "ID1", Name: "Knit", WeeklyFrequency: 3},
+			{Id: "ID2", Name: "Code", WeeklyFrequency: 5},
+		},
+	}
+
+	sentinelErr := status.Error(codes.Internal, "not after 10PM")
+	mockClient.ListHabitsMock.Expect(minimock.AnyContext, &api.ListHabitsRequest{}).Return(mockResponse, nil)
+	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID1"}).Return(&api.GetHabitStatusResponse{TicksCount: 3}, nil)
+	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID2"}).Return(nil, sentinelErr)
+
+	// Call the function being tested
+	habits, err := habitsClient.ListHabits(context.Background(), now)
+
+	require.ErrorIs(t, err, sentinelErr)
+	assert.Nil(t, habits)
 }

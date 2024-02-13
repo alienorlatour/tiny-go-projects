@@ -7,13 +7,13 @@
 <p>Here are your registered habits</p>
 <div>
     <ul>
-        {{range .}}
+        {{ range . }}
         <li>
             <b>{{.Name}}</b>
-            <span class="{{ if eq .Ticks .WeeklyFrequency }}done{{end}}">{{.Ticks}} out of {{.WeeklyFrequency}}</span>
-            <a href="/tick/{{.ID}}">Tick!</a>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
         </li>
-        {{end}}
+        {{ end }}
     </ul>
 </div>
 </body>

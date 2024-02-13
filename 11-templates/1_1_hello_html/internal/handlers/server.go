@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	chi "github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5"
 )
 
 // Server serves all the HTML routes on this service.
@@ -16,7 +16,7 @@ func New() *Server {
 	return &Server{}
 }
 
-// Router returns an http handler that listens to all the proper paths.
+// Router returns an HTTP handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
 	r.Get("/", s.index)
