@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -18,15 +17,9 @@ func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	const minFreq, maxFreq = 1, 100
-	if weeklyFreq < minFreq || maxFreq < weeklyFreq {
-		logAndHideError(w, fmt.Errorf("invalid frequency, out of bounds"), http.StatusBadRequest)
-		return
-	}
-
 	err = s.client.CreateHabit(r.Context(), habit.Habit{
 		Name:            habit.Name(habitName),
-		WeeklyFrequency: habit.WeeklyFrequency(weeklyFreq),
+		WeeklyFrequency: habit.TickCount(weeklyFreq),
 	})
 	if err != nil {
 		logAndHideError(w, err, http.StatusInternalServerError)

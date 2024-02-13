@@ -57,7 +57,7 @@
         {{ range .Habits }}
         <li class="habit {{ scoreStatus . }}">
             <b>{{.Name}}</b>
-            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- progress . }}</span>
             <a href="/tick/{{ .ID }}">Tick!</a>
         </li>
         {{ end }}

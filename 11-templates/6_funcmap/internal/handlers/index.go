@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 
 	"learngo-pockets/templates/internal/habit"
@@ -22,7 +23,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tpl, err := template.New("index").
-		Funcs(template.FuncMap{"scoreStatus": scoreStatus}).
+		Funcs(template.FuncMap{"scoreStatus": scoreStatus, "progress": progress}).
 		Parse(indexPage)
 	if err != nil {
 		logAndHideError(w, err, http.StatusInternalServerError)
@@ -47,15 +48,20 @@ func logAndHideError(w http.ResponseWriter, err error, httpStatus int) {
 }
 
 func scoreStatus(habit *habit.Habit) string {
-	res := float32(habit.Ticks) / float32(habit.WeeklyFrequency)
+	prog := float32(habit.Ticks) / float32(habit.WeeklyFrequency)
 	switch {
-	case res == 0:
+	case prog == 0:
 		return "not_started"
-	case res < 1:
+	case prog < 0.5:
 		return "started"
-	case res < 5:
+	case prog < 1:
 		return "good_progress"
 	default:
 		return "completed"
 	}
+}
+
+func progress(habit *habit.Habit) string {
+	prog := min(int(float32(habit.Ticks)/float32(habit.WeeklyFrequency)*10), 10)
+	return strings.Repeat("#", prog) + strings.Repeat("_", 10-prog)
 }
