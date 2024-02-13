@@ -6,7 +6,7 @@ package mocks
 
 import (
 	"context"
-	habit "learngo-pockets/templates/internal/habits"
+	"learngo-pockets/templates/internal/habit"
 	"sync"
 	mm_atomic "sync/atomic"
 	mm_time "time"

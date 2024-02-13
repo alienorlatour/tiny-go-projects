@@ -23,7 +23,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 <ul>
 `)
 	for _, h := range habits {
-		io.WriteString(w, fmt.Sprintf("<li>%s - %d/%d</li>", h.Name, h.Ticks, h.WeeklyFrequency))
+		fmt.Fprintf(w, "<li>%s - %d/%d</li>", h.Name, h.Ticks, h.WeeklyFrequency)
 	}
 	io.WriteString(w, `
 </ul>

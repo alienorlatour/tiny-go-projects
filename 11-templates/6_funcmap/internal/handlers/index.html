@@ -54,13 +54,13 @@
     <p>Here are your registered habits, you have {{ len .Habits }}.</p>
     {{ if .Habits }}
     <ul>
-        {{range .Habits }}
+        {{ range .Habits }}
         <li class="habit {{ scoreStatus . }}">
             <b>{{.Name}}</b>
-            <span class="{{ if eq .Ticks .WeeklyFrequency }}done{{end}}">{{.Ticks}} out of {{.WeeklyFrequency}}</span>
-            <a href="/tick/{{.ID}}">Tick!</a>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
         </li>
-        {{end}}
+        {{ end }}
     </ul>
     {{ end }}
 </div>
