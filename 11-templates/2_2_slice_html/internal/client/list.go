@@ -32,7 +32,7 @@ func (hc HabitsClient) ListHabits(ctx context.Context, t time.Time) ([]habit.Hab
 		list[i] = habit.Habit{
 			ID:              habit.ID(h.Id),
 			Name:            habit.Name(h.Name),
-			WeeklyFrequency: habit.WeeklyFrequency(h.WeeklyFrequency),
+			WeeklyFrequency: habit.TickCount(h.WeeklyFrequency),
 			Ticks:           habit.TickCount(status.TicksCount),
 		}
 	}

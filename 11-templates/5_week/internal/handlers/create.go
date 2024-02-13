@@ -26,7 +26,7 @@ func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 
 	err = s.client.CreateHabit(r.Context(), habit.Habit{
 		Name:            habit.Name(habitName),
-		WeeklyFrequency: habit.WeeklyFrequency(weeklyFreq),
+		WeeklyFrequency: habit.TickCount(weeklyFreq),
 	})
 	if err != nil {
 		logAndHideError(w, err, http.StatusInternalServerError)
