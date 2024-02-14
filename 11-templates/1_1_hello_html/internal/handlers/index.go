@@ -8,7 +8,7 @@ import (
 // index serves the root page of the app.
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	_, err := io.WriteString(w, `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Learn Go</title>
 </head>
