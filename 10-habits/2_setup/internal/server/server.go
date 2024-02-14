@@ -22,7 +22,7 @@ func New() *Server {
 
 // Listen starts the listening to the port
 func (s *Server) Listen(port int) error {
-	const addr = "127.0.0.1:0"
+	const addr = "127.0.0.1"
 
 	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {
