@@ -19,6 +19,8 @@ func New() *Server {
 // Router returns an HTTP handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
+
 	r.Get("/", s.index)
+
 	return r
 }
