@@ -80,8 +80,6 @@ func newClient(t *testing.T, serverAddress string) (api.HabitsClient, error) {
 }
 
 func addHabit(t *testing.T, habitsCli api.HabitsClient, freq *int32, name string) {
-	t.Helper()
-
 	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
 		Name:            name,
 		WeeklyFrequency: freq,
@@ -94,8 +92,6 @@ func ptr(i int32) *int32 {
 }
 
 func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, name string, statusCode codes.Code) {
-	t.Helper()
-
 	_, err := habitsCli.CreateHabit(context.Background(), &api.CreateHabitRequest{
 		Name:            name,
 		WeeklyFrequency: &freq,
@@ -106,8 +102,6 @@ func addHabitWithError(t *testing.T, habitsCli api.HabitsClient, freq int32, nam
 }
 
 func listHabitsMatches(t *testing.T, habitsCli api.HabitsClient, expected []*api.Habit) {
-	t.Helper()
-
 	list, err := habitsCli.ListHabits(context.Background(), &api.ListHabitsRequest{})
 	require.NoError(t, err)
 

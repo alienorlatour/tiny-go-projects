@@ -50,7 +50,7 @@ func TestCreate(t *testing.T) {
 					func(ctx context.Context, habit habit.Habit) error {
 						select {
 						// This duration is longer than a database call
-						case <-time.After(200 * time.Millisecond):
+						case <-time.After(500 * time.Millisecond):
 							return nil
 						case <-ctx.Done():
 							return ctx.Err()
