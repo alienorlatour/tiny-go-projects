@@ -14,7 +14,7 @@ var indexPage string
 // index serves the root page of the app.
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	// TODO get time from parameters
-	_, err := s.client.ListHabits(r.Context(), time.Now())
+	habits, err := s.client.ListHabits(r.Context(), time.Now())
 	if err != nil {
 		fmt.Println("error!", err.Error())
 		http.Error(w, "Error while fetching data - please retry.", http.StatusInternalServerError)
@@ -23,13 +23,13 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 
 	tpl, err := template.New("index").Parse(indexPage)
 	if err != nil {
-		fmt.Println("can't parse index: ", err)
+		// log.Logger().Errorf("can't parse index: %s", err) FIXME log
 		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
 	}
 
-	err = tpl.Execute(w, time.Now().Format(time.RFC3339))
+	err = tpl.Execute(w, len(habits))
 	if err != nil {
-		fmt.Println("Error in index:", err)
-		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
+		// log.Errorf(r.Context(), "cannot render index: %s", err) FIXME log
+		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
 	}
 }

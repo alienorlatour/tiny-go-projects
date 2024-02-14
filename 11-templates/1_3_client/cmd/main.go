@@ -25,7 +25,7 @@ func main() {
 	srv := handlers.New(cli)
 
 	addr := fmt.Sprintf(":%d", port)
-	log.Print("Listening on ", port, "...")
+	log.Print("Listening on ", port, "...") // fixme
 
 	err = http.ListenAndServe(addr, srv.Router())
 	if err != nil {

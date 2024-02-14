@@ -9,6 +9,7 @@ import (
 	"learngo-pockets/templates/internal/habit"
 	"sync"
 	mm_atomic "sync/atomic"
+	"time"
 	mm_time "time"
 
 	"github.com/gojuno/minimock/v3"
@@ -18,8 +19,8 @@ import (
 type HabitsClientMock struct {
 	t minimock.Tester
 
-	funcListHabits          func(ctx context.Context) (ha1 []habit.Habit, err error)
-	inspectFuncListHabits   func(ctx context.Context)
+	funcListHabits          func(ctx context.Context, t time.Time) (ha1 []habit.Habit, err error)
+	inspectFuncListHabits   func(ctx context.Context, t time.Time)
 	afterListHabitsCounter  uint64
 	beforeListHabitsCounter uint64
 	ListHabitsMock          mHabitsClientMockListHabits
@@ -58,6 +59,7 @@ type HabitsClientMockListHabitsExpectation struct {
 // HabitsClientMockListHabitsParams contains parameters of the habitsClient.ListHabits
 type HabitsClientMockListHabitsParams struct {
 	ctx context.Context
+	t   time.Time
 }
 
 // HabitsClientMockListHabitsResults contains results of the habitsClient.ListHabits
@@ -67,7 +69,7 @@ type HabitsClientMockListHabitsResults struct {
 }
 
 // Expect sets up expected params for habitsClient.ListHabits
-func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context) *mHabitsClientMockListHabits {
+func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, t time.Time) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
 	}
@@ -76,7 +78,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context) *mH
 		mmListHabits.defaultExpectation = &HabitsClientMockListHabitsExpectation{}
 	}
 
-	mmListHabits.defaultExpectation.params = &HabitsClientMockListHabitsParams{ctx}
+	mmListHabits.defaultExpectation.params = &HabitsClientMockListHabitsParams{ctx, t}
 	for _, e := range mmListHabits.expectations {
 		if minimock.Equal(e.params, mmListHabits.defaultExpectation.params) {
 			mmListHabits.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmListHabits.defaultExpectation.params)
@@ -87,7 +89,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context) *mH
 }
 
 // Inspect accepts an inspector function that has same arguments as the habitsClient.ListHabits
-func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Context)) *mHabitsClientMockListHabits {
+func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Context, t time.Time)) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.inspectFuncListHabits != nil {
 		mmListHabits.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.ListHabits")
 	}
@@ -111,7 +113,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Return(ha1 []habit.Habit, err e
 }
 
 // Set uses given function f to mock the habitsClient.ListHabits method
-func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context) (ha1 []habit.Habit, err error)) *HabitsClientMock {
+func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context, t time.Time) (ha1 []habit.Habit, err error)) *HabitsClientMock {
 	if mmListHabits.defaultExpectation != nil {
 		mmListHabits.mock.t.Fatalf("Default expectation is already set for the habitsClient.ListHabits method")
 	}
@@ -126,14 +128,14 @@ func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context)
 
 // When sets expectation for the habitsClient.ListHabits which will trigger the result defined by the following
 // Then helper
-func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context) *HabitsClientMockListHabitsExpectation {
+func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context, t time.Time) *HabitsClientMockListHabitsExpectation {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
 	}
 
 	expectation := &HabitsClientMockListHabitsExpectation{
 		mock:   mmListHabits.mock,
-		params: &HabitsClientMockListHabitsParams{ctx},
+		params: &HabitsClientMockListHabitsParams{ctx, t},
 	}
 	mmListHabits.expectations = append(mmListHabits.expectations, expectation)
 	return expectation
@@ -146,15 +148,15 @@ func (e *HabitsClientMockListHabitsExpectation) Then(ha1 []habit.Habit, err erro
 }
 
 // ListHabits implements handlers.habitsClient
-func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context) (ha1 []habit.Habit, err error) {
+func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context, t time.Time) (ha1 []habit.Habit, err error) {
 	mm_atomic.AddUint64(&mmListHabits.beforeListHabitsCounter, 1)
 	defer mm_atomic.AddUint64(&mmListHabits.afterListHabitsCounter, 1)
 
 	if mmListHabits.inspectFuncListHabits != nil {
-		mmListHabits.inspectFuncListHabits(ctx)
+		mmListHabits.inspectFuncListHabits(ctx, t)
 	}
 
-	mm_params := &HabitsClientMockListHabitsParams{ctx}
+	mm_params := &HabitsClientMockListHabitsParams{ctx, t}
 
 	// Record call args
 	mmListHabits.ListHabitsMock.mutex.Lock()
@@ -171,7 +173,7 @@ func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context) (ha1 []hab
 	if mmListHabits.ListHabitsMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmListHabits.ListHabitsMock.defaultExpectation.Counter, 1)
 		mm_want := mmListHabits.ListHabitsMock.defaultExpectation.params
-		mm_got := HabitsClientMockListHabitsParams{ctx}
+		mm_got := HabitsClientMockListHabitsParams{ctx, t}
 		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
 			mmListHabits.t.Errorf("HabitsClientMock.ListHabits got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
 		}
@@ -183,9 +185,9 @@ func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context) (ha1 []hab
 		return (*mm_results).ha1, (*mm_results).err
 	}
 	if mmListHabits.funcListHabits != nil {
-		return mmListHabits.funcListHabits(ctx)
+		return mmListHabits.funcListHabits(ctx, t)
 	}
-	mmListHabits.t.Fatalf("Unexpected call to HabitsClientMock.ListHabits. %v", ctx)
+	mmListHabits.t.Fatalf("Unexpected call to HabitsClientMock.ListHabits. %v %v", ctx, t)
 	return
 }
 
