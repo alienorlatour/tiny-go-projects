@@ -1,26 +1,27 @@
 package handlers
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 )
 
 // index serves the root page of the app.
-func (*Server) index(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("got / request\n")
-
+func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	_, err := io.WriteString(w, `
+<!DOCTYPE html>
+<html>
 <head>
 	<title>Learn Go</title>
 </head>
 <body>
-	<h2>YAY</h2>
+	<h1>YAY</h1>
 	<p>Way to go!</p>
 </body>
+</html>
 `)
 
 	if err != nil {
-		fmt.Println("Error in index:", err)
+		// log.Errorf(r.Context(), "cannot render index: %s", err) FIXME log
+		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
 	}
 }
