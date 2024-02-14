@@ -17,24 +17,24 @@ func TestNew(t *testing.T) {
 		want    FormattedWeek
 	}{
 		"Mon. 01 Jan 2024": {
-			include: time.Date(2024, 1, 1, 12, 54, 23, 2, time.UTC),
+			include: time.Date(2024, time.January, 1, 12, 54, 23, 2, time.UTC),
 			want: FormattedWeek{
-				start: time.Date(2023, 12, 31, 0, 0, 0, 0, time.UTC),
-				end:   time.Date(2024, 1, 6, 23, 59, 0, 0, time.UTC),
+				start: time.Date(2023, time.December, 31, 0, 0, 0, 0, time.UTC),
+				end:   time.Date(2024, time.January, 6, 23, 59, 0, 0, time.UTC),
 			},
 		},
 		"Wed. 14 Feb. 2024": {
-			include: time.Date(2024, 2, 14, 15, 54, 23, 2, time.UTC),
+			include: time.Date(2024, time.February, 14, 15, 54, 23, 2, time.UTC),
 			want: FormattedWeek{
-				start: time.Date(2024, 2, 11, 0, 0, 0, 0, time.UTC),
-				end:   time.Date(2024, 2, 17, 23, 59, 0, 0, time.UTC),
+				start: time.Date(2024, time.February, 11, 0, 0, 0, 0, time.UTC),
+				end:   time.Date(2024, time.February, 17, 23, 59, 0, 0, time.UTC),
 			},
 		},
 		"Sun. 01 Jan 2023": {
-			include: time.Date(2023, 1, 1, 12, 54, 23, 2, time.UTC),
+			include: time.Date(2023, time.January, 1, 12, 54, 23, 2, time.UTC),
 			want: FormattedWeek{
-				start: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
-				end:   time.Date(2023, 1, 7, 23, 59, 0, 0, time.UTC),
+				start: time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC),
+				end:   time.Date(2023, time.January, 7, 23, 59, 0, 0, time.UTC),
 			},
 		},
 	}
