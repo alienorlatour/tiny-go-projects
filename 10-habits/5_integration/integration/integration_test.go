@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,10 +25,16 @@ func TestIntegration(t *testing.T) {
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+
+	wg.Add(1)
 	go func() {
+		defer wg.Done()
 		err = grpcServ.Serve(listener)
 		require.NoError(t, err)
 	}()
+
 	defer grpcServ.Stop()
 
 	// create client

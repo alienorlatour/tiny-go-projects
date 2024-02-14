@@ -55,6 +55,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 	errChan := make(chan error)
 	// Listen to the port. This will only return when something kills or stops the server.
 	go func() {
+		// This goroutine will be killed when the context is ended at the end of this function.
 		err := grpcServer.Serve(listener)
 		if err != nil {
 			errChan <- fmt.Errorf("error while listening: %w", err)
@@ -75,6 +76,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 		grpcServer.GracefulStop()
 		return nil
 	case err = <-errChan:
+		grpcServer.GracefulStop()
 		return fmt.Errorf("unable to serve: %w", err)
 	}
 }
