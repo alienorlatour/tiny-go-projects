@@ -7,15 +7,14 @@ import (
 
 // index serves the root page of the app.
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
-	_, err := io.WriteString(w, `
-<!DOCTYPE html>
+	_, err := io.WriteString(w, `<!DOCTYPE html>
 <html>
 <head>
-	<title>Learn Go</title>
+    <title>Learn Go</title>
 </head>
 <body>
-	<h1>YAY</h1>
-	<p>Way to go!</p>
+<h1>YAY</h1>
+<p>Way to go!</p>
 </body>
 </html>
 `)

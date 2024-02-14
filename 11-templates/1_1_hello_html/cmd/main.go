@@ -3,16 +3,14 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"learngo-pockets/templates/internal/handlers"
-	"learngo-pockets/templates/internal/hlog"
 )
 
 const port = 8083
 
 func main() {
-	hlog.Set(os.Stdout)
+	// hlog.Set(os.Stdout) FIXME log
 
 	srv := handlers.New()
 
