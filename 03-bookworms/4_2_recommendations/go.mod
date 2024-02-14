@@ -1,3 +1,3 @@
-module github.com/ablqk/tiny-go-projects/chapter-06/inprogress
+module learngo-pockets/bookworms
 
 go 1.21

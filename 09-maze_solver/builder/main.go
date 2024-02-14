@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/png"
+	"log"
 	"log/slog"
 	"math/rand"
 	"os"
@@ -15,7 +16,7 @@ func main() {
 	defer func() {
 		e := recover()
 		if e != nil {
-			fmt.Printf("Something horrible happened: %s\n", e)
+			log.Printf("Something horrible happened: %s", e)
 		}
 	}()
 
