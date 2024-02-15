@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -13,11 +12,12 @@ import (
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
 	r "learngo-pockets/habits/internal/repository"
+	"learngo-pockets/habits/log"
 )
 
 // TickHabit inserts a new tick for a given habit.
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
-	log.Printf("Tick request received: %s", request)
+	log.Infof("Tick request received: %s", request)
 
 	err := validateTickHabitRequest(request)
 	if err != nil {

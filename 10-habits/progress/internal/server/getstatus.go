@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -13,11 +12,12 @@ import (
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
 	r "learngo-pockets/habits/internal/repository"
+	"learngo-pockets/habits/log"
 )
 
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
-	log.Printf("GetHabitStatus request received: %s", request)
+	log.Infof("GetHabitStatus request received: %s", request)
 
 	err := validateGetHabitRequest(request)
 	if err != nil {

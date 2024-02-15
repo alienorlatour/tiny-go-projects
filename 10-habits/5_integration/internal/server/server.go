@@ -50,7 +50,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
 	api.RegisterHabitsServer(grpcServer, s)
 	reflection.Register(grpcServer) // if env == dev
-	log.Printf("gRPC server started and listening to port %d", port)
+	log.Infof("gRPC server started and listening to port %d", port)
 
 	errChan := make(chan error)
 	// Listen to the port. This will only return when something kills or stops the server.
@@ -64,15 +64,15 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 
 	go func() {
 		const pprofPort = 6060
-		log.Printf("Starting pprof listener on port %d\n", pprofPort)
+		log.Infof("Starting pprof listener on port %d\n", pprofPort)
 		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
-		log.Printf("error while serving pprof: %s", err)
+		log.Infof("error while serving pprof: %s", err)
 	}()
 
 	select {
 	case <-ctx.Done():
 		// Stop or GracefulStop was called, no reason to be alarmed.
-		log.Printf("Shutting down grpc server: %s", ctx.Err())
+		log.Infof("Shutting down grpc server: %s", ctx.Err())
 		grpcServer.GracefulStop()
 		return nil
 	case err = <-errChan:

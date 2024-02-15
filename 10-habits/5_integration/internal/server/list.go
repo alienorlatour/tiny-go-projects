@@ -2,14 +2,14 @@ package server
 
 import (
 	"context"
-	"log"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/log"
 )
 
 func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
-	log.Println("ListHabits request received")
+	log.Infof("ListHabits request received")
 	habits, err := habit.ListHabits(ctx, s.db)
 	if err != nil {
 		return nil, err // todo wrap

@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/log"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,7 +15,7 @@ import (
 
 // CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
-	log.Printf("Create request received: %s", request)
+	log.Infof("Create request received: %s", request)
 
 	err := validateCreateHabitRequest(request)
 	if err != nil {

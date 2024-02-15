@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"learngo-pockets/habits/internal/repository"
 	"learngo-pockets/habits/internal/server"
-	hlog "learngo-pockets/habits/log"
+	"learngo-pockets/habits/log"
 )
 
 const port = 28710
@@ -22,7 +21,7 @@ func main() {
 	defer cancel()
 
 	// Set the writing output of our logger.
-	hlog.Set(os.Stdout)
+	log.Set(os.Stdout)
 
 	srv := server.New(os.Stdout, repository.New())
 
