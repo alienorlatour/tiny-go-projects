@@ -3,7 +3,7 @@ syntax = "proto3";
 package habits;
 option go_package = "learngo-pockets/habits/api";
 
-// Habit represents an objective one wants to complete a given amount of times per week.
+// Habit represents an objective one wants to complete a given number of times per week.
 message Habit {
   // Identifier of the habit
   string id = 1;

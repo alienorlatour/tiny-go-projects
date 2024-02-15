@@ -20,7 +20,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Habit represents an objective one wants to complete a given amount of times per week.
+// Habit represents an objective one wants to complete a given number of times per week.
 type Habit struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
