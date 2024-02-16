@@ -11,8 +11,8 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/internal/log"
 	r "learngo-pockets/habits/internal/repository"
-	"learngo-pockets/habits/log"
 )
 
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.

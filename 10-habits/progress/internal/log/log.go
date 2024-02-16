@@ -3,14 +3,18 @@ package log
 import (
 	"io"
 	"log"
+	"os"
 )
 
-var logger log.Logger
+var logger *log.Logger
+
+func init() {
+	logger = log.New(os.Stdout, "habit tracker", log.Ldate+log.Ltime)
+}
 
 // Set sets the logger output with the given writer.
 func Set(writer io.Writer) {
-	l := log.New(writer, "habit tracker", log.Ldate+log.Ltime)
-	logger = *l
+	logger.SetOutput(writer)
 }
 
 // Debugf formats and prints a message.

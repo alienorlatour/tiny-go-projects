@@ -11,8 +11,8 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/internal/log"
 	r "learngo-pockets/habits/internal/repository"
-	"learngo-pockets/habits/log"
 )
 
 // TickHabit inserts a new tick for a given habit.

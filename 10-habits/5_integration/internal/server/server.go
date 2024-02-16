@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
@@ -15,6 +14,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/internal/log"
 )
 
 // Server is the implementation of the gRPC server.

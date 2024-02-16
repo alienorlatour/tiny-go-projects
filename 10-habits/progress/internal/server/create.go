@@ -7,7 +7,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/log"
+	"learngo-pockets/habits/internal/log"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

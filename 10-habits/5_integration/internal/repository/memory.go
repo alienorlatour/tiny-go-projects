@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/log"
+	"learngo-pockets/habits/internal/log"
 )
 
 // HabitRepository holds all the current habits.

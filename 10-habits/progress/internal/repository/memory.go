@@ -8,7 +8,7 @@ import (
 
 	"learngo-pockets/habits/internal/habit"
 	"learngo-pockets/habits/internal/isoweek"
-	"learngo-pockets/habits/log"
+	"learngo-pockets/habits/internal/log"
 )
 
 // ticksPerWeek holds all the timestamps for a given week number.

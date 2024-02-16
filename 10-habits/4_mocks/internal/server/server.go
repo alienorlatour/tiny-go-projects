@@ -11,6 +11,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
+	"learngo-pockets/habits/log"
 )
 
 // Server is the implementation of the gRPC server.
@@ -46,7 +47,7 @@ func (s *Server) Listen(port int) error {
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
 
-	fmt.Printf("starting server on port %d\n", port)
+	log.Infof("starting server on port %d\n", port)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
