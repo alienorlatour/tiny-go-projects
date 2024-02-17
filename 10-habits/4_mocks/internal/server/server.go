@@ -11,7 +11,7 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/log"
+	"learngo-pockets/habits/internal/log"
 )
 
 // Server is the implementation of the gRPC server.

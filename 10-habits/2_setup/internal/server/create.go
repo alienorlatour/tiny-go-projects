@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"learngo-pockets/habits/api"
-	"learngo-pockets/habits/log"
+	"learngo-pockets/habits/internal/log"
 )
 
 // CreateHabit is the endpoint that registers a habit.
