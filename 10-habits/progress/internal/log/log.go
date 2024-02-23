@@ -35,5 +35,5 @@ func Errorf(format string, args ...any) {
 // Fatalf formats and prints a message.
 func Fatalf(format string, args ...any) {
 	logger.Printf(format, args...)
-	return
+	os.Exit(1)
 }
