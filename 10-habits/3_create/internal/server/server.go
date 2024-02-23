@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 	"strconv"
 
@@ -17,8 +16,6 @@ import (
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	interceptorOutput io.Writer
-
 	db Repository
 }
 
