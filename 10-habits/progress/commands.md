@@ -22,6 +22,27 @@ habits.Habits/CreateHabit
 }
 ```
 
+## List habits
+```shell
+grpcurl \
+-import-path api/proto/ \
+-proto service.proto \
+-plaintext -d '{}' \
+localhost:28710 \
+habits.Habits/ListHabits
+```
+
+```json
+{
+  "habits": [
+    {
+      "id": "df990e0b-5825-460d-86d2-18dcec19adeb",
+      "name": "read a few pages",
+      "weeklyFrequency": 3
+    }
+  ]
+}
+```
 
 ## Tick a habit
 
