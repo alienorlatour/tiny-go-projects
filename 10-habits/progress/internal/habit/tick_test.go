@@ -67,7 +67,6 @@ func TestTickHabit(t *testing.T) {
 			t.Parallel()
 
 			ctrl := minimock.NewController(t)
-			defer ctrl.Finish()
 
 			habitDB := tc.habitDB(ctrl)
 			tickDB := tc.tickDB(ctrl)

@@ -53,7 +53,6 @@ func TestCreate(t *testing.T) {
 			t.Parallel()
 
 			ctrl := minimock.NewController(t)
-			defer ctrl.Finish()
 
 			db := tt.db(ctrl)
 

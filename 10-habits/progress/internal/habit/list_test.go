@@ -74,7 +74,6 @@ func TestListHabits(t *testing.T) {
 			t.Parallel()
 
 			ctrl := minimock.NewController(t)
-			defer ctrl.Finish()
 
 			db := tc.db(ctrl)
 
