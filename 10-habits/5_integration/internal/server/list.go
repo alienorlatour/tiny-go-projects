@@ -29,7 +29,6 @@ func convertHabitsToAPI(habits []habit.Habit) *api.ListHabitsResponse {
 		}
 	}
 
-	// TODO: Do we want to redo a sort here? Deterministicity matters.
 	return &api.ListHabitsResponse{
 		Habits: hts,
 	}

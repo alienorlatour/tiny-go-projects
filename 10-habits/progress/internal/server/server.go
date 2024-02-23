@@ -52,9 +52,7 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 		return fmt.Errorf("unable to listen to tcp port %d: %w", port, err)
 	}
 
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
-	api.RegisterHabitsServer(grpcServer, s)
-	reflection.Register(grpcServer) // if env == dev
+	grpcServer := s.registerGRPCServer()
 	log.Infof("gRPC server started and listening to port %d", port)
 
 	errChan := make(chan error)
@@ -84,4 +82,11 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 		grpcServer.GracefulStop()
 		return fmt.Errorf("unable to serve: %w", err)
 	}
+}
+
+func (s *Server) registerGRPCServer() *grpc.Server {
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
+	api.RegisterHabitsServer(grpcServer, s)
+	reflection.Register(grpcServer) // if env == dev
+	return grpcServer
 }

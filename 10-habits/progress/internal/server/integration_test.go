@@ -1,4 +1,6 @@
-package integration
+//go:build integration
+
+package server
 
 import (
 	"context"
@@ -15,8 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"learngo-pockets/habits/api"
-	"learngo-pockets/habits/internal/repository"
-	"learngo-pockets/habits/internal/server"
+	repo "learngo-pockets/habits/internal/repository"
 )
 
 func TestIntegration(t *testing.T) {
@@ -26,16 +27,18 @@ func TestIntegration(t *testing.T) {
 	require.NoError(t, err)
 
 	wg := sync.WaitGroup{}
-	defer wg.Wait()
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		err = grpcServ.Serve(listener)
 		require.NoError(t, err)
 	}()
-
-	defer grpcServ.Stop()
+	defer func() {
+		// terminate the GRPC server
+		grpcServ.Stop()
+		// when that is done, and no error were caught, we can end this test
+		wg.Wait()
+	}()
 
 	// create client
 	habitsCli, err := newClient(t, listener.Addr().String())
@@ -89,12 +92,9 @@ func TestIntegration(t *testing.T) {
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := server.New(os.Stdout, repository.New())
+	s := New(os.Stdout, repo.New())
 
-	grpcServer := grpc.NewServer()
-	api.RegisterHabitsServer(grpcServer, s)
-
-	return grpcServer
+	return s.registerGRPCServer()
 }
 
 func newClient(t *testing.T, serverAddress string) (api.HabitsClient, error) {

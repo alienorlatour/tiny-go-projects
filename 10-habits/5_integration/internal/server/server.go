@@ -3,14 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"io"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"strconv"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
