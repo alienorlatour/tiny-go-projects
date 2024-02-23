@@ -37,6 +37,8 @@ func NewHabitListerMock(t minimock.Tester) *HabitListerMock {
 	m.FindAllMock = mHabitListerMockFindAll{mock: m}
 	m.FindAllMock.callArgs = []*HabitListerMockFindAllParams{}
 
+	t.Cleanup(m.MinimockFinish)
+
 	return m
 }
 

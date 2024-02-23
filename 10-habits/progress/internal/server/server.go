@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -55,22 +56,42 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 	grpcServer := s.registerGRPCServer()
 	log.Infof("gRPC server started and listening to port %d", port)
 
+	// Use a channel to report errors from the gRPC server back to
 	errChan := make(chan error)
+	g := errgroup.Group{}
+	defer func() {
+		err := g.Wait()
+		if err != nil {
+			errChan <- fmt.Errorf("error while serving: %w", err)
+		}
+		close(errChan)
+	}()
+
 	// Listen to the port. This will only return when something kills or stops the server.
-	go func() {
+	g.Go(func() error {
 		// This goroutine will be killed when the context is ended at the end of this function.
 		err := grpcServer.Serve(listener)
 		if err != nil {
-			errChan <- fmt.Errorf("error while listening: %w", err)
-		}
-	}()
+			log.Infof("error while serving gRPC: %s", err)
 
-	go func() {
+			return fmt.Errorf("gRPC server error: %w", err)
+		}
+
+		return nil
+	})
+
+	g.Go(func() error {
 		const pprofPort = 6060
 		log.Infof("Starting pprof listener on port %d\n", pprofPort)
 		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
-		log.Infof("error while serving pprof: %s", err)
-	}()
+		if err != nil {
+			log.Infof("error while serving pprof: %s", err)
+
+			return fmt.Errorf("pprof server error: %w", err)
+		}
+
+		return nil
+	})
 
 	select {
 	case <-ctx.Done():
@@ -80,7 +101,11 @@ func (s *Server) Listen(ctx context.Context, port int) error {
 		return nil
 	case err = <-errChan:
 		grpcServer.GracefulStop()
-		return fmt.Errorf("unable to serve: %w", err)
+		if err != nil {
+			return fmt.Errorf("unable to serve: %w", err)
+		}
+
+		return nil
 	}
 }
 

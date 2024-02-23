@@ -38,6 +38,8 @@ func NewTickFinderMock(t minimock.Tester) *TickFinderMock {
 	m.FindWeeklyTicksMock = mTickFinderMockFindWeeklyTicks{mock: m}
 	m.FindWeeklyTicksMock.callArgs = []*TickFinderMockFindWeeklyTicksParams{}
 
+	t.Cleanup(m.MinimockFinish)
+
 	return m
 }
 
