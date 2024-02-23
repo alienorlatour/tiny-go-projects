@@ -54,9 +54,9 @@ func (hr *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, er
 	return h, nil
 }
 
-// FindAll returns all habits.
+// FindAll returns all habits sorted by creation time.
 func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
-	log.Infof("Listing habits...")
+	log.Infof("Listing habits, sorted by creation time...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()
