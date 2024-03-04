@@ -29,6 +29,6 @@ func main() {
 
 	err := srv.ListenAndServe(ctx, port)
 	if err != nil {
-		lgr.Logf(log.Error, "Error while running the server: %s", err.Error())
+		lgr.Logf("Error while running the server: %s", err.Error())
 	}
 }

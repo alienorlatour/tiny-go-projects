@@ -21,13 +21,13 @@ func main() {
 	defer cancel()
 
 	// Set the writing output of our logger.
-	lgr := log.New(os.Stdout, log.Info)
+	lgr := log.New(os.Stdout)
 
 	db := repository.New(lgr)
-	srv := server.New(db, lgr, os.Stdout)
+	srv := server.New(db, lgr)
 
 	err := srv.ListenAndServe(ctx, port)
 	if err != nil {
-		lgr.Logf(log.Error, "Error while running the server: %s", err.Error())
+		lgr.Logf("Error while running the server: %s", err.Error())
 	}
 }

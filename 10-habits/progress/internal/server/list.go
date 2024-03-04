@@ -5,11 +5,10 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 )
 
 func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
-	s.lgr.Logf(log.Debug, "ListHabits request received")
+	s.lgr.Logf("ListHabits request received")
 	habits, err := habit.ListHabits(ctx, s.db)
 	if err != nil {
 		return nil, err // todo wrap

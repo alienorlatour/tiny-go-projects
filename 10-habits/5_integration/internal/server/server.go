@@ -3,9 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
-	"net/http"
 	_ "net/http/pprof"
 	"strconv"
 
@@ -15,14 +13,12 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 )
 
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	interceptorOutput io.Writer
-	lgr               Logger
+	lgr Logger
 
 	db Repository
 }
@@ -34,11 +30,10 @@ type Repository interface {
 }
 
 // New returns a Server that can ListenAndServe.
-func New(repo Repository, lgr Logger, interceptorOutput io.Writer) *Server {
+func New(repo Repository, lgr Logger) *Server {
 	return &Server{
-		interceptorOutput: interceptorOutput,
-		db:                repo,
-		lgr:               lgr,
+		db:  repo,
+		lgr: lgr,
 	}
 }
 
@@ -52,7 +47,7 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 	}
 
 	grpcServer := s.registerGRPCServer()
-	s.lgr.Logf(log.Info, "gRPC server started and listening to port %d", port)
+	s.lgr.Logf("gRPC server started and listening to port %d", port)
 
 	// Use a channel to report errors from the gRPC server back to
 	errChan := make(chan error)
@@ -70,22 +65,9 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 		// This goroutine will be killed when the context is ended at the end of this function.
 		err := grpcServer.Serve(listener)
 		if err != nil {
-			s.lgr.Logf(log.Error, "error while serving gRPC: %s", err)
+			s.lgr.Logf("error while serving gRPC: %s", err)
 
 			return fmt.Errorf("gRPC server error: %w", err)
-		}
-
-		return nil
-	})
-
-	g.Go(func() error {
-		const pprofPort = 6060
-		s.lgr.Logf(log.Info, "Starting pprof listener on port %d\n", pprofPort)
-		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
-		if err != nil {
-			s.lgr.Logf(log.Error, "error while serving pprof: %s", err)
-
-			return fmt.Errorf("pprof server error: %w", err)
 		}
 
 		return nil
@@ -94,21 +76,18 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 	select {
 	case <-ctx.Done():
 		// Stop or GracefulStop was called, no reason to be alarmed.
-		s.lgr.Logf(log.Info, "Shutting down grpc server: %s", ctx.Err())
-		grpcServer.GracefulStop()
-		return nil
+		s.lgr.Logf("Shutting down grpc server: %s", ctx.Err())
 	case err = <-errChan:
-		grpcServer.GracefulStop()
-		if err != nil {
-			return fmt.Errorf("unable to serve: %w", err)
-		}
-
-		return nil
+		s.lgr.Logf("unable to serve: %w", err)
 	}
+
+	grpcServer.GracefulStop()
+	_ = listener.Close()
+	return nil
 }
 
 func (s *Server) registerGRPCServer() *grpc.Server {
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.lgr)))
 	api.RegisterHabitsServer(grpcServer, s)
 	reflection.Register(grpcServer) // if env == dev
 	return grpcServer
@@ -116,5 +95,5 @@ func (s *Server) registerGRPCServer() *grpc.Server {
 
 // Logger used by the server
 type Logger interface {
-	Logf(lvl log.Level, format string, args ...any)
+	Logf(format string, args ...any)
 }

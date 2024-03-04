@@ -35,7 +35,7 @@ func New(lgr Logger) *HabitRepository {
 
 // Add inserts for the first time a habit in memory.
 func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
-	hr.lgr.Logf(log.Info, "Adding a habit...")
+	hr.lgr.Logf("Adding a habit...")
 
 	// Lock the writing of the habit.
 	hr.mutex.Lock()
@@ -47,7 +47,7 @@ func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 }
 
 func (hr *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, error) {
-	hr.lgr.Logf(log.Info, "Finding a habit...")
+	hr.lgr.Logf("Finding a habit...")
 	h, found := hr.habits[id]
 	if !found {
 		return habit.Habit{}, fmt.Errorf("habit %q not registered: %w", id, ErrNotFound)
@@ -58,7 +58,7 @@ func (hr *HabitRepository) Find(_ context.Context, id habit.ID) (habit.Habit, er
 
 // FindAll returns all habits sorted by creation time.
 func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
-	hr.lgr.Logf(log.Info, "Listing habits, sorted by creation time...")
+	hr.lgr.Logf("Listing habits, sorted by creation time...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()
@@ -77,7 +77,7 @@ func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 
 // AddTick inserts a new event for a habit in memory.
 func (hr *HabitRepository) AddTick(_ context.Context, id habit.ID, t time.Time) error {
-	hr.lgr.Logf(log.Info, "Adding a tick...")
+	hr.lgr.Logf("Adding a tick...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()
@@ -103,7 +103,7 @@ func (hr *HabitRepository) AddTick(_ context.Context, id habit.ID, t time.Time) 
 
 // FindAllTicks returns all the ticks for a habit.
 func (hr *HabitRepository) FindAllTicks(_ context.Context, id habit.ID) ([]time.Time, error) {
-	hr.lgr.Logf(log.Info, "Listing ticks for a habit...")
+	hr.lgr.Logf("Listing ticks for a habit...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()
@@ -118,7 +118,7 @@ func (hr *HabitRepository) FindAllTicks(_ context.Context, id habit.ID) ([]time.
 
 // FindWeeklyTicks returns all the ticks in a week.
 func (hr *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t time.Time) ([]time.Time, error) {
-	hr.lgr.Logf(log.Info, "Listing weekly ticks for a habit...")
+	hr.lgr.Logf("Listing weekly ticks for a habit...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()

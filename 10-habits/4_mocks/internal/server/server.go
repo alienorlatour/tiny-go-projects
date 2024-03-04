@@ -47,7 +47,7 @@ func (s *Server) ListenAndServe(port int) error {
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
 
-	s.lgr.Logf(log.Info, "starting server on port %d\n", port)
+	s.lgr.Logf("starting server on port %d\n", port)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {

@@ -1,11 +1,8 @@
-//go:build integration
-
 package server
 
 import (
 	"context"
 	"net"
-	"os"
 	"sync"
 	"testing"
 
@@ -66,7 +63,8 @@ func TestIntegration(t *testing.T) {
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := New(os.Stdout, repo.New())
+	// Our t variable implements the Logger interfaces, as it exposes Logf(...).
+	s := New(repo.New(t), t)
 
 	return s.registerGRPCServer()
 }

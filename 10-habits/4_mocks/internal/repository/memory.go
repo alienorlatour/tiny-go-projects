@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 )
 
 // HabitRepository holds all the current habits.
@@ -25,7 +24,7 @@ func New(lgr Logger) *HabitRepository {
 
 // Add inserts for the first time a habit in memory.
 func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
-	hr.lgr.Logf(log.Info, "Adding a habit...")
+	hr.lgr.Logf("Adding a habit...")
 
 	// Lock the writing of the habit.
 	hr.mutex.Lock()
@@ -38,7 +37,7 @@ func (hr *HabitRepository) Add(_ context.Context, habit habit.Habit) error {
 
 // FindAll returns all habits.
 func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
-	hr.lgr.Logf(log.Info, "Listing habits...")
+	hr.lgr.Logf("Listing habits...")
 
 	// Lock the reading and the writing of the habits.
 	hr.mutex.Lock()
@@ -54,5 +53,5 @@ func (hr *HabitRepository) FindAll(_ context.Context) ([]habit.Habit, error) {
 
 // Logger used by the repository
 type Logger interface {
-	Logf(lvl log.Level, format string, args ...any)
+	Logf(format string, args ...any)
 }

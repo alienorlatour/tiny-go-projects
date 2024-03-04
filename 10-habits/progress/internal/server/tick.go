@@ -11,13 +11,12 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 	r "learngo-pockets/habits/internal/repository"
 )
 
 // TickHabit inserts a new tick for a given habit.
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
-	s.lgr.Logf(log.Debug, "Tick request received: %s", request)
+	s.lgr.Logf("Tick request received: %s", request)
 
 	err := validateTickHabitRequest(request)
 	if err != nil {
