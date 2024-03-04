@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"net/http"
 	_ "net/http/pprof"
 	"strconv"
 	"time"
@@ -78,19 +77,6 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 			s.lgr.Logf("error while serving gRPC: %s", err)
 
 			return fmt.Errorf("gRPC server error: %w", err)
-		}
-
-		return nil
-	})
-
-	g.Go(func() error {
-		const pprofPort = 6060
-		s.lgr.Logf("Starting pprof listener on port %d\n", pprofPort)
-		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
-		if err != nil {
-			s.lgr.Logf("error while serving pprof: %s", err)
-
-			return fmt.Errorf("pprof server error: %w", err)
 		}
 
 		return nil
