@@ -11,15 +11,14 @@ import (
 const port = 28710
 
 func main() {
-	// Set the writing output of our logger.
-	log.Set(os.Stdout)
+	lgr := log.New(os.Stdout, log.Info)
 
-	db := repository.New()
+	db := repository.New(lgr)
 
-	srv := server.New(db)
+	srv := server.New(db, lgr)
 
 	err := srv.ListenAndServe(port)
 	if err != nil {
-		log.Fatalf("Error while running the server: %s", err.Error())
+		lgr.Logf(log.Error, "Error while running the server: %s", err.Error())
 	}
 }

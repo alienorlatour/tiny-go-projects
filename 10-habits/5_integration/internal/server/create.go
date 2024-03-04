@@ -15,7 +15,7 @@ import (
 
 // CreateHabit is the endpoint that registers a habit.
 func (s *Server) CreateHabit(ctx context.Context, request *api.CreateHabitRequest) (*api.CreateHabitResponse, error) {
-	log.Infof("Create request received: %s", request)
+	s.lgr.Logf(log.Debug, "Create request received: %s", request)
 
 	err := validateCreateHabitRequest(request)
 	if err != nil {

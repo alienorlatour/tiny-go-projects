@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Server) ListHabits(ctx context.Context, _ *api.ListHabitsRequest) (*api.ListHabitsResponse, error) {
-	log.Infof("ListHabits request received")
+	s.lgr.Logf(log.Debug, "ListHabits request received")
 	habits, err := habit.ListHabits(ctx, s.db)
 	if err != nil {
 		return nil, err // todo wrap

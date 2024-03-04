@@ -22,6 +22,7 @@ import (
 type Server struct {
 	api.UnimplementedHabitsServer
 	interceptorOutput io.Writer
+	lgr               Logger
 
 	db Repository
 }
@@ -33,10 +34,11 @@ type Repository interface {
 }
 
 // New returns a Server that can ListenAndServe.
-func New(interceptorOutput io.Writer, repo Repository) *Server {
+func New(repo Repository, lgr Logger, interceptorOutput io.Writer) *Server {
 	return &Server{
 		interceptorOutput: interceptorOutput,
 		db:                repo,
+		lgr:               lgr,
 	}
 }
 
@@ -50,7 +52,7 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 	}
 
 	grpcServer := s.registerGRPCServer()
-	log.Infof("gRPC server started and listening to port %d", port)
+	s.lgr.Logf(log.Info, "gRPC server started and listening to port %d", port)
 
 	// Use a channel to report errors from the gRPC server back to
 	errChan := make(chan error)
@@ -68,7 +70,7 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 		// This goroutine will be killed when the context is ended at the end of this function.
 		err := grpcServer.Serve(listener)
 		if err != nil {
-			log.Infof("error while serving gRPC: %s", err)
+			s.lgr.Logf(log.Error, "error while serving gRPC: %s", err)
 
 			return fmt.Errorf("gRPC server error: %w", err)
 		}
@@ -78,10 +80,10 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 
 	g.Go(func() error {
 		const pprofPort = 6060
-		log.Infof("Starting pprof listener on port %d\n", pprofPort)
+		s.lgr.Logf(log.Info, "Starting pprof listener on port %d\n", pprofPort)
 		err := http.ListenAndServe(net.JoinHostPort(addr, strconv.Itoa(pprofPort)), nil)
 		if err != nil {
-			log.Infof("error while serving pprof: %s", err)
+			s.lgr.Logf(log.Error, "error while serving pprof: %s", err)
 
 			return fmt.Errorf("pprof server error: %w", err)
 		}
@@ -92,7 +94,7 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 	select {
 	case <-ctx.Done():
 		// Stop or GracefulStop was called, no reason to be alarmed.
-		log.Infof("Shutting down grpc server: %s", ctx.Err())
+		s.lgr.Logf(log.Info, "Shutting down grpc server: %s", ctx.Err())
 		grpcServer.GracefulStop()
 		return nil
 	case err = <-errChan:
@@ -110,4 +112,9 @@ func (s *Server) registerGRPCServer() *grpc.Server {
 	api.RegisterHabitsServer(grpcServer, s)
 	reflection.Register(grpcServer) // if env == dev
 	return grpcServer
+}
+
+// Logger used by the server
+type Logger interface {
+	Logf(lvl log.Level, format string, args ...any)
 }

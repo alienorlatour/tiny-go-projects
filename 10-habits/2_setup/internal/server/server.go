@@ -14,11 +14,14 @@ import (
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
+	lgr Logger
 }
 
 // New returns a Server that can ListenAndServe.
-func New() *Server {
-	return &Server{}
+func New(lgr Logger) *Server {
+	return &Server{
+		lgr: lgr,
+	}
 }
 
 // ListenAndServe starts the listening to the port and serving requests.
@@ -33,7 +36,7 @@ func (s *Server) ListenAndServe(port int) error {
 	grpcServer := grpc.NewServer()
 	api.RegisterHabitsServer(grpcServer, s)
 
-	log.Infof("starting server on port %d\n", port)
+	s.lgr.Logf(log.Info, "starting server on port %d\n", port)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
@@ -42,4 +45,9 @@ func (s *Server) ListenAndServe(port int) error {
 
 	// Stop or GracefulStop was called, no reason to be alarmed.
 	return nil
+}
+
+// Logger used by the server
+type Logger interface {
+	Logf(lvl log.Level, format string, args ...any)
 }

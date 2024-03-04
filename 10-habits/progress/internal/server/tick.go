@@ -17,7 +17,7 @@ import (
 
 // TickHabit inserts a new tick for a given habit.
 func (s *Server) TickHabit(ctx context.Context, request *api.TickHabitRequest) (*api.TickHabitResponse, error) {
-	log.Infof("Tick request received: %s", request)
+	s.lgr.Logf(log.Debug, "Tick request received: %s", request)
 
 	err := validateTickHabitRequest(request)
 	if err != nil {

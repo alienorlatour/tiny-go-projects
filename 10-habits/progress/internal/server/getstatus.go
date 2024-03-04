@@ -17,7 +17,7 @@ import (
 
 // GetHabitStatus is the endpoint that retrieves the status of a habit per week.
 func (s *Server) GetHabitStatus(ctx context.Context, request *api.GetHabitStatusRequest) (*api.GetHabitStatusResponse, error) {
-	log.Infof("GetHabitStatus request received: %s", request)
+	s.lgr.Logf(log.Debug, "GetHabitStatus request received: %s", request)
 
 	err := validateGetHabitRequest(request)
 	if err != nil {
