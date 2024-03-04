@@ -18,6 +18,11 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	// Only run this test in "big" tests
+	if !testing.Short() {
+		t.Skip()
+	}
+
 	// run server
 	grpcServ := newServer(t)
 	listener, err := net.Listen("tcp", "127.0.0.1:0")

@@ -7,6 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
+
+	"learngo-pockets/habits/internal/log"
 )
 
 func Test_timerInterceptor(t *testing.T) {
@@ -15,10 +17,12 @@ func Test_timerInterceptor(t *testing.T) {
 		return "123", nil
 	}
 
-	var output bytes.Buffer
+	bfr := bytes.NewBuffer([]byte{})
+	lgr := log.New(bfr)
 
-	interceptor := timerInterceptor(&output)
+	// Use the t variable for logging
+	interceptor := timerInterceptor(lgr)
 
 	_, _ = interceptor(context.Background(), "request", info, handler)
-	assert.Contains(t, output.String(), "Time in TestingFunc: ")
+	assert.Contains(t, bfr.String(), "time in TestingFunc: ")
 }

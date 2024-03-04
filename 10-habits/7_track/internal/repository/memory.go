@@ -9,7 +9,6 @@ import (
 
 	"learngo-pockets/habits/internal/habit"
 	"learngo-pockets/habits/internal/isoweek"
-	"learngo-pockets/habits/internal/log"
 )
 
 // ticksPerWeek holds all the timestamps for a given week number.
@@ -143,5 +142,5 @@ func (hr *HabitRepository) FindWeeklyTicks(_ context.Context, id habit.ID, t tim
 
 // Logger used by the repository.
 type Logger interface {
-	Logf(lvl log.Level, format string, args ...any)
+	Logf(format string, args ...any)
 }

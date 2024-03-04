@@ -1,11 +1,8 @@
-//go:build integration
-
 package server
 
 import (
 	"context"
 	"net"
-	"os"
 	"sync"
 	"testing"
 
@@ -21,6 +18,11 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
+	// Only run this test in "big" tests
+	if !testing.Short() {
+		t.Skip()
+	}
+
 	// run server
 	grpcServ := newServer(t)
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
@@ -92,7 +94,8 @@ func TestIntegration(t *testing.T) {
 
 func newServer(t *testing.T) *grpc.Server {
 	t.Helper()
-	s := New(os.Stdout, repo.New())
+	db := repo.New(t)
+	s := New(db, t)
 
 	return s.registerGRPCServer()
 }

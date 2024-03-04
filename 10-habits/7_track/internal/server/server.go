@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
 	_ "net/http/pprof"
 	"strconv"
@@ -15,13 +14,11 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 )
 
 // Server is the implementation of the gRPC server.
 type Server struct {
 	api.UnimplementedHabitsServer
-	interceptorOutput io.Writer
 
 	lgr Logger
 	db  Repository
@@ -38,11 +35,10 @@ type Repository interface {
 }
 
 // New returns a Server that can ListenAndServe.
-func New(interceptorOutput io.Writer, repo Repository, lgr Logger) *Server {
+func New(repo Repository, lgr Logger) *Server {
 	return &Server{
-		interceptorOutput: interceptorOutput,
-		db:                repo,
-		lgr:               lgr,
+		db:  repo,
+		lgr: lgr,
 	}
 }
 
@@ -86,20 +82,17 @@ func (s *Server) ListenAndServe(ctx context.Context, port int) error {
 	case <-ctx.Done():
 		// Stop or GracefulStop was called, no reason to be alarmed.
 		s.lgr.Logf("Shutting down grpc server: %s", ctx.Err())
-		grpcServer.GracefulStop()
-		return nil
 	case err = <-errChan:
-		grpcServer.GracefulStop()
-		if err != nil {
-			return fmt.Errorf("unable to serve: %w", err)
-		}
-
-		return nil
+		s.lgr.Logf("unable to serve: %w", err)
 	}
+
+	grpcServer.GracefulStop()
+	_ = listener.Close()
+	return nil
 }
 
 func (s *Server) registerGRPCServer() *grpc.Server {
-	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.interceptorOutput)))
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(timerInterceptor(s.lgr)))
 	api.RegisterHabitsServer(grpcServer, s)
 	reflection.Register(grpcServer) // if env == dev
 	return grpcServer
@@ -107,5 +100,5 @@ func (s *Server) registerGRPCServer() *grpc.Server {
 
 // Logger used by the server
 type Logger interface {
-	Logf(lvl log.Level, format string, args ...any)
+	Logf(format string, args ...any)
 }

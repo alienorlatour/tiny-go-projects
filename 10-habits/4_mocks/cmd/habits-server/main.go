@@ -12,7 +12,7 @@ const port = 28710
 
 func main() {
 	// Set the writing output of our logger.
-	lgr := log.New(os.Stdout, log.Info)
+	lgr := log.New(os.Stdout)
 
 	db := repository.New(lgr)
 

@@ -10,7 +10,6 @@ import (
 
 	"learngo-pockets/habits/api"
 	"learngo-pockets/habits/internal/habit"
-	"learngo-pockets/habits/internal/log"
 )
 
 // Server is the implementation of the gRPC server.
@@ -59,5 +58,5 @@ func (s *Server) ListenAndServe(port int) error {
 
 // Logger used by the server
 type Logger interface {
-	Logf(lvl log.Level, format string, args ...any)
+	Logf(format string, args ...any)
 }

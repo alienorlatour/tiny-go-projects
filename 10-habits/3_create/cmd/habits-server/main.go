@@ -11,7 +11,7 @@ import (
 const port = 28710
 
 func main() {
-	lgr := log.New(os.Stdout, log.Info)
+	lgr := log.New(os.Stdout)
 
 	db := repository.New(lgr)
 
