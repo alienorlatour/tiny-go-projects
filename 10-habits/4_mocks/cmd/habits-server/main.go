@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"learngo-pockets/habits/internal/log"
+	"learngo-pockets/habits/internal/repository"
 	"learngo-pockets/habits/internal/server"
 )
 
@@ -13,9 +14,11 @@ func main() {
 	// Set the writing output of our logger.
 	log.Set(os.Stdout)
 
-	srv := server.New()
+	db := repository.New()
 
-	err := srv.Listen(port)
+	srv := server.New(os.Stdout, db)
+
+	err := srv.ListenAndServe(port)
 	if err != nil {
 		log.Fatalf("Error while running the server: %s", err.Error())
 	}

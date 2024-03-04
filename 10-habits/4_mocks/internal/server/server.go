@@ -22,12 +22,13 @@ type Server struct {
 	db Repository
 }
 
+// A Repository is used by the Server to interact with the database.
 type Repository interface {
 	Add(ctx context.Context, habit habit.Habit) error
 	FindAll(ctx context.Context) ([]habit.Habit, error)
 }
 
-// New returns a Server that can Listen.
+// New returns a Server that can ListenAndServe.
 func New(interceptorOutput io.Writer, repo Repository) *Server {
 	return &Server{
 		interceptorOutput: interceptorOutput,
@@ -35,9 +36,9 @@ func New(interceptorOutput io.Writer, repo Repository) *Server {
 	}
 }
 
-// Listen starts the listening to the port.
-func (s *Server) Listen(port int) error {
-	const addr = "127.0.0.1:0"
+// ListenAndServe starts the listening to the port and serving requests.
+func (s *Server) ListenAndServe(port int) error {
+	const addr = "127.0.0.1"
 
 	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
 	if err != nil {

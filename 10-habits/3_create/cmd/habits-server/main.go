@@ -16,9 +16,9 @@ func main() {
 
 	db := repository.New()
 
-	srv := server.New(os.Stdout, db)
+	srv := server.New(db)
 
-	err := srv.Listen(port)
+	err := srv.ListenAndServe(port)
 	if err != nil {
 		log.Fatalf("Error while running the server: %s", err.Error())
 	}

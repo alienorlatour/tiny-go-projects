@@ -15,7 +15,7 @@ type habitCreator interface {
 
 // Create adds a habit into the DB.
 func Create(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
-	h, err := validateAndCompleteHabit(h)
+	h, err := validateAndFillDetails(h)
 	if err != nil {
 		return Habit{}, err
 	}
@@ -28,9 +28,9 @@ func Create(ctx context.Context, db habitCreator, h Habit) (Habit, error) {
 	return h, nil
 }
 
-// validateAndCompleteHabit fills the habit with values that we want in our database.
+// validateAndFillDetails fills the habit with values that we want in our database.
 // Returns InvalidInputError.
-func validateAndCompleteHabit(h Habit) (Habit, error) {
+func validateAndFillDetails(h Habit) (Habit, error) {
 	// name cannot be empty
 	h.Name = Name(strings.TrimSpace(string(h.Name)))
 	if h.Name == "" {

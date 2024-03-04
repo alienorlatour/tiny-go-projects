@@ -8,15 +8,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_validateAndCompleteHabit(t *testing.T) {
+func Test_validateAndFillDetails(t *testing.T) {
 	t.Parallel()
 
-	t.Run("Full", testValidateAndCompleteHabitFull)
-	t.Run("Partial", testValidateAndCompleteHabitPartial)
-	t.Run("SpaceName", testValidateAndCompleteHabitSpaceName)
+	t.Run("Full", testValidateAndFillDetailsFull)
+	t.Run("Partial", testValidateAndFillDetailsPartial)
+	t.Run("SpaceName", testValidateAndFillDetailsSpaceName)
 }
 
-func testValidateAndCompleteHabitFull(t *testing.T) {
+func testValidateAndFillDetailsFull(t *testing.T) {
 	t.Parallel()
 
 	h := Habit{
@@ -26,12 +26,12 @@ func testValidateAndCompleteHabitFull(t *testing.T) {
 		CreationTime:    time.Date(2023, 10, 27, 1, 5, 0, 0, time.UTC),
 	}
 
-	got, err := validateAndCompleteHabit(h)
+	got, err := validateAndFillDetails(h)
 	require.NoError(t, err)
 	assert.Equal(t, h, got)
 }
 
-func testValidateAndCompleteHabitPartial(t *testing.T) {
+func testValidateAndFillDetailsPartial(t *testing.T) {
 	t.Parallel()
 
 	h := Habit{
@@ -39,7 +39,7 @@ func testValidateAndCompleteHabitPartial(t *testing.T) {
 		WeeklyFrequency: 256,
 	}
 
-	got, err := validateAndCompleteHabit(h)
+	got, err := validateAndFillDetails(h)
 	require.NoError(t, err)
 	assert.Equal(t, h.Name, got.Name)
 	assert.Equal(t, h.WeeklyFrequency, got.WeeklyFrequency)
@@ -47,7 +47,7 @@ func testValidateAndCompleteHabitPartial(t *testing.T) {
 	assert.NotEmpty(t, got.CreationTime)
 }
 
-func testValidateAndCompleteHabitSpaceName(t *testing.T) {
+func testValidateAndFillDetailsSpaceName(t *testing.T) {
 	t.Parallel()
 
 	h := Habit{
@@ -55,6 +55,6 @@ func testValidateAndCompleteHabitSpaceName(t *testing.T) {
 		WeeklyFrequency: 256,
 	}
 
-	_, err := validateAndCompleteHabit(h)
+	_, err := validateAndFillDetails(h)
 	assert.ErrorAs(t, err, &InvalidInputError{})
 }

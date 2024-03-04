@@ -25,7 +25,7 @@ func main() {
 
 	srv := server.New(os.Stdout, repository.New())
 
-	err := srv.Listen(ctx, port)
+	err := srv.ListenAndServe(ctx, port)
 	if err != nil {
 		log.Fatalf("Error while running the server: %s", err.Error())
 	}

@@ -16,13 +16,13 @@ type Server struct {
 	api.UnimplementedHabitsServer
 }
 
-// New returns a Server that can Listen.
+// New returns a Server that can ListenAndServe.
 func New() *Server {
 	return &Server{}
 }
 
-// Listen starts the listening to the port
-func (s *Server) Listen(port int) error {
+// ListenAndServe starts the listening to the port and serving requests.
+func (s *Server) ListenAndServe(port int) error {
 	const addr = "127.0.0.1"
 
 	listener, err := net.Listen("tcp", net.JoinHostPort(addr, strconv.Itoa(port)))
