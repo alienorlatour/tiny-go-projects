@@ -10,11 +10,13 @@ import (
 
 // tick adds a tick to the given habit and redirected to index.
 func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
+	const tickEndpoint = "tick"
+
 	id := chi.URLParam(r, "habitID")
 
 	err := s.client.TickHabit(r.Context(), habit.ID(id))
 	if err != nil {
-		s.logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, tickEndpoint, err, http.StatusInternalServerError)
 		return
 	}
 

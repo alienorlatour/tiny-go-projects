@@ -20,7 +20,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 `)
 
 	if err != nil {
-		// log.Errorf(r.Context(), "cannot render index: %s", err) FIXME log
+		s.lgr.Logf("cannot render index: %s", err)
 		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
 	}
 }

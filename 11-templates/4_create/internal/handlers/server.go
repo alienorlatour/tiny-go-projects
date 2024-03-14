@@ -45,8 +45,8 @@ func (s *Server) Router() http.Handler {
 	return r
 }
 
-func (s *Server) logAndHideError(w http.ResponseWriter, err error, httpStatus int) {
-	s.lgr.Logf("Error in index: %s", err.Error())
+func (s *Server) logAndHideError(w http.ResponseWriter, endpoint string, err error, httpStatus int) {
+	s.lgr.Logf("Error in %s: %s", endpoint, err.Error())
 	http.Error(w, "Error while rendering - please retry.", httpStatus)
 }
 
