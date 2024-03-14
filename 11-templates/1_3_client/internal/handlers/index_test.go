@@ -26,7 +26,7 @@ func TestServer_index(t *testing.T) {
 		}, nil
 	})
 
-	s := New(cli)
+	s := New(cli, t)
 	s.index(rr, httptest.NewRequest(http.MethodGet, "/", nil))
 
 	assert.Equal(t, http.StatusOK, rr.Result().StatusCode)

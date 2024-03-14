@@ -2,7 +2,6 @@ package handlers
 
 import (
 	_ "embed"
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -15,14 +14,14 @@ var indexPage string
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	_, err := s.client.ListHabits(r.Context(), time.Now())
 	if err != nil {
-		fmt.Println("error!", err.Error())
+		s.lgr.Logf("error! %s", err.Error())
 		http.Error(w, "Error while fetching data - please retry.", http.StatusInternalServerError)
 		return
 	}
 
 	tpl, err := template.New("index").Parse(indexPage)
 	if err != nil {
-		fmt.Println("can't parse index: ", err)
+		s.lgr.Logf("can't parse index: %s", err.Error())
 		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
 		return
 	}
@@ -31,7 +30,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 
 	err = tpl.Execute(w, values)
 	if err != nil {
-		fmt.Println("Error in index:", err)
+		s.lgr.Logf("Error in index: %s", err.Error())
 		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
 	}
 }

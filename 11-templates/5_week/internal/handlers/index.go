@@ -2,7 +2,6 @@ package handlers
 
 import (
 	_ "embed"
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -17,13 +16,13 @@ var indexPage string
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	habits, err := s.client.ListHabits(r.Context(), time.Now())
 	if err != nil {
-		logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	tpl, err := template.New("index").Parse(indexPage)
 	if err != nil {
-		logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -34,12 +33,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 		"Date":   week,
 	})
 	if err != nil {
-		logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
-}
-
-func logAndHideError(w http.ResponseWriter, err error, httpStatus int) {
-	fmt.Println("Error in index:", err)
-	http.Error(w, "Error while rendering - please retry.", httpStatus)
 }

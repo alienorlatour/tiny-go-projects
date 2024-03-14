@@ -9,11 +9,12 @@ import (
 // Server serves all the HTML routes on this service.
 type Server struct {
 	router chi.Router
+	lgr    Logger
 }
 
 // New builds a new server.
-func New() *Server {
-	return &Server{}
+func New(lgr Logger) *Server {
+	return &Server{lgr: lgr}
 }
 
 // Router returns an HTTP handler that listens to all the proper paths.
@@ -23,4 +24,8 @@ func (s *Server) Router() http.Handler {
 	r.Get("/", s.index)
 
 	return r
+}
+
+type Logger interface {
+	Logf(format string, args ...any)
 }

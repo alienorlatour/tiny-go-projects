@@ -21,12 +21,14 @@ type habitsClient interface {
 type Server struct {
 	client habitsClient
 	router chi.Router
+	lgr    Logger
 }
 
 // New builds a new server.
-func New(cli habitsClient) *Server {
+func New(cli habitsClient, lgr Logger) *Server {
 	return &Server{
 		client: cli,
+		lgr:    lgr,
 	}
 }
 
@@ -37,4 +39,8 @@ func (s *Server) Router() http.Handler {
 	r.Get("/", s.index)
 
 	return r
+}
+
+type Logger interface {
+	Logf(format string, args ...any)
 }
