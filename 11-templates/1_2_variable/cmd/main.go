@@ -3,20 +3,21 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"learngo-pockets/templates/internal/handlers"
+	"learngo-pockets/templates/internal/log"
 )
 
 const port = 8083
 
 func main() {
-	// hlog.Set(os.Stdout) FIXME log
+	lgr := log.New(os.Stdout)
 
-	srv := handlers.New()
+	srv := handlers.New(lgr)
 
 	addr := fmt.Sprintf(":%d", port)
-	// log.Logger().Print("Listening on ", port, "...") FIXME log
-	fmt.Println("Listening on ", port, "...") // FIXME log
+	lgr.Logf("Listening on %d...", port)
 
 	err := http.ListenAndServe(addr, srv.Router())
 	if err != nil {

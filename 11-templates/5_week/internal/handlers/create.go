@@ -14,13 +14,13 @@ func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 	habitName := r.FormValue("habitName")
 	weeklyFreq, err := strconv.ParseInt(r.FormValue("habitFrequency"), 0, 8)
 	if err != nil {
-		logAndHideError(w, err, http.StatusBadRequest)
+		s.logAndHideError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	const minFreq, maxFreq = 1, 100
 	if weeklyFreq < minFreq || maxFreq < weeklyFreq {
-		logAndHideError(w, fmt.Errorf("invalid frequency, out of bounds"), http.StatusBadRequest)
+		s.logAndHideError(w, fmt.Errorf("invalid frequency, out of bounds"), http.StatusBadRequest)
 		return
 	}
 
@@ -29,7 +29,7 @@ func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 		WeeklyFrequency: habit.TickCount(weeklyFreq),
 	})
 	if err != nil {
-		logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
 

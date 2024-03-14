@@ -14,7 +14,7 @@ func TestServer_index(t *testing.T) {
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()
 
-	s := Server{}
+	s := New(t)
 	s.index(rr, nil)
 
 	assert.Equal(t, http.StatusOK, rr.Result().StatusCode)

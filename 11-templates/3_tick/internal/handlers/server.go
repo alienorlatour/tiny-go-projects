@@ -7,7 +7,7 @@ import (
 
 	"learngo-pockets/templates/internal/habit"
 
-	chi "github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5"
 )
 
 // Client is the dependency towards the Habits service.
@@ -22,12 +22,14 @@ type habitsClient interface {
 type Server struct {
 	client habitsClient
 	router chi.Router
+	lgr    Logger
 }
 
 // New builds a new server.
-func New(cli habitsClient) *Server {
+func New(cli habitsClient, lgr Logger) *Server {
 	return &Server{
 		client: cli,
+		lgr:    lgr,
 	}
 }
 
@@ -39,4 +41,13 @@ func (s *Server) Router() http.Handler {
 	r.Get("/tick/{habitID}", s.tick)
 
 	return r
+}
+
+func (s *Server) logAndHideError(w http.ResponseWriter, err error, httpStatus int) {
+	s.lgr.Logf("Error in index: %s", err.Error())
+	http.Error(w, "Error while rendering - please retry.", httpStatus)
+}
+
+type Logger interface {
+	Logf(format string, args ...any)
 }

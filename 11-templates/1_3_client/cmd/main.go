@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 
 	"learngo-pockets/templates/internal/client"
 	"learngo-pockets/templates/internal/handlers"
+	"learngo-pockets/templates/internal/log"
 
 	"learngo-pockets/habits/api"
 
@@ -17,15 +18,17 @@ import (
 const port = 8083
 
 func main() {
+	lgr := log.New(os.Stdout)
+
 	cli, err := newClient("localhost:28710")
 	if err != nil {
-		log.Fatalf("Error while creating backend client: %s", err.Error())
+		lgr.Logf("Error while creating backend client: %s", err.Error())
 	}
 
-	srv := handlers.New(cli)
+	srv := handlers.New(cli, lgr)
 
 	addr := fmt.Sprintf(":%d", port)
-	log.Print("Listening on ", port, "...") // fixme
+	lgr.Logf("Listening on %d...", port)
 
 	err = http.ListenAndServe(addr, srv.Router())
 	if err != nil {

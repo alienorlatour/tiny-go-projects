@@ -2,7 +2,6 @@ package handlers
 
 import (
 	_ "embed"
-	"fmt"
 	"html/template"
 	"net/http"
 	"time"
@@ -16,7 +15,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	// TODO get time from parameters
 	habits, err := s.client.ListHabits(r.Context(), time.Now())
 	if err != nil {
-		fmt.Println("error!", err.Error())
+		s.lgr.Logf("error! %s", err.Error())
 		http.Error(w, "Error while fetching data - please retry.", http.StatusInternalServerError)
 		return
 	}

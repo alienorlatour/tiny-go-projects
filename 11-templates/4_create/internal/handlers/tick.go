@@ -14,7 +14,7 @@ func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
 
 	err := s.client.TickHabit(r.Context(), habit.ID(id))
 	if err != nil {
-		logAndHideError(w, err, http.StatusInternalServerError)
+		s.logAndHideError(w, err, http.StatusInternalServerError)
 		return
 	}
 
