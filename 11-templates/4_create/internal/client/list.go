@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"learngo-pockets/habits/api"
@@ -19,6 +20,7 @@ func (hc *HabitsClient) ListHabits(ctx context.Context, t time.Time) ([]habit.Ha
 
 	list := make([]habit.Habit, len(resp.Habits))
 	for i, h := range resp.Habits {
+		fmt.Printf("calling for %s\n", h.Id)
 		// get status at time t
 		status, err := hc.cli.GetHabitStatus(ctx, &api.GetHabitStatusRequest{
 			HabitId:   h.Id,
