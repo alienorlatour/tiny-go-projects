@@ -23,4 +23,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace learngo-pockets/habits => ../../10-habits/5_integration
+replace learngo-pockets/habits => ../../10-habits/7_track
