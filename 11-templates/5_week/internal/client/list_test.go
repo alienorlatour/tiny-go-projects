@@ -98,9 +98,17 @@ func TestListHabits_statuserror(t *testing.T) {
 
 	sentinelErr := status.Error(codes.Internal, "not after 10PM")
 	mockClient.ListHabitsMock.Expect(minimock.AnyContext, &api.ListHabitsRequest{}).Return(mockResponse, nil)
-	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID1"}).Return(&api.GetHabitStatusResponse{TicksCount: 3}, nil)
-	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID2"}).Return(nil, sentinelErr)
-
+	mockClient.GetHabitStatusMock.Set(
+		func(ctx context.Context, in *api.GetHabitStatusRequest, opts ...grpc.CallOption) (*api.GetHabitStatusResponse, error) {
+			switch {
+			case in.HabitId == "ID1":
+				return &api.GetHabitStatusResponse{}, nil
+			case in.HabitId == "ID2":
+				return nil, sentinelErr
+			default:
+				return nil, fmt.Errorf("unexpected call")
+			}
+		})
 	// Call the function being tested
 	habits, err := habitsClient.ListHabits(context.Background(), now)
 
