@@ -1,8 +1,8 @@
 run:
-	@go run -race cmd/main.go
+	@go run -race cmd/httpserver/main.go
 
 build:
-	@go build -o bin/ cmd/main.go
+	@go build -o bin/ cmd/httpserver/main.go
 
 test:
 	@go test -race ./...

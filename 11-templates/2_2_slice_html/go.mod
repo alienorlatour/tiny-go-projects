@@ -2,12 +2,14 @@ module learngo-pockets/templates
 
 go 1.21.1
 
+replace learngo-pockets/habits => ../../10-habits/progress
 
 require (
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/gojuno/minimock/v3 v3.3.6
-	google.golang.org/grpc v1.62.1
-	google.golang.org/protobuf v1.31.0
+	github.com/stretchr/testify v1.8.4
+	google.golang.org/grpc v1.61.0
+	google.golang.org/protobuf v1.32.0
 	learngo-pockets/habits v0.0.0-00010101000000-000000000000
 )
 
