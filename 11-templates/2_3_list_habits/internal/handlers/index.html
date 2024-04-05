@@ -8,11 +8,11 @@
 <p>Here are your registered habits</p>
 <div>
     <ul>
-        {{ range . }}
+        {{- range . }}
         <li>
             <b>{{ .Name }}</b> - {{ .WeeklyFrequency }} time {{- if gt .WeeklyFrequency 1 -}} s {{- end }} a week
         </li>
-        {{ end }}
+        {{- end }}
     </ul>
 </div>
 </body>
