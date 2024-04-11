@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -34,4 +35,33 @@ func TestServer_index(t *testing.T) {
 	expect, err := os.ReadFile("testdata/index.html")
 	require.NoError(t, err)
 	assert.Equal(t, string(expect), rr.Body.String())
+}
+
+func TestServer_index_failingClient(t *testing.T) {
+	testCases := map[string]struct {
+		clientErr  error
+		wantStatus int
+	}{
+		"500": {
+			clientErr:  errors.New("heute leider nicht"),
+			wantStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+
+			rr := httptest.NewRecorder()
+
+			cli := mocks.NewHabitsClientMock(t)
+			cli.ListHabitsMock.Set(func(_ context.Context, _ time.Time) ([]habit.Habit, error) {
+				return nil, testCase.clientErr
+			})
+
+			s := New(cli, t)
+			s.index(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+
+			assert.Equal(t, testCase.wantStatus, rr.Result().StatusCode)
+		})
+	}
 }

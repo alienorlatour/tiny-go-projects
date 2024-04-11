@@ -98,8 +98,12 @@ func TestListHabits_statuserror(t *testing.T) {
 
 	sentinelErr := status.Error(codes.Internal, "not after 10PM")
 	mockClient.ListHabitsMock.Expect(minimock.AnyContext, &api.ListHabitsRequest{}).Return(mockResponse, nil)
-	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID1"}).Return(&api.GetHabitStatusResponse{TicksCount: 3}, nil)
-	mockClient.GetHabitStatusMock.Expect(minimock.AnyContext, &api.GetHabitStatusRequest{HabitId: "ID2"}).Return(nil, sentinelErr)
+	mockClient.GetHabitStatusMock.Set(func(_ context.Context, in *api.GetHabitStatusRequest, _ ...grpc.CallOption) (*api.GetHabitStatusResponse, error) {
+		if in.HabitId == "ID1" {
+			return &api.GetHabitStatusResponse{TicksCount: 3}, nil
+		}
+		return nil, sentinelErr
+	})
 
 	// Call the function being tested
 	habits, err := habitsClient.ListHabits(context.Background(), now)
