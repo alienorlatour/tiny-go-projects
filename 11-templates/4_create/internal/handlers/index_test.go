@@ -22,8 +22,8 @@ func TestServer_index(t *testing.T) {
 	cli := mocks.NewHabitsClientMock(t)
 	cli.ListHabitsMock.Set(func(_ context.Context, _ time.Time) ([]habit.Habit, error) {
 		return []habit.Habit{
-			{Name: "Knit", WeeklyFrequency: 3, Ticks: 2},
-			{Name: "Water the plants", WeeklyFrequency: 1, Ticks: 0},
+			{Name: "Knit", WeeklyFrequency: 3, Ticks: 2, ID: "ID01"},
+			{Name: "Water the plants", WeeklyFrequency: 1, Ticks: 0, ID: "ID02"},
 		}, nil
 	})
 
