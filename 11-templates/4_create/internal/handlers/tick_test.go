@@ -22,7 +22,7 @@ func TestServer_Tick(t *testing.T) {
 	})
 
 	s := New(cli, t)
-	s.tick(rr, httptest.NewRequest(http.MethodGet, "/tick", nil))
+	s.tick(rr, httptest.NewRequest(http.MethodGet, "/", nil))
 
 	assert.Equal(t, http.StatusSeeOther, rr.Result().StatusCode)
 	assert.Contains(t, rr.Body.String(), `<a href="/">`)

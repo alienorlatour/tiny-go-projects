@@ -8,7 +8,7 @@ import (
 	"learngo-pockets/templates/internal/habit"
 )
 
-// create takes a JSON request and creates a Habit from it,
+// create takes a form request and creates a Habit from it,
 // then redirects to index.
 func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 	const createEndpoint = "create"
