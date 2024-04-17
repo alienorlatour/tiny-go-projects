@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <meta charSet="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Table Practice</title>
+</head>
+
+
+<script src="wasm_exec.js"></script>
+<script>
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch('output.wasm'),
+        go.importObject).then((result) => {
+        go.run(result.instance);
+        output = generate()
+        console.log("Result:", output); // call the 'generate' function defined in the Go program
+
+        operand1 = output[0]
+        operand2 = output[1]
+        expected = output[2]
+
+        document.getElementById("operand1").innerHTML = operand1;
+        document.getElementById("operand2").innerHTML = operand2;
+        // document.getElementById("expected").innerHTML = expected;
+
+        function v(expected, answer) {
+           return validate(expected, answer)
+        }
+
+        v(expected, 2)
+    });
+</script>
+
+
+<h1>Multiplication Table Practice</h1>
+<div>
+    <label htmlFor="operand1"></label>
+    <span id="operand1"></span>
+
+    <label htmlFor="operator">x</label>
+<!--    <span id="operator">x</span>-->
+
+    <label htmlFor="operand2"></label>
+    <span id="operand2"></span>
+
+    <label htmlFor="equal">=</label>
+
+    <input type="text" id="answer" placeholder="Your Answer">
+    <button onClick="validate(expected, parseInt(answer.value, 10))">Validate</button>
+
+</div>
+<div id="result"></div>
+
+<body>
+</body>
+</html>
