@@ -13,7 +13,7 @@ import (
 func main() {
 
 	creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-	conn, err := grpc.Dial("localhost:28710", creds)
+	conn, err := grpc.Dial("localhost:8084", creds)
 	if err != nil {
 		log.Fatal(err)
 	}
