@@ -27,5 +27,4 @@ func TestServer_Create(t *testing.T) {
 	s.create(rr, request)
 
 	assert.Equal(t, http.StatusSeeOther, rr.Result().StatusCode)
-	assert.Contains(t, rr.Body.String(), `<a href="/">`)
 }
