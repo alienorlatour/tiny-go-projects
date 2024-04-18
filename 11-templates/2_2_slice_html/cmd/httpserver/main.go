@@ -20,7 +20,7 @@ const port = 8083
 func main() {
 	lgr := log.New(os.Stdout)
 
-	cli, err := newClient("localhost:28710")
+	cli, err := newClient("localhost:8084")
 	if err != nil {
 		lgr.Logf("Error while creating backend client: %s", err.Error())
 	}
