@@ -51,19 +51,20 @@
 </form>
 <hr/>
 <div>
-    <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
-    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
-    {{- if .Habits }}
+    <p>This period covers 14 April 2024 -> 20 April 2024.</p>
+    <p>Here are your registered habits, you have 2.</p>
     <ul>
-        {{- range .Habits }}
-        <li class="habit {{ scoreStatus . }}">
-            <b>{{.Name}}</b>
-            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- progress . }}</span>
-            <a href="/tick/{{ .ID }}">Tick!</a>
+        <li class="habit good_progress">
+            <b>Knit</b>
+            <span class="">######____</span>
+            <a href="/tick/ID01">Tick!</a>
         </li>
-        {{- end }}
+        <li class="habit not_started">
+            <b>Water the plants</b>
+            <span class="">__________</span>
+            <a href="/tick/ID02">Tick!</a>
+        </li>
     </ul>
-    {{- end }}
 </div>
 </body>
 </html>
