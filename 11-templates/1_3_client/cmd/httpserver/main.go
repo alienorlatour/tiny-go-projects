@@ -15,12 +15,15 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-const port = 8083
+const (
+	port       = 8083
+	habitsAddr = "localhost:8084"
+)
 
 func main() {
 	lgr := log.New(os.Stdout)
 
-	cli, err := newClient("localhost:8084")
+	cli, err := newClient(habitsAddr)
 	if err != nil {
 		lgr.Logf("Error while creating backend client: %s", err.Error())
 	}
