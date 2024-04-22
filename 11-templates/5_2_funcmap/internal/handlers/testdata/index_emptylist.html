@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+    <style>
+        span.done {
+            color: white;
+            background-color: darkgreen;
+        }
+
+        input {
+            width: 50px;
+        }
+    </style>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<form action="/create" method="post">
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" id="habitFrequency" name="habitFrequency">
+    <button>Create</button>
+</form>
+<hr/>
+<div>
+    <p>This period covers 14 April 2024 -> 20 April 2024.</p>
+    <p>Here are your registered habits, you have 2.</p>
+    <ul>
+    </ul>
+</div>
+</body>
+</html>

@@ -42,6 +42,9 @@ func (s *Server) Router() http.Handler {
 	r.Get("/tick/{habitID}", s.tick)
 	r.Post("/create", s.create)
 
+	// serve static files
+	r.Get("/assets/{filename}", s.assets)
+
 	return r
 }
 
