@@ -37,6 +37,24 @@ func TestServer_index(t *testing.T) {
 	assert.Equal(t, string(expect), rr.Body.String())
 }
 
+func TestServer_index_emptylist(t *testing.T) {
+	rr := httptest.NewRecorder()
+
+	cli := mocks.NewHabitsClientMock(t)
+	cli.ListHabitsMock.Set(func(_ context.Context, _ time.Time) ([]habit.Habit, error) {
+		return []habit.Habit{}, nil
+	})
+
+	s := New(cli, t)
+	s.index(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	assert.Equal(t, http.StatusOK, rr.Result().StatusCode)
+
+	expect, err := os.ReadFile("testdata/index_emptylist.html")
+	require.NoError(t, err)
+	assert.Equal(t, string(expect), rr.Body.String())
+}
+
 func TestServer_index_failingClient(t *testing.T) {
 	testCases := map[string]struct {
 		clientErr  error

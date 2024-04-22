@@ -14,12 +14,13 @@ func (s *Server) create(w http.ResponseWriter, r *http.Request) {
 	const createEndpoint = "create"
 
 	habitName := r.FormValue("habitName")
-	weeklyFreq, err := strconv.ParseInt(r.FormValue("habitFrequency"), 0, 8)
+	weeklyFreq, err := strconv.Atoi(r.FormValue("habitFrequency"))
 	if err != nil {
 		s.logAndHideError(w, createEndpoint, err, http.StatusBadRequest)
 		return
 	}
 
+	// limit frequency to a sensible range.
 	const minFreq, maxFreq = 1, 100
 	if weeklyFreq < minFreq || maxFreq < weeklyFreq {
 		s.logAndHideError(w, createEndpoint, fmt.Errorf("invalid frequency, out of bounds"), http.StatusBadRequest)
