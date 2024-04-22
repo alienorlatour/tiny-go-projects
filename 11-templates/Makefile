@@ -6,8 +6,8 @@ projects := \
 	2_3_list_habits \
 	3_tick \
 	4_create \
-	5_week \
-	6_funcmap
+	5_1_week \
+	5_2_funcmap
 
 %:
 	@for project in $(projects); do (cd $${project}; make $@); done
