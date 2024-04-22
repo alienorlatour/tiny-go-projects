@@ -109,6 +109,7 @@ func TestListHabits_statuserror(t *testing.T) {
 				return nil, fmt.Errorf("unexpected call")
 			}
 		})
+
 	// Call the function being tested
 	habits, err := habitsClient.ListHabits(context.Background(), now)
 
