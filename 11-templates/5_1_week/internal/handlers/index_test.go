@@ -28,7 +28,7 @@ func TestServer_index(t *testing.T) {
 	})
 
 	s := New(cli, t)
-	s.index(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+	s.index(rr, httptest.NewRequest(http.MethodGet, "/?week=1713045600", nil))
 
 	assert.Equal(t, http.StatusOK, rr.Result().StatusCode)
 
@@ -46,7 +46,7 @@ func TestServer_index_emptylist(t *testing.T) {
 	})
 
 	s := New(cli, t)
-	s.index(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+	s.index(rr, httptest.NewRequest(http.MethodGet, "/?week=1713045600", nil))
 
 	assert.Equal(t, http.StatusOK, rr.Result().StatusCode)
 

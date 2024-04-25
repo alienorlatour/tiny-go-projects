@@ -2,8 +2,10 @@ package handlers
 
 import (
 	_ "embed"
+	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"time"
 
 	"learngo-pockets/templates/internal/habit"
@@ -16,7 +18,10 @@ var indexPage string
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	const indexEndpoint = "index"
 
-	habits, err := s.client.ListHabits(r.Context(), time.Now())
+	weekTime := readWeek(r)
+	fmt.Println(">>", weekTime)
+
+	habits, err := s.client.ListHabits(r.Context(), weekTime)
 	if err != nil {
 		s.logAndHideError(w, indexEndpoint, err, http.StatusInternalServerError)
 		return
@@ -28,7 +33,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	week := habit.NewWeek(time.Now(), "02 January 2006")
+	week := habit.NewWeek(weekTime, "02 January 2006")
 
 	err = tpl.Execute(w, map[string]interface{}{
 		"Habits": habits,
@@ -38,4 +43,19 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 		s.logAndHideError(w, indexEndpoint, err, http.StatusInternalServerError)
 		return
 	}
+}
+
+func readWeek(r *http.Request) time.Time {
+	week := r.URL.Query().Get("week")
+	fmt.Println(">>", week)
+	if week == "" {
+		return time.Now()
+	}
+
+	i, err := strconv.Atoi(week)
+	if err != nil {
+		return time.Now()
+	}
+
+	return time.Unix(int64(i), 0)
 }

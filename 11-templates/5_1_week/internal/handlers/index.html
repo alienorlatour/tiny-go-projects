@@ -15,7 +15,11 @@
 </form>
 <hr/>
 <div>
-    <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
+    <div>
+        <a href="/?week={{ .Date.Previous }}">Prev.</a>
+        This period covers {{ .Date.Start }} -> {{ .Date.End }}.
+        <a href="/?week={{ .Date.Next }}">Next</a>
+    </div>
     <p>Here are your registered habits, you have {{ len .Habits }}.</p>
     {{- if .Habits }}
     <ul>

@@ -38,3 +38,11 @@ func (w FormattedWeek) Start() string {
 func (w FormattedWeek) End() string {
 	return w.end.Format(w.layout)
 }
+
+func (w FormattedWeek) Next() int64 {
+	return w.start.Add(time.Hour * 24 * 7).Unix()
+}
+
+func (w FormattedWeek) Previous() int64 {
+	return w.start.Add(-time.Hour * 24 * 7).Unix()
+}
