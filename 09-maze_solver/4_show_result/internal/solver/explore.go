@@ -19,7 +19,7 @@ func (s *Solver) listenToBranches() {
 func (s *Solver) solutionFound() bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	return s.solution == nil
+	return s.solution != nil
 }
 
 // explore one path and publish to the s.pathsToExplore channel
