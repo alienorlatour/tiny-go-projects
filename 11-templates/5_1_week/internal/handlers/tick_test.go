@@ -10,19 +10,24 @@ import (
 	"learngo-pockets/templates/internal/habit"
 	"learngo-pockets/templates/internal/handlers/mocks"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestServer_Tick(t *testing.T) {
 	rr := httptest.NewRecorder()
 
+	req := httptest.NewRequest(http.MethodGet, "/tick/{habitID}", nil)
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("habitID", "1234")
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+
 	cli := mocks.NewHabitsClientMock(t)
-	cli.TickHabitMock.Set(func(_ context.Context, _ habit.ID) error {
-		return nil
-	})
+	cli.TickHabitMock.Expect(req.Context(), "1234").Return(nil)
 
 	s := New(cli, t)
-	s.tick(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	s.tick(rr, req)
 
 	assert.Equal(t, http.StatusSeeOther, rr.Result().StatusCode)
 	assert.Contains(t, rr.Body.String(), `<a href="/">`)

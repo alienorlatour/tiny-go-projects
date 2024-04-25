@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// index serves the root page of the app.
+// assets serves some identified static files. See the list below.
 func (s *Server) assets(w http.ResponseWriter, r *http.Request) {
 	fileName := chi.URLParam(r, "filename")
 
