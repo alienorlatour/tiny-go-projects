@@ -18,9 +18,9 @@ func TestServer_Tick(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req := httptest.NewRequest(http.MethodGet, "/tick/{habitID}", nil)
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("habitID", "1234")
-	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	rCtx := chi.NewRouteContext()
+	rCtx.URLParams.Add("habitID", "1234")
+	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rCtx))
 
 	cli := mocks.NewHabitsClientMock(t)
 	cli.TickHabitMock.Expect(req.Context(), "1234").Return(nil)

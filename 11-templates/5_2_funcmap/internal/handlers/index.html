@@ -52,7 +52,7 @@
 <hr/>
 <div>
     <p>This period covers {{ .Date.Start }} -> {{ .Date.End }}.</p>
-    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
+    <p>Here are your registered habits, you have {{ .Habits | len }}.</p>
     {{- if .Habits }}
     <ul>
         {{- range .Habits }}
