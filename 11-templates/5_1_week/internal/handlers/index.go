@@ -2,7 +2,6 @@ package handlers
 
 import (
 	_ "embed"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -19,7 +18,6 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	const indexEndpoint = "index"
 
 	weekTime := readWeek(r)
-	fmt.Println(">>", weekTime)
 
 	habits, err := s.client.ListHabits(r.Context(), weekTime)
 	if err != nil {
@@ -47,7 +45,6 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 
 func readWeek(r *http.Request) time.Time {
 	week := r.URL.Query().Get("week")
-	fmt.Println(">>", week)
 	if week == "" {
 		return time.Now()
 	}

@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -17,21 +18,26 @@ var indexPage string
 func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	const indexEndpoint = "index"
 
-	habits, err := s.client.ListHabits(r.Context(), time.Now())
+	weekTime := readWeek(r)
+
+	habits, err := s.client.ListHabits(r.Context(), weekTime)
 	if err != nil {
 		s.logAndHideError(w, indexEndpoint, err, http.StatusInternalServerError)
 		return
 	}
 
 	tpl, err := template.New("index").
-		Funcs(template.FuncMap{"scoreStatus": scoreStatus, "progress": progress}).
+		Funcs(template.FuncMap{
+			"statusCSSClass": statusCSSClass,
+			"progress":       progress,
+		}).
 		Parse(indexPage)
 	if err != nil {
 		s.logAndHideError(w, indexEndpoint, err, http.StatusInternalServerError)
 		return
 	}
 
-	week := habit.NewWeek(time.Now(), "02 January 2006")
+	week := habit.NewWeek(weekTime, "02 January 2006")
 
 	err = tpl.Execute(w, map[string]interface{}{
 		"Habits": habits,
@@ -43,7 +49,21 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func scoreStatus(habit *habit.Habit) string {
+func readWeek(r *http.Request) time.Time {
+	week := r.URL.Query().Get("week")
+	if week == "" {
+		return time.Now()
+	}
+
+	i, err := strconv.Atoi(week)
+	if err != nil {
+		return time.Now()
+	}
+
+	return time.Unix(int64(i), 0)
+}
+
+func statusCSSClass(habit *habit.Habit) string {
 	prog := float32(habit.Ticks) / float32(habit.WeeklyFrequency)
 	switch {
 	case prog == 0:
