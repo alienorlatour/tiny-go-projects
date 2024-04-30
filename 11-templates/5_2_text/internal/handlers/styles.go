@@ -4,33 +4,9 @@ import (
 	_ "embed"
 	"net/http"
 	"text/template"
-
-	"github.com/go-chi/chi/v5"
 )
 
-// assets serves some identified files. See the list above.
-func (s *Server) assets(w http.ResponseWriter, r *http.Request) {
-	fileName := chi.URLParam(r, "filename")
-
-	// not really a good approach TODO
-	f, ok := map[string]http.HandlerFunc{
-		"styles.css": s.styles,
-	}[fileName]
-
-	// prevent injection
-	if !ok {
-		http.Error(w, "file not found", http.StatusNotFound)
-	}
-
-	if f == nil {
-		http.ServeFile(w, r, "internal/handlers/assets/static/"+fileName)
-	}
-
-	s.lgr.Logf("generating file %s", fileName)
-	f(w, r)
-}
-
-//go:embed assets/dynamic/styles.css
+//go:embed styles.css
 var stylesPage string
 
 func (s *Server) styles(w http.ResponseWriter, r *http.Request) {

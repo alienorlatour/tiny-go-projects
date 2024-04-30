@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <title>Learn Go</title>
-    <link rel="stylesheet" type="text/css" href="/assets/styles.css" >
+    <link type="text/css" rel="stylesheet" href="/assets/styles.css" >
 </head>
 <body>
 <h2>Habits Viewer</h2>
@@ -20,6 +20,7 @@
         This period covers {{ .Date.Start }} -> {{ .Date.End }}.
         <a href="/?week={{ .Date.Next }}">Next</a>
     </div>
+    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
     {{- if .Habits }}
     <ul>
         {{- range .Habits }}

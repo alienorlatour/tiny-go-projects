@@ -42,7 +42,7 @@ func (s *Server) Router() http.Handler {
 	r.Post("/create", s.create)
 
 	// serve static files
-	r.Get("/assets/{filename}", s.assets)
+	r.Get("/assets/styles.css", s.styles)
 
 	return r
 }
