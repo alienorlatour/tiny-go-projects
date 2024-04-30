@@ -8,8 +8,7 @@ import (
 
 // Server serves all the HTML routes on this service.
 type Server struct {
-	router chi.Router
-	lgr    Logger
+	lgr Logger
 }
 
 // New builds a new server.

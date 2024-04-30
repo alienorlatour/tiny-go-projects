@@ -22,7 +22,6 @@ type habitsClient interface {
 // Server serves all the HTML routes on this service.
 type Server struct {
 	client habitsClient
-	router chi.Router
 	lgr    Logger
 }
 
