@@ -16,11 +16,20 @@
 <hr/>
 <div>
     <div>
-        <a href="/?week=1711839600">Prev.</a>
-        This period covers 07 April 2024 -> 13 April 2024.
-        <a href="/?week=1713049200">Next</a>
+        {{- with .Date}}
+        <a href="/?week={{ .Previous }}">Prev.</a>
+        This period covers {{ .Start }} -> {{ .End }}.
+        <a href="/?week={{ .Next }}">Next</a>
+        {{- end }}
     </div>
-    <p>Here are your registered habits, you have 0.</p>
+    <p>Here are your registered habits, you have {{ len .Habits }}.</p>
+    {{- if .Habits }}
+    <ul>
+        {{- range .Habits }}
+            {{- template "habitItem" . }}
+        {{- end }}
+    </ul>
+    {{- end }}
 </div>
 </body>
 </html>
