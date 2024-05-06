@@ -15,7 +15,7 @@ func New(w io.Writer) *Logger {
 	return &Logger{lgr: log.New(w, "", log.Ldate|log.Ltime)}
 }
 
-// Logf formats the message and sends it to the output. This is concurrent-safe.
+// Logf formats the message and sends it to the output.
 func (l *Logger) Logf(format string, args ...any) {
 	l.lgr.Printf(format, args...)
 }
