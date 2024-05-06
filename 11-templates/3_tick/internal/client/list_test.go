@@ -1,4 +1,4 @@
-package client
+package client_test
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"learngo-pockets/habits/api"
+	"learngo-pockets/templates/internal/client"
 	"learngo-pockets/templates/internal/client/mocks"
 	"learngo-pockets/templates/internal/habit"
 
@@ -24,7 +25,7 @@ func TestListHabits(t *testing.T) {
 	mockClient := mocks.NewHabitsClientMock(t)
 
 	// Create a HabitsClient with the mock client
-	habitsClient := New(mockClient)
+	habitsClient := client.New(mockClient)
 
 	// Define sample data for the mock response
 	mockResponse := &api.ListHabitsResponse{
@@ -67,7 +68,7 @@ func TestListHabits_error(t *testing.T) {
 	mockClient := mocks.NewHabitsClientMock(t)
 	mockClient.ListHabitsMock.Expect(minimock.AnyContext, &api.ListHabitsRequest{}).Return(nil, sentinelErr)
 
-	habitsClient := New(mockClient)
+	habitsClient := client.New(mockClient)
 	// Call the function being tested
 	habits, err := habitsClient.ListHabits(context.Background(), time.Now())
 

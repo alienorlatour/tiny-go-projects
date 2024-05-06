@@ -1,10 +1,6 @@
 body {
-    background-color: {{.}};
-}
-
-span.done {
-    color: white;
-    background-color: darkgreen;
+    background-color: {{.Background}};
+    color: {{.Foreground}};
 }
 
 input {

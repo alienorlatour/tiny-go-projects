@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// tick adds a tick to the given habit and redirected to index.
+// tick adds a tick to the given habit and redirects to index.
 func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
 	const tickEndpoint = "tick"
 
@@ -21,5 +21,5 @@ func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// redirect to index
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, indexPath, http.StatusSeeOther)
 }

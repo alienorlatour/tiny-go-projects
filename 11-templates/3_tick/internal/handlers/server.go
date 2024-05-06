@@ -32,11 +32,15 @@ func New(cli habitsClient, lgr Logger) *Server {
 	}
 }
 
+const (
+	indexPath = "/"
+)
+
 // Router returns an http handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
 	r := chi.NewRouter()
 
-	r.Get("/", s.index)
+	r.Get(indexPath, s.index)
 	r.Get("/tick/{habitID}", s.tick)
 
 	return r

@@ -2,11 +2,6 @@ body {
     background-color: {{.}};
 }
 
-span.done {
-    color: white;
-    background-color: darkgreen;
-}
-
 input {
     width: 50px;
 }

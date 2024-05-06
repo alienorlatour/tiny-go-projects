@@ -18,7 +18,9 @@ func (s *Server) styles(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "text/css")
 
-	err = tpl.Execute(w, "#023047")
+	err = tpl.Execute(w, map[string]interface{}{
+		"Background": "DarkSlateGray",
+		"Foreground": "LightGray"})
 	if err != nil {
 		s.lgr.Logf("cannot render styles: %s", err.Error())
 		http.Error(w, "Error while rendering.", http.StatusInternalServerError)

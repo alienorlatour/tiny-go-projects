@@ -9,9 +9,9 @@
 <p>Here is a slice</p>
 <div>
     <ul>
-        {{- range $index, $value := . }}
+        {{ range $index, $value := . }}
         <li>{{ $index }} : {{ $value }}</li>
-        {{- end }}
+        {{ end }}
     </ul>
 </div>
 </body>
