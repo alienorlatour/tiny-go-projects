@@ -15,6 +15,7 @@ li.habit {
     justify-content: space-between;
     align-items: center;
     border-radius: 5px;
+    color: midnightblue;
 }
 
 li.habit.completed {
