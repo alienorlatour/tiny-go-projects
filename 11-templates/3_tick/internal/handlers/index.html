@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+    <style>
+        span.done {
+            color: white;
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+<h1>Habits</h1>
+<p>Here are your registered habits</p>
+<div>
+    <ul>
+        {{- range . }}
+        <li>
+            <b>{{.Name}}</b>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
+        </li>
+        {{- end }}
+    </ul>
+</div>
+</body>
+</html>

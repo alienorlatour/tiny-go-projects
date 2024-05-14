@@ -1,0 +1,7 @@
+{{- define "habitItem"}}
+        <li class="habit {{ statusCSSClass . }}">
+            <b>{{.Name}}</b>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- progress . }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
+        </li>
+{{- end }}

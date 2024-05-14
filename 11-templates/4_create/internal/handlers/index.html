@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+    <style>
+        span.done {
+            color: white;
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<form action="/create" method="post">
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" id="habitFrequency" name="habitFrequency">
+    <button>Create</button>
+</form>
+<hr/>
+<p>Here are your registered habits</p>
+<div>
+    <ul>
+        {{- range .}}
+        <li>
+            <b>{{.Name}}</b>
+            <span class="{{ if ge .Ticks .WeeklyFrequency -}} done {{- end -}} "> {{- .Ticks }} out of {{ .WeeklyFrequency }}</span>
+            <a href="/tick/{{ .ID }}">Tick!</a>
+        </li>
+        {{- end }}
+    </ul>
+</div>
+</body>
+</html>

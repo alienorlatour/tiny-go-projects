@@ -1,0 +1,35 @@
+body {
+    background-color: {{.}};
+}
+
+input {
+    width: 50px;
+}
+
+li.habit {
+    width: 30em;
+    border: 1px solid #333;
+    margin: 8px 12px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    color: midnightblue;
+}
+
+li.habit.completed {
+    background: #afa;
+}
+
+li.habit.good_progress {
+    background: #ffa;
+}
+
+li.habit.started {
+    background: #fca;
+}
+
+li.habit.not_started {
+    background: #faa;
+}

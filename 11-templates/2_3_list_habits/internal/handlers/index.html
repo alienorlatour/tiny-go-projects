@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h1>Habits</h1>
+<p>Here are your registered habits</p>
+<div>
+    <ul>
+        {{- range . }}
+        <li>
+            <b>{{ .Name }}</b> - {{ .WeeklyFrequency }} time {{- if gt .WeeklyFrequency 1 -}} s {{- end }} a week
+        </li>
+        {{- end }}
+    </ul>
+</div>
+</body>
+</html>

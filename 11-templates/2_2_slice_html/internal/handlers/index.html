@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+</head>
+<body>
+<h1>Habits</h1>
+<h2>Slice Viewer</h2>
+<p>Here is a slice</p>
+<div>
+    <ul>
+        {{ range $index, $value := . }}
+        <li>{{ $index }} : {{ $value }}</li>
+        {{ end }}
+    </ul>
+</div>
+</body>
+</html>

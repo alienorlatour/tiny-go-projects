@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+    <link type="text/css" rel="stylesheet" href="/assets/styles.css" >
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<form action="/create" method="post">
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" id="habitFrequency" name="habitFrequency">
+    <button>Create</button>
+</form>
+<hr/>
+<div>
+    <div>
+        <a href="/?week=1711843200">Prev.</a>
+        This period covers 07 April 2024 -> 13 April 2024.
+        <a href="/?week=1713052800">Next</a>
+    </div>
+    <p>Here are your registered habits, you have 2.</p>
+    <ul>
+        <li>
+            <b>Knit</b>
+            <span class="">2 out of 3</span>
+            <a href="/tick/ID01">Tick!</a>
+        </li>
+        <li>
+            <b>Water the plants</b>
+            <span class="">0 out of 1</span>
+            <a href="/tick/ID02">Tick!</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

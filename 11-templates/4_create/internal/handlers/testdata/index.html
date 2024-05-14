@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Learn Go</title>
+    <style>
+        span.done {
+            color: white;
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+<h2>Habits Viewer</h2>
+<form action="/create" method="post">
+    <label for="habitName">Objective:</label>
+    <input type="text" id="habitName" name="habitName">
+    <label for="habitFrequency">Weekly frequency:</label>
+    <input type="number" id="habitFrequency" name="habitFrequency">
+    <button>Create</button>
+</form>
+<hr/>
+<p>Here are your registered habits</p>
+<div>
+    <ul>
+        <li>
+            <b>Knit</b>
+            <span class="done">3 out of 3</span>
+            <a href="/tick/ID01">Tick!</a>
+        </li>
+        <li>
+            <b>Water the plants</b>
+            <span class="">0 out of 1</span>
+            <a href="/tick/ID02">Tick!</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

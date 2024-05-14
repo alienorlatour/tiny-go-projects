@@ -6,7 +6,8 @@ chapters := 02-hello_world \
 			07-generic_cache \
 			08-http_gordle \
 			09-maze_solver \
-			10-habits
+			10-habits \
+			11-templates
 
 
 %:
