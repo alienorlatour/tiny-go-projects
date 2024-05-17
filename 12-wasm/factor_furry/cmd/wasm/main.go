@@ -30,6 +30,7 @@ func generate(this js.Value, args []js.Value) any {
 func validate(this js.Value, args []js.Value) any {
 	fmt.Println(args)
 
+	// Retrieve the operands.
 	operand1 := js.Global().Get("document").Call("getElementById", "operand1").Get("innerHTML")
 	op1, err := strconv.Atoi(operand1.String())
 	if err != nil {
@@ -42,22 +43,28 @@ func validate(this js.Value, args []js.Value) any {
 		return fmt.Errorf("unknown format: %w", err)
 	}
 
-	answer := js.Global().Get("document").Call("getElementById", "answer").Get("value")
-	a, err := strconv.Atoi(answer.String())
+	// Read the contents as they were provided by the user.
+	providedAnswer := js.Global().Get("document").Call("getElementById", "providedAnswer").Get("value")
+	if providedAnswer.String() == "" {
+		js.Global().Call("alert", "Please give an answer")
+		return nil
+	}
+
+	a, err := strconv.Atoi(providedAnswer.String())
 	if err != nil {
 		return fmt.Errorf("unknown format: %w", err)
 	}
 
-	expected := op1 * op2
-
 	// Comparing with the answer provided by the user
-	if expected == a {
+	if op1*op2 == a {
 		js.Global().Call("alert", "Bravo !")
 		generate(this, args)
 	} else {
 		js.Global().Call("alert", "Try again...")
 	}
 
-	js.Global().Get("document").Call("getElementById", "answer").Set("value", "")
+	// Reset the contents of the fields
+	js.Global().Get("document").Call("getElementById", "providedAnswer").Set("value", "")
+
 	return nil
 }

@@ -1,40 +1,39 @@
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charSet="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplication Table Practice</title>
-</head>
+    <head>
+        <meta charSet="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Multiplication Table Practice</title>
+        <script src="wasm_exec.js"></script>
+        <script>
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch('output.wasm'),
+                go.importObject).then((result) => {
+                go.run(result.instance);
+                generate()
+            });
+        </script>
+    </head>
 
+    <body>
+        <h1>Multiplication Table Practice</h1>
+        <div>
+            <label for="operand1"></label>
+            <span id="operand1"></span>
 
-<script src="wasm_exec.js"></script>
-<script>
-    const go = new Go();
-    WebAssembly.instantiateStreaming(fetch('output.wasm'),
-        go.importObject).then((result) => {
-        go.run(result.instance);
-        generate()
-    });
-</script>
+            <label for="operator"></label>
+            <span id="operator">x</span>
 
+            <label for="operand2"></label>
+            <span id="operand2"></span>
 
-<h1>Multiplication Table Practice</h1>
-<div>
-    <label htmlFor="operand1"></label>
-    <span id="operand1"></span>
+            <label for="equal"></label>
+            <span id="equal">=</span>
 
-    <label htmlFor="operator">x</label>
-    <label htmlFor="operand2"></label>
-    <span id="operand2"></span>
+            <label for="providedAnswer"></label>
+            <input type="text" id="providedAnswer" placeholder="Your Answer">
+            <button onClick="validate(parseInt(providedAnswer.value, 10))">Validate</button>
 
-    <label htmlFor="equal">=</label>
-
-    <label htmlFor="answer"></label>
-    <input type="text" id="answer" placeholder="Your Answer">
-    <button onClick="validate(parseInt(answer.value, 10))">Validate</button>
-
-</div>
-<div id="result"></div>
-
-<body>
-</body>
+        </div>
+    </body>
 </html>
