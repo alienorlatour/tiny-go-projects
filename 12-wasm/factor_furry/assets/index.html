@@ -12,15 +12,7 @@
     WebAssembly.instantiateStreaming(fetch('output.wasm'),
         go.importObject).then((result) => {
         go.run(result.instance);
-        output = generate()
-        console.log("Result:", output); // call the 'generate' function defined in the Go program
-
-        operand1 = output[0]
-        operand2 = output[1]
-        expected = output[2]
-
-        document.getElementById("operand1").innerHTML = operand1;
-        document.getElementById("operand2").innerHTML = operand2;
+        generate()
     });
 </script>
 
@@ -37,7 +29,7 @@
     <label htmlFor="equal">=</label>
 
     <input type="text" id="answer" placeholder="Your Answer">
-    <button onClick="validate(expected, parseInt(answer.value, 10))">Validate</button>
+    <button onClick="validate(operand1, operand2, parseInt(answer.value, 10))">Validate</button>
 
 </div>
 <div id="result"></div>
