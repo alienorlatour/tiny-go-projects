@@ -23,7 +23,6 @@ func generate(this js.Value, args []js.Value) any {
 
 	js.Global().Get("document").Call("getElementById", "operand1").Set("innerHTML", operand1)
 	js.Global().Get("document").Call("getElementById", "operand2").Set("innerHTML", operand2)
-	js.Global().Get("document").Call("getElementById", "answer").Set("value", "")
 
 	return []interface{}{}
 }
@@ -51,18 +50,14 @@ func validate(this js.Value, args []js.Value) any {
 
 	expected := op1 * op2
 
-	var result bool
-
 	// Comparing with the answer provided by the user
 	if expected == a {
-		fmt.Println("Correct!")
-		result = true
-
+		js.Global().Call("alert", "Bravo !")
 		generate(this, args)
 	} else {
-		fmt.Println("Try again!")
+		js.Global().Call("alert", "Try again...")
 	}
 
-	js.Global().Get("document").Call("getElementById", "result").Set("innerHTML", result)
+	js.Global().Get("document").Call("getElementById", "answer").Set("value", "")
 	return nil
 }
