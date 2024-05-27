@@ -28,7 +28,8 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 
 	err = tpl.Execute(w, habits)
 	if err != nil {
-		s.logAndHideError(w, indexEndpoint, err, http.StatusInternalServerError)
+		s.lgr.Logf("Error in %s: %s", indexEndpoint, err.Error())
+		// Calling http.Error here would have no effect, as we've already written the header to the writer.
 		return
 	}
 }

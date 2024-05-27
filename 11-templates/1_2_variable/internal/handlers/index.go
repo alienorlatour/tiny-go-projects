@@ -20,6 +20,6 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	err = tpl.Execute(w, 5)
 	if err != nil {
 		s.lgr.Logf("cannot render index: %s", err.Error())
-		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
+		return
 	}
 }

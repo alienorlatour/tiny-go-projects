@@ -2,7 +2,7 @@
 
 package mocks
 
-//go:generate minimock -i learngo-pockets/templates/internal/handlers.habitsClient -o habits_client_mock.go -n HabitsClientMock -p mocks
+//go:generate minimock -i learngo-pockets/templates/internal/handlers.HabitsClient -o habits_client_mock.go -n HabitsClientMock -p mocks
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 	"github.com/gojuno/minimock/v3"
 )
 
-// HabitsClientMock implements handlers.habitsClient
+// HabitsClientMock implements handlers.HabitsClient
 type HabitsClientMock struct {
 	t          minimock.Tester
 	finishOnce sync.Once
@@ -33,7 +33,7 @@ type HabitsClientMock struct {
 	TickHabitMock          mHabitsClientMockTickHabit
 }
 
-// NewHabitsClientMock returns a mock for handlers.habitsClient
+// NewHabitsClientMock returns a mock for handlers.HabitsClient
 func NewHabitsClientMock(t minimock.Tester) *HabitsClientMock {
 	m := &HabitsClientMock{t: t}
 
@@ -61,7 +61,7 @@ type mHabitsClientMockListHabits struct {
 	mutex    sync.RWMutex
 }
 
-// HabitsClientMockListHabitsExpectation specifies expectation struct of the habitsClient.ListHabits
+// HabitsClientMockListHabitsExpectation specifies expectation struct of the HabitsClient.ListHabits
 type HabitsClientMockListHabitsExpectation struct {
 	mock    *HabitsClientMock
 	params  *HabitsClientMockListHabitsParams
@@ -69,19 +69,19 @@ type HabitsClientMockListHabitsExpectation struct {
 	Counter uint64
 }
 
-// HabitsClientMockListHabitsParams contains parameters of the habitsClient.ListHabits
+// HabitsClientMockListHabitsParams contains parameters of the HabitsClient.ListHabits
 type HabitsClientMockListHabitsParams struct {
 	ctx context.Context
 	t   time.Time
 }
 
-// HabitsClientMockListHabitsResults contains results of the habitsClient.ListHabits
+// HabitsClientMockListHabitsResults contains results of the HabitsClient.ListHabits
 type HabitsClientMockListHabitsResults struct {
 	ha1 []habit.Habit
 	err error
 }
 
-// Expect sets up expected params for habitsClient.ListHabits
+// Expect sets up expected params for HabitsClient.ListHabits
 func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, t time.Time) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
@@ -101,7 +101,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Expect(ctx context.Context, t t
 	return mmListHabits
 }
 
-// Inspect accepts an inspector function that has same arguments as the habitsClient.ListHabits
+// Inspect accepts an inspector function that has same arguments as the HabitsClient.ListHabits
 func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Context, t time.Time)) *mHabitsClientMockListHabits {
 	if mmListHabits.mock.inspectFuncListHabits != nil {
 		mmListHabits.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.ListHabits")
@@ -112,7 +112,7 @@ func (mmListHabits *mHabitsClientMockListHabits) Inspect(f func(ctx context.Cont
 	return mmListHabits
 }
 
-// Return sets up results that will be returned by habitsClient.ListHabits
+// Return sets up results that will be returned by HabitsClient.ListHabits
 func (mmListHabits *mHabitsClientMockListHabits) Return(ha1 []habit.Habit, err error) *HabitsClientMock {
 	if mmListHabits.mock.funcListHabits != nil {
 		mmListHabits.mock.t.Fatalf("HabitsClientMock.ListHabits mock is already set by Set")
@@ -125,21 +125,21 @@ func (mmListHabits *mHabitsClientMockListHabits) Return(ha1 []habit.Habit, err e
 	return mmListHabits.mock
 }
 
-// Set uses given function f to mock the habitsClient.ListHabits method
+// Set uses given function f to mock the HabitsClient.ListHabits method
 func (mmListHabits *mHabitsClientMockListHabits) Set(f func(ctx context.Context, t time.Time) (ha1 []habit.Habit, err error)) *HabitsClientMock {
 	if mmListHabits.defaultExpectation != nil {
-		mmListHabits.mock.t.Fatalf("Default expectation is already set for the habitsClient.ListHabits method")
+		mmListHabits.mock.t.Fatalf("Default expectation is already set for the HabitsClient.ListHabits method")
 	}
 
 	if len(mmListHabits.expectations) > 0 {
-		mmListHabits.mock.t.Fatalf("Some expectations are already set for the habitsClient.ListHabits method")
+		mmListHabits.mock.t.Fatalf("Some expectations are already set for the HabitsClient.ListHabits method")
 	}
 
 	mmListHabits.mock.funcListHabits = f
 	return mmListHabits.mock
 }
 
-// When sets expectation for the habitsClient.ListHabits which will trigger the result defined by the following
+// When sets expectation for the HabitsClient.ListHabits which will trigger the result defined by the following
 // Then helper
 func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context, t time.Time) *HabitsClientMockListHabitsExpectation {
 	if mmListHabits.mock.funcListHabits != nil {
@@ -154,13 +154,13 @@ func (mmListHabits *mHabitsClientMockListHabits) When(ctx context.Context, t tim
 	return expectation
 }
 
-// Then sets up habitsClient.ListHabits return parameters for the expectation previously defined by the When method
+// Then sets up HabitsClient.ListHabits return parameters for the expectation previously defined by the When method
 func (e *HabitsClientMockListHabitsExpectation) Then(ha1 []habit.Habit, err error) *HabitsClientMock {
 	e.results = &HabitsClientMockListHabitsResults{ha1, err}
 	return e.mock
 }
 
-// ListHabits implements handlers.habitsClient
+// ListHabits implements handlers.HabitsClient
 func (mmListHabits *HabitsClientMock) ListHabits(ctx context.Context, t time.Time) (ha1 []habit.Habit, err error) {
 	mm_atomic.AddUint64(&mmListHabits.beforeListHabitsCounter, 1)
 	defer mm_atomic.AddUint64(&mmListHabits.afterListHabitsCounter, 1)
@@ -278,7 +278,7 @@ type mHabitsClientMockTickHabit struct {
 	mutex    sync.RWMutex
 }
 
-// HabitsClientMockTickHabitExpectation specifies expectation struct of the habitsClient.TickHabit
+// HabitsClientMockTickHabitExpectation specifies expectation struct of the HabitsClient.TickHabit
 type HabitsClientMockTickHabitExpectation struct {
 	mock    *HabitsClientMock
 	params  *HabitsClientMockTickHabitParams
@@ -286,18 +286,18 @@ type HabitsClientMockTickHabitExpectation struct {
 	Counter uint64
 }
 
-// HabitsClientMockTickHabitParams contains parameters of the habitsClient.TickHabit
+// HabitsClientMockTickHabitParams contains parameters of the HabitsClient.TickHabit
 type HabitsClientMockTickHabitParams struct {
 	ctx context.Context
 	id  habit.ID
 }
 
-// HabitsClientMockTickHabitResults contains results of the habitsClient.TickHabit
+// HabitsClientMockTickHabitResults contains results of the HabitsClient.TickHabit
 type HabitsClientMockTickHabitResults struct {
 	err error
 }
 
-// Expect sets up expected params for habitsClient.TickHabit
+// Expect sets up expected params for HabitsClient.TickHabit
 func (mmTickHabit *mHabitsClientMockTickHabit) Expect(ctx context.Context, id habit.ID) *mHabitsClientMockTickHabit {
 	if mmTickHabit.mock.funcTickHabit != nil {
 		mmTickHabit.mock.t.Fatalf("HabitsClientMock.TickHabit mock is already set by Set")
@@ -317,7 +317,7 @@ func (mmTickHabit *mHabitsClientMockTickHabit) Expect(ctx context.Context, id ha
 	return mmTickHabit
 }
 
-// Inspect accepts an inspector function that has same arguments as the habitsClient.TickHabit
+// Inspect accepts an inspector function that has same arguments as the HabitsClient.TickHabit
 func (mmTickHabit *mHabitsClientMockTickHabit) Inspect(f func(ctx context.Context, id habit.ID)) *mHabitsClientMockTickHabit {
 	if mmTickHabit.mock.inspectFuncTickHabit != nil {
 		mmTickHabit.mock.t.Fatalf("Inspect function is already set for HabitsClientMock.TickHabit")
@@ -328,7 +328,7 @@ func (mmTickHabit *mHabitsClientMockTickHabit) Inspect(f func(ctx context.Contex
 	return mmTickHabit
 }
 
-// Return sets up results that will be returned by habitsClient.TickHabit
+// Return sets up results that will be returned by HabitsClient.TickHabit
 func (mmTickHabit *mHabitsClientMockTickHabit) Return(err error) *HabitsClientMock {
 	if mmTickHabit.mock.funcTickHabit != nil {
 		mmTickHabit.mock.t.Fatalf("HabitsClientMock.TickHabit mock is already set by Set")
@@ -341,21 +341,21 @@ func (mmTickHabit *mHabitsClientMockTickHabit) Return(err error) *HabitsClientMo
 	return mmTickHabit.mock
 }
 
-// Set uses given function f to mock the habitsClient.TickHabit method
+// Set uses given function f to mock the HabitsClient.TickHabit method
 func (mmTickHabit *mHabitsClientMockTickHabit) Set(f func(ctx context.Context, id habit.ID) (err error)) *HabitsClientMock {
 	if mmTickHabit.defaultExpectation != nil {
-		mmTickHabit.mock.t.Fatalf("Default expectation is already set for the habitsClient.TickHabit method")
+		mmTickHabit.mock.t.Fatalf("Default expectation is already set for the HabitsClient.TickHabit method")
 	}
 
 	if len(mmTickHabit.expectations) > 0 {
-		mmTickHabit.mock.t.Fatalf("Some expectations are already set for the habitsClient.TickHabit method")
+		mmTickHabit.mock.t.Fatalf("Some expectations are already set for the HabitsClient.TickHabit method")
 	}
 
 	mmTickHabit.mock.funcTickHabit = f
 	return mmTickHabit.mock
 }
 
-// When sets expectation for the habitsClient.TickHabit which will trigger the result defined by the following
+// When sets expectation for the HabitsClient.TickHabit which will trigger the result defined by the following
 // Then helper
 func (mmTickHabit *mHabitsClientMockTickHabit) When(ctx context.Context, id habit.ID) *HabitsClientMockTickHabitExpectation {
 	if mmTickHabit.mock.funcTickHabit != nil {
@@ -370,13 +370,13 @@ func (mmTickHabit *mHabitsClientMockTickHabit) When(ctx context.Context, id habi
 	return expectation
 }
 
-// Then sets up habitsClient.TickHabit return parameters for the expectation previously defined by the When method
+// Then sets up HabitsClient.TickHabit return parameters for the expectation previously defined by the When method
 func (e *HabitsClientMockTickHabitExpectation) Then(err error) *HabitsClientMock {
 	e.results = &HabitsClientMockTickHabitResults{err}
 	return e.mock
 }
 
-// TickHabit implements handlers.habitsClient
+// TickHabit implements handlers.HabitsClient
 func (mmTickHabit *HabitsClientMock) TickHabit(ctx context.Context, id habit.ID) (err error) {
 	mm_atomic.AddUint64(&mmTickHabit.beforeTickHabitCounter, 1)
 	defer mm_atomic.AddUint64(&mmTickHabit.afterTickHabitCounter, 1)

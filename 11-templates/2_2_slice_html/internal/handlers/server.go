@@ -10,21 +10,21 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-// Client is the dependency towards the Habits service.
+// HabitsClient is the dependency towards the Habits service.
 //
-//go:generate minimock -i habitsClient -s "_mock.go" -o "mocks"
-type habitsClient interface {
+//go:generate minimock -s "_mock.go" -o "mocks"
+type HabitsClient interface {
 	ListHabits(ctx context.Context, t time.Time) ([]habit.Habit, error)
 }
 
 // Server serves all the HTML routes on this service.
 type Server struct {
-	client habitsClient
+	client HabitsClient
 	lgr    Logger
 }
 
 // New builds a new server.
-func New(cli habitsClient, lgr Logger) *Server {
+func New(cli HabitsClient, lgr Logger) *Server {
 	return &Server{
 		client: cli,
 		lgr:    lgr,

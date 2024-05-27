@@ -18,7 +18,7 @@ func TestServer_Create(t *testing.T) {
 	testCases := map[string]struct {
 		input      func() url.Values
 		wantStatus int
-		client     func() habitsClient
+		client     func() HabitsClient
 	}{
 		"nominal": {
 			input: func() url.Values {
@@ -28,7 +28,7 @@ func TestServer_Create(t *testing.T) {
 				return v
 			},
 			wantStatus: http.StatusSeeOther,
-			client: func() habitsClient {
+			client: func() HabitsClient {
 				cli := mocks.NewHabitsClientMock(t)
 				cli.CreateHabitMock.Expect(context.Background(), habit.Habit{Name: "Dance your heart out", WeeklyFrequency: 2}).Return(nil)
 				return cli
@@ -42,7 +42,7 @@ func TestServer_Create(t *testing.T) {
 				return v
 			},
 			wantStatus: http.StatusInternalServerError,
-			client: func() habitsClient {
+			client: func() HabitsClient {
 				cli := mocks.NewHabitsClientMock(t)
 				cli.CreateHabitMock.Expect(context.Background(), habit.Habit{Name: "Dance your heart out", WeeklyFrequency: 2}).
 					Return(errors.New("nope"))
@@ -57,7 +57,7 @@ func TestServer_Create(t *testing.T) {
 				return v
 			},
 			wantStatus: http.StatusBadRequest,
-			client: func() habitsClient {
+			client: func() HabitsClient {
 				return nil
 			},
 		},
@@ -69,7 +69,7 @@ func TestServer_Create(t *testing.T) {
 				return v
 			},
 			wantStatus: http.StatusBadRequest,
-			client: func() habitsClient {
+			client: func() HabitsClient {
 				return nil
 			},
 		},

@@ -24,11 +24,12 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.lgr.Logf("can't parse index index: %s", err.Error())
 		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
+		return
 	}
 
 	err = tpl.Execute(w, len(habits))
 	if err != nil {
 		s.lgr.Logf("cannot render index: %s", err.Error())
-		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
+		return
 	}
 }

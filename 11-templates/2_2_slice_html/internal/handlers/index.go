@@ -22,7 +22,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	tpl, err := template.New("index").Parse(indexPage)
 	if err != nil {
 		s.lgr.Logf("can't parse index: %s", err.Error())
-		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
+		http.Error(w, "Error while rendering.", http.StatusInternalServerError)
 		return
 	}
 
@@ -31,6 +31,7 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 	err = tpl.Execute(w, values)
 	if err != nil {
 		s.lgr.Logf("Error in index: %s", err.Error())
-		http.Error(w, "Error while rendering - please retry.", http.StatusInternalServerError)
+		// Calling http.Error here would have no effect, as we've already written the header to the writer.
+		return
 	}
 }
