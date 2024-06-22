@@ -24,8 +24,8 @@ var corpora = map[string]string{
 	"cr": "./../../../corpus/cree.txt",
 }
 
-// Handle returns the handler for the game creation endpoint.
-func Handle(adder gameAdder) http.HandlerFunc {
+// Handler returns the handler for the game creation endpoint.
+func Handler(adder gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		lang := r.URL.Query().Get(api.Lang)
 		corpusPath, ok := corpora[lang]

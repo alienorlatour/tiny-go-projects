@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/repository"
 	"learngo-pockets/httpgordle/internal/session"
@@ -21,7 +19,7 @@ type gameFinder interface {
 // Handler returns the handler for the status retrieval endpoint.
 func Handler(finder gameFinder) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		id := chi.URLParam(req, api.GameID)
+		id := req.PathValue(api.GameID)
 		if id == "" {
 			http.Error(w, "missing the id of the game", http.StatusBadRequest)
 			return

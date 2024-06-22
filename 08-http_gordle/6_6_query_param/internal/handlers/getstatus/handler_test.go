@@ -1,13 +1,12 @@
 package getstatus
 
 import (
-	"context"
-	"learngo-pockets/httpgordle/internal/api"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
+	"learngo-pockets/httpgordle/internal/api"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -21,9 +20,7 @@ func TestHandle(t *testing.T) {
 	require.NoError(t, err)
 
 	// add path parameters
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add(api.GameID, "123456")
-	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	req.SetPathValue(api.GameID, "123456")
 
 	recorder := httptest.NewRecorder()
 

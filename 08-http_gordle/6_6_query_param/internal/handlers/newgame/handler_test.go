@@ -34,7 +34,7 @@ func TestHandler(t *testing.T) {
 	for name, testCase := range tt {
 
 		t.Run(name, func(t *testing.T) {
-			f := Handle(testCase.creator)
+			f := Handler(testCase.creator)
 
 			req, err := http.NewRequest(http.MethodPost, api.NewGameRoute, nil)
 			if err != nil {

@@ -7,8 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/gordle"
 	"learngo-pockets/httpgordle/internal/repository"
@@ -23,8 +21,8 @@ type gameGuesser interface {
 // Handler returns the handler for the guess endpoint.
 func Handler(guesser gameGuesser) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		// Read the Game ID from the query parameters.
-		id := chi.URLParam(req, api.GameID)
+		// Read the Game ID from the path parameters.
+		id := req.PathValue(api.GameID)
 		if id == "" {
 			http.Error(w, "missing the id of the game", http.StatusBadRequest)
 			return

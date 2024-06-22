@@ -1,7 +1,8 @@
 package handlers
 
 import (
-	"github.com/go-chi/chi/v5"
+	"net/http"
+
 	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/handlers/newgame"
 )
@@ -10,10 +11,11 @@ import (
 //   - Create a new game;
 //
 // The provided router is ready to serve.
-func NewRouter() chi.Router {
-	r := chi.NewRouter()
+func NewRouter() *http.ServeMux {
+	r := http.NewServeMux()
 
-	r.Post(api.NewGameRoute, newgame.Handle)
+	// Register each endpoint.
+	r.HandleFunc(http.MethodPost+" "+api.NewGameRoute, newgame.Handle)
 
 	return r
 }
