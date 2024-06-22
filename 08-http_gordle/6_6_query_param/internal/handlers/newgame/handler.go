@@ -24,8 +24,8 @@ var corpora = map[string]string{
 	"cr": "./../../../corpus/cree.txt",
 }
 
-// Handle returns the handler for the game creation endpoint.
-func Handle(adder gameAdder) http.HandlerFunc {
+// Handler returns the handler for the game creation endpoint.
+func Handler(adder gameAdder) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		lang := r.URL.Query().Get(api.Lang)
 		corpusPath, ok := corpora[lang]
@@ -47,7 +47,8 @@ func Handle(adder gameAdder) http.HandlerFunc {
 		apiGame := api.ToGameResponse(game)
 		err = json.NewEncoder(w).Encode(apiGame)
 		if err != nil {
-			http.Error(w, "failed to write response", http.StatusInternalServerError)
+			// The header has already been set. Nothing much we can do here.
+			log.Printf("failed to write response: %s", err)
 		}
 	}
 }

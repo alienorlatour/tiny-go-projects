@@ -2,6 +2,7 @@ package newgame
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"learngo-pockets/httpgordle/internal/api"
@@ -15,6 +16,7 @@ func Handle(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	err := json.NewEncoder(w).Encode(apiGame)
 	if err != nil {
-		http.Error(w, "failed to write response", http.StatusInternalServerError)
+		// The header has already been set. Nothing much we can do here.
+		log.Printf("failed to write response: %s", err)
 	}
 }

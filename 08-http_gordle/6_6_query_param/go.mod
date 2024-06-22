@@ -3,7 +3,6 @@ module learngo-pockets/httpgordle
 go 1.23.0
 
 require (
-	github.com/go-chi/chi/v5 v5.0.8
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/stretchr/testify v1.8.3
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1

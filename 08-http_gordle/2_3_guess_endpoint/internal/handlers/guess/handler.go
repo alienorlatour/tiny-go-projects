@@ -5,14 +5,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"learngo-pockets/httpgordle/internal/api"
 )
 
 // Handle is the handler for the guess endpoint.
 func Handle(w http.ResponseWriter, req *http.Request) {
-	id := chi.URLParam(req, api.GameID)
+	id := req.PathValue(api.GameID)
 	if id == "" {
 		http.Error(w, "missing the id of the game", http.StatusBadRequest)
 		return

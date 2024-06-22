@@ -1,7 +1,7 @@
 projects := \
 	1_emptyshell \
-	2_1_endpoints_raw \
-	2_2_endpoints_chi \
+	2_1_create_game \
+	2_2_get_status \
 	2_3_guess_endpoint \
 	3_domain \
 	4_1_repository \

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/go-chi/chi/v5"
+	"net/http"
 
 	"learngo-pockets/httpgordle/internal/api"
 	"learngo-pockets/httpgordle/internal/handlers/getstatus"
@@ -15,13 +15,13 @@ import (
 //   - Make a guess in a game.
 //
 // The provided router is ready to serve.
-func NewRouter() chi.Router {
-	r := chi.NewRouter()
+func NewRouter() *http.ServeMux {
+	r := http.NewServeMux()
 
 	// Register each endpoint.
-	r.Post(api.NewGameRoute, newgame.Handle)
-	r.Get(api.GetStatusRoute, getstatus.Handle)
-	r.Put(api.GuessRoute, guess.Handle)
+	r.HandleFunc(http.MethodPost+" "+api.NewGameRoute, newgame.Handle)
+	r.HandleFunc(http.MethodGet+" "+api.GetStatusRoute, getstatus.Handle)
+	r.HandleFunc(http.MethodPut+" "+api.GuessRoute, guess.Handle)
 
 	return r
 }
