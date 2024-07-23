@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hello wasm</title>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <script src="wasm_exec.js"></script>
+</head>
+<body>
+My second HTML page!
+</body>
+<script>
+    const helloWASM = new Go();
+    WebAssembly.instantiateStreaming(fetch("main.wasm"),
+        helloWASM.importObject).then((result) => {
+        helloWASM.run(result.instance);
+    });
+</script>
+
+</html>
