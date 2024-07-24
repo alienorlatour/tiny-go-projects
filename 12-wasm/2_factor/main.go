@@ -9,46 +9,41 @@ import (
 	"syscall/js"
 )
 
+type multiplication struct {
+	opLeft, opRight int
+	successes       int
+}
+
 func main() {
+	product := &multiplication{}
+
 	// Registering Go functions to JavaScript
-	js.Global().Set("generate", js.FuncOf(generate))
-	js.Global().Set("validate", js.FuncOf(validate))
+	js.Global().Set("generate", js.FuncOf(product.generate))
+	js.Global().Set("validate", js.FuncOf(product.validate))
 
 	// Wait forever.
 	<-make(chan struct{})
 }
 
-func generate(_ js.Value, _ []js.Value) any {
-	operand1 := rand.IntN(11)
-	operand2 := rand.IntN(11)
+func (m *multiplication) generate(_ js.Value, _ []js.Value) any {
+	m.opLeft = rand.IntN(11)
+	m.opRight = rand.IntN(11)
+
 	dom := js.Global().Get("document")
 
-	dom.Call("getElementById", "operand1").Set("innerHTML", operand1)
-	dom.Call("getElementById", "operand2").Set("innerHTML", operand2)
+	dom.Call("getElementById", "operand1").Set("innerHTML", m.opLeft)
+	dom.Call("getElementById", "operand2").Set("innerHTML", m.opRight)
 
 	return nil
 }
 
-func validate(this js.Value, args []js.Value) any {
+func (m *multiplication) validate(this js.Value, args []js.Value) any {
 	dom := js.Global().Get("document")
 
 	defer func() {
 		// Reset the contents of the input field after the user clicked Validate
 		dom.Call("getElementById", "providedAnswer").Set("value", "")
 	}()
-
-	// Retrieve the operands.
-	operand1 := dom.Call("getElementById", "operand1").Get("innerHTML")
-	op1, err := strconv.Atoi(operand1.String())
-	if err != nil {
-		return fmt.Errorf("unknown format: %w", err)
-	}
-
-	operand2 := dom.Call("getElementById", "operand2").Get("innerHTML")
-	op2, err := strconv.Atoi(operand2.String())
-	if err != nil {
-		return fmt.Errorf("unknown format: %w", err)
-	}
 
 	guess := args[0].String()
 	numGuess, err := strconv.Atoi(guess)
@@ -58,9 +53,10 @@ func validate(this js.Value, args []js.Value) any {
 	}
 
 	// Comparing with the answer provided by the user
-	if op1*op2 == numGuess {
+	if m.opLeft*m.opRight == numGuess {
 		js.Global().Call("alert", "Bravo! Here's a new exercise.")
-		generate(this, args)
+		m.successes++
+		m.generate(this, args)
 	} else {
 		js.Global().Call("alert", "Try again... "+guess+" is not the correct answer.")
 	}
