@@ -1,0 +1,45 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    color: #ff0081;
+}
+
+div.operation {
+    font-size: 150px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+#providedAnswer {
+    font-size: 150px;
+    width: 2em;
+    border: none;
+}
+
+#providedAnswer:focus, #providedAnswer:focus-visible {
+    background-color: #ffb0ff;
+    outline-width: 0;
+}
+
+button.new {
+    display: inline-block;
+    font-size: 1em;
+    padding: 1em 2em;
+    margin-top: 100px;
+    margin-bottom: 60px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #ff0081;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}

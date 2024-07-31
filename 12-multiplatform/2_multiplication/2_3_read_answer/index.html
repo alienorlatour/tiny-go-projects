@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charSet="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="styles.css">
+    <title>Multiplication Table Practice</title>
+</head>
+
+<body>
+<h1>Multiplication Table Practice</h1>
+
+<button class="new" onclick="generate()">Generate new exercise</button>
+<div class="operation">
+    <span id="operand1"></span>
+    <span>x</span>
+    <span id="operand2"></span>
+    <span>=</span>
+
+    <label for="providedAnswer"></label>
+    <input type="number" id="providedAnswer" autofocus>
+    <button onClick="validate(providedAnswer.value)" class="submit">Validate</button>
+</div>
+</body>
+
+<script src="wasm_exec.js"></script>
+<script>
+    const factorFurry = new Go();
+    WebAssembly.instantiateStreaming(fetch('multiply.wasm'),
+        factorFurry.importObject).then((result) => {
+        factorFurry.run(result.instance);
+        generate();
+    });
+
+    document.getElementById('providedAnswer').addEventListener('keyup', function onEvent(e) {
+        if (e.key === 'Enter' || e.key === 'NumpadEnter') {
+            validate(providedAnswer.value)
+        }
+    });
+</script>
+</html>
