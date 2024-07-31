@@ -1,6 +1,6 @@
 projects := \
 	1_hello-world \
-	2_multiplication
+	2_multiplication \
 	3_tinycity
 
 
