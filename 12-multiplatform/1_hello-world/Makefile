@@ -3,5 +3,3 @@ build:
 
 lint:
 	@golangci-lint run ./...
-
-test:
