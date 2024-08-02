@@ -64,7 +64,7 @@ func (c *crossing) listenButton() {
 }
 
 type carLight struct {
-	red, yellow, green machine.Pin // A0, A1, A2
+	red, yellow, green machine.Pin
 }
 
 func newCarLight(redPin, yellowPin, greenPin machine.Pin) *carLight {
@@ -102,7 +102,7 @@ func (c *carLight) Go() {
 }
 
 type walkLight struct {
-	red, green machine.Pin // A4, A5
+	red, green machine.Pin
 }
 
 func newWalkLight(redPin, greenPin machine.Pin) *walkLight {
