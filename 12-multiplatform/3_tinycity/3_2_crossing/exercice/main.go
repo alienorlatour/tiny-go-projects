@@ -32,18 +32,17 @@ func newCrossing(cars *carLight, walks *walkLight) *crossing {
 
 func (c *crossing) Switch() {
 	if c.pedestriansGo {
-		c.pedestriansGo = false
 		c.walks.Stop()
 		c.cars.Go()
 	} else {
-		c.pedestriansGo = true
 		c.cars.Stop()
 		c.walks.Go()
 	}
+	c.pedestriansGo = !c.pedestriansGo
 }
 
 type carLight struct {
-	red, yellow, green machine.Pin // A0, A1, A2
+	red, yellow, green machine.Pin
 }
 
 func newCarLight(redPin, yellowPin, greenPin machine.Pin) *carLight {
@@ -81,7 +80,7 @@ func (c *carLight) Go() {
 }
 
 type walkLight struct {
-	red, green machine.Pin // A4, A5
+	red, green machine.Pin
 }
 
 func newWalkLight(redPin, greenPin machine.Pin) *walkLight {
