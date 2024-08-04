@@ -25,20 +25,20 @@ func main() {
 func (m *multiplication) generate(_ js.Value, _ []js.Value) any {
 	m.opLeft = rand.IntN(11)
 	m.opRight = rand.IntN(11)
-	dom := js.Global().Get("document")
+	document := js.Global().Get("document")
 
-	dom.Call("getElementById", "operand1").Set("innerHTML", m.opLeft)
-	dom.Call("getElementById", "operand2").Set("innerHTML", m.opRight)
+	document.Call("getElementById", "operand1").Set("innerHTML", m.opLeft)
+	document.Call("getElementById", "operand2").Set("innerHTML", m.opRight)
 
 	return nil
 }
 
 func (m *multiplication) validate(this js.Value, args []js.Value) any {
-	dom := js.Global().Get("document")
+	document := js.Global().Get("document")
 
 	defer func() {
 		// Reset the contents of the input field after the user clicked Validate
-		dom.Call("getElementById", "providedAnswer").Set("value", "")
+		document.Call("getElementById", "providedAnswer").Set("value", "")
 	}()
 
 	guess := args[0].String()
