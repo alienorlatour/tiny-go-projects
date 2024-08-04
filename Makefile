@@ -7,7 +7,8 @@ chapters := 02-hello_world \
 			08-http_gordle \
 			09-maze_solver \
 			10-habits \
-			11-templates
+			11-templates \
+			12-multiplatform
 
 
 %:
