@@ -1,9 +1,3 @@
-run:
-
-
-build:
-
-
 test:
 	@go test -race ./...
 

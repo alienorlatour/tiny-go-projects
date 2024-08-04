@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 //go:embed index.html
@@ -16,11 +17,11 @@ func main() {
 	fs := http.FileServer(http.FS(assets))
 	http.Handle("/", fs)
 
-	log.Print("Listening on :30001...")
-	err := http.ListenAndServe(":30001", nil)
+	log.Print("Listening on 127.0.0.1:30001...")
+	err := http.ListenAndServe("127.0.0.1:30001", nil)
 
 	if err != nil {
-		fmt.Println("Failed to start server", err)
+		fmt.Fprintf(os.Stderr, "Failed to start server: %s", err)
 		return
 	}
 }

@@ -25,10 +25,10 @@ func main() {
 func generate(_ js.Value, _ []js.Value) any {
 	operand1 := rand.IntN(10) + 1
 	operand2 := rand.IntN(10) + 1
-	dom := js.Global().Get("document")
+	document := js.Global().Get("document")
 
-	dom.Call("getElementById", "operand1").Set("innerHTML", operand1)
-	dom.Call("getElementById", "operand2").Set("innerHTML", operand2)
+	document.Call("getElementById", "operand1").Set("innerHTML", operand1)
+	document.Call("getElementById", "operand2").Set("innerHTML", operand2)
 
 	return nil
 }

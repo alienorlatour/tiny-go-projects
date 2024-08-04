@@ -22,10 +22,10 @@ func main() {
 func (m *multiplication) generate(_ js.Value, _ []js.Value) any {
 	m.opLeft = rand.IntN(11)
 	m.opRight = rand.IntN(11)
-	dom := js.Global().Get("document")
+	document := js.Global().Get("document")
 
-	dom.Call("getElementById", "operand1").Set("innerHTML", m.opLeft)
-	dom.Call("getElementById", "operand2").Set("innerHTML", m.opRight)
+	document.Call("getElementById", "operand1").Set("innerHTML", m.opLeft)
+	document.Call("getElementById", "operand2").Set("innerHTML", m.opRight)
 
 	return nil
 }
