@@ -1,6 +1,6 @@
 module learngo-pockets/templates
 
-go 1.21.1
+go 1.23.0
 
 replace learngo-pockets/habits => ../../10-habits/7_track
 
