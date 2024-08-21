@@ -1,6 +1,6 @@
 module learngo-pockets/templates
 
-go 1.21.1
+go 1.23.0
 
 require (
 	github.com/go-chi/chi/v5 v5.0.11

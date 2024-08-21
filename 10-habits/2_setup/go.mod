@@ -1,6 +1,6 @@
 module learngo-pockets/habits
 
-go 1.21.0
+go 1.23.0
 
 require (
 	google.golang.org/grpc v1.62.1
