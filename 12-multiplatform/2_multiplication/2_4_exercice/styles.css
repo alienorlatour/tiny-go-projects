@@ -29,6 +29,10 @@ input[type=number]::-webkit-inner-spin-button {
     outline-width: 0;
 }
 
+.inline-form {
+    display: inline-block; /* Make the form inline */
+}
+
 button.new {
     display: inline-block;
     font-size: 1em;

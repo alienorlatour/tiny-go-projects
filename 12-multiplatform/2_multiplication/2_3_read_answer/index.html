@@ -17,15 +17,18 @@
     <span id="operand2"></span>
     <span>=</span>
 
-    <label for="providedAnswer"></label>
-    <input type="number" id="providedAnswer" autofocus>
-    <button onClick="validate(providedAnswer.value)" class="submit">Validate</button>
+    <form onsubmit="validate(providedAnswer.value)" class="inline-form">
+        <label for="providedAnswer"></label>
+        <input type="number" id="providedAnswer" autofocus>
+        <button class="submit" type="submit">Submit answer</button>
+    </form>
+
 </div>
 </body>
 
 <script src="wasm_exec.js"></script>
 <script>
-    const urry = new Go();
+    const multiply = new Go();
     WebAssembly.instantiateStreaming(fetch('multiply.wasm'),
         multiply.importObject).then((result) => {
         multiply.run(result.instance);
