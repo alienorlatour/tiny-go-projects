@@ -21,10 +21,10 @@
 
 <script src="wasm_exec.js"></script>
 <script>
-    const factorFurry = new Go();
+    const multiply = new Go();
     WebAssembly.instantiateStreaming(fetch('multiply.wasm'),
-        factorFurry.importObject).then((result) => {
-        factorFurry.run(result.instance);
+        multiply.importObject).then((result) => {
+        multiply.run(result.instance);
         generate();
     });
 </script>
