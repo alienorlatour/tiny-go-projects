@@ -35,7 +35,7 @@
         generate();
     });
 
-    document.getElementById('providedAnswer').addEventListener('keyup', function onEvent(e) {
+    document.getElementById('providedAnswer').addEventListener('onsubmit', function onEvent(e) {
         if (e.key === 'Enter' || e.key === 'NumpadEnter') {
             validate(providedAnswer.value)
         }
