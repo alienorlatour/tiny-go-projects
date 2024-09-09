@@ -34,6 +34,10 @@ func (m *multiplication) generate(_ js.Value, _ []js.Value) any {
 }
 
 func (m *multiplication) validate(this js.Value, args []js.Value) any {
+	if len(args) == 0 {
+		return nil
+	}
+
 	document := js.Global().Get("document")
 
 	defer func() {

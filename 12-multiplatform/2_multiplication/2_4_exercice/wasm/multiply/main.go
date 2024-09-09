@@ -34,6 +34,10 @@ func generate(_ js.Value, _ []js.Value) any {
 }
 
 func (st *scoreTracker) validate(this js.Value, args []js.Value) any {
+	if len(args) == 0 {
+		return nil
+	}
+
 	dom := js.Global().Get("document")
 
 	defer func() {
