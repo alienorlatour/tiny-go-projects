@@ -15,7 +15,7 @@ func IsPalindromeNumber(s string) (bool, error) {
 	_, err := strconv.Atoi(s)
 	if err != nil {
 		// returns an error if it's not a number
-		return false, fmt.Errorf("not a number: %s", s)
+		return false, fmt.Errorf("conversion failed %s: %w", s, err)
 	}
 
 	for i := 0; i < len(s)/2; i++ {
