@@ -25,7 +25,7 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 		reversed := reverseInt(input)
 		want, err := IsPalindromeNumber(reversed)
 		if err != nil {
-			// V3 reversed != than input and not a number, e.g.: string("+0")
+			// reverse is not a number e.g.: string("+0")
 			t.Errorf("reversed is not a number: %v", err)
 		}
 		if got != want {
