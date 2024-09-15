@@ -1,65 +1,47 @@
 package palindrome
 
 import (
-	"strconv"
+	"slices"
 	"testing"
 )
 
-func TestIsPalindrome(t *testing.T) {
-	type args struct {
-		s string
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		//{"palindrome with letters", args{"kayak"}, true},
-		//{"palindrome with numbers", args{"1221"}, true},
-		//{"a weird one", args{" "}, true},
-		//{"not a palindrome", args{"hello"}, false},
-		//{"not a palindrome", args{"ab"}, false},
-		//{"not a palindrome", args{" 0"}, true},
-		////{"palindrome with capital", args{"A0a"}, true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsPalindrome(tt.args.s); got != tt.want {
-				t.Errorf("IsPalindrome() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func FuzzIsPalindrome(f *testing.F) {
+func FuzzIsPalindromeNumber(f *testing.F) {
 	// Seed corpus with some basic test cases
-	//f.Add("racecar")
-	//f.Add("A man, a plan, a canal, Panama")
-	//f.Add("hello")
-	f.Add("")
 	f.Add("1221")
-	//f.Add("1 221")
+	f.Add("1.1")                 // float
+	f.Add("")                    // empty string
+	f.Add("coucou")              // not a number
+	f.Add("1 221")               // with a space
+	f.Add(`{"test":1}`)          // JSON
+	f.Add("10")                  // ends with a 0
+	f.Add("01")                  // pads with 0
+	f.Add("+1")                  // signed
+	f.Add("9700000000000000079") // too big
+	f.Add("1_221")               // a valid int with _
 
+	// Call Fuzz and verify output
 	f.Fuzz(func(t *testing.T, input string) {
-		result := IsPalindrome(input)
+		got, err := IsPalindromeNumber(input)
+		if err != nil {
+			// V2 ignore if it's not a number
+			return
+		}
 
 		// Basic validation: a string reversed should match the palindrome status
 		reversed := reverseInt(input)
-		if result != IsPalindrome(reversed) {
+		want, err := IsPalindromeNumber(reversed)
+		if err != nil {
+			// V3 reversed != than input and not a number, e.g.: string("+0")
+			t.Errorf("reversed is not a number: %v", err)
+		}
+		if got != want {
 			t.Errorf("Palindrome mismatch for input: %s and its reverse: %s", input, reversed)
 		}
 	})
 }
 
 func reverseInt(s string) string {
-	_, err := strconv.Atoi(s)
-	if err != nil {
-		return ""
-	}
-
-	runes := []rune(s)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
-	}
-	return string(runes)
+	split := []rune(s)
+	slices.Reverse(split)
+	return string(split)
 }
