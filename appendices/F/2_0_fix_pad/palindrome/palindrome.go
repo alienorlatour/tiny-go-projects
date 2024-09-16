@@ -9,7 +9,7 @@ import (
 // "01" is not a palindrome
 // "004400" is a palindrome
 func IsPalindromeNumber(s string) bool {
-	// palindrome must have only digits
+	// input must have only digits
 	re := regexp.MustCompile("[0-9]*")
 	if !re.MatchString(s) {
 		return false

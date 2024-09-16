@@ -17,7 +17,10 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 		reversed := reverse(input)
 		reverseIsPalindrome := IsPalindromeNumber(reversed)
 		if got != reverseIsPalindrome {
-			t.Errorf("Palindrome mismatch for input: %s (isPalindrome: %v) and its reverse: %s (isPalindrome: %v)", input, got, reversed, reverseIsPalindrome)
+			t.Errorf("Palindrome mismatch for input: "+
+				"%s (isPalindrome: %v) and "+
+				"its reverse: %s (isPalindrome: %v)",
+				input, got, reversed, reverseIsPalindrome)
 		}
 	})
 }
