@@ -14,16 +14,16 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 		got := IsPalindromeNumber(input)
 
 		// Basic validation: a string reversed should match the palindrome status
-		reversed := reverseInt(input)
+		reversed := reverse(input)
 		reverseIsPalindrome := IsPalindromeNumber(reversed)
 		if got != reverseIsPalindrome {
-			t.Errorf("Palindrome mismatch for input: %s and its reverse: %s", input, reversed)
+			t.Errorf("Palindrome mismatch for input: %s (isPalindrome: %v) and its reverse: %s (isPalindrome: %v)", input, got, reversed, reverseIsPalindrome)
 		}
 	})
 }
 
-// reverseInt reverses an integer using the built-in slices.Reverse function
-func reverseInt(s string) string {
+// reverse reverses a string using the built-in slices.Reverse function
+func reverse(s string) string {
 	runes := []rune(s)
 	slices.Reverse(runes)
 	return string(runes)

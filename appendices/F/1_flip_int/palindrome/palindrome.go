@@ -14,10 +14,10 @@ func IsPalindromeNumber(s string) bool {
 	}
 
 	// flip the integer and compare
-	original := toInt
+	original := toInt // 1234
 	flip := 0
 	for toInt > 0 {
-		flip = 10*flip + toInt%10 // 4 | 43 | 432 | 4321
+		flip = 10*flip + toInt%10 // 4   | 43 | 432 | 4321
 		toInt = toInt / 10        // 123 | 12 |   1 |    0
 	}
 

@@ -11,12 +11,24 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 	f.Add("")     // empty string
 	f.Add("10")   // ends with 0
 	f.Add("01")   // pads with 0
+	f.Add("-020") // pads with 0
+	f.Add("0")    // only 0
+
+	// Fun other test cases
+	f.Add("\xff")                // not a number
+	f.Add("+1")                  // signed +
+	f.Add("-1")                  // signed -
+	f.Add("9700000000000000079") // big
+	f.Add("1.1")                 // float
+	f.Add("1 221")               // with a space
+	f.Add(`{"test":1}`)          // JSON
+	f.Add("1_221")               // a valid int with "_"
 
 	f.Fuzz(func(t *testing.T, input string) {
 		got := IsPalindromeNumber(input)
 
 		// Basic validation: a string reversed should match the palindrome status
-		reversed := reverseInt(input)
+		reversed := reverse(input)
 		reverseIsPalindrome := IsPalindromeNumber(reversed)
 		if got != reverseIsPalindrome {
 			t.Errorf("Palindrome mismatch for input: %s (isPalindrome: %v) and its reverse: %s (isPalindrome: %v)", input, got, reversed, reverseIsPalindrome)
@@ -24,12 +36,9 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 	})
 }
 
-// reverseInt reverses an integer using the built-in slices.Reverse function
-func reverseInt(s string) string {
+// reverse reverses a string using the built-in slices.Reverse function
+func reverse(s string) string {
 	runes := []rune(s)
-	//fmt.Println("runes: ", runes)
-	//fmt.Println("reversed: ", string(runes))
-
 	slices.Reverse(runes)
 	return string(runes)
 }
