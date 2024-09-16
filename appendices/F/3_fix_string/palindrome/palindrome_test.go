@@ -13,22 +13,21 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 	f.Add("01")   // pads with 0
 	f.Add("\xff") // not a number
 
-	// Call Fuzz and verify output
 	f.Fuzz(func(t *testing.T, input string) {
 		got, err := IsPalindromeNumber(input)
 		if err != nil {
-			// ignore if it's not a number
+			// ignore if input is not a number
 			return
 		}
 
 		// Basic validation: a string reversed should match the palindrome status
 		reversed := reverseInt(input)
-		want, err := IsPalindromeNumber(reversed)
+		reverseIsPalindrome, err := IsPalindromeNumber(reversed)
 		if err != nil {
 			// reverse is not a number e.g.: string("+0")
 			t.Errorf("reversed is not a number: %v", err)
 		}
-		if got != want {
+		if got != reverseIsPalindrome {
 			t.Errorf("Palindrome mismatch for input: %s and its reverse: %s", input, reversed)
 		}
 	})
@@ -36,7 +35,7 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 
 // reverseInt reverses an integer using the built-in slices.Reverse function
 func reverseInt(s string) string {
-	split := []rune(s)
-	slices.Reverse(split)
-	return string(split)
+	runes := []rune(s)
+	slices.Reverse(runes)
+	return string(runes)
 }
