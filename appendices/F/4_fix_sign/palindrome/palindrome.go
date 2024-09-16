@@ -10,9 +10,8 @@ import (
 // Only unsigned int are supported.
 // "1221" is a palindrome
 // "01" is not a palindrome
-// "-1" is not a palindrome
 func IsPalindromeNumber(s string) (bool, error) {
-	// check if it's a number, e.g.: "ң\xa3" is not a number
+	// check if it's a number, e.g.: "kayak" is not a number
 	_, err := strconv.Atoi(s)
 	if err != nil {
 		// returns an error if it's not a number

@@ -17,7 +17,7 @@ func IsPalindromeNumber(s string) (bool, error) {
 		return false, fmt.Errorf("input is too long")
 	}
 
-	// check if it's a number, e.g.: "ң\xa3" is not a number
+	// check if it's a number, e.g.: "kayak" is not a number
 	_, err := strconv.Atoi(s)
 	if err != nil {
 		// returns an error if it's not a number
