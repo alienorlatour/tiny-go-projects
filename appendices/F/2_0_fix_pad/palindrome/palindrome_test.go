@@ -10,7 +10,7 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 	f.Add("1221") // nominal case
 	f.Add("")     // empty string
 	f.Add("10")   // ends with 0
-	f.Add("01")   // pads with 0
+	f.Add("01")   // starts with 0
 	f.Add("-020") // pads with 0
 	f.Add("0")    // only 0
 
