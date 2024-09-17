@@ -31,12 +31,13 @@ func FuzzIsPalindromeNumber(f *testing.F) {
 		reversed := reverse(input)
 		reverseIsPalindrome := IsPalindromeNumber(reversed)
 		if got != reverseIsPalindrome {
-			t.Errorf("Palindrome mismatch for input: %s (isPalindrome: %v) and its reverse: %s (isPalindrome: %v)", input, got, reversed, reverseIsPalindrome)
+			t.Errorf("Palindrome mismatch for input: %s (isPalindrome: %t) "+
+				"and its reverse: %s (isPalindrome: %t)", input, got, reversed, reverseIsPalindrome)
 		}
 	})
 }
 
-// reverse reverses a string using the built-in slices.Reverse function
+// reverse reverses a string using the standard slices.Reverse function
 func reverse(s string) string {
 	runes := []rune(s)
 	slices.Reverse(runes)
