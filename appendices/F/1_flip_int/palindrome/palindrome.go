@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-// IsPalindromeNumber returns if an integer is readable in both ways.
+// IsPalindromeNumber returns whether an integer is identical when read both ways.
 // "1221" is a palindrome
 func IsPalindromeNumber(s string) bool {
 	// convert to a number

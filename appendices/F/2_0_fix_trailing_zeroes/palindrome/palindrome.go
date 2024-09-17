@@ -4,7 +4,7 @@ import (
 	"regexp"
 )
 
-// IsPalindromeNumber returns if an integer is readable in both ways.
+// IsPalindromeNumber returns whether an integer is identical when read both ways.
 // "1221" is a palindrome
 // "01" is not a palindrome
 // "004400" is a palindrome
