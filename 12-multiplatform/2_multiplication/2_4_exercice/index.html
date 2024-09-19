@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="styles.css">
+    <title>Multiplication Table Practice</title>
+</head>
+
+<body>
+<h1>Multiplication Table Practice</h1>
+
+<button class="new" onclick="generate()">Generate new exercise</button>
+<div class="operation">
+    <span id="operand1"></span>
+    <span>x</span>
+    <span id="operand2"></span>
+    <span>=</span>
+
+    <form onsubmit="validate(providedAnswer.value)" class="inline-form">
+        <label for="providedAnswer"></label>
+        <input type="number" id="providedAnswer" autofocus>
+        <button class="submit" type="submit">Submit answer</button>
+    </form>
+
+</div>
+</body>
+
+<script src="wasm_exec.js"></script>
+<script>
+    const multiply = new Go();
+    WebAssembly.instantiateStreaming(fetch('multiply.wasm'),
+        multiply.importObject).then((result) => {
+        multiply.run(result.instance);
+        generate();
+    });
+
+    document.getElementById('providedAnswer').addEventListener('onsubmit', function onEvent(e) {
+        if (e.key === 'Enter' || e.key === 'NumpadEnter') {
+            validate(providedAnswer.value)
+        }
+    });
+</script>
+</html>

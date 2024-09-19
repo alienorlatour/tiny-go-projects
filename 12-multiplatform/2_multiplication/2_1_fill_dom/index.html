@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="styles.css">
+    <title>Multiplication Table Practice</title>
+</head>
+
+<body>
+<h1>Multiplication Table Practice</h1>
+
+<button class="new">Generate new exercise</button>
+<div class="operation">
+    <span id="operand1"></span>
+    <span>x</span>
+    <span id="operand2"></span>
+    <span>=</span>
+</div>
+</body>
+
+<script src="wasm_exec.js"></script>
+<script>
+    const multiply = new Go();
+    WebAssembly.instantiateStreaming(fetch('multiply.wasm'),
+        multiply.importObject).then((result) => {
+        multiply.run(result.instance);
+    });
+</script>
+</html>
