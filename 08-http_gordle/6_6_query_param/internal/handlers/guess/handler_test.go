@@ -1,13 +1,11 @@
 package guess
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -18,7 +16,7 @@ import (
 
 func TestHandle(t *testing.T) {
 	game, _ := gordle.New([]string{"pocket"})
-	handle := Handle(successGameGuesserStub{session.Game{
+	handle := Handler(successGameGuesserStub{session.Game{
 		ID:           "123456",
 		Gordle:       *game,
 		AttemptsLeft: 5,
@@ -30,9 +28,7 @@ func TestHandle(t *testing.T) {
 	require.NoError(t, err)
 
 	// add path parameters
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add(api.GameID, "123456")
-	req = req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	req.SetPathValue(api.GameID, "123456")
 
 	recorder := httptest.NewRecorder()
 

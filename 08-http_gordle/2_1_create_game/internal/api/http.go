@@ -1,10 +1,8 @@
 package api
 
-import "net/http"
-
 const (
-	NewGameRoute  = "/games"
-	NewGameMethod = http.MethodPost
+	// NewGameRoute is the path to create a new game.
+	NewGameRoute = "/games"
 )
 
 // GameResponse contains the information about a game.
