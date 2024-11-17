@@ -22,21 +22,21 @@ func main() {
 }
 
 type carLight struct {
-	red, yellow, green machine.Pin
+	red, amber, green machine.Pin
 }
 
-func newCarLight(redPin, yellowPin, greenPin machine.Pin) *carLight {
+func newCarLight(redPin, amberPin, greenPin machine.Pin) *carLight {
 	c := &carLight{
-		red:    redPin,
-		yellow: yellowPin,
-		green:  greenPin,
+		red:   redPin,
+		amber: amberPin,
+		green: greenPin,
 	}
 	c.red.Configure(machine.PinConfig{Mode: machine.PinOutput})
-	c.yellow.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	c.amber.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	c.green.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
 	c.red.High()
-	c.yellow.Low()
+	c.amber.Low()
 	c.green.Low()
 
 	return c
@@ -44,18 +44,18 @@ func newCarLight(redPin, yellowPin, greenPin machine.Pin) *carLight {
 
 func (c *carLight) Stop() {
 	c.green.Low()
-	c.yellow.High()
+	c.amber.High()
 	time.Sleep(time.Second)
-	c.yellow.Low()
+	c.amber.Low()
 	c.red.High()
 }
 
 func (c *carLight) Go() {
 	c.red.High()
-	c.yellow.High()
+	c.amber.High()
 	time.Sleep(time.Second)
 	c.red.Low()
-	c.yellow.Low()
+	c.amber.Low()
 	c.green.High()
 }
 
