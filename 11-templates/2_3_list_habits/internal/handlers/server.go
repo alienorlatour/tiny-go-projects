@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"learngo-pockets/templates/internal/habit"
-
-	"github.com/go-chi/chi/v5"
 )
 
 // Client is the dependency towards the Habits service.
@@ -33,9 +31,10 @@ func New(cli habitsClient, lgr Logger) *Server {
 
 // Router returns an HTTP handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
-	r := chi.NewRouter()
+	r := http.NewServeMux()
 
-	r.Get("/", s.index)
+	// Register each endpoint.
+	r.HandleFunc(http.MethodGet+" "+"/", s.index)
 
 	return r
 }

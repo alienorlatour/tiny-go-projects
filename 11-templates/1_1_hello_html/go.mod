@@ -3,7 +3,6 @@ module learngo-pockets/templates
 go 1.23.0
 
 require (
-	github.com/go-chi/chi/v5 v5.0.11
 	github.com/stretchr/testify v1.8.4
 )
 
