@@ -4,9 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
-
-	"golang.org/x/exp/slices"
 )
 
 // Game holds all the information we need to play a game of gordle.

@@ -16,3 +16,8 @@ type Habit struct {
 	WeeklyFrequency TickCount
 	Ticks           TickCount
 }
+
+// IsDone returns whether a habit has been fully completed.
+func (h *Habit) IsDone() bool {
+	return h.Ticks >= h.WeeklyFrequency
+}

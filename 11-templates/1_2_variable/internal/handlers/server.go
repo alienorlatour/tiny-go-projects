@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 )
 
 // Server serves all the HTML routes on this service.
@@ -18,9 +16,10 @@ func New(lgr Logger) *Server {
 
 // Router returns an HTTP handler that listens to all the proper paths.
 func (s *Server) Router() http.Handler {
-	r := chi.NewRouter()
+	r := http.NewServeMux()
 
-	r.Get("/", s.index)
+	// Register each endpoint.
+	r.HandleFunc(http.MethodGet+" "+"/", s.index)
 
 	return r
 }

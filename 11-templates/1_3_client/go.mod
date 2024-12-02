@@ -5,7 +5,6 @@ go 1.23.0
 replace learngo-pockets/habits => ../../10-habits/7_track
 
 require (
-	github.com/go-chi/chi/v5 v5.0.11
 	github.com/gojuno/minimock/v3 v3.3.6
 	github.com/stretchr/testify v1.9.0
 	google.golang.org/grpc v1.62.1

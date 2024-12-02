@@ -2,10 +2,9 @@ package gordle
 
 import (
 	"errors"
+	"slices"
 	"strings"
 	"testing"
-
-	"golang.org/x/exp/slices"
 )
 
 func TestGameAsk(t *testing.T) {

@@ -4,15 +4,20 @@ import (
 	"net/http"
 
 	"learngo-pockets/templates/internal/habit"
-
-	"github.com/go-chi/chi/v5"
 )
 
 // tick adds a tick to the given habit and redirects to index.
 func (s *Server) tick(w http.ResponseWriter, r *http.Request) {
-	const tickEndpoint = "tick"
+	const (
+		tickEndpoint     = "tick"
+		habitIDPathValue = "habitID"
+	)
 
-	id := chi.URLParam(r, "habitID")
+	id := r.PathValue(habitIDPathValue)
+	if id == "" {
+		http.Error(w, "missing the id of the habit", http.StatusNotFound)
+		return
+	}
 
 	err := s.client.TickHabit(r.Context(), habit.ID(id))
 	if err != nil {
