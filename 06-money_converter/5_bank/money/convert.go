@@ -13,10 +13,7 @@ func Convert(amount Amount, to Currency, rates ratesFetcher) (Amount, error) {
 	}
 
 	// Convert to the target currency applying the fetched change rate.
-	convertedValue, err := applyExchangeRate(amount, to, r)
-	if err != nil {
-		return Amount{}, err
-	}
+	convertedValue := applyExchangeRate(amount, to, r)
 
 	// Validate the converted amount is in the handled bounded range.
 	if err = convertedValue.validate(); err != nil {
@@ -38,7 +35,7 @@ type ExchangeRate Decimal
 // applyExchangeRate returns a new Amount representing the input multiplied by the rate.
 // The precision of the returned value is that of the target Currency.
 // This function does not guarantee that the output amount is supported.
-func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, error) {
+func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) Amount {
 	// Multiply the input amount.
 	converted := multiply(a.quantity, rate)
 
@@ -57,7 +54,7 @@ func applyExchangeRate(a Amount, target Currency, rate ExchangeRate) (Amount, er
 	return Amount{
 		currency: target,
 		quantity: converted,
-	}, nil
+	}
 }
 
 // multiply a Decimal with an ExchangeRate and return the product

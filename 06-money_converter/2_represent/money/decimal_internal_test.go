@@ -13,7 +13,7 @@ func TestParseDecimal(t *testing.T) {
 	}{
 		"2 decimal digits": {
 			decimal:  "1.52",
-			expected: Decimal{152, 2},
+			expected: Decimal{subunits: 152, precision: 2},
 			err:      nil,
 		},
 		"no decimal digits": {
